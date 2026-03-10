@@ -183,6 +183,10 @@
   function buildNav() {
     // 이미 삽입됐으면 skip
     if (document.getElementById('chungram-nav')) return;
+    // 자체 nav가 있는 페이지는 중복 주입 방지
+    if (document.getElementById('nav') || document.querySelector('nav.navbar') || document.querySelector('nav[role="navigation"]')) return;
+    // 홈/프롬프트/허브 페이지는 자체 nav 사용
+    if (currentPage === 'index.html' || currentPage === '' || currentPage === 'chungram-prompt-library.html' || currentPage === 'chungram-ai-tool-hub.html') return;
 
     const nav = document.createElement('nav');
     nav.id = 'chungram-nav';
