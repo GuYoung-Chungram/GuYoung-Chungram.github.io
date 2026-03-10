@@ -160,13 +160,6 @@
       color: var(--accent);
     }
 
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-shrink: 0;
-    }
-
     /* 모바일 햄버거 */
     .nav-toggle {
       display: none;
@@ -231,30 +224,6 @@
       .nav-toggle {
         display: flex;
       }
-    }
-
-    .nav-badge {
-      background: var(--accent-dim);
-      border: 1px solid var(--border);
-      border-radius: 100px;
-      padding: 4px 14px;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--accent);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .nav-badge::before {
-      content: '';
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: var(--accent);
-      animation: blink 2s infinite;
     }
 
     @keyframes blink {
@@ -738,22 +707,21 @@
   <nav>
     <a href="index.html" class="nav-brand">
       <span class="nav-logo">CHUNGRAM</span>
-      <span class="nav-logo-sub">AI 프롬프트<br>라이브러리</span>
+      <span class="nav-logo-sub">AI Lab · 청람M&amp;C</span>
     </a>
 
     <div class="nav-center">
       <a href="index.html">홈</a>
       <a href="https://betweenworld.org" target="_blank" rel="noopener">블로그</a>
       <a href="chungram-prompt-library.html" class="active">프롬프트</a>
+      <a href="chungram-chatbot-guide.html">챗봇 지침</a>
+      <a href="chungram-ai-tool-hub.html">AI 허브</a>
       <a href="index.html#ebooks">전자책</a>
       <a href="index.html#faq">FAQ</a>
       <a href="chungram-notice.html">공지사항</a>
-      <a href="chungram-ai-tool-hub.html">AI 허브</a>
     </div>
 
-    <div class="nav-right">
-      <div class="nav-badge">LIVE</div>
-    </div>
+    
 
     <!-- 모바일 햄버거 -->
     <button class="nav-toggle" id="navToggle" aria-label="메뉴 열기">
@@ -766,9 +734,11 @@
     <a href="index.html">🏠 홈</a>
     <a href="https://betweenworld.org" target="_blank">✍️ 블로그 BTW</a>
     <a href="chungram-prompt-library.html">⚡ 프롬프트 라이브러리</a>
+    <a href="chungram-chatbot-guide.html">📋 챗봇 지침</a>
+    <a href="chungram-ai-tool-hub.html">🤖 AI 허브</a>
     <a href="index.html#ebooks">📖 전자책</a>
     <a href="index.html#faq">💬 FAQ</a>
-    <a href="chungram-ai-tool-hub.html">🤖 AI 허브</a>
+    <a href="chungram-notice.html">📢 공지사항</a>
   </div>
 
   <!-- ── HERO ── -->

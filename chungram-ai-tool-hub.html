@@ -138,12 +138,6 @@
       line-height: 1.3;
     }
 
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
     .nav-links {
       display: flex;
       align-items: center;
@@ -152,9 +146,9 @@
     }
 
     .nav-links a {
-      padding: 6px 13px;
-      border-radius: 100px;
-      font-size: 12px;
+      padding: 7px 12px;
+      border-radius: 6px;
+      font-size: 13px;
       font-weight: 500;
       color: var(--cg-text-dim);
       text-decoration: none;
@@ -175,30 +169,6 @@
       .nav-links {
         display: none;
       }
-    }
-
-    .nav-live {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--cg-accent-dim);
-      border: 1px solid var(--cg-border);
-      border-radius: 100px;
-      padding: 4px 14px;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--cg-accent);
-    }
-
-    .nav-live::before {
-      content: '';
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: var(--cg-accent);
-      animation: blink 2s infinite;
     }
 
     @keyframes blink {
@@ -954,7 +924,7 @@
   <nav>
     <a href="index.html" class="nav-brand">
       <span class="nav-logo">CHUNGRAM</span>
-      <span class="nav-sub">AI Tool<br>Hub</span>
+      <span class="nav-sub">AI Lab · 청람M&amp;C</span>
     </a>
     <div class="nav-links">
       <a href="index.html">홈</a>
@@ -963,11 +933,10 @@
       <a href="chungram-chatbot-guide.html">챗봇 지침</a>
       <a href="chungram-ai-tool-hub.html" class="active">AI 허브</a>
       <a href="index.html#ebooks">전자책</a>
+      <a href="index.html#faq">FAQ</a>
       <a href="chungram-notice.html">공지사항</a>
     </div>
-    <div class="nav-right">
-      <div class="nav-live">LIVE</div>
-    </div>
+    
   </nav>
 
   <!-- ── HEADER ── -->

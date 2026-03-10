@@ -1201,8 +1201,8 @@
         <li><a href="chungram-prompt-library.html">프롬프트</a></li>
         <li><a href="chungram-chatbot-guide.html">챗봇 지침</a></li>
         <li><a href="chungram-ai-tool-hub.html">AI 허브</a></li>
-        <li><a href="#ebooks">전자책</a></li>
-        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#ebooks" style="background:transparent!important;color:rgba(255,255,255,0.55)!important;" class="no-hl">전자책</a></li>
+        <li><a href="#faq" style="background:transparent!important;color:rgba(255,255,255,0.55)!important;" class="no-hl">FAQ</a></li>
         <li><a href="chungram-notice.html">공지사항</a></li>
       </ul>
       <div class="nav-search">
@@ -1562,7 +1562,7 @@
           <ul>
             <li><a href="chungram-prompt-library.html">프롬프트 라이브러리</a></li>
             <li><a href="chungram-ai-tool-hub.html">AI Tool Hub</a></li>
-            <li><a href="#ebooks">전자책</a></li>
+            <li><a href="#ebooks" style="background:transparent!important;color:rgba(255,255,255,0.55)!important;" class="no-hl">전자책</a></li>
             <li><a href="chungram-chatbot-guide.html">챗봇 지침</a></li>
           </ul>
         </div>
@@ -1573,7 +1573,7 @@
             <li><a href="#featured">프로그램</a></li>
             <li><a href="https://betweenworld.org" target="_blank">블로그 BTW</a></li>
             <li><a href="https://open.kakao.com/o/sDiyLS0h" target="_blank" rel="noopener noreferrer">💬 오픈채팅방</a></li>
-            <li><a href="#faq">FAQ</a></li>
+            <li><a href="#faq" style="background:transparent!important;color:rgba(255,255,255,0.55)!important;" class="no-hl">FAQ</a></li>
           </ul>
         </div>
         <div class="footer-col">
@@ -1606,6 +1606,19 @@
       if (!isOpen) item.classList.add('open');
     }
 
+
+    /* 페이지 로드 즉시: 전자책/FAQ 하이라이트 원천 차단 */
+    document.querySelectorAll('.no-hl').forEach(el => {
+      el.classList.remove('active');
+      el.style.background = 'transparent';
+      el.style.color = 'rgba(255,255,255,0.55)';
+    });
+    /* no-hl 요소에 hover 시에도 하이라이트 금지 */
+    document.querySelectorAll('.no-hl').forEach(el => {
+      el.addEventListener('mouseenter', function() { this.style.background = 'rgba(255,255,255,0.04)'; this.style.color = 'rgba(255,255,255,0.7)'; });
+      el.addEventListener('mouseleave', function() { this.style.background = 'transparent'; this.style.color = 'rgba(255,255,255,0.55)'; });
+    });
+
     /* Nav 스크롤 active */
     const sections = document.querySelectorAll('section[id]');
     const navLinks = document.querySelectorAll('.nav-links a');
@@ -1620,9 +1633,9 @@
           }
           navLinks.forEach(a => {
             const href = a.getAttribute('href');
-            // 전자책·FAQ 링크는 절대 active 안 함
-            if (href === '#ebooks' || href === '#faq') {
+            if (a.classList.contains('no-hl') || href === '#ebooks' || href === '#faq') {
               a.classList.remove('active');
+              a.style.background = 'transparent';
               return;
             }
             a.classList.toggle('active',
