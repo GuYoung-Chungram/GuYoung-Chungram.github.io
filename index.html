@@ -394,32 +394,6 @@
       background: transparent !important;
     }
 
-    .nav-search {
-      position: relative;
-    }
-
-    .nav-search input {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border-dim);
-      border-radius: 8px;
-      padding: 7px 14px;
-      color: var(--text);
-      font-family: var(--fb);
-      font-size: 12px;
-      width: 160px;
-      transition: border-color 0.2s, width 0.3s;
-      outline: none;
-    }
-
-    .nav-search input:focus {
-      border-color: var(--border);
-      width: 220px;
-    }
-
-    .nav-search input::placeholder {
-      color: var(--text-3);
-    }
-
     .nav-toggle {
       display: none;
       flex-direction: column;
@@ -1113,9 +1087,10 @@
 
     @media (max-width: 640px) {
 
-      .nav-links,
-      .nav-search {
+      .nav-links {
+
         display: none;
+
       }
 
       .nav-toggle {
@@ -1205,9 +1180,6 @@
         <li><a href="#faq" style="background:transparent!important;color:rgba(255,255,255,0.55)!important;" class="no-hl">FAQ</a></li>
         <li><a href="chungram-notice.html">공지사항</a></li>
       </ul>
-      <div class="nav-search">
-        <input type="text" placeholder="통합 검색" aria-label="통합 검색">
-      </div>
       <button class="nav-toggle" aria-label="메뉴" onclick="document.getElementById('navLinks').classList.toggle('open')">
         <span></span><span></span><span></span>
       </button>
