@@ -560,7 +560,6 @@ footer{
 
 ### 6단계. 같은 편집창에서 Ctrl+F 로 검색
 ```
-/* ── Hero 텍스트 입장 애니메이션 ── */
 @keyframes hero-ai-in {
   0%   { opacity: 0; transform: translateY(40px) scale(0.88); }
   60%  { opacity: 1; transform: translateY(-4px) scale(1.03); }
@@ -576,24 +575,12 @@ footer{
   100% { opacity: 1; transform: translateY(0); }
 }
 @keyframes ai-glow-pulse {
-  0%, 100% {
-    text-shadow: 0 0 20px rgba(212,255,94,0.3), 0 0 40px rgba(212,255,94,0.1);
-    letter-spacing: 0.05em;
-  }
-  50% {
-    text-shadow: 0 0 35px rgba(212,255,94,0.65), 0 0 70px rgba(212,255,94,0.25);
-    letter-spacing: 0.07em;
-  }
+  0%, 100% { text-shadow: 0 0 20px rgba(212,255,94,0.3), 0 0 40px rgba(212,255,94,0.1); letter-spacing: 0.05em; }
+  50%       { text-shadow: 0 0 35px rgba(212,255,94,0.65), 0 0 70px rgba(212,255,94,0.25); letter-spacing: 0.07em; }
 }
 @keyframes lead-stroke-shimmer {
-  0%, 100% {
-    -webkit-text-stroke: 2px rgba(212,255,94,0.9);
-    filter: drop-shadow(0 0 8px rgba(212,255,94,0.2));
-  }
-  50% {
-    -webkit-text-stroke: 2.5px rgba(212,255,94,1);
-    filter: drop-shadow(0 0 18px rgba(212,255,94,0.55));
-  }
+  0%, 100% { -webkit-text-stroke: 2px rgba(212,255,94,0.9); filter: drop-shadow(0 0 8px rgba(212,255,94,0.2)); }
+  50%       { -webkit-text-stroke: 2.5px rgba(212,255,94,1); filter: drop-shadow(0 0 18px rgba(212,255,94,0.55)); }
 }
 @keyframes hara-shimmer {
   0%, 100% { color: rgba(255,255,255,0.9); text-shadow: none; }
@@ -608,7 +595,13 @@ footer{
 .hl-ro   { display: inline-block; animation: ro-in 0.6s ease 0.35s both; }
 .hl-lead { display: inline-block; animation: hero-lead-in 0.8s cubic-bezier(0.22,1,0.36,1) 0.35s both, lead-stroke-shimmer 3.8s ease-in-out 1.5s infinite; }
 .hl-hara { display: inline-block; color: rgba(255,255,255,0.92); animation: hero-hara-in 0.7s ease 0.6s both, hara-shimmer 4.5s ease-in-out 1.8s infinite; }
-</style>
+```
+
+붙여넣은 결과가 이렇게 보여야 합니다:
+```
+  (위에 기존 CSS들...)
+  .hl-hara { display: inline-block; ... }   ← 방금 붙여넣은 마지막 줄
+</style>                                      ← 이 태그가 바로 아래에 있어야 함</style>
   <div class="hero-sub">CHUNGRAM AI LAB</div>
 
   <p class="hero-desc">
