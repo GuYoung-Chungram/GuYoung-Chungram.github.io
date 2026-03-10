@@ -9,7 +9,7 @@
   <meta name="robots" content="index, follow">
   <meta name="googlebot" content="index, follow">
   <meta name="author" content="청람M&C 정구영 대표">
-  <meta name="copyright" content="© 2025 청람M&C AI Lab. All Rights Reserved.">
+  <meta name="copyright" content="© 2026 청람M&C AI Lab. All Rights Reserved.">
   <meta name="CCBot" content="noindex">
   <meta name="GPTBot" content="noindex">
   <meta name="anthropic-ai" content="noindex">
@@ -335,23 +335,28 @@
 
     .nav-logo {
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
+      align-items: center;
+      gap: 10px;
       line-height: 1.1;
       text-decoration: none;
     }
 
     .nav-logo .logo-main {
       font-family: var(--fd);
-      font-size: 18px;
-      letter-spacing: 0.12em;
+      font-size: 26px;
+      letter-spacing: 0.18em;
       color: var(--accent);
     }
 
     .nav-logo .logo-sub {
-      font-size: 9px;
-      letter-spacing: 0.08em;
+      font-size: 10px;
+      letter-spacing: 0.22em;
       color: var(--text-3);
-      font-weight: 300;
+      font-weight: 500;
+      border-left: 1px solid rgba(255,255,255,0.15);
+      padding-left: 10px;
+      line-height: 1.3;
     }
 
     .nav-links {
@@ -376,6 +381,17 @@
     .nav-links a.active {
       color: var(--accent);
       background: var(--accent-dim);
+    }
+
+    /* 전자책·FAQ는 절대 하이라이트 안 함 */
+    .nav-links a[href="#ebooks"],
+    .nav-links a[href="#faq"] {
+      background: transparent !important;
+    }
+    .nav-links a[href="#ebooks"].active,
+    .nav-links a[href="#faq"].active {
+      color: var(--text-2) !important;
+      background: transparent !important;
     }
 
     .nav-search {
@@ -1376,10 +1392,16 @@
     <div class="container">
       <p class="cta-title">지금 바로<br>시작하라</p>
       <p class="cta-desc">프롬프트 라이브러리와 AI Tool Hub는 무료로 제공됩니다.<br>강의 문의 및 커스텀 교육 설계는 아래를 통해 연락주세요.</p>
-      <a href="mailto:supercrmnc@gmail.com?subject=안녕하세요.%20교육문의%20드립니다." class="btn-primary"
-        style="background:#000;color:var(--accent);border:2px solid #000;">
-        📧 교육 문의하기 →
-      </a>
+      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+        <a href="mailto:supercrmnc@gmail.com?subject=안녕하세요.%20교육문의%20드립니다." class="btn-primary"
+          style="background:#000;color:var(--accent);border:2px solid #000;">
+          📧 교육 문의하기 →
+        </a>
+        <a href="https://open.kakao.com/o/sDiyLS0h" target="_blank" rel="noopener noreferrer" class="btn-primary"
+          style="background:#FEE500;color:#000;border:2px solid #FEE500;">
+          💬 오픈채팅 문의 →
+        </a>
+      </div>
     </div>
   </section>
 
@@ -1480,8 +1502,7 @@
             기업 교육 및 강의 문의는 어떻게 하나요?
             <span class="faq-icon">+</span>
           </button>
-          <div class="faq-a">이메일(supercrmnc@gmail.com) 또는 청람M&C 공식 채널을 통해 문의 주시면 됩니다. 교육 대상, 인원, 시간, 목적을 함께 알려주시면 맞춤형
-            커리큘럼을 설계해드립니다.</div>
+          <div class="faq-a">이메일(<a href="mailto:supercrmnc@gmail.com" style="color:#D4FF5E;">supercrmnc@gmail.com</a>) 또는 <a href="https://open.kakao.com/o/sDiyLS0h" target="_blank" rel="noopener noreferrer" style="color:#D4FF5E;">청람M&C 오픈채팅방</a>을 통해 문의 주시면 됩니다. 교육 대상, 인원, 시간, 목적을 함께 알려주시면 맞춤형 커리큘럼을 설계해드립니다.</div>
         </div>
         <div class="faq-item">
           <button class="faq-q" onclick="toggleFaq(this)">
@@ -1534,6 +1555,7 @@
         <div class="footer-brand">
           <div class="logo">CHUNGRAM</div>
           <p>AI 에이전트 기반 교육 컨설팅 전문기업.<br>청람M&C · 한국지역개발경영교육원<br>교육학 박사 · 누적 강의 10,000시간+</p>
+          <p style="font-size:11px; color:rgba(255,255,255,0.35); margin-top:8px; line-height:1.6;">사업자등록번호: 125-25-00428 | 대표자: 고숙진<br>서울시 광진구 능동로 19길 35, 1417호</p>
         </div>
         <div class="footer-col">
           <h4>콘텐츠</h4>
@@ -1550,6 +1572,7 @@
             <li><a href="#about">소개</a></li>
             <li><a href="#featured">프로그램</a></li>
             <li><a href="https://betweenworld.org" target="_blank">블로그 BTW</a></li>
+            <li><a href="https://open.kakao.com/o/sDiyLS0h" target="_blank" rel="noopener noreferrer">💬 오픈채팅방</a></li>
             <li><a href="#faq">FAQ</a></li>
           </ul>
         </div>
@@ -1564,7 +1587,7 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p>© 2025 <strong>CHUNGRAM</strong> · 청람M&C · 한국지역개발경영교육원 · All rights reserved.</p>
+        <p>© 2026 <strong>CHUNGRAM</strong> · 청람M&C · 한국지역개발경영교육원 · All rights reserved.</p>
         <div class="footer-badges">
           <span class="footer-badge"><span>10,000H</span> 강의</span>
           <span class="footer-badge"><span>1,000H</span> 코칭</span>
@@ -1591,11 +1614,20 @@
         if (entry.isIntersecting) {
           const id = entry.target.id;
           // 전자책·FAQ는 하이라이트 대상에서 제외
-          if (id === 'ebooks' || id === 'faq') return;
+          if (id === 'ebooks' || id === 'faq') {
+            document.querySelectorAll('.nav-links a[href="#ebooks"], .nav-links a[href="#faq"]').forEach(el => el.classList.remove('active'));
+            return;
+          }
           navLinks.forEach(a => {
+            const href = a.getAttribute('href');
+            // 전자책·FAQ 링크는 절대 active 안 함
+            if (href === '#ebooks' || href === '#faq') {
+              a.classList.remove('active');
+              return;
+            }
             a.classList.toggle('active',
-              a.getAttribute('href') === '#' + id ||
-              (id === 'home' && a.getAttribute('href') === '#home')
+              href === '#' + id ||
+              (id === 'home' && href === '#home')
             );
           });
         }

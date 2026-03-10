@@ -34,21 +34,27 @@
     }
     #chungram-nav .nav-logo {
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
+      align-items: center;
+      gap: 10px;
       line-height: 1.1;
       text-decoration: none;
     }
     #chungram-nav .nav-logo .logo-main {
-      font-size: 15px;
+      font-size: 26px;
       font-weight: 700;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.18em;
       color: #D4FF5E;
     }
     #chungram-nav .nav-logo .logo-sub {
-      font-size: 9px;
-      letter-spacing: 0.08em;
+      font-size: 10px;
+      letter-spacing: 0.22em;
       color: rgba(255,255,255,0.45);
-      font-weight: 400;
+      font-weight: 500;
+      border-left: 1px solid rgba(255,255,255,0.15);
+      padding-left: 10px;
+      line-height: 1.3;
+      text-transform: uppercase;
     }
     #chungram-nav .nav-links {
       display: flex;
@@ -56,6 +62,7 @@
       gap: 6px;
       list-style: none;
       margin: 0;
+      margin-left: auto;
       padding: 0;
     }
     #chungram-nav .nav-links li a {
