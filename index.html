@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CHUNGRAM — AI 에이전트 기반 교육 컨설팅</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════
+   CHUNGRAM Dark-Tech v2.1
+   BG:#000 | Accent:#D4FF5E | Cobalt:#1652D8
+══════════════════════════════════ */
+:root {
+  --bg:          #000000;
+  --bg-1:        #080808;
+  --bg-2:        #0f0f0f;
+  --card:        #141414;
+  --card-2:      #1a1a1a;
+  --glass:       rgba(255,255,255,0.035);
+  --accent:      #D4FF5E;
+  --cobalt:      #1652D8;
+  --accent-dim:  rgba(212,255,94,0.12);
+  --accent-dim2: rgba(212,255,94,0.05);
+  --border:      rgba(212,255,94,0.2);
+  --border-dim:  rgba(255,255,255,0.06);
+  --text:        #ffffff;
+  --text-dim:    rgba(255,255,255,0.5);
+  --text-dimmer: rgba(255,255,255,0.28);
+  --r:           20px;
+  --r-sm:        12px;
+  --fd:          'Bebas Neue', sans-serif;
+  --fb:          'Noto Sans KR', sans-serif;
+  --fm:          'JetBrains Mono', monospace;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--fb);background:var(--bg);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.55}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:#000}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:2px}
+
+/* ════ NAV ════ */
+#nav{
+  position:fixed;top:0;left:0;right:0;z-index:800;
+  height:68px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 48px;
+  background:rgba(0,0,0,0);
+  backdrop-filter:blur(0px);
+  border-bottom:1px solid transparent;
+  transition:background .4s,backdrop-filter .4s,border-color .4s;
+}
+#nav.scrolled{
+  background:rgba(0,0,0,0.92);
+  backdrop-filter:blur(24px);
+  border-bottom-color:var(--border-dim);
+}
+.nav-brand{display:flex;align-items:center;gap:11px;text-decoration:none;flex-shrink:0}
+.nav-logo{font-family:var(--fd);font-size:28px;letter-spacing:.18em;color:var(--accent);line-height:1}
+.nav-divider{width:1px;height:28px;background:var(--border-dim)}
+.nav-tagline{font-size:10px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dimmer);line-height:1.4}
+
+.nav-links{display:flex;align-items:center;gap:4px}
+.nav-links a{
+  padding:7px 14px;border-radius:100px;
+  font-size:13px;font-weight:500;letter-spacing:.02em;
+  color:var(--text-dim);text-decoration:none;
+  transition:all .2s;white-space:nowrap;
+}
+.nav-links a:hover{color:var(--text);background:var(--glass)}
+.nav-links a.active{color:var(--accent)}
+
+.nav-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.nav-search{
+  display:flex;align-items:center;gap:8px;
+  background:var(--card);
+  border:1px solid var(--border-dim);
+  border-radius:100px;padding:7px 16px;
+  transition:border-color .2s;
+  cursor:pointer;
+}
+.nav-search:hover{border-color:rgba(212,255,94,.35)}
+.nav-search span{font-size:12px;color:var(--text-dimmer)}
+.nav-live{
+  display:flex;align-items:center;gap:6px;
+  background:var(--accent-dim);border:1px solid var(--border);
+  border-radius:100px;padding:6px 14px;
+  font-size:10px;font-weight:700;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--accent);
+}
+.nav-live::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--accent);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+
+.nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.nav-hamburger span{width:22px;height:2px;background:var(--text-dim);border-radius:2px;transition:all .3s}
+
+/* mobile nav */
+.mobile-menu{
+  display:none;position:fixed;top:68px;left:0;right:0;
+  background:rgba(0,0,0,.97);backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border-dim);
+  padding:20px 24px 28px;z-index:799;
+  flex-direction:column;gap:4px;
+}
+.mobile-menu.open{display:flex}
+.mobile-menu a{
+  padding:12px 16px;border-radius:var(--r-sm);
+  font-size:15px;font-weight:500;color:var(--text-dim);
+  text-decoration:none;transition:all .2s;
+  border:1px solid transparent;
+}
+.mobile-menu a:hover{color:var(--accent);border-color:var(--border);background:var(--accent-dim2)}
+
+/* ════ HERO (Type A) ════ */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;
+  padding:120px 40px 80px;
+  position:relative;overflow:hidden;
+}
+.hero-glow-1{position:absolute;top:-15%;left:50%;transform:translateX(-50%);width:900px;height:600px;background:radial-gradient(ellipse,rgba(212,255,94,.055) 0%,transparent 65%);pointer-events:none}
+.hero-glow-2{position:absolute;bottom:-20%;right:-10%;width:500px;height:500px;background:radial-gradient(ellipse,rgba(22,82,216,.06) 0%,transparent 65%);pointer-events:none}
+
+/* grid bg */
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(var(--border-dim) 1px,transparent 1px),
+    linear-gradient(90deg,var(--border-dim) 1px,transparent 1px);
+  background-size:72px 72px;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,#000 30%,transparent 100%);
+  pointer-events:none;
+}
+
+.hero-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--accent-dim);border:1px solid var(--border);
+  border-radius:100px;padding:6px 18px;
+  font-size:10px;font-weight:700;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--accent);
+  margin-bottom:32px;
+  animation:fup .8s both;
+}
+.hero-tag::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--accent);animation:blink 2s infinite}
+
+.hero h1{
+  font-family:var(--fd);
+  font-size:clamp(72px,10vw,140px);
+  letter-spacing:.05em;line-height:.92;
+  margin-bottom:8px;
+  animation:fup .8s .08s both;
+}
+.hero h1 .hl{color:var(--accent)}
+.hero h1 .hl2{
+  -webkit-text-stroke:2px var(--accent);
+  color:transparent;
+}
+
+.hero-sub{
+  font-family:var(--fd);
+  font-size:clamp(24px,3.5vw,44px);
+  letter-spacing:.12em;color:var(--text-dim);
+  margin-bottom:28px;
+  animation:fup .8s .14s both;
+}
+
+.hero-desc{
+  font-size:16px;font-weight:300;
+  color:var(--text-dim);line-height:1.75;
+  max-width:580px;margin:0 auto 52px;
+  animation:fup .8s .2s both;
+}
+
+.hero-ctas{
+  display:flex;gap:12px;flex-wrap:wrap;justify-content:center;
+  animation:fup .8s .26s both;
+  margin-bottom:80px;
+}
+.btn-primary{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:14px 32px;border-radius:100px;
+  background:var(--accent);color:#000;
+  font-family:var(--fb);font-size:14px;font-weight:700;
+  letter-spacing:.04em;text-decoration:none;
+  border:none;cursor:pointer;
+  transition:opacity .2s,transform .2s;
+}
+.btn-primary:hover{opacity:.88;transform:translateY(-2px)}
+.btn-outline{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:14px 32px;border-radius:100px;
+  background:transparent;color:var(--accent);
+  border:1px solid var(--border);
+  font-family:var(--fb);font-size:14px;font-weight:600;
+  letter-spacing:.04em;text-decoration:none;
+  cursor:pointer;transition:all .2s;
+}
+.btn-outline:hover{background:var(--accent-dim);border-color:rgba(212,255,94,.5)}
+
+/* hero stats */
+.hero-stats{
+  display:flex;gap:0;
+  border:1px solid var(--border-dim);
+  border-radius:var(--r);overflow:hidden;
+  animation:fup .8s .32s both;
+}
+.hs-item{
+  padding:18px 36px;text-align:center;
+  border-right:1px solid var(--border-dim);
+  background:var(--glass);
+}
+.hs-item:last-child{border-right:none}
+.hs-num{font-family:var(--fd);font-size:40px;color:var(--accent);letter-spacing:.05em;line-height:1}
+.hs-label{font-size:10px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dimmer);margin-top:4px}
+
+/* scroll indicator */
+.scroll-hint{
+  position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  color:var(--text-dimmer);font-size:10px;letter-spacing:.2em;
+  text-transform:uppercase;animation:fup 1s .5s both;
+}
+.scroll-hint-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--accent),transparent);animation:scrollLine 2s infinite}
+@keyframes scrollLine{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+@keyframes fup{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* ════ SECTION BASE ════ */
+section{padding:100px 40px;position:relative}
+.section-inner{max-width:1300px;margin:0 auto}
+
+.section-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:10px;font-weight:700;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--accent);
+  margin-bottom:20px;
+}
+.section-eyebrow::before{content:'';width:20px;height:1px;background:var(--accent)}
+
+.section-title{
+  font-family:var(--fd);
+  font-size:clamp(40px,5vw,64px);
+  letter-spacing:.06em;line-height:.95;
+  margin-bottom:16px;
+}
+.section-title .hl{color:var(--accent)}
+
+.section-desc{
+  font-size:15px;font-weight:300;
+  color:var(--text-dim);line-height:1.7;
+  max-width:540px;margin-bottom:56px;
+}
+
+/* divider */
+.divider{height:1px;background:linear-gradient(to right,transparent,var(--border-dim) 30%,var(--border-dim) 70%,transparent);margin:0 40px}
+
+/* ════ MENU CARDS (홈 바로가기) ════ */
+#pages{background:var(--bg-1)}
+.pages-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
+}
+.page-card{
+  background:var(--card-2);
+  border:1px solid var(--border-dim);
+  border-radius:var(--r);
+  padding:32px;
+  text-decoration:none;color:var(--text);
+  display:flex;flex-direction:column;gap:16px;
+  position:relative;overflow:hidden;
+  transition:all .3s;
+}
+.page-card::before{
+  content:'';position:absolute;
+  top:0;left:0;right:0;height:2px;
+  background:var(--accent);opacity:0;
+  transition:opacity .3s;
+}
+.page-card:hover{
+  border-color:rgba(212,255,94,.3);
+  transform:translateY(-4px);
+  box-shadow:0 20px 60px rgba(0,0,0,.6);
+}
+.page-card:hover::before{opacity:1}
+.page-card:hover .pc-arrow{opacity:1;transform:translateX(4px)}
+
+.pc-icon{
+  width:48px;height:48px;
+  background:var(--accent-dim);border:1px solid var(--border);
+  border-radius:var(--r-sm);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;
+}
+.pc-badge{
+  position:absolute;top:20px;right:20px;
+  background:var(--accent);color:#000;
+  font-size:9px;font-weight:700;letter-spacing:.15em;
+  text-transform:uppercase;padding:3px 10px;border-radius:100px;
+}
+.pc-badge.soon{background:var(--card);color:var(--text-dimmer);border:1px solid var(--border-dim)}
+.pc-title{font-family:var(--fd);font-size:24px;letter-spacing:.08em;color:var(--text)}
+.pc-desc{font-size:13px;color:var(--text-dimmer);line-height:1.65;flex:1}
+.pc-footer{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:16px;border-top:1px solid var(--border-dim)}
+.pc-meta{font-family:var(--fm);font-size:10px;color:var(--text-dimmer);letter-spacing:.08em}
+.pc-arrow{color:var(--accent);font-size:18px;opacity:0;transition:all .3s}
+
+/* ════ ABOUT (Type B) ════ */
+#about{background:var(--bg)}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.about-left .section-title{font-size:clamp(44px,5.5vw,72px)}
+
+.about-credentials{
+  display:flex;flex-direction:column;gap:12px;
+  margin-top:36px;
+}
+.cred-item{
+  display:flex;align-items:flex-start;gap:14px;
+  padding:16px 20px;
+  background:var(--card);border:1px solid var(--border-dim);
+  border-radius:var(--r-sm);
+  transition:border-color .2s;
+}
+.cred-item:hover{border-color:var(--border)}
+.cred-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);margin-top:7px;flex-shrink:0}
+.cred-text{font-size:13px;color:var(--text-dim);line-height:1.6}
+.cred-text strong{color:var(--text);font-weight:600}
+
+.about-right{display:flex;flex-direction:column;gap:16px}
+.metric-card{
+  padding:28px 32px;
+  background:var(--card-2);border:1px solid var(--border-dim);
+  border-radius:var(--r);
+  transition:border-color .2s,transform .2s;
+}
+.metric-card:hover{border-color:var(--border);transform:translateX(4px)}
+.metric-num{font-family:var(--fd);font-size:52px;color:var(--accent);letter-spacing:.04em;line-height:1}
+.metric-label{font-size:13px;color:var(--text-dim);margin-top:6px}
+
+/* ════ FEATURED (프로그램) ════ */
+#featured{background:var(--bg-1)}
+.featured-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:20px}
+.feat-card{
+  background:var(--card-2);border:1px solid var(--border-dim);
+  border-radius:var(--r);padding:36px;
+  display:flex;flex-direction:column;gap:14px;
+  position:relative;overflow:hidden;
+  transition:all .25s;
+}
+.feat-card.large{grid-row:span 2}
+.feat-card:hover{border-color:rgba(212,255,94,.25);transform:translateY(-3px)}
+.feat-tag{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--accent-dim);border:1px solid var(--border);
+  border-radius:100px;padding:3px 12px;
+  font-size:9px;font-weight:700;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--accent);width:fit-content;
+}
+.feat-title{font-family:var(--fd);font-size:28px;letter-spacing:.06em;line-height:1.05}
+.feat-desc{font-size:13px;color:var(--text-dimmer);line-height:1.65;flex:1}
+.feat-clients{
+  display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;
+}
+.client-chip{
+  padding:4px 12px;
+  background:var(--card);border:1px solid var(--border-dim);
+  border-radius:100px;font-size:10px;color:var(--text-dimmer);
+  letter-spacing:.04em;
+}
+.feat-num{font-family:var(--fd);font-size:56px;color:var(--accent);letter-spacing:.04em;line-height:1}
+.feat-num-label{font-size:12px;color:var(--text-dimmer);margin-top:4px}
+
+/* ════ CTA BAND ════ */
+.cta-band{
+  background:var(--accent);
+  padding:72px 40px;text-align:center;
+}
+.cta-band h2{
+  font-family:var(--fd);
+  font-size:clamp(40px,6vw,72px);
+  letter-spacing:.06em;color:#000;margin-bottom:16px;
+}
+.cta-band p{font-size:15px;color:rgba(0,0,0,.65);margin-bottom:36px;line-height:1.6}
+.btn-dark{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:14px 36px;border-radius:100px;
+  background:#000;color:var(--accent);
+  font-family:var(--fb);font-size:14px;font-weight:700;
+  letter-spacing:.04em;text-decoration:none;
+  transition:opacity .2s;
+}
+.btn-dark:hover{opacity:.85}
+
+/* ════ FAQ ════ */
+#faq{background:var(--bg)}
+.faq-list{max-width:800px;display:flex;flex-direction:column;gap:8px}
+.faq-item{
+  background:var(--card);border:1px solid var(--border-dim);
+  border-radius:var(--r-sm);overflow:hidden;
+  transition:border-color .2s;
+}
+.faq-item.open{border-color:var(--border)}
+.faq-q{
+  width:100%;display:flex;align-items:center;justify-content:space-between;
+  padding:20px 24px;background:none;border:none;
+  color:var(--text);font-family:var(--fb);font-size:15px;
+  font-weight:500;text-align:left;cursor:pointer;gap:16px;
+  transition:color .2s;
+}
+.faq-item.open .faq-q{color:var(--accent)}
+.faq-icon{
+  width:28px;height:28px;border-radius:50%;
+  background:var(--card-2);border:1px solid var(--border-dim);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;flex-shrink:0;color:var(--text-dimmer);
+  transition:all .3s;
+}
+.faq-item.open .faq-icon{background:var(--accent-dim);border-color:var(--border);color:var(--accent);transform:rotate(45deg)}
+.faq-a{
+  max-height:0;overflow:hidden;
+  transition:max-height .35s ease,padding .35s ease;
+  font-size:14px;color:var(--text-dim);line-height:1.75;
+  padding:0 24px;
+}
+.faq-item.open .faq-a{max-height:300px;padding:0 24px 20px}
+
+/* ════ FOOTER ════ */
+footer{
+  border-top:1px solid var(--border-dim);
+  padding:64px 40px 40px;
+}
+.footer-inner{max-width:1300px;margin:0 auto}
+.footer-top{
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;
+  gap:48px;margin-bottom:56px;
+}
+.footer-brand .nav-logo{display:block;margin-bottom:12px}
+.footer-desc{font-size:13px;color:var(--text-dimmer);line-height:1.7;max-width:260px}
+.footer-col h4{
+  font-size:10px;font-weight:700;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--accent);
+  margin-bottom:16px;
+}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.footer-col a{
+  font-size:13px;color:var(--text-dimmer);text-decoration:none;
+  transition:color .2s;
+}
+.footer-col a:hover{color:var(--accent)}
+.footer-bottom{
+  border-top:1px solid var(--border-dim);
+  padding-top:28px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:12px;
+}
+.footer-copy{font-size:11px;color:var(--text-dimmer);letter-spacing:.08em}
+.footer-copy strong{color:var(--accent)}
+.footer-badges{display:flex;gap:8px}
+.foot-badge{
+  padding:4px 12px;
+  background:var(--card);border:1px solid var(--border-dim);
+  border-radius:100px;font-size:9px;font-weight:700;
+  letter-spacing:.15em;text-transform:uppercase;
+  color:var(--text-dimmer);
+}
+
+/* ════ RESPONSIVE ════ */
+@media(max-width:1100px){
+  .pages-grid{grid-template-columns:repeat(2,1fr)}
+  .about-grid{grid-template-columns:1fr;gap:48px}
+  .featured-grid{grid-template-columns:1fr 1fr}
+  .feat-card.large{grid-row:auto}
+  .footer-top{grid-template-columns:1fr 1fr}
+}
+@media(max-width:768px){
+  #nav{padding:0 20px}
+  .nav-links,.nav-search,.nav-live{display:none}
+  .nav-hamburger{display:flex}
+  section{padding:72px 20px}
+  .hero{padding:100px 20px 72px}
+  .hero-stats{flex-direction:column}
+  .hs-item{border-right:none;border-bottom:1px solid var(--border-dim)}
+  .pages-grid{grid-template-columns:1fr}
+  .featured-grid{grid-template-columns:1fr}
+  footer{padding:48px 20px 32px}
+  .footer-top{grid-template-columns:1fr}
+  .footer-bottom{flex-direction:column;align-items:flex-start}
+}
+@media(max-width:480px){
+  .hero h1{font-size:64px}
+  .hero-ctas{flex-direction:column;align-items:center}
+  .btn-primary,.btn-outline{width:100%;max-width:300px;justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<!-- ════ NAV ════ -->
+<nav id="nav">
+  <a class="nav-brand" href="index.html">
+    <span class="nav-logo">CHUNGRAM</span>
+    <span class="nav-divider"></span>
+    <span class="nav-tagline">AI 에이전트 기반<br>교육 컨설팅</span>
+  </a>
+
+  <div class="nav-links">
+    <a href="#" class="active">홈</a>
+    <a href="https://betweenworld.org" target="_blank" rel="noopener">블로그</a>
+    <a href="chungram-prompt-library.html">프롬프트</a>
+    <a href="#chatbot">챗봇 지침</a>
+    <a href="chungram-ai-tool-hub.html">AI 허브</a>
+    <a href="#ebooks">전자책</a>
+    <a href="#faq">FAQ</a>
+  </div>
+
+  <div class="nav-right">
+    <div class="nav-search">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <span>통합 검색</span>
+    </div>
+    <div class="nav-live">LIVE</div>
+  </div>
+
+  <!-- hamburger -->
+  <div class="nav-hamburger" id="hamburger" onclick="toggleMobile()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- mobile menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#">홈</a>
+  <a href="https://betweenworld.org" target="_blank">블로그</a>
+  <a href="chungram-prompt-library.html">프롬프트</a>
+  <a href="#chatbot">챗봇 지침</a>
+  <a href="chungram-ai-tool-hub.html">AI 허브</a>
+  <a href="#ebooks">전자책</a>
+  <a href="#faq">FAQ</a>
+</div>
+
+<!-- ════ HERO ════ -->
+<section class="hero" id="home">
+  <div class="hero-grid"></div>
+  <div class="hero-glow-1"></div>
+  <div class="hero-glow-2"></div>
+
+  <div class="hero-tag">청람M&C · 교육학 박사 · AI 에이전트 기반 교육 컨설팅</div>
+
+  <h1>
+    <span class="hl">AI</span>로<br>
+    <span class="hl2">LEAD</span><br>
+    하라
+  </h1>
+  <div class="hero-sub">CHUNGRAM AI LAB</div>
+
+  <p class="hero-desc">
+    22년 기업교육 전문가가 설계한 AI 활용 교육 플랫폼.<br>
+    리더십·조직문화·ESG·생성형AI 분야 검증된 콘텐츠를<br>
+    실전에서 바로 쓸 수 있는 형태로 제공합니다.
+  </p>
+
+  <div class="hero-ctas">
+    <a href="chungram-prompt-library.html" class="btn-primary">
+      ⚡ 프롬프트 라이브러리
+    </a>
+    <a href="chungram-ai-tool-hub.html" class="btn-outline">
+      🤖 AI Tool Hub →
+    </a>
+  </div>
+
+  <div class="hero-stats">
+    <div class="hs-item">
+      <div class="hs-num">22+</div>
+      <div class="hs-label">Years Experience</div>
+    </div>
+    <div class="hs-item">
+      <div class="hs-num">300+</div>
+      <div class="hs-label">기업·기관</div>
+    </div>
+    <div class="hs-item">
+      <div class="hs-num">13Y</div>
+      <div class="hs-label">KAIST 강의</div>
+    </div>
+    <div class="hs-item">
+      <div class="hs-num">PCC</div>
+      <div class="hs-label">코칭 자격</div>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-hint-line"></div>
+    <span>SCROLL</span>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════ PAGES (바로가기) ════ -->
+<section id="pages">
+  <div class="section-inner">
+    <div class="section-eyebrow">콘텐츠 허브</div>
+    <h2 class="section-title">필요한 것을<br><span class="hl">바로</span> 찾아라</h2>
+    <p class="section-desc">AI 활용 수업에서 바로 쓸 수 있는 검증된 콘텐츠를 카테고리별로 제공합니다.</p>
+
+    <div class="pages-grid">
+      <!-- 프롬프트 라이브러리 -->
+      <a class="page-card" href="chungram-prompt-library.html">
+        <span class="pc-badge">LIVE</span>
+        <div class="pc-icon">⚡</div>
+        <div class="pc-title">PROMPT LIBRARY</div>
+        <p class="pc-desc">업무·교육·ESG·리더십 분야 36개 검증된 실전 프롬프트. 복사 한 번으로 AI 활용 효율 10배.</p>
+        <div class="pc-footer">
+          <span class="pc-meta">36 PROMPTS · 7 CATEGORIES</span>
+          <span class="pc-arrow">→</span>
+        </div>
+      </a>
+
+      <!-- AI Tool Hub -->
+      <a class="page-card" href="chungram-ai-tool-hub.html">
+        <span class="pc-badge">LIVE</span>
+        <div class="pc-icon">🤖</div>
+        <div class="pc-title">AI TOOL HUB</div>
+        <p class="pc-desc">카테고리별 핵심 AI 도구 모음. Chat·Research·Design·Video·Dev 등 즉시 활용 가능.</p>
+        <div class="pc-footer">
+          <span class="pc-meta">40+ TOOLS · 12 CATEGORIES</span>
+          <span class="pc-arrow">→</span>
+        </div>
+      </a>
+
+      <!-- 블로그 -->
+      <a class="page-card" href="https://betweenworld.org" target="_blank" rel="noopener">
+        <span class="pc-badge">BTW</span>
+        <div class="pc-icon">✍️</div>
+        <div class="pc-title">BLOG · BTW</div>
+        <p class="pc-desc">Between World — 리더십·AI·ESG·조직문화를 주제로 한 청람의 사유와 인사이트. 직장인을 위한 AI 활용 콘텐츠.</p>
+        <div class="pc-footer">
+          <span class="pc-meta">BETWEENWORLD.ORG</span>
+          <span class="pc-arrow">↗</span>
+        </div>
+      </a>
+
+      <!-- 챗봇 지침 -->
+      <a class="page-card" href="#chatbot" id="chatbot">
+        <span class="pc-badge soon">SOON</span>
+        <div class="pc-icon">🤖</div>
+        <div class="pc-title">CHATBOT 지침</div>
+        <p class="pc-desc">GPT·Claude 등 주요 AI 챗봇 활용 지침 모음. 교육 현장에서 바로 활용 가능한 챗봇 운용 가이드.</p>
+        <div class="pc-footer">
+          <span class="pc-meta">준비 중</span>
+          <span class="pc-arrow">→</span>
+        </div>
+      </a>
+
+      <!-- 전자책 -->
+      <a class="page-card" href="#ebooks" id="ebooks">
+        <span class="pc-badge soon">SOON</span>
+        <div class="pc-icon">📖</div>
+        <div class="pc-title">전자책</div>
+        <p class="pc-desc">AI 활용·리더십·ESG 주제 전자책 시리즈. 강의 현장에서 검증된 내용을 압축한 실전형 가이드북.</p>
+        <div class="pc-footer">
+          <span class="pc-meta">출간 준비 중</span>
+          <span class="pc-arrow">→</span>
+        </div>
+      </a>
+
+      <!-- FAQ -->
+      <a class="page-card" href="#faq">
+        <div class="pc-icon">💬</div>
+        <div class="pc-title">FAQ</div>
+        <p class="pc-desc">강의 문의·AI 활용법·프롬프트 사용법 등 자주 묻는 질문과 답변 모음.</p>
+        <div class="pc-footer">
+          <span class="pc-meta">8 QUESTIONS</span>
+          <span class="pc-arrow">→</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════ ABOUT (Type B) ════ -->
+<section id="about">
+  <div class="section-inner">
+    <div class="about-grid">
+      <div class="about-left">
+        <div class="section-eyebrow">청람 소개</div>
+        <h2 class="section-title">22년<br><span class="hl">현장</span>에서<br>검증됨</h2>
+        <p class="section-desc" style="margin-bottom:0">기업교육 컨설턴트·KAIST 교수·ESG 전문가로서 축적한 실전 경험을 AI와 결합하여 새로운 교육 패러다임을 제시합니다.</p>
+
+        <div class="about-credentials">
+          <div class="cred-item">
+            <div class="cred-dot"></div>
+            <div class="cred-text"><strong>청람M&C 대표 · 한국지역개발경영교육원 원장</strong><br>AI 에이전트 기반 교육 컨설팅 전문기업</div>
+          </div>
+          <div class="cred-item">
+            <div class="cred-dot"></div>
+            <div class="cred-text"><strong>KAIST 리더십 수업 13년</strong> · Midwest University ESG경영전공 Research Fellow</div>
+          </div>
+          <div class="cred-item">
+            <div class="cred-dot"></div>
+            <div class="cred-text"><strong>자격:</strong> ISO17024(ESG) · PCC · FIRO-B · Harrison Assessment · 7Habits · FranklinCovey</div>
+          </div>
+          <div class="cred-item">
+            <div class="cred-dot"></div>
+            <div class="cred-text"><strong>경기도사회서비스원 ESG위원장</strong> · 중앙정부(외교부·행안부) 및 지자체 컨설팅</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-right">
+        <div class="metric-card">
+          <div class="metric-num">15+</div>
+          <div class="metric-label">MG새마을금고 장기 파트너십 (년)</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num">15+</div>
+          <div class="metric-label">하나투어 장기 파트너십 (년)</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num">300+</div>
+          <div class="metric-label">누적 고객사 — 기업·공공기관</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num">Ph.D</div>
+          <div class="metric-label">교육학 박사 · AI 교육 전문가</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ════ FEATURED PROGRAMS ════ -->
+<section id="featured">
+  <div class="section-inner">
+    <div class="section-eyebrow">전문 프로그램</div>
+    <h2 class="section-title"><span class="hl">핵심</span> 교육<br>프로그램</h2>
+    <p class="section-desc">현장에서 바로 적용 가능한 기업 맞춤형 교육 프로그램.</p>
+
+    <div class="featured-grid">
+      <div class="feat-card large">
+        <div class="feat-tag">FLAGSHIP</div>
+        <div class="feat-title">생성형 AI<br>실전 활용</div>
+        <p class="feat-desc">ChatGPT·Claude·Gemini 등 생성형 AI 도구를 업무에 즉시 적용하는 실습 중심 교육. 프롬프트 엔지니어링부터 AI 워크플로우 설계까지.</p>
+        <div class="feat-clients">
+          <span class="client-chip">공공기관</span>
+          <span class="client-chip">기업체</span>
+          <span class="client-chip">대학교</span>
+          <span class="client-chip">지자체</span>
+        </div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-tag">LEADERSHIP</div>
+        <div class="feat-title">AI 시대<br>리더십</div>
+        <p class="feat-desc">KAIST 검증 커리큘럼 기반. 7Habits 프레임워크와 AI 도구를 결합한 미래형 리더 육성.</p>
+        <div class="feat-num">13<span style="font-size:.5em">Y</span></div>
+        <div class="feat-num-label">KAIST 강의 경력</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-tag">ESG</div>
+        <div class="feat-title">ESG<br>경영 교육</div>
+        <p class="feat-desc">ISO17024 자격 기반 ESG 경영 교육. 실무 적용 가능한 지속가능경영 전략 수립.</p>
+        <div class="feat-num">ESG</div>
+        <div class="feat-num-label">위원장 · Research Fellow</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-tag">COACHING</div>
+        <div class="feat-title">조직문화<br>코칭</div>
+        <p class="feat-desc">PCC 전문 코치 자격 기반. FIRO-B·Harrison Assessment를 활용한 조직 진단 및 문화 혁신 프로그램.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-tag">STRESS</div>
+        <div class="feat-title">스트레스<br>리셋</div>
+        <p class="feat-desc">신경과학 기반 스트레스 관리 워크숍. 기아자동차 등 대기업 현장 검증 프로그램.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ CTA BAND ════ -->
+<div class="cta-band">
+  <h2>지금 바로<br>시작하라</h2>
+  <p>프롬프트 라이브러리와 AI Tool Hub는 무료로 제공됩니다.<br>강의 문의 및 커스텀 교육 설계는 아래를 통해 연락주세요.</p>
+  <a href="mailto:contact@chungram.kr" class="btn-dark">📧 교육 문의하기 →</a>
+</div>
+
+<!-- ════ FAQ ════ -->
+<section id="faq">
+  <div class="section-inner">
+    <div class="section-eyebrow">자주 묻는 질문</div>
+    <h2 class="section-title">FAQ</h2>
+    <p class="section-desc" style="margin-bottom:40px">강의 및 콘텐츠 활용에 관한 자주 묻는 질문입니다.</p>
+
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          프롬프트 라이브러리는 무료로 사용할 수 있나요?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">네, 모든 프롬프트는 무료로 제공됩니다. 복사 버튼을 눌러 즉시 ChatGPT·Claude 등 AI 도구에 붙여넣어 사용하실 수 있습니다. 교육 현장, 업무, 개인 학습 등 자유롭게 활용 가능합니다.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          AI Tool Hub에 도구를 추가할 수 있나요?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">네, AI Tool Hub 우측 상단의 '편집 모드' 버튼을 클릭하면 카테고리와 링크를 자유롭게 추가·삭제할 수 있습니다. 변경사항은 브라우저에 자동 저장됩니다.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          기업 교육 및 강의 문의는 어떻게 하나요?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">이메일(contact@chungram.kr) 또는 청람M&C 공식 채널을 통해 문의 주시면 됩니다. 교육 대상, 인원, 시간, 목적을 함께 알려주시면 맞춤형 커리큘럼을 설계해드립니다.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          KAIST 리더십 수업 내용을 일반인도 배울 수 있나요?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">기업 맞춤형 리더십 교육 프로그램으로 운영됩니다. KAIST에서 13년간 검증된 커리큘럼을 기반으로 7Habits 프레임워크와 AI 도구를 결합한 프로그램을 기업 단위로 신청하실 수 있습니다.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          블로그 BTW는 어떤 내용인가요?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">Between World(BTW)는 청람의 펜네임으로 운영하는 블로그입니다. 리더십·AI 활용·ESG·조직문화 주제의 인사이트를 직장인 관점에서 쉽게 풀어냅니다. betweenworld.org에서 확인하실 수 있습니다.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          전자책은 언제 출시되나요?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">AI 활용·리더십·ESG 주제의 전자책 시리즈를 준비 중입니다. 출시 일정은 블로그(betweenworld.org)와 본 사이트를 통해 공지될 예정입니다.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          챗봇 지침 콘텐츠는 어떤 내용인가요?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">GPT·Claude·Gemini 등 주요 AI 챗봇을 교육·업무 현장에서 효과적으로 활용하기 위한 운용 지침과 시스템 프롬프트 가이드를 제공할 예정입니다. 현재 준비 중이며 곧 공개됩니다.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          프롬프트·자료를 교육에 활용해도 되나요?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">비상업적 교육 목적의 활용은 자유롭게 허용합니다. 상업적 목적의 재배포나 강의 교재로의 대량 활용은 사전 협의가 필요합니다. 출처(청람M&C / CHUNGRAM)를 명기해주시면 감사하겠습니다.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ FOOTER ════ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="nav-logo">CHUNGRAM</span>
+        <p class="footer-desc">AI 에이전트 기반 교육 컨설팅 전문기업.<br>청람M&C · 한국지역개발경영교육원<br>교육학 박사 · KAIST 리더십 강의 13년</p>
+      </div>
+      <div class="footer-col">
+        <h4>콘텐츠</h4>
+        <ul>
+          <li><a href="chungram-prompt-library.html">프롬프트 라이브러리</a></li>
+          <li><a href="chungram-ai-tool-hub.html">AI Tool Hub</a></li>
+          <li><a href="#ebooks">전자책</a></li>
+          <li><a href="#chatbot">챗봇 지침</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>청람</h4>
+        <ul>
+          <li><a href="#about">소개</a></li>
+          <li><a href="#featured">프로그램</a></li>
+          <li><a href="https://betweenworld.org" target="_blank">블로그 BTW</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>전문 분야</h4>
+        <ul>
+          <li><a href="#">리더십 · 조직문화</a></li>
+          <li><a href="#">생성형 AI 활용</a></li>
+          <li><a href="#">ESG 경영</a></li>
+          <li><a href="#">코칭 · FIRO-B</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2025 <strong>CHUNGRAM</strong> · 청람M&C · 한국지역개발경영교육원 · All rights reserved.</p>
+      <div class="footer-badges">
+        <span class="foot-badge">PCC</span>
+        <span class="foot-badge">ESG</span>
+        <span class="foot-badge">Ph.D</span>
+        <span class="foot-badge">KAIST</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* NAV scroll effect */
+var nav=document.getElementById('nav');
+window.addEventListener('scroll',function(){
+  nav.classList.toggle('scrolled',window.scrollY>40);
+});
+
+/* Mobile menu */
+function toggleMobile(){
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('#hamburger')&&!e.target.closest('#mobileMenu')){
+    document.getElementById('mobileMenu').classList.remove('open');
+  }
+});
+
+/* Active nav link on scroll */
+var sections=['home','pages','about','featured','faq'];
+var navLinks=document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll',function(){
+  var pos=window.scrollY+100;
+  sections.forEach(function(id){
+    var el=document.getElementById(id);
+    if(!el)return;
+    if(pos>=el.offsetTop&&pos<el.offsetTop+el.offsetHeight){
+      navLinks.forEach(function(a){a.classList.remove('active')});
+      var match=document.querySelector('.nav-links a[href="#'+id+'"]');
+      if(match)match.classList.add('active');
+    }
+  });
+});
+
+/* FAQ toggle */
+function toggleFaq(btn){
+  var item=btn.parentElement;
+  var isOpen=item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(function(i){i.classList.remove('open')});
+  if(!isOpen)item.classList.add('open');
+}
+
+/* Intersection Observer — card animations */
+var observer=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){
+      e.target.style.opacity='1';
+      e.target.style.transform='translateY(0)';
+    }
+  });
+},{threshold:0.1});
+
+document.querySelectorAll('.page-card,.feat-card,.cred-item,.metric-card').forEach(function(el,i){
+  el.style.opacity='0';
+  el.style.transform='translateY(24px)';
+  el.style.transition='opacity .6s '+(i*0.07)+'s ease, transform .6s '+(i*0.07)+'s ease';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
