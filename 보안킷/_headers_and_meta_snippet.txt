@@ -1,0 +1,65 @@
+/*
+  # ============================================================
+  #  CHUNGRAM M&C AI Lab — Security Headers
+  #  파일명: _headers  (GitHub Pages + Cloudflare Pages 적용)
+  # ============================================================
+
+  # Clickjacking 방지
+  X-Frame-Options: DENY
+
+  # MIME 스니핑 방지
+  X-Content-Type-Options: nosniff
+
+  # XSS 필터
+  X-XSS-Protection: 1; mode=block
+
+  # HTTPS 강제 (1년)
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+
+  # Referrer 정보 최소화
+  Referrer-Policy: strict-origin-when-cross-origin
+
+  # 권한 정책 (카메라·마이크·위치 차단)
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+
+  # 콘텐츠 보안 정책 (XSS·인젝션 방어)
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; frame-ancestors 'none';
+*/
+
+
+<!-- ============================================================
+     아래 코드를 모든 HTML 파일의 <head> 안에 붙여넣으세요
+     ============================================================ -->
+
+<!-- ① Security.js (우클릭·복사·개발자도구 차단) -->
+<script src="security.js"></script>
+
+<!-- ② 검색엔진 색인은 허용, AI 학습 차단 -->
+<meta name="robots" content="index, follow">
+<meta name="googlebot" content="index, follow">
+
+<!-- ③ 저작권 메타 -->
+<meta name="author" content="청람M&C 정구영 대표">
+<meta name="copyright" content="© 2025 청람M&C AI Lab. All Rights Reserved.">
+
+<!-- ④ AI 크롤러 학습 거부 선언 -->
+<meta name="CCBot" content="noindex">
+<meta name="GPTBot" content="noindex">
+<meta name="anthropic-ai" content="noindex">
+<meta name="Google-Extended" content="noindex">
+
+<!-- ⑤ CSP (Content Security Policy) — iframe 삽입·XSS 방어 -->
+<meta http-equiv="Content-Security-Policy"
+  content="default-src 'self';
+           script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com;
+           style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+           font-src 'self' https://fonts.gstatic.com;
+           img-src 'self' data: https:;
+           frame-ancestors 'none';">
+
+<!-- ⑥ 캐시 제어 (개인정보 캐싱 방지) -->
+<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+
+<!-- ⑦ X-Frame-Options (JS 방어 보조) -->
+<meta http-equiv="X-Frame-Options" content="DENY">

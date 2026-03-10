@@ -1,549 +1,843 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
-<script src="security.js"></script>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CHUNGRAM — AI 프롬프트 라이브러리</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-<style>
-:root {
-  --bg: #000000;
-  --bg-1: #0a0a0a;
-  --bg-2: #111111;
-  --bg-card: #141414;
-  --bg-card2: #1a1a1a;
-  --text: #ffffff;
-  --text-dim: rgba(255,255,255,0.5);
-  --text-dimmer: rgba(255,255,255,0.3);
-  --accent: #D4FF5E;
-  --accent-dim: rgba(212,255,94,0.12);
-  --accent-dim2: rgba(212,255,94,0.06);
-  --glass: rgba(255,255,255,0.04);
-  --border: rgba(212,255,94,0.25);
-  --border-dim: rgba(255,255,255,0.07);
-  --radius: 20px;
-  --shadow: 0 8px 32px rgba(0,0,0,0.6);
-}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- ═══ 보안킷 (Security Kit) ═══ -->
+  <script src="보안킷/security.js"></script>
+  <meta name="robots" content="index, follow">
+  <meta name="googlebot" content="index, follow">
+  <meta name="author" content="청람M&C 정구영 대표">
+  <meta name="copyright" content="© 2025 청람M&C AI Lab. All Rights Reserved.">
+  <meta name="CCBot" content="noindex">
+  <meta name="GPTBot" content="noindex">
+  <meta name="anthropic-ai" content="noindex">
+  <meta name="Google-Extended" content="noindex">
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; frame-ancestors 'none';">
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <!-- ═══ /보안킷 ═══ -->
+  <title>CHUNGRAM — AI 프롬프트 라이브러리</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #000000;
+      --bg-1: #0a0a0a;
+      --bg-2: #111111;
+      --bg-card: #141414;
+      --bg-card2: #1a1a1a;
+      --text: #ffffff;
+      --text-dim: rgba(255, 255, 255, 0.5);
+      --text-dimmer: rgba(255, 255, 255, 0.3);
+      --accent: #D4FF5E;
+      --accent-dim: rgba(212, 255, 94, 0.12);
+      --accent-dim2: rgba(212, 255, 94, 0.06);
+      --glass: rgba(255, 255, 255, 0.04);
+      --border: rgba(212, 255, 94, 0.25);
+      --border-dim: rgba(255, 255, 255, 0.07);
+      --radius: 20px;
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+    }
 
-*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-html { scroll-behavior: smooth; }
+    html {
+      scroll-behavior: smooth;
+    }
 
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Noto Sans KR', sans-serif;
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-}
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Noto Sans KR', sans-serif;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
 
-/* ── GRAIN OVERLAY ── */
-body::after {
-  content:'';
-  position:fixed; inset:0;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
-  pointer-events:none;
-  z-index:9999;
-  opacity:0.6;
-}
+    /* ── GRAIN OVERLAY ── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.6;
+    }
 
-/* ── SCROLLBAR ── */
-::-webkit-scrollbar { width:4px; }
-::-webkit-scrollbar-track { background:#000; }
-::-webkit-scrollbar-thumb { background:var(--accent); border-radius:2px; }
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
 
-/* ══════════════════════════
+    ::-webkit-scrollbar-track {
+      background: #000;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--accent);
+      border-radius: 2px;
+    }
+
+    /* ══════════════════════════
    NAVIGATION
 ══════════════════════════ */
-nav {
-  position: sticky; top:0; z-index:500;
-  display:flex; align-items:center; justify-content:space-between;
-  padding: 0 40px;
-  height: 64px;
-  background: rgba(0,0,0,0.88);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-bottom: 1px solid var(--border-dim);
-}
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      height: 64px;
+      background: rgba(0, 0, 0, 0.92);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border-dim);
+    }
 
-.nav-brand {
-  display:flex; align-items:center; gap:10px;
-  text-decoration:none;
-}
-.nav-logo {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 26px;
-  letter-spacing: 0.18em;
-  color: var(--accent);
-}
-.nav-logo-sub {
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--text-dimmer);
-  border-left: 1px solid var(--border-dim);
-  padding-left: 10px;
-  line-height: 1.3;
-}
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
 
-.nav-right {
-  display:flex; align-items:center; gap:20px;
-}
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 26px;
+      letter-spacing: 0.18em;
+      color: var(--accent);
+    }
 
-.nav-badge {
-  background: var(--accent-dim);
-  border: 1px solid var(--border);
-  border-radius: 100px;
-  padding: 4px 14px;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--accent);
-  display:flex; align-items:center; gap:6px;
-}
-.nav-badge::before {
-  content:'';
-  width:5px; height:5px;
-  border-radius:50%;
-  background: var(--accent);
-  animation: blink 2s infinite;
-}
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .nav-logo-sub {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-dimmer);
+      border-left: 1px solid var(--border-dim);
+      padding-left: 10px;
+      line-height: 1.3;
+    }
 
-/* ══════════════════════════
+    .nav-center {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .nav-center a {
+      padding: 7px 13px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: all .2s;
+      white-space: nowrap;
+    }
+
+    .nav-center a:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .nav-center a.active {
+      color: var(--accent);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    /* 모바일 햄버거 */
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 6px;
+      background: none;
+      border: none;
+    }
+
+    .nav-toggle span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: all .3s;
+    }
+
+    .nav-mobile {
+      display: none;
+      position: fixed;
+      top: 64px;
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.97);
+      backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border-dim);
+      flex-direction: column;
+      gap: 4px;
+      padding: 16px 20px 20px;
+      z-index: 499;
+    }
+
+    .nav-mobile.open {
+      display: flex;
+    }
+
+    .nav-mobile a {
+      padding: 11px 16px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-dim);
+      text-decoration: none;
+      border: 1px solid transparent;
+      transition: all .2s;
+    }
+
+    .nav-mobile a:hover {
+      color: var(--accent);
+      border-color: var(--border);
+      background: var(--accent-dim);
+    }
+
+    @media(max-width:768px) {
+      .nav-center {
+        display: none;
+      }
+
+      .nav-toggle {
+        display: flex;
+      }
+    }
+
+    .nav-badge {
+      background: var(--accent-dim);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 4px 14px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-badge::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: blink 2s infinite;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: 0.3
+      }
+    }
+
+    /* ══════════════════════════
    HERO (Type A — Impact)
 ══════════════════════════ */
-.hero {
-  text-align: center;
-  padding: 80px 40px 56px;
-  position: relative;
-  overflow: hidden;
-}
+    .hero {
+      text-align: center;
+      padding: 80px 40px 56px;
+      position: relative;
+      overflow: hidden;
+    }
 
-.hero::before {
-  content:'';
-  position:absolute;
-  top: -200px; left:50%; transform:translateX(-50%);
-  width: 600px; height: 400px;
-  background: radial-gradient(ellipse, rgba(212,255,94,0.07) 0%, transparent 70%);
-  pointer-events:none;
-}
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 400px;
+      background: radial-gradient(ellipse, rgba(212, 255, 94, 0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
 
-.hero-tag {
-  display:inline-flex; align-items:center; gap:8px;
-  background: var(--accent-dim);
-  border: 1px solid var(--border);
-  border-radius: 100px;
-  padding: 5px 16px;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 28px;
-  animation: fadeUp 0.7s both;
-}
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent-dim);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 5px 16px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 28px;
+      animation: fadeUp 0.7s both;
+    }
 
-.hero h1 {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(52px, 7vw, 88px);
-  letter-spacing: 0.06em;
-  line-height: 0.95;
-  margin-bottom: 20px;
-  animation: fadeUp 0.7s 0.1s both;
-}
-.hero h1 .hl { color: var(--accent); }
+    .hero h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(52px, 7vw, 88px);
+      letter-spacing: 0.06em;
+      line-height: 0.95;
+      margin-bottom: 20px;
+      animation: fadeUp 0.7s 0.1s both;
+    }
 
-.hero-desc {
-  font-size: 15px;
-  font-weight: 300;
-  color: var(--text-dim);
-  line-height: 1.7;
-  max-width: 520px;
-  margin: 0 auto;
-  animation: fadeUp 0.7s 0.15s both;
-}
+    .hero h1 .hl {
+      color: var(--accent);
+    }
 
-/* ── STATS STRIP ── */
-.stats-strip {
-  display:flex; justify-content:center; gap:0;
-  margin: 48px auto 0;
-  max-width: 640px;
-  border: 1px solid var(--border-dim);
-  border-radius: var(--radius);
-  overflow: hidden;
-  animation: fadeUp 0.7s 0.2s both;
-}
-.stat-item {
-  flex:1;
-  padding: 20px 24px;
-  text-align:center;
-  border-right: 1px solid var(--border-dim);
-  background: var(--glass);
-}
-.stat-item:last-child { border-right:none; }
-.stat-num {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 36px;
-  color: var(--accent);
-  letter-spacing: 0.05em;
-  line-height: 1;
-}
-.stat-label {
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--text-dimmer);
-  margin-top: 4px;
-}
+    .hero-desc {
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--text-dim);
+      line-height: 1.7;
+      max-width: 520px;
+      margin: 0 auto;
+      animation: fadeUp 0.7s 0.15s both;
+    }
 
-@keyframes fadeUp {
-  from { opacity:0; transform:translateY(16px); }
-  to   { opacity:1; transform:translateY(0); }
-}
+    /* ── STATS STRIP ── */
+    .stats-strip {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      margin: 48px auto 0;
+      max-width: 640px;
+      border: 1px solid var(--border-dim);
+      border-radius: var(--radius);
+      overflow: hidden;
+      animation: fadeUp 0.7s 0.2s both;
+    }
 
-/* ══════════════════════════
+    .stat-item {
+      flex: 1;
+      padding: 20px 24px;
+      text-align: center;
+      border-right: 1px solid var(--border-dim);
+      background: var(--glass);
+    }
+
+    .stat-item:last-child {
+      border-right: none;
+    }
+
+    .stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 36px;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-dimmer);
+      margin-top: 4px;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ══════════════════════════
    FILTER / CATEGORY BAR
 ══════════════════════════ */
-.filter-wrap {
-  position: sticky;
-  top: 64px;
-  z-index: 400;
-  background: rgba(0,0,0,0.92);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border-dim);
-  padding: 0 40px;
-}
+    .filter-wrap {
+      position: sticky;
+      top: 64px;
+      /* nav 높이와 동일 */
+      z-index: 400;
+      background: rgba(0, 0, 0, 0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-dim);
+      padding: 0 40px;
+    }
 
-.filter-inner {
-  display:flex; align-items:center; justify-content:space-between;
-  gap: 16px;
-  padding: 14px 0;
-  flex-wrap: wrap;
-}
+    .filter-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 0;
+      flex-wrap: wrap;
+    }
 
-.cat-tabs {
-  display:flex; gap:6px; flex-wrap:wrap;
-}
+    .cat-tabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
 
-.cat-btn {
-  display:inline-flex; align-items:center; gap:6px;
-  padding: 7px 16px;
-  border-radius: 100px;
-  border: 1px solid var(--border-dim);
-  background: transparent;
-  color: var(--text-dimmer);
-  font-family: 'Noto Sans KR', sans-serif;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.03em;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-}
-.cat-btn:hover {
-  border-color: rgba(212,255,94,0.4);
-  color: var(--text);
-  background: var(--accent-dim2);
-}
-.cat-btn.active {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #000;
-  font-weight: 700;
-}
-.cat-btn .cat-icon { font-size: 13px; }
+    .cat-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 16px;
+      border-radius: 100px;
+      border: 1px solid var(--border-dim);
+      background: transparent;
+      color: var(--text-dimmer);
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
 
-.search-box {
-  display:flex; align-items:center; gap:8px;
-  background: var(--bg-card2);
-  border: 1px solid var(--border-dim);
-  border-radius: 100px;
-  padding: 7px 16px;
-  min-width: 200px;
-  transition: border-color 0.2s;
-}
-.search-box:focus-within {
-  border-color: rgba(212,255,94,0.5);
-}
-.search-box svg { flex-shrink:0; opacity:0.4; }
-.search-box input {
-  background: transparent;
-  border: none;
-  outline: none;
-  color: var(--text);
-  font-family: 'Noto Sans KR', sans-serif;
-  font-size: 12px;
-  width: 100%;
-}
-.search-box input::placeholder { color: var(--text-dimmer); }
+    .cat-btn:hover {
+      border-color: rgba(212, 255, 94, 0.4);
+      color: var(--text);
+      background: var(--accent-dim2);
+    }
 
-/* COUNT BADGE */
-.result-count {
-  font-size: 11px;
-  color: var(--text-dimmer);
-  letter-spacing: 0.05em;
-  white-space: nowrap;
-}
-.result-count strong { color: var(--accent); }
+    .cat-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #000;
+      font-weight: 700;
+    }
 
-/* ══════════════════════════
+    .cat-btn .cat-icon {
+      font-size: 13px;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-card2);
+      border: 1px solid var(--border-dim);
+      border-radius: 100px;
+      padding: 7px 16px;
+      min-width: 200px;
+      transition: border-color 0.2s;
+    }
+
+    .search-box:focus-within {
+      border-color: rgba(212, 255, 94, 0.5);
+    }
+
+    .search-box svg {
+      flex-shrink: 0;
+      opacity: 0.4;
+    }
+
+    .search-box input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 12px;
+      width: 100%;
+    }
+
+    .search-box input::placeholder {
+      color: var(--text-dimmer);
+    }
+
+    /* COUNT BADGE */
+    .result-count {
+      font-size: 11px;
+      color: var(--text-dimmer);
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+
+    .result-count strong {
+      color: var(--accent);
+    }
+
+    /* ══════════════════════════
    MAIN GRID
 ══════════════════════════ */
-.main-wrap {
-  max-width: 1360px;
-  margin: 0 auto;
-  padding: 40px 40px 80px;
-}
+    .main-wrap {
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 40px 40px 80px;
+    }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
 
-@media(max-width:1100px){ .grid{ grid-template-columns: repeat(2,1fr); } }
-@media(max-width:680px){ .grid{ grid-template-columns: 1fr; } }
+    @media(max-width:1100px) {
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
 
-/* ── PROMPT CARD (Type D — Structure) ── */
-.card {
-  background: var(--bg-card2);
-  border: 1px solid var(--border-dim);
-  border-radius: var(--radius);
-  padding: 24px;
-  display:flex; flex-direction:column;
-  gap: 14px;
-  transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
-  animation: cardIn 0.5s both;
-  position: relative;
-  overflow: hidden;
-}
-.card::before {
-  content:'';
-  position:absolute;
-  top:0; left:0; right:0;
-  height: 2px;
-  background: var(--accent);
-  opacity: 0;
-  transition: opacity 0.25s;
-}
-.card:hover {
-  border-color: rgba(212,255,94,0.35);
-  transform: translateY(-3px);
-  box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(212,255,94,0.1);
-}
-.card:hover::before { opacity: 1; }
+    @media(max-width:680px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
 
-@keyframes cardIn {
-  from { opacity:0; transform:translateY(20px); }
-  to   { opacity:1; transform:translateY(0); }
-}
+    /* ── PROMPT CARD (Type D — Structure) ── */
+    .card {
+      background: var(--bg-card2);
+      border: 1px solid var(--border-dim);
+      border-radius: var(--radius);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+      animation: cardIn 0.5s both;
+      position: relative;
+      overflow: hidden;
+    }
 
-.card-top {
-  display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
-}
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--accent);
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
 
-.card-meta {
-  display:flex; flex-direction:column; gap:6px;
-  flex:1;
-}
+    .card:hover {
+      border-color: rgba(212, 255, 94, 0.35);
+      transform: translateY(-3px);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(212, 255, 94, 0.1);
+    }
 
-.card-cat-badge {
-  display:inline-flex; align-items:center; gap:5px;
-  background: var(--accent-dim);
-  border: 1px solid rgba(212,255,94,0.2);
-  border-radius: 100px;
-  padding: 3px 10px;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--accent);
-  width: fit-content;
-}
+    .card:hover::before {
+      opacity: 1;
+    }
 
-.card-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--text);
-  line-height: 1.35;
-  letter-spacing: -0.01em;
-}
+    @keyframes cardIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
 
-.card-desc {
-  font-size: 12px;
-  color: var(--text-dimmer);
-  line-height: 1.65;
-}
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-/* PROMPT BOX */
-.prompt-box {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid var(--border-dim);
-  border-radius: 12px;
-  padding: 14px 16px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  color: rgba(255,255,255,0.65);
-  line-height: 1.7;
-  flex: 1;
-  position: relative;
-  white-space: pre-wrap;
-  word-break: break-all;
-}
-.prompt-box .var {
-  color: var(--accent);
-  font-weight: 600;
-}
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
 
-/* COPY BUTTON */
-.copy-btn {
-  width: 100%;
-  display:flex; align-items:center; justify-content:center; gap:8px;
-  padding: 11px 20px;
-  background: transparent;
-  border: 1px solid rgba(212,255,94,0.3);
-  border-radius: 100px;
-  color: var(--accent);
-  font-family: 'Noto Sans KR', sans-serif;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  margin-top: auto;
-}
-.copy-btn:hover {
-  background: var(--accent);
-  color: #000;
-  border-color: var(--accent);
-}
-.copy-btn.copied {
-  background: var(--accent);
-  color: #000;
-  border-color: var(--accent);
-}
-.copy-btn svg { flex-shrink:0; }
+    .card-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
 
-/* EMPTY STATE */
-.empty-state {
-  grid-column: 1/-1;
-  text-align: center;
-  padding: 80px 20px;
-  color: var(--text-dimmer);
-}
-.empty-state p { font-size:15px; margin-top:12px; }
+    .card-cat-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--accent-dim);
+      border: 1px solid rgba(212, 255, 94, 0.2);
+      border-radius: 100px;
+      padding: 3px 10px;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      width: fit-content;
+    }
 
-/* ══════════════════════════
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.35;
+      letter-spacing: -0.01em;
+    }
+
+    .card-desc {
+      font-size: 12px;
+      color: var(--text-dimmer);
+      line-height: 1.65;
+    }
+
+    /* PROMPT BOX */
+    .prompt-box {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-dim);
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.65);
+      line-height: 1.7;
+      flex: 1;
+      position: relative;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .prompt-box .var {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* COPY BUTTON */
+    .copy-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 11px 20px;
+      background: transparent;
+      border: 1px solid rgba(212, 255, 94, 0.3);
+      border-radius: 100px;
+      color: var(--accent);
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: auto;
+    }
+
+    .copy-btn:hover {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+    }
+
+    .copy-btn.copied {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+    }
+
+    .copy-btn svg {
+      flex-shrink: 0;
+    }
+
+    /* EMPTY STATE */
+    .empty-state {
+      grid-column: 1/-1;
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--text-dimmer);
+    }
+
+    .empty-state p {
+      font-size: 15px;
+      margin-top: 12px;
+    }
+
+    /* ══════════════════════════
    TOAST
 ══════════════════════════ */
-.toast {
-  position: fixed;
-  bottom: 32px; left: 50%; transform: translateX(-50%) translateY(80px);
-  background: var(--accent);
-  color: #000;
-  padding: 12px 28px;
-  border-radius: 100px;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  z-index: 9000;
-  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
-  opacity: 0;
-  white-space: nowrap;
-}
-.toast.show {
-  transform: translateX(-50%) translateY(0);
-  opacity: 1;
-}
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--accent);
+      color: #000;
+      padding: 12px 28px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      z-index: 9000;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s;
+      opacity: 0;
+      white-space: nowrap;
+    }
 
-/* ══════════════════════════
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* ══════════════════════════
    FOOTER
 ══════════════════════════ */
-footer {
-  border-top: 1px solid var(--border-dim);
-  padding: 32px 40px;
-  text-align:center;
-  font-size: 11px;
-  color: var(--text-dimmer);
-  letter-spacing: 0.1em;
-}
-footer strong { color: var(--accent); }
-</style>
+    footer {
+      border-top: 1px solid var(--border-dim);
+      padding: 32px 40px;
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-dimmer);
+      letter-spacing: 0.1em;
+    }
+
+    footer strong {
+      color: var(--accent);
+    }
+  </style>
 </head>
+
 <body>
-<script src="chungram-shared.js"></script>
-  
-<!-- ── HERO ── -->
-<section class="hero">
-  <div class="hero-tag">검증된 실전 프롬프트 컬렉션</div>
-  <h1>AI <span class="hl">프롬프트</span><br>라이브러리</h1>
-  <p class="hero-desc">복사 한 번으로 AI 활용 효율을 10배 높이세요.<br>업무·학습·창작·교육 현장에서 바로 쓰는 실전 프롬프트 모음입니다.</p>
-  <div class="stats-strip">
-    <div class="stat-item">
-      <div class="stat-num" id="totalCount">67</div>
-      <div class="stat-label">총 프롬프트</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num">7</div>
-      <div class="stat-label">카테고리</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-num">100%</div>
-      <div class="stat-label">무료 제공</div>
-    </div>
-  </div>
-</section>
 
-<!-- ── FILTER BAR ── -->
-<div class="filter-wrap">
-  <div class="filter-inner">
-    <div class="cat-tabs" id="catTabs">
-      <button class="cat-btn active" data-cat="all"><span class="cat-icon">⚡</span> 전체</button>
-      <button class="cat-btn" data-cat="업무생산성"><span class="cat-icon">💼</span> 업무·생산성</button>
-      <button class="cat-btn" data-cat="AI활용"><span class="cat-icon">🤖</span> AI 활용</button>
-      <button class="cat-btn" data-cat="콘텐츠제작"><span class="cat-icon">✍️</span> 콘텐츠 제작</button>
-      <button class="cat-btn" data-cat="리더십조직"><span class="cat-icon">🎯</span> 리더십·조직</button>
-      <button class="cat-btn" data-cat="교육학습"><span class="cat-icon">📚</span> 교육·학습</button>
-      <button class="cat-btn" data-cat="ESG경영"><span class="cat-icon">🌿</span> ESG·경영</button>
-      <button class="cat-btn" data-cat="일상창작"><span class="cat-icon">✨</span> 일상·창작</button>
+  <!-- ── NAV ── -->
+  <nav>
+    <a href="index.html" class="nav-brand">
+      <span class="nav-logo">CHUNGRAM</span>
+      <span class="nav-logo-sub">AI 프롬프트<br>라이브러리</span>
+    </a>
+
+    <div class="nav-center">
+      <a href="index.html">홈</a>
+      <a href="https://betweenworld.org" target="_blank" rel="noopener">블로그</a>
+      <a href="chungram-prompt-library.html" class="active">프롬프트</a>
+      <a href="index.html#ebooks">전자책</a>
+      <a href="index.html#faq">FAQ</a>
+      <a href="chungram-notice.html">공지사항</a>
+      <a href="chungram-ai-tool-hub.html">AI 허브</a>
     </div>
-    <div style="display:flex;align-items:center;gap:16px;flex-shrink:0;">
-      <div class="search-box">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        <input type="text" id="searchInput" placeholder="프롬프트 검색...">
+
+    <div class="nav-right">
+      <div class="nav-badge">LIVE</div>
+    </div>
+
+    <!-- 모바일 햄버거 -->
+    <button class="nav-toggle" id="navToggle" aria-label="메뉴 열기">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- 모바일 메뉴 -->
+  <div class="nav-mobile" id="navMobile">
+    <a href="index.html">🏠 홈</a>
+    <a href="https://betweenworld.org" target="_blank">✍️ 블로그 BTW</a>
+    <a href="chungram-prompt-library.html">⚡ 프롬프트 라이브러리</a>
+    <a href="index.html#ebooks">📖 전자책</a>
+    <a href="index.html#faq">💬 FAQ</a>
+    <a href="chungram-ai-tool-hub.html">🤖 AI 허브</a>
+  </div>
+
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <div class="hero-tag">검증된 실전 프롬프트 컬렉션</div>
+    <h1>AI <span class="hl">프롬프트</span><br>라이브러리</h1>
+    <p class="hero-desc">복사 한 번으로 AI 활용 효율을 10배 높이세요.<br>업무·학습·창작·교육 현장에서 바로 쓰는 실전 프롬프트 모음입니다.</p>
+    <div class="stats-strip">
+      <div class="stat-item">
+        <div class="stat-num" id="totalCount">67</div>
+        <div class="stat-label">총 프롬프트</div>
       </div>
-      <div class="result-count" id="resultCount"><strong>36</strong>개</div>
+      <div class="stat-item">
+        <div class="stat-num">7</div>
+        <div class="stat-label">카테고리</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">무료 제공</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FILTER BAR ── -->
+  <div class="filter-wrap">
+    <div class="filter-inner">
+      <div class="cat-tabs" id="catTabs">
+        <button class="cat-btn active" data-cat="all"><span class="cat-icon">⚡</span> 전체</button>
+        <button class="cat-btn" data-cat="업무생산성"><span class="cat-icon">💼</span> 업무·생산성</button>
+        <button class="cat-btn" data-cat="AI활용"><span class="cat-icon">🤖</span> AI 활용</button>
+        <button class="cat-btn" data-cat="콘텐츠제작"><span class="cat-icon">✍️</span> 콘텐츠 제작</button>
+        <button class="cat-btn" data-cat="리더십조직"><span class="cat-icon">🎯</span> 리더십·조직</button>
+        <button class="cat-btn" data-cat="교육학습"><span class="cat-icon">📚</span> 교육·학습</button>
+        <button class="cat-btn" data-cat="ESG경영"><span class="cat-icon">🌿</span> ESG·경영</button>
+        <button class="cat-btn" data-cat="일상창작"><span class="cat-icon">✨</span> 일상·창작</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;flex-shrink:0;">
+        <div class="search-box">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.35-4.35" />
+          </svg>
+          <input type="text" id="searchInput" placeholder="프롬프트 검색...">
+        </div>
+        <div class="result-count" id="resultCount"><strong>36</strong>개</div>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- ── GRID ── -->
-<div class="main-wrap">
-  <div class="grid" id="promptGrid"></div>
-</div>
+  <!-- ── GRID ── -->
+  <div class="main-wrap">
+    <div class="grid" id="promptGrid"></div>
+  </div>
 
-<!-- ── TOAST ── -->
-<div class="toast" id="toast">✓ 프롬프트가 복사되었습니다!</div>
+  <!-- ── TOAST ── -->
+  <div class="toast" id="toast">✓ 프롬프트가 복사되었습니다!</div>
 
-<!-- ── FOOTER ── -->
-<footer>
-  <strong>CHUNGRAM</strong> AI 프롬프트 라이브러리 &nbsp;|&nbsp; 청람M&amp;C · 한국지역개발경영교육원 &nbsp;|&nbsp; AI 교육 전문 &copy; 2025
-</footer>
+  <!-- ── FOOTER ── -->
+  <footer>
+    <strong>CHUNGRAM</strong> AI 프롬프트 라이브러리 &nbsp;|&nbsp; 청람M&amp;C · 한국지역개발경영교육원 &nbsp;|&nbsp; AI 교육 전문 &copy; 2025
+  </footer>
 
-<script>
-const PROMPTS = [
-  // ── 업무·생산성 ──
-  {
-    cat: "업무생산성",
-    title: "회의록 자동 요약·정리",
-    desc: "회의 내용을 붙여넣으면 핵심 결정사항·액션아이템·담당자를 구조화합니다.",
-    prompt: `다음 회의 내용을 아래 형식으로 정리해줘.
+  <script>
+    const PROMPTS = [
+      // ── 업무·생산성 ──
+      {
+        cat: "업무생산성",
+        title: "회의록 자동 요약·정리",
+        desc: "회의 내용을 붙여넣으면 핵심 결정사항·액션아이템·담당자를 구조화합니다.",
+        prompt: `다음 회의 내용을 아래 형식으로 정리해줘.
 
 [회의 내용]
 {여기에 회의 내용 붙여넣기}
@@ -554,12 +848,12 @@ const PROMPTS = [
 3. 핵심 결정 사항
 4. 액션 아이템 (담당자·기한 포함)
 5. 다음 회의 안건 (있을 경우)`
-  },
-  {
-    cat: "업무생산성",
-    title: "업무 보고서 초안 작성",
-    desc: "핵심 키워드만 입력하면 전문적인 업무 보고서 초안을 즉시 생성합니다.",
-    prompt: `다음 정보를 바탕으로 직장 상사에게 제출할 업무 보고서를 작성해줘.
+      },
+      {
+        cat: "업무생산성",
+        title: "업무 보고서 초안 작성",
+        desc: "핵심 키워드만 입력하면 전문적인 업무 보고서 초안을 즉시 생성합니다.",
+        prompt: `다음 정보를 바탕으로 직장 상사에게 제출할 업무 보고서를 작성해줘.
 
 - 보고 주제: {주제}
 - 현황 및 배경: {내용}
@@ -567,12 +861,12 @@ const PROMPTS = [
 - 향후 계획: {내용}
 
 형식: 제목 / 요약 / 본문(현황-분석-대안) / 결론 순으로 500자 이내로 작성해줘.`
-  },
-  {
-    cat: "업무생산성",
-    title: "이메일 전문적으로 다듬기",
-    desc: "내가 쓴 이메일 초안을 입력하면 더 명확하고 전문적인 문장으로 다듬어줍니다.",
-    prompt: `아래 이메일 초안을 더 전문적이고 명확하게 다듬어줘.
+      },
+      {
+        cat: "업무생산성",
+        title: "이메일 전문적으로 다듬기",
+        desc: "내가 쓴 이메일 초안을 입력하면 더 명확하고 전문적인 문장으로 다듬어줍니다.",
+        prompt: `아래 이메일 초안을 더 전문적이고 명확하게 다듬어줘.
 
 [원본 이메일]
 {여기에 이메일 초안 붙여넣기}
@@ -582,12 +876,12 @@ const PROMPTS = [
 - 핵심 메시지 맨 앞에 배치
 - 불필요한 중복 표현 제거
 - 수신자가 취해야 할 행동을 명확히 안내`
-  },
-  {
-    cat: "업무생산성",
-    title: "주간 업무 계획 수립",
-    desc: "이번 주 할 일 목록을 입력하면 우선순위가 정리된 주간 계획표를 만들어줍니다.",
-    prompt: `아래 할 일 목록을 바탕으로 이번 주 효율적인 업무 계획을 세워줘.
+      },
+      {
+        cat: "업무생산성",
+        title: "주간 업무 계획 수립",
+        desc: "이번 주 할 일 목록을 입력하면 우선순위가 정리된 주간 계획표를 만들어줍니다.",
+        prompt: `아래 할 일 목록을 바탕으로 이번 주 효율적인 업무 계획을 세워줘.
 
 [이번 주 할 일]
 {업무 목록 붙여넣기}
@@ -598,12 +892,12 @@ const PROMPTS = [
 - 긴급·덜 중요(위임 검토)
 - 덜 중요·비긴급(나중에)
 그리고 요일별 타임블록 계획표로 변환해줘.`
-  },
-  {
-    cat: "업무생산성",
-    title: "데이터 분석 인사이트 도출",
-    desc: "숫자 데이터나 표를 붙여넣으면 핵심 인사이트와 시사점을 도출해줍니다.",
-    prompt: `아래 데이터를 분석하고 핵심 인사이트를 도출해줘.
+      },
+      {
+        cat: "업무생산성",
+        title: "데이터 분석 인사이트 도출",
+        desc: "숫자 데이터나 표를 붙여넣으면 핵심 인사이트와 시사점을 도출해줍니다.",
+        prompt: `아래 데이터를 분석하고 핵심 인사이트를 도출해줘.
 
 [데이터]
 {데이터 또는 표 붙여넣기}
@@ -615,14 +909,14 @@ const PROMPTS = [
 4. 추천 액션 아이템
 
 가능하면 수치 근거를 포함해서 설명해줘.`
-  },
+      },
 
-  // ── 업무·생산성 추가 30개 ──
-  {
-    cat: "업무생산성",
-    title: "프로젝트 킥오프 문서 작성",
-    desc: "프로젝트명과 핵심 정보를 입력하면 이해관계자 공유용 킥오프 문서를 즉시 생성합니다.",
-    prompt: `다음 정보를 바탕으로 프로젝트 킥오프 문서를 작성해줘.
+      // ── 업무·생산성 추가 30개 ──
+      {
+        cat: "업무생산성",
+        title: "프로젝트 킥오프 문서 작성",
+        desc: "프로젝트명과 핵심 정보를 입력하면 이해관계자 공유용 킥오프 문서를 즉시 생성합니다.",
+        prompt: `다음 정보를 바탕으로 프로젝트 킥오프 문서를 작성해줘.
 
 [기본 정보]
 - 프로젝트명: {프로젝트 이름}
@@ -637,12 +931,12 @@ const PROMPTS = [
 3. 주요 마일스톤 및 일정
 4. 리스크 요소 & 대응 방안
 5. 첫 2주 액션 아이템 (담당자 포함)`
-  },
-  {
-    cat: "업무생산성",
-    title: "업무 인수인계서 자동 작성",
-    desc: "담당 업무 목록을 입력하면 후임자가 바로 이해할 수 있는 인수인계서를 만들어줍니다.",
-    prompt: `아래 정보를 바탕으로 체계적인 업무 인수인계서를 작성해줘.
+      },
+      {
+        cat: "업무생산성",
+        title: "업무 인수인계서 자동 작성",
+        desc: "담당 업무 목록을 입력하면 후임자가 바로 이해할 수 있는 인수인계서를 만들어줍니다.",
+        prompt: `아래 정보를 바탕으로 체계적인 업무 인수인계서를 작성해줘.
 
 [담당자 정보]
 - 인계자: {이름/직책}
@@ -661,12 +955,12 @@ const PROMPTS = [
 - 주의사항 및 자주 발생하는 문제
 - 협업 대상 (내부/외부)
 마지막에 '즉시 처리 필요 사항' 별도 정리`
-  },
-  {
-    cat: "업무생산성",
-    title: "경쟁사 비교 분석표 작성",
-    desc: "비교할 기업과 기준을 입력하면 전략적 시사점까지 포함된 비교 분석표를 생성합니다.",
-    prompt: `다음 조건으로 경쟁사 비교 분석을 해줘.
+      },
+      {
+        cat: "업무생산성",
+        title: "경쟁사 비교 분석표 작성",
+        desc: "비교할 기업과 기준을 입력하면 전략적 시사점까지 포함된 비교 분석표를 생성합니다.",
+        prompt: `다음 조건으로 경쟁사 비교 분석을 해줘.
 
 [분석 대상]
 - 우리 회사/서비스: {이름 및 핵심 특징}
@@ -683,12 +977,12 @@ const PROMPTS = [
 2. 각 경쟁사의 최대 강점 1가지 + 약점 1가지
 3. 우리의 차별화 기회 TOP 3
 4. 즉시 실행 가능한 전략 제언`
-  },
-  {
-    cat: "업무생산성",
-    title: "고객 불만 응대 이메일 작성",
-    desc: "불만 내용과 상황을 입력하면 고객 신뢰를 회복하는 전문적인 응대 이메일을 만들어줍니다.",
-    prompt: `다음 고객 불만 상황에 대한 전문적인 응대 이메일을 작성해줘.
+      },
+      {
+        cat: "업무생산성",
+        title: "고객 불만 응대 이메일 작성",
+        desc: "불만 내용과 상황을 입력하면 고객 신뢰를 회복하는 전문적인 응대 이메일을 만들어줍니다.",
+        prompt: `다음 고객 불만 상황에 대한 전문적인 응대 이메일을 작성해줘.
 
 [상황 정보]
 - 고객 불만 내용: {고객이 제기한 문제}
@@ -703,12 +997,12 @@ const PROMPTS = [
 3. 구체적인 해결 방안 및 처리 일정
 4. 재발 방지 약속
 5. 고객 관계 회복을 위한 마무리 문구`
-  },
-  {
-    cat: "업무생산성",
-    title: "SOP(표준 운영 절차) 문서화",
-    desc: "반복 업무의 흐름을 설명하면 누구나 따라할 수 있는 SOP 매뉴얼을 작성해줍니다.",
-    prompt: `아래 업무 프로세스를 기반으로 SOP(표준 운영 절차) 문서를 작성해줘.
+      },
+      {
+        cat: "업무생산성",
+        title: "SOP(표준 운영 절차) 문서화",
+        desc: "반복 업무의 흐름을 설명하면 누구나 따라할 수 있는 SOP 매뉴얼을 작성해줍니다.",
+        prompt: `아래 업무 프로세스를 기반으로 SOP(표준 운영 절차) 문서를 작성해줘.
 
 [업무 기본 정보]
 - 업무명: {예: 신규 고객 온보딩 처리}
@@ -726,12 +1020,12 @@ SOP 출력 구조:
 4. 예외 상황 처리 방법
 5. 품질 점검 체크리스트
 6. 개정 이력 칸`
-  },
-  {
-    cat: "업무생산성",
-    title: "면접 질문 & 평가 기준 설계",
-    desc: "채용 포지션과 역량 기준을 입력하면 구조화된 면접 질문과 평가 루브릭을 생성합니다.",
-    prompt: `다음 채용 포지션에 적합한 면접 질문과 평가 기준을 설계해줘.
+      },
+      {
+        cat: "업무생산성",
+        title: "면접 질문 & 평가 기준 설계",
+        desc: "채용 포지션과 역량 기준을 입력하면 구조화된 면접 질문과 평가 루브릭을 생성합니다.",
+        prompt: `다음 채용 포지션에 적합한 면접 질문과 평가 기준을 설계해줘.
 
 [채용 정보]
 - 포지션: {직무명}
@@ -746,12 +1040,12 @@ SOP 출력 구조:
 3. 지원자가 할 질문 예상 답변 가이드
 4. 5점 척도 평가 루브릭 (각 역량별)
 5. 면접관 유의사항`
-  },
-  {
-    cat: "업무생산성",
-    title: "의사결정 프레임워크 적용",
-    desc: "복잡한 선택 상황을 설명하면 다양한 프레임워크로 분석하고 최적 방향을 제시합니다.",
-    prompt: `다음 의사결정 상황을 체계적으로 분석하고 최적 방향을 추천해줘.
+      },
+      {
+        cat: "업무생산성",
+        title: "의사결정 프레임워크 적용",
+        desc: "복잡한 선택 상황을 설명하면 다양한 프레임워크로 분석하고 최적 방향을 제시합니다.",
+        prompt: `다음 의사결정 상황을 체계적으로 분석하고 최적 방향을 추천해줘.
 
 [상황 설명]
 - 결정해야 할 문제: {구체적으로 설명}
@@ -766,12 +1060,12 @@ SOP 출력 구조:
 □ 기회비용 분석
 
 위 방법 중 이 상황에 가장 적합한 2가지를 선택해서 적용하고, 최종 권고안과 그 근거를 명확히 제시해줘.`
-  },
-  {
-    cat: "업무생산성",
-    title: "비즈니스 제안서 핵심 구조 설계",
-    desc: "제안 주제와 대상을 입력하면 설득력 있는 제안서 뼈대와 각 섹션 작성 가이드를 만들어줍니다.",
-    prompt: `다음 조건으로 설득력 있는 비즈니스 제안서 구조를 설계해줘.
+      },
+      {
+        cat: "업무생산성",
+        title: "비즈니스 제안서 핵심 구조 설계",
+        desc: "제안 주제와 대상을 입력하면 설득력 있는 제안서 뼈대와 각 섹션 작성 가이드를 만들어줍니다.",
+        prompt: `다음 조건으로 설득력 있는 비즈니스 제안서 구조를 설계해줘.
 
 [제안 기본 정보]
 - 제안 주제/서비스명: {내용}
@@ -786,12 +1080,12 @@ SOP 출력 구조:
 2. 각 섹션의 핵심 메시지 1문장
 3. 설득력을 높이는 스토리라인 흐름
 4. 빠지기 쉬운 실수 & 보완 포인트`
-  },
-  {
-    cat: "업무생산성",
-    title: "고객 니즈 인터뷰 질문지 설계",
-    desc: "리서치 목적과 대상을 입력하면 깊은 인사이트를 끌어내는 인터뷰 질문지를 완성해줍니다.",
-    prompt: `다음 조건으로 고객 인터뷰 질문지를 설계해줘.
+      },
+      {
+        cat: "업무생산성",
+        title: "고객 니즈 인터뷰 질문지 설계",
+        desc: "리서치 목적과 대상을 입력하면 깊은 인사이트를 끌어내는 인터뷰 질문지를 완성해줍니다.",
+        prompt: `다음 조건으로 고객 인터뷰 질문지를 설계해줘.
 
 [인터뷰 기본 정보]
 - 리서치 목적: {예: 신제품 수요 검증 / 이탈 원인 파악 / UX 개선}
@@ -806,12 +1100,12 @@ SOP 출력 구조:
 4. 감정·동기 깊이 탐색 질문 2개
 5. 클로징 및 추가 인사이트 유도 질문 1개
 6. 인터뷰어 가이드 (주의사항, 침묵 처리법)`
-  },
-  {
-    cat: "업무생산성",
-    title: "업무 성과 자기평가서 작성",
-    desc: "기간과 주요 업무를 입력하면 강점과 기여도가 돋보이는 자기평가서를 생성합니다.",
-    prompt: `아래 정보를 바탕으로 임팩트 있는 업무 성과 자기평가서를 작성해줘.
+      },
+      {
+        cat: "업무생산성",
+        title: "업무 성과 자기평가서 작성",
+        desc: "기간과 주요 업무를 입력하면 강점과 기여도가 돋보이는 자기평가서를 생성합니다.",
+        prompt: `아래 정보를 바탕으로 임팩트 있는 업무 성과 자기평가서를 작성해줘.
 
 [기본 정보]
 - 평가 기간: {상반기 / 하반기 / 연간}
@@ -829,12 +1123,12 @@ SOP 출력 구조:
 - 수치가 없는 성과는 질적 영향으로 표현
 - 자기 개발 노력 1~2가지 포함
 - 다음 기간 목표 및 성장 방향으로 마무리`
-  },
-  {
-    cat: "업무생산성",
-    title: "팀 OKR 설계 워크시트",
-    desc: "팀의 방향과 역할을 입력하면 연결성 있는 OKR 세트를 설계해줍니다.",
-    prompt: `다음 정보를 기반으로 팀 OKR을 설계해줘.
+      },
+      {
+        cat: "업무생산성",
+        title: "팀 OKR 설계 워크시트",
+        desc: "팀의 방향과 역할을 입력하면 연결성 있는 OKR 세트를 설계해줍니다.",
+        prompt: `다음 정보를 기반으로 팀 OKR을 설계해줘.
 
 [팀 기본 정보]
 - 팀명/부서: {이름}
@@ -852,12 +1146,12 @@ SOP 출력 구조:
 3. KR별 현재 기준값(Baseline) 입력 칸
 4. OKR 달성을 방해할 리스크 요소
 5. 주간 체크인 질문 3가지`
-  },
-  {
-    cat: "업무생산성",
-    title: "회의 설계 & 진행 가이드",
-    desc: "회의 목적과 참석자를 입력하면 효율적인 회의 아젠다와 진행자 가이드를 완성해줍니다.",
-    prompt: `다음 회의를 효과적으로 설계하고 진행 가이드를 만들어줘.
+      },
+      {
+        cat: "업무생산성",
+        title: "회의 설계 & 진행 가이드",
+        desc: "회의 목적과 참석자를 입력하면 효율적인 회의 아젠다와 진행자 가이드를 완성해줍니다.",
+        prompt: `다음 회의를 효과적으로 설계하고 진행 가이드를 만들어줘.
 
 [회의 기본 정보]
 - 회의 유형: {브레인스토밍 / 의사결정 / 정보 공유 / 문제 해결 / 주간 정례}
@@ -875,12 +1169,12 @@ SOP 출력 구조:
 3. 참여를 높이는 오프닝 활동 제안
 4. 의사결정이 필요한 경우 투표/합의 방법
 5. 회의 종료 전 확인 체크리스트`
-  },
-  {
-    cat: "업무생산성",
-    title: "리스크 사전 점검 (Pre-mortem)",
-    desc: "계획이나 프로젝트를 입력하면 실패 시나리오를 역방향으로 분석해 리스크를 미리 차단합니다.",
-    prompt: `다음 계획에 대해 프리모텀(Pre-mortem) 분석을 수행해줘.
+      },
+      {
+        cat: "업무생산성",
+        title: "리스크 사전 점검 (Pre-mortem)",
+        desc: "계획이나 프로젝트를 입력하면 실패 시나리오를 역방향으로 분석해 리스크를 미리 차단합니다.",
+        prompt: `다음 계획에 대해 프리모텀(Pre-mortem) 분석을 수행해줘.
 
 [분석 대상]
 - 프로젝트/계획명: {내용}
@@ -894,12 +1188,12 @@ SOP 출력 구조:
 3. 우선 대응이 필요한 리스크 3가지
 4. 각 리스크별 예방 액션 + 비상 대응 플랜
 5. 성공 가능성을 높이기 위해 '지금 당장' 해야 할 것`
-  },
-  {
-    cat: "업무생산성",
-    title: "업무 위임 가이드 작성",
-    desc: "위임할 업무와 담당자 정보를 입력하면 명확한 위임 지시서와 피드백 기준을 만들어줍니다.",
-    prompt: `다음 업무를 효과적으로 위임하기 위한 위임 지시서를 작성해줘.
+      },
+      {
+        cat: "업무생산성",
+        title: "업무 위임 가이드 작성",
+        desc: "위임할 업무와 담당자 정보를 입력하면 명확한 위임 지시서와 피드백 기준을 만들어줍니다.",
+        prompt: `다음 업무를 효과적으로 위임하기 위한 위임 지시서를 작성해줘.
 
 [위임 기본 정보]
 - 위임자 (나): {직책}
@@ -916,12 +1210,12 @@ SOP 출력 구조:
 4. 진행 중 보고 시점 및 방법
 5. 성공 기준 (품질 평가 루브릭)
 6. 수임자가 피해야 할 함정 & 팁`
-  },
-  {
-    cat: "업무생산성",
-    title: "신규 사업 아이디어 타당성 검토",
-    desc: "아이디어를 입력하면 시장성·실행 가능성·수익성을 다각도로 검토해 실행 여부를 판단해줍니다.",
-    prompt: `다음 신규 사업 아이디어의 타당성을 검토해줘.
+      },
+      {
+        cat: "업무생산성",
+        title: "신규 사업 아이디어 타당성 검토",
+        desc: "아이디어를 입력하면 시장성·실행 가능성·수익성을 다각도로 검토해 실행 여부를 판단해줍니다.",
+        prompt: `다음 신규 사업 아이디어의 타당성을 검토해줘.
 
 [아이디어 개요]
 - 아이디어명: {서비스/제품명}
@@ -938,12 +1232,12 @@ SOP 출력 구조:
 4. 실행 가능성 (기술·인력·자원)
 5. 수익성 시뮬레이션 (단순화된 Unit Economics)
 6. Go / No-go / Pivot 권고안 및 이유`
-  },
-  {
-    cat: "업무생산성",
-    title: "직원 온보딩 플랜 설계",
-    desc: "신규 입사자 정보를 입력하면 30-60-90일 단계별 온보딩 계획을 완성해줍니다.",
-    prompt: `다음 신규 입사자를 위한 30-60-90일 온보딩 플랜을 설계해줘.
+      },
+      {
+        cat: "업무생산성",
+        title: "직원 온보딩 플랜 설계",
+        desc: "신규 입사자 정보를 입력하면 30-60-90일 단계별 온보딩 계획을 완성해줍니다.",
+        prompt: `다음 신규 입사자를 위한 30-60-90일 온보딩 플랜을 설계해줘.
 
 [기본 정보]
 - 입사자 이름/직책: {이름, 포지션}
@@ -962,12 +1256,12 @@ SOP 출력 구조:
 - 완료해야 할 구체적 액션
 - 만나야 할 사람 (내부/외부)
 - 성공 여부 판단 기준`
-  },
-  {
-    cat: "업무생산성",
-    title: "갈등 상황 중재 스크립트",
-    desc: "팀 내 갈등 상황을 설명하면 중립적이고 건설적인 대화 스크립트를 만들어줍니다.",
-    prompt: `다음 갈등 상황을 해결하기 위한 중재 대화 스크립트를 작성해줘.
+      },
+      {
+        cat: "업무생산성",
+        title: "갈등 상황 중재 스크립트",
+        desc: "팀 내 갈등 상황을 설명하면 중립적이고 건설적인 대화 스크립트를 만들어줍니다.",
+        prompt: `다음 갈등 상황을 해결하기 위한 중재 대화 스크립트를 작성해줘.
 
 [갈등 상황]
 - 갈등 당사자: {A의 역할 / B의 역할}
@@ -983,12 +1277,12 @@ SOP 출력 구조:
 4. 공통 이해관계를 찾는 리프레이밍 질문
 5. 합의안 도출을 위한 클로징 스크립트
 6. 후속 팔로업 방법`
-  },
-  {
-    cat: "업무생산성",
-    title: "예산 기획 및 비용 분석 보고서",
-    desc: "예산 항목과 목표를 입력하면 근거 있는 예산 기획안과 ROI 분석 프레임을 만들어줍니다.",
-    prompt: `다음 프로젝트/부서의 예산 기획안을 작성해줘.
+      },
+      {
+        cat: "업무생산성",
+        title: "예산 기획 및 비용 분석 보고서",
+        desc: "예산 항목과 목표를 입력하면 근거 있는 예산 기획안과 ROI 분석 프레임을 만들어줍니다.",
+        prompt: `다음 프로젝트/부서의 예산 기획안을 작성해줘.
 
 [예산 기본 정보]
 - 용도: {예: 마케팅 캠페인 / 시스템 도입 / 교육 프로그램}
@@ -1003,12 +1297,12 @@ SOP 출력 구조:
 3. 단순화된 ROI 계산 방식 제안
 4. 예산 초과 리스크 및 절감 대안
 5. 경영진 승인을 위한 핵심 메시지 3줄 요약`
-  },
-  {
-    cat: "업무생산성",
-    title: "고객 여정 지도(CJM) 초안 작성",
-    desc: "서비스와 타겟 고객을 설명하면 터치포인트별 감정 곡선과 개선 기회를 분석해줍니다.",
-    prompt: `다음 서비스에 대한 고객 여정 지도(Customer Journey Map) 초안을 작성해줘.
+      },
+      {
+        cat: "업무생산성",
+        title: "고객 여정 지도(CJM) 초안 작성",
+        desc: "서비스와 타겟 고객을 설명하면 터치포인트별 감정 곡선과 개선 기회를 분석해줍니다.",
+        prompt: `다음 서비스에 대한 고객 여정 지도(Customer Journey Map) 초안을 작성해줘.
 
 [서비스 기본 정보]
 - 서비스명: {이름}
@@ -1025,12 +1319,12 @@ SOP 출력 구조:
 - 주요 터치포인트
 - 현재 Pain Point
 - 개선 기회 아이디어`
-  },
-  {
-    cat: "업무생산성",
-    title: "업무 자동화 가능성 진단",
-    desc: "현재 업무 목록을 입력하면 자동화 우선순위와 적합한 도구를 분석해줍니다.",
-    prompt: `내 업무 중 자동화 가능한 것들을 진단하고 우선순위를 정해줘.
+      },
+      {
+        cat: "업무생산성",
+        title: "업무 자동화 가능성 진단",
+        desc: "현재 업무 목록을 입력하면 자동화 우선순위와 적합한 도구를 분석해줍니다.",
+        prompt: `내 업무 중 자동화 가능한 것들을 진단하고 우선순위를 정해줘.
 
 [현재 업무 목록]
 {아래에 반복적으로 하는 업무들을 나열해줘}
@@ -1044,12 +1338,12 @@ SOP 출력 구조:
 5. 자동화 구현 첫 단계
 
 마지막에: 이번 달 바로 시작할 수 있는 자동화 TOP 3 추천`
-  },
-  {
-    cat: "업무생산성",
-    title: "설득력 있는 내부 보고 자료 구성",
-    desc: "보고 주제와 의사결정자 정보를 입력하면 승인율을 높이는 보고 논리 구조를 설계해줍니다.",
-    prompt: `다음 상황에서 경영진(의사결정자)을 설득하는 보고 자료 구조를 설계해줘.
+      },
+      {
+        cat: "업무생산성",
+        title: "설득력 있는 내부 보고 자료 구성",
+        desc: "보고 주제와 의사결정자 정보를 입력하면 승인율을 높이는 보고 논리 구조를 설계해줍니다.",
+        prompt: `다음 상황에서 경영진(의사결정자)을 설득하는 보고 자료 구조를 설계해줘.
 
 [보고 상황]
 - 보고 주제: {무엇을 승인받거나 결정하고 싶은가}
@@ -1065,12 +1359,12 @@ SOP 출력 구조:
 3. 슬라이드/섹션별 제목과 핵심 내용 1줄
 4. 예상 반대 의견 & 대비 논거
 5. 클로징 & 명확한 Next Step 요청`
-  },
-  {
-    cat: "업무생산성",
-    title: "파트너십/제휴 제안 이메일",
-    desc: "제휴 목적과 상대 기업 정보를 입력하면 첫 연락부터 미팅 요청까지 이어지는 이메일을 작성합니다.",
-    prompt: `다음 조건으로 파트너십/제휴 제안 이메일을 작성해줘.
+      },
+      {
+        cat: "업무생산성",
+        title: "파트너십/제휴 제안 이메일",
+        desc: "제휴 목적과 상대 기업 정보를 입력하면 첫 연락부터 미팅 요청까지 이어지는 이메일을 작성합니다.",
+        prompt: `다음 조건으로 파트너십/제휴 제안 이메일을 작성해줘.
 
 [기본 정보]
 - 우리 기업/서비스: {이름 및 핵심 가치}
@@ -1086,12 +1380,12 @@ SOP 출력 구조:
 3. 제휴 아이디어와 상대방 이익 강조
 4. 구체적인 Next Step 제안 (30분 미팅 요청)
 5. 읽고 싶어지는 제목 3가지 제안`
-  },
-  {
-    cat: "업무생산성",
-    title: "피드백 요청 & 수신 메시지 작성",
-    desc: "피드백을 주거나 요청하는 상황별 메시지를 작성합니다. 심리적 안전감을 높이는 문구로 완성합니다.",
-    prompt: `다음 상황에 맞는 피드백 요청/전달 메시지를 작성해줘.
+      },
+      {
+        cat: "업무생산성",
+        title: "피드백 요청 & 수신 메시지 작성",
+        desc: "피드백을 주거나 요청하는 상황별 메시지를 작성합니다. 심리적 안전감을 높이는 문구로 완성합니다.",
+        prompt: `다음 상황에 맞는 피드백 요청/전달 메시지를 작성해줘.
 
 [상황 선택]
 □ A. 상사에게 나의 업무에 대한 피드백 요청
@@ -1110,12 +1404,12 @@ SOP 출력 구조:
 - 심리적 안전감을 주는 언어 선택
 - 명확한 요청 사항 포함
 - 상황 A/B/C/D 중 선택한 것에 맞게 작성`
-  },
-  {
-    cat: "업무생산성",
-    title: "업무 프로세스 병목 분석",
-    desc: "업무 흐름을 설명하면 병목 구간을 찾아내고 즉시 개선 가능한 방안을 제시합니다.",
-    prompt: `우리 팀/조직의 업무 프로세스에서 병목을 찾아 개선안을 도출해줘.
+      },
+      {
+        cat: "업무생산성",
+        title: "업무 프로세스 병목 분석",
+        desc: "업무 흐름을 설명하면 병목 구간을 찾아내고 즉시 개선 가능한 방안을 제시합니다.",
+        prompt: `우리 팀/조직의 업무 프로세스에서 병목을 찾아 개선안을 도출해줘.
 
 [프로세스 설명]
 {현재 업무 흐름을 단계별로 설명해줘}
@@ -1133,12 +1427,12 @@ SOP 출력 구조:
 3. 즉시 개선 가능한 Quick Win 3가지
 4. 중장기 프로세스 재설계 제안
 5. 개선 효과 측정 지표`
-  },
-  {
-    cat: "업무생산성",
-    title: "협상 준비 전략 시트",
-    desc: "협상 상황과 조건을 입력하면 BATNA 분석부터 양보 전략까지 협상 준비 자료를 완성해줍니다.",
-    prompt: `다음 협상 상황을 위한 협상 전략 시트를 작성해줘.
+      },
+      {
+        cat: "업무생산성",
+        title: "협상 준비 전략 시트",
+        desc: "협상 상황과 조건을 입력하면 BATNA 분석부터 양보 전략까지 협상 준비 자료를 완성해줍니다.",
+        prompt: `다음 협상 상황을 위한 협상 전략 시트를 작성해줘.
 
 [협상 기본 정보]
 - 협상 주제: {계약 조건 / 연봉 / 파트너십 조건 / 프로젝트 범위 등}
@@ -1155,12 +1449,12 @@ SOP 출력 구조:
 5. 오프닝 포지션 설정 전략
 6. 예상 반론 & 대응 스크립트
 7. 협상 성공/실패 기준`
-  },
-  {
-    cat: "업무생산성",
-    title: "기획서 목차 & 논리 구조 설계",
-    desc: "기획 주제와 목적을 입력하면 MECE 원칙에 맞는 논리적인 기획서 구조를 설계해줍니다.",
-    prompt: `다음 기획 주제로 논리적인 기획서 목차와 구조를 설계해줘.
+      },
+      {
+        cat: "업무생산성",
+        title: "기획서 목차 & 논리 구조 설계",
+        desc: "기획 주제와 목적을 입력하면 MECE 원칙에 맞는 논리적인 기획서 구조를 설계해줍니다.",
+        prompt: `다음 기획 주제로 논리적인 기획서 목차와 구조를 설계해줘.
 
 [기획 기본 정보]
 - 기획 주제: {예: 신규 사내 복지 프로그램 도입 / 디지털 전환 로드맵}
@@ -1175,12 +1469,12 @@ SOP 출력 구조:
 3. 논리 흐름 검증 (MECE / 피라미드 원칙 기준)
 4. 근거 자료가 필요한 항목 표시
 5. 기획서의 스토리라인 한 줄 요약`
-  },
-  {
-    cat: "업무생산성",
-    title: "SNS·뉴스레터 콘텐츠 캘린더 설계",
-    desc: "브랜드 정보와 채널을 입력하면 한 달치 콘텐츠 발행 계획을 자동으로 구성해줍니다.",
-    prompt: `다음 브랜드를 위한 한 달치 콘텐츠 캘린더를 설계해줘.
+      },
+      {
+        cat: "업무생산성",
+        title: "SNS·뉴스레터 콘텐츠 캘린더 설계",
+        desc: "브랜드 정보와 채널을 입력하면 한 달치 콘텐츠 발행 계획을 자동으로 구성해줍니다.",
+        prompt: `다음 브랜드를 위한 한 달치 콘텐츠 캘린더를 설계해줘.
 
 [브랜드 기본 정보]
 - 브랜드명/서비스: {이름}
@@ -1196,12 +1490,12 @@ SOP 출력 구조:
 3. 날짜별 콘텐츠 주제 + 포스팅 형식 + 핵심 메시지
 4. 각 게시물의 CTA(Call to Action) 제안
 5. 성과 측정 지표`
-  },
-  {
-    cat: "업무생산성",
-    title: "문제 원인 분석 (5 Whys + 피쉬본)",
-    desc: "발생한 문제를 입력하면 근본 원인을 체계적으로 파고드는 분석 결과를 만들어줍니다.",
-    prompt: `다음 문제에 대해 근본 원인 분석을 수행해줘.
+      },
+      {
+        cat: "업무생산성",
+        title: "문제 원인 분석 (5 Whys + 피쉬본)",
+        desc: "발생한 문제를 입력하면 근본 원인을 체계적으로 파고드는 분석 결과를 만들어줍니다.",
+        prompt: `다음 문제에 대해 근본 원인 분석을 수행해줘.
 
 [문제 상황]
 - 발생한 문제 (증상): {구체적으로 기술}
@@ -1220,12 +1514,12 @@ SOP 출력 구조:
 3. 근본 원인 TOP 3 확정
 4. 원인별 즉각 대응 vs 장기 개선 액션 구분
 5. 재발 방지 모니터링 지표`
-  },
-  {
-    cat: "업무생산성",
-    title: "팀 역할 분담 & RACI 매트릭스",
-    desc: "프로젝트와 팀원 정보를 입력하면 책임 소재가 명확한 RACI 매트릭스를 완성해줍니다.",
-    prompt: `다음 프로젝트의 역할 분담 및 RACI 매트릭스를 작성해줘.
+      },
+      {
+        cat: "업무생산성",
+        title: "팀 역할 분담 & RACI 매트릭스",
+        desc: "프로젝트와 팀원 정보를 입력하면 책임 소재가 명확한 RACI 매트릭스를 완성해줍니다.",
+        prompt: `다음 프로젝트의 역할 분담 및 RACI 매트릭스를 작성해줘.
 
 [프로젝트 기본 정보]
 - 프로젝트명: {이름}
@@ -1245,12 +1539,12 @@ I (Informed) = 결과 통보 대상
 3. 팀원별 업무 부하 균형 진단
 4. 자주 발생하는 RACI 오용 패턴 주의사항
 5. 킥오프 미팅에서 RACI 설명하는 스크립트`
-  },
-  {
-    cat: "업무생산성",
-    title: "변화 관리 커뮤니케이션 플랜",
-    desc: "조직 변화 상황을 입력하면 저항을 최소화하고 수용을 높이는 커뮤니케이션 전략을 설계합니다.",
-    prompt: `다음 조직 변화에 대한 변화 관리 커뮤니케이션 플랜을 수립해줘.
+      },
+      {
+        cat: "업무생산성",
+        title: "변화 관리 커뮤니케이션 플랜",
+        desc: "조직 변화 상황을 입력하면 저항을 최소화하고 수용을 높이는 커뮤니케이션 전략을 설계합니다.",
+        prompt: `다음 조직 변화에 대한 변화 관리 커뮤니케이션 플랜을 수립해줘.
 
 [변화 내용]
 - 변화의 종류: {구조 개편 / 시스템 도입 / 프로세스 변경 / 인사 변경 / 문화 혁신}
@@ -1266,12 +1560,12 @@ I (Informed) = 결과 통보 대상
 3. 단계별 커뮤니케이션 일정 (공지 → 교육 → 실행 → 피드백)
 4. 저항 시나리오별 대응 방법
 5. 변화 성공을 알리는 Quick Win 설계`
-  },
-  {
-    cat: "업무생산성",
-    title: "연간 사업 계획(Annual Plan) 초안",
-    desc: "올해 목표와 현황을 입력하면 실행 가능한 연간 사업 계획 초안을 구조화해줍니다.",
-    prompt: `다음 정보를 바탕으로 연간 사업 계획 초안을 작성해줘.
+      },
+      {
+        cat: "업무생산성",
+        title: "연간 사업 계획(Annual Plan) 초안",
+        desc: "올해 목표와 현황을 입력하면 실행 가능한 연간 사업 계획 초안을 구조화해줍니다.",
+        prompt: `다음 정보를 바탕으로 연간 사업 계획 초안을 작성해줘.
 
 [기본 현황]
 - 조직명/팀명: {이름}
@@ -1293,14 +1587,14 @@ I (Informed) = 결과 통보 대상
 4. 자원 계획 (인력/예산/파트너십)
 5. 리스크 관리 계획
 6. 성과 측정 대시보드 지표`
-  },
+      },
 
-  // ── AI 활용 ──
-  {
-    cat: "AI활용",
-    title: "ChatGPT에게 더 좋은 답 받는 법",
-    desc: "모호한 질문을 구체적인 고품질 프롬프트로 변환하는 방법을 실습합니다.",
-    prompt: `내가 쓴 아래 프롬프트를 개선해줘.
+      // ── AI 활용 ──
+      {
+        cat: "AI활용",
+        title: "ChatGPT에게 더 좋은 답 받는 법",
+        desc: "모호한 질문을 구체적인 고품질 프롬프트로 변환하는 방법을 실습합니다.",
+        prompt: `내가 쓴 아래 프롬프트를 개선해줘.
 
 [원본 프롬프트]
 {여기에 내 프롬프트 붙여넣기}
@@ -1311,12 +1605,12 @@ I (Informed) = 결과 통보 대상
 3. 출력 형식(Format) 지정
 4. 제약 조건(Constraint) 추가
 개선된 프롬프트를 작성하고 왜 좋아졌는지 설명해줘.`
-  },
-  {
-    cat: "AI활용",
-    title: "AI로 아이디어 브레인스토밍",
-    desc: "주제를 입력하면 다양한 관점에서 창의적 아이디어를 무한 생성합니다.",
-    prompt: `아래 주제로 창의적인 아이디어를 브레인스토밍해줘.
+      },
+      {
+        cat: "AI활용",
+        title: "AI로 아이디어 브레인스토밍",
+        desc: "주제를 입력하면 다양한 관점에서 창의적 아이디어를 무한 생성합니다.",
+        prompt: `아래 주제로 창의적인 아이디어를 브레인스토밍해줘.
 
 [주제/문제]
 {주제 입력}
@@ -1326,12 +1620,12 @@ I (Informed) = 결과 통보 대상
 - 파격적이고 창의적인 아이디어 5개
 - 각 아이디어에 한 줄 설명 포함
 - 아이디어 간 조합 가능성도 제안해줘`
-  },
-  {
-    cat: "AI활용",
-    title: "AI 페르소나 설계",
-    desc: "나만의 맞춤형 AI 어시스턴트 페르소나를 설계하는 시스템 프롬프트를 만듭니다.",
-    prompt: `나만을 위한 맞춤형 AI 어시스턴트 시스템 프롬프트를 만들어줘.
+      },
+      {
+        cat: "AI활용",
+        title: "AI 페르소나 설계",
+        desc: "나만의 맞춤형 AI 어시스턴트 페르소나를 설계하는 시스템 프롬프트를 만듭니다.",
+        prompt: `나만을 위한 맞춤형 AI 어시스턴트 시스템 프롬프트를 만들어줘.
 
 내 정보:
 - 직업/역할: {직업}
@@ -1340,12 +1634,12 @@ I (Informed) = 결과 통보 대상
 - 필요한 전문 분야: {분야}
 
 페르소나 이름, 역할 정의, 행동 원칙, 출력 형식 가이드를 포함한 시스템 프롬프트로 작성해줘.`
-  },
-  {
-    cat: "AI활용",
-    title: "Chain-of-Thought 프롬프트 설계",
-    desc: "복잡한 문제를 단계별로 논리적으로 해결하는 CoT 프롬프트를 만듭니다.",
-    prompt: `아래 복잡한 문제를 Chain-of-Thought 방식으로 단계별 분석해줘.
+      },
+      {
+        cat: "AI활용",
+        title: "Chain-of-Thought 프롬프트 설계",
+        desc: "복잡한 문제를 단계별로 논리적으로 해결하는 CoT 프롬프트를 만듭니다.",
+        prompt: `아래 복잡한 문제를 Chain-of-Thought 방식으로 단계별 분석해줘.
 
 [문제/상황]
 {문제 입력}
@@ -1357,12 +1651,12 @@ I (Informed) = 결과 통보 대상
 4단계: 논리적 검증 (각 가설 평가)
 5단계: 최적 결론 도출
 각 단계별로 생각 과정을 보여주면서 답해줘.`
-  },
-  {
-    cat: "AI활용",
-    title: "AI 활용 업무 자동화 설계",
-    desc: "반복 업무를 AI로 자동화하는 워크플로우를 설계해줍니다.",
-    prompt: `내 반복 업무를 AI로 자동화하는 방법을 설계해줘.
+      },
+      {
+        cat: "AI활용",
+        title: "AI 활용 업무 자동화 설계",
+        desc: "반복 업무를 AI로 자동화하는 워크플로우를 설계해줍니다.",
+        prompt: `내 반복 업무를 AI로 자동화하는 방법을 설계해줘.
 
 [현재 반복 업무]
 {업무 내용 설명}
@@ -1375,14 +1669,14 @@ I (Informed) = 결과 통보 대상
 2. 추천 AI 도구 및 사용법
 3. 단계별 자동화 프로세스 (플로우차트 형태)
 4. 예상 시간 절감 효과`
-  },
+      },
 
-  // ── 콘텐츠 제작 ──
-  {
-    cat: "콘텐츠제작",
-    title: "블로그 포스트 전체 구성",
-    desc: "키워드와 타깃 독자만 입력하면 SEO 최적화된 블로그 포스트 전체를 작성합니다.",
-    prompt: `아래 정보를 바탕으로 전문적인 블로그 포스트를 작성해줘.
+      // ── 콘텐츠 제작 ──
+      {
+        cat: "콘텐츠제작",
+        title: "블로그 포스트 전체 구성",
+        desc: "키워드와 타깃 독자만 입력하면 SEO 최적화된 블로그 포스트 전체를 작성합니다.",
+        prompt: `아래 정보를 바탕으로 전문적인 블로그 포스트를 작성해줘.
 
 - 주제/키워드: {키워드}
 - 타깃 독자: {독자층}
@@ -1390,12 +1684,12 @@ I (Informed) = 결과 통보 대상
 - 원하는 분량: {예: 800자}
 
 구성: 흥미로운 제목(5개 후보) + 도입부(훅) + 소제목별 본문 + 결론(행동 유도) 형식으로 작성해줘.`
-  },
-  {
-    cat: "콘텐츠제작",
-    title: "SNS 카드뉴스 기획",
-    desc: "하나의 주제로 인스타그램·링크드인 카드뉴스 10장 분량의 기획안을 생성합니다.",
-    prompt: `아래 주제로 SNS 카드뉴스 기획안을 만들어줘.
+      },
+      {
+        cat: "콘텐츠제작",
+        title: "SNS 카드뉴스 기획",
+        desc: "하나의 주제로 인스타그램·링크드인 카드뉴스 10장 분량의 기획안을 생성합니다.",
+        prompt: `아래 주제로 SNS 카드뉴스 기획안을 만들어줘.
 
 - 주제: {주제}
 - 플랫폼: {인스타그램/링크드인/Threads}
@@ -1407,12 +1701,12 @@ I (Informed) = 결과 통보 대상
 2. 본문 내용 (2-3줄)
 3. 이미지 방향 제안
 포함해서 기획해줘. 첫 장은 강력한 훅으로 시작해줘.`
-  },
-  {
-    cat: "콘텐츠제작",
-    title: "유튜브 스크립트 작성",
-    desc: "주제와 대상을 입력하면 시청자를 붙잡는 유튜브 영상 스크립트를 작성합니다.",
-    prompt: `아래 정보로 유튜브 영상 스크립트를 작성해줘.
+      },
+      {
+        cat: "콘텐츠제작",
+        title: "유튜브 스크립트 작성",
+        desc: "주제와 대상을 입력하면 시청자를 붙잡는 유튜브 영상 스크립트를 작성합니다.",
+        prompt: `아래 정보로 유튜브 영상 스크립트를 작성해줘.
 
 - 영상 주제: {주제}
 - 영상 길이: {예: 5분}
@@ -1423,12 +1717,12 @@ I (Informed) = 결과 통보 대상
 [오프닝 훅 - 15초]: 시청자가 멈추게 만드는 첫 문장
 [본론]: 소주제별 내용 (시간 표시 포함)
 [클로징 - 30초]: 핵심 요약 + CTA (구독·좋아요 유도)`
-  },
-  {
-    cat: "콘텐츠제작",
-    title: "강의 제목 & 소개글 작성",
-    desc: "강의 내용과 대상을 입력하면 수강생을 끌어당기는 제목과 소개글을 만듭니다.",
-    prompt: `아래 정보를 바탕으로 매력적인 강의 제목과 소개글을 작성해줘.
+      },
+      {
+        cat: "콘텐츠제작",
+        title: "강의 제목 & 소개글 작성",
+        desc: "강의 내용과 대상을 입력하면 수강생을 끌어당기는 제목과 소개글을 만듭니다.",
+        prompt: `아래 정보를 바탕으로 매력적인 강의 제목과 소개글을 작성해줘.
 
 - 강의 주제: {주제}
 - 강의 시간: {시간}
@@ -1437,12 +1731,12 @@ I (Informed) = 결과 통보 대상
 - 강사 이름/직책: {정보}
 
 제목 후보 5개 + 수강생이 등록하고 싶게 만드는 300자 이내 소개글을 작성해줘. 숫자와 구체적 성과를 포함해줘.`
-  },
-  {
-    cat: "콘텐츠제작",
-    title: "제안서 핵심 요약본 작성",
-    desc: "긴 제안서 내용을 경영진이 1분 안에 읽을 수 있는 Executive Summary로 압축합니다.",
-    prompt: `아래 제안서 내용을 경영진용 핵심 요약본으로 작성해줘.
+      },
+      {
+        cat: "콘텐츠제작",
+        title: "제안서 핵심 요약본 작성",
+        desc: "긴 제안서 내용을 경영진이 1분 안에 읽을 수 있는 Executive Summary로 압축합니다.",
+        prompt: `아래 제안서 내용을 경영진용 핵심 요약본으로 작성해줘.
 
 [제안서 내용]
 {제안서 전문 또는 주요 내용 붙여넣기}
@@ -1454,14 +1748,14 @@ I (Informed) = 결과 통보 대상
 4. 필요 예산/자원
 5. 의사결정 요청 사항
 1페이지, 500자 이내로 작성해줘.`
-  },
+      },
 
-  // ── 리더십·조직 ──
-  {
-    cat: "리더십조직",
-    title: "팀 동기부여 스피치 작성",
-    desc: "상황과 청중을 입력하면 팀원의 마음을 움직이는 리더 스피치를 작성합니다.",
-    prompt: `아래 상황에 맞는 팀 동기부여 스피치를 작성해줘.
+      // ── 리더십·조직 ──
+      {
+        cat: "리더십조직",
+        title: "팀 동기부여 스피치 작성",
+        desc: "상황과 청중을 입력하면 팀원의 마음을 움직이는 리더 스피치를 작성합니다.",
+        prompt: `아래 상황에 맞는 팀 동기부여 스피치를 작성해줘.
 
 - 상황: {예: 프로젝트 중간 슬럼프 / 성과 목표 달성 / 조직 변화}
 - 청중: {팀 구성 및 분위기}
@@ -1469,12 +1763,12 @@ I (Informed) = 결과 통보 대상
 - 스피치 시간: {예: 3분}
 
 구성: 공감(현재 어려움 인정) → 의미부여(왜 중요한가) → 비전(함께 가면 어디까지) → 행동 촉구 순으로 작성해줘.`
-  },
-  {
-    cat: "리더십조직",
-    title: "성과 피드백 대화 스크립트",
-    desc: "구성원의 성과 상황을 입력하면 건설적인 피드백 대화 스크립트를 제공합니다.",
-    prompt: `아래 상황에서 효과적인 성과 피드백 대화 스크립트를 작성해줘.
+      },
+      {
+        cat: "리더십조직",
+        title: "성과 피드백 대화 스크립트",
+        desc: "구성원의 성과 상황을 입력하면 건설적인 피드백 대화 스크립트를 제공합니다.",
+        prompt: `아래 상황에서 효과적인 성과 피드백 대화 스크립트를 작성해줘.
 
 - 구성원 역할: {직책/역할}
 - 성과 상황: {잘한 점 / 개선 필요 점}
@@ -1482,12 +1776,12 @@ I (Informed) = 결과 통보 대상
 - 관계 특성: {예: 신입 / 고참 / 소극적 성격}
 
 SBI 피드백 모델(상황-행동-영향)과 코칭 질문을 활용해서, 구성원이 스스로 답을 찾게 유도하는 대화 흐름으로 작성해줘.`
-  },
-  {
-    cat: "리더십조직",
-    title: "조직문화 진단 설문 문항",
-    desc: "조직의 특성을 입력하면 현장 적용 가능한 조직문화 진단 설문을 만들어줍니다.",
-    prompt: `아래 조직의 특성에 맞는 조직문화 진단 설문 문항을 만들어줘.
+      },
+      {
+        cat: "리더십조직",
+        title: "조직문화 진단 설문 문항",
+        desc: "조직의 특성을 입력하면 현장 적용 가능한 조직문화 진단 설문을 만들어줍니다.",
+        prompt: `아래 조직의 특성에 맞는 조직문화 진단 설문 문항을 만들어줘.
 
 - 조직 유형: {예: 제조기업 / 공공기관 / 스타트업}
 - 인원 규모: {명}
@@ -1495,12 +1789,12 @@ SBI 피드백 모델(상황-행동-영향)과 코칭 질문을 활용해서, 구
 - 문항 수: {개}
 
 리커트 5점 척도 문항과 주관식 문항을 혼합해서 만들고, 각 문항의 측정 의도도 설명해줘.`
-  },
-  {
-    cat: "리더십조직",
-    title: "갈등 상황 중재 대화법",
-    desc: "팀 내 갈등 상황을 입력하면 중재자로서 효과적인 대화 전략을 제안합니다.",
-    prompt: `아래 팀 갈등 상황을 효과적으로 중재하는 방법을 알려줘.
+      },
+      {
+        cat: "리더십조직",
+        title: "갈등 상황 중재 대화법",
+        desc: "팀 내 갈등 상황을 입력하면 중재자로서 효과적인 대화 전략을 제안합니다.",
+        prompt: `아래 팀 갈등 상황을 효과적으로 중재하는 방법을 알려줘.
 
 [갈등 상황]
 {갈등 상황 설명}
@@ -1514,26 +1808,26 @@ SBI 피드백 모델(상황-행동-영향)과 코칭 질문을 활용해서, 구
 3. 단계별 대화 스크립트
 4. 재발 방지 방안
 순서로 알려줘.`
-  },
-  {
-    cat: "리더십조직",
-    title: "신규 입사자 온보딩 플랜",
-    desc: "직무와 조직 특성을 입력하면 30-60-90일 온보딩 로드맵을 설계합니다.",
-    prompt: `아래 조건에 맞는 신규 입사자 온보딩 플랜을 만들어줘.
+      },
+      {
+        cat: "리더십조직",
+        title: "신규 입사자 온보딩 플랜",
+        desc: "직무와 조직 특성을 입력하면 30-60-90일 온보딩 로드맵을 설계합니다.",
+        prompt: `아래 조건에 맞는 신규 입사자 온보딩 플랜을 만들어줘.
 
 - 직무: {직무/역할}
 - 조직 특성: {팀 규모, 문화 등}
 - 핵심 습득 사항: {기술/지식/관계}
 
 30일(적응기) / 60일(성장기) / 90일(기여기) 로드맵으로 구성하고, 각 단계별 목표·주요 활동·성공 지표를 포함해줘.`
-  },
+      },
 
-  // ── 교육·학습 ──
-  {
-    cat: "교육학습",
-    title: "강의 설계 (ISD 기반)",
-    desc: "학습 목표와 대상을 입력하면 교수설계 원칙에 따른 강의 구성안을 만들어줍니다.",
-    prompt: `아래 정보를 바탕으로 교수설계(ISD) 원칙에 따른 강의 구성안을 만들어줘.
+      // ── 교육·학습 ──
+      {
+        cat: "교육학습",
+        title: "강의 설계 (ISD 기반)",
+        desc: "학습 목표와 대상을 입력하면 교수설계 원칙에 따른 강의 구성안을 만들어줍니다.",
+        prompt: `아래 정보를 바탕으로 교수설계(ISD) 원칙에 따른 강의 구성안을 만들어줘.
 
 - 강의 주제: {주제}
 - 학습자: {직급/경력/특성}
@@ -1546,12 +1840,12 @@ SBI 피드백 모델(상황-행동-영향)과 코칭 질문을 활용해서, 구
 3. 모듈별 내용·활동·시간 배분
 4. 평가 방법
 5. 강사 유의사항`
-  },
-  {
-    cat: "교육학습",
-    title: "복잡한 개념 쉽게 설명하기",
-    desc: "어려운 개념을 입력하면 비유와 사례를 활용해 누구나 이해하는 설명을 생성합니다.",
-    prompt: `아래 개념을 {대상}도 이해할 수 있게 쉽게 설명해줘.
+      },
+      {
+        cat: "교육학습",
+        title: "복잡한 개념 쉽게 설명하기",
+        desc: "어려운 개념을 입력하면 비유와 사례를 활용해 누구나 이해하는 설명을 생성합니다.",
+        prompt: `아래 개념을 {대상}도 이해할 수 있게 쉽게 설명해줘.
 
 [설명할 개념]
 {개념 입력}
@@ -1562,12 +1856,12 @@ SBI 피드백 모델(상황-행동-영향)과 코칭 질문을 활용해서, 구
 3. 3단계 설명 (입문→중급→심화)
 4. 자주 하는 오해 바로잡기
 5. 실생활 적용 예시 3가지`
-  },
-  {
-    cat: "교육학습",
-    title: "학습 내용 퀴즈 자동 생성",
-    desc: "텍스트나 강의 내용을 붙여넣으면 다양한 형태의 이해도 확인 퀴즈를 만들어줍니다.",
-    prompt: `아래 내용을 바탕으로 학습 이해도 확인 퀴즈를 만들어줘.
+      },
+      {
+        cat: "교육학습",
+        title: "학습 내용 퀴즈 자동 생성",
+        desc: "텍스트나 강의 내용을 붙여넣으면 다양한 형태의 이해도 확인 퀴즈를 만들어줍니다.",
+        prompt: `아래 내용을 바탕으로 학습 이해도 확인 퀴즈를 만들어줘.
 
 [학습 내용]
 {텍스트 또는 강의 내용 붙여넣기}
@@ -1578,12 +1872,12 @@ SBI 피드백 모델(상황-행동-영향)과 코칭 질문을 활용해서, 구
 - 단답형 2문항
 - 응용·사례 연결 문항 2문항
 난이도: 기본 60% / 응용 30% / 심화 10%`
-  },
-  {
-    cat: "교육학습",
-    title: "독서 요약 & 적용 계획",
-    desc: "책 제목과 내용을 입력하면 핵심 인사이트 요약과 실천 적용 계획을 만들어줍니다.",
-    prompt: `아래 책의 핵심 내용을 요약하고 내 상황에 적용할 계획을 만들어줘.
+      },
+      {
+        cat: "교육학습",
+        title: "독서 요약 & 적용 계획",
+        desc: "책 제목과 내용을 입력하면 핵심 인사이트 요약과 실천 적용 계획을 만들어줍니다.",
+        prompt: `아래 책의 핵심 내용을 요약하고 내 상황에 적용할 계획을 만들어줘.
 
 - 책 제목/저자: {책 정보}
 - 내 직업/역할: {직업}
@@ -1595,12 +1889,12 @@ SBI 피드백 모델(상황-행동-영향)과 코칭 질문을 활용해서, 구
 2. 나의 상황에 적용 가능한 인사이트
 3. 당장 이번 주부터 실천할 행동 3가지
 4. 1개월 후 확인할 변화 지표`
-  },
-  {
-    cat: "교육학습",
-    title: "교육 워크숍 진행 가이드",
-    desc: "워크숍 주제와 참가자 정보를 입력하면 퍼실리테이션 가이드를 생성합니다.",
-    prompt: `아래 조건에 맞는 교육 워크숍 퍼실리테이션 가이드를 만들어줘.
+      },
+      {
+        cat: "교육학습",
+        title: "교육 워크숍 진행 가이드",
+        desc: "워크숍 주제와 참가자 정보를 입력하면 퍼실리테이션 가이드를 생성합니다.",
+        prompt: `아래 조건에 맞는 교육 워크숍 퍼실리테이션 가이드를 만들어줘.
 
 - 워크숍 주제: {주제}
 - 참가 인원: {명}
@@ -1609,14 +1903,14 @@ SBI 피드백 모델(상황-행동-영향)과 코칭 질문을 활용해서, 구
 - 원하는 결과물: {아웃풋}
 
 포함 사항: 아이스브레이킹 방법 / 주요 토의 질문 / 그룹 활동 설계 / 발표 및 공유 방법 / 마무리 성찰 활동`
-  },
+      },
 
-  // ── ESG·경영 ──
-  {
-    cat: "ESG경영",
-    title: "ESG 현황 분석 보고서",
-    desc: "기업 정보를 입력하면 E·S·G 영역별 현황을 분석한 초안 보고서를 작성합니다.",
-    prompt: `아래 기업 정보를 바탕으로 ESG 현황 분석 보고서를 작성해줘.
+      // ── ESG·경영 ──
+      {
+        cat: "ESG경영",
+        title: "ESG 현황 분석 보고서",
+        desc: "기업 정보를 입력하면 E·S·G 영역별 현황을 분석한 초안 보고서를 작성합니다.",
+        prompt: `아래 기업 정보를 바탕으로 ESG 현황 분석 보고서를 작성해줘.
 
 - 기업명/업종: {정보}
 - 임직원 규모: {명}
@@ -1628,12 +1922,12 @@ E(환경): 탄소·에너지·폐기물 현황 및 개선 방향
 S(사회): 구성원·지역사회·공급망 관련 이슈
 G(지배구조): 이사회·투명성·윤리경영 현황
 → 각 영역별 현황 / 리스크 / 기회 / 권고사항`
-  },
-  {
-    cat: "ESG경영",
-    title: "지속가능경영 보고서 문구 작성",
-    desc: "활동 내용을 입력하면 국내외 공시 기준에 맞는 지속가능경영 보고서 문구를 생성합니다.",
-    prompt: `아래 활동 내용을 바탕으로 지속가능경영 보고서 문구를 작성해줘.
+      },
+      {
+        cat: "ESG경영",
+        title: "지속가능경영 보고서 문구 작성",
+        desc: "활동 내용을 입력하면 국내외 공시 기준에 맞는 지속가능경영 보고서 문구를 생성합니다.",
+        prompt: `아래 활동 내용을 바탕으로 지속가능경영 보고서 문구를 작성해줘.
 
 - 활동 분야: {환경/사회/지배구조 중 선택}
 - 활동 내용: {구체적인 활동 설명}
@@ -1641,12 +1935,12 @@ G(지배구조): 이사회·투명성·윤리경영 현황
 - 보고 기준: {GRI / SASB / K-ESG}
 
 GRI 기준에 맞게 정량 데이터와 정성 서술을 균형 있게 조합하고, 영문 버전도 함께 작성해줘.`
-  },
-  {
-    cat: "ESG경영",
-    title: "사회적 가치 측정 지표 설계",
-    desc: "사업 목적과 수혜 대상을 입력하면 SROI 기반 사회적 가치 지표를 설계합니다.",
-    prompt: `아래 사업의 사회적 가치를 측정하는 지표를 설계해줘.
+      },
+      {
+        cat: "ESG경영",
+        title: "사회적 가치 측정 지표 설계",
+        desc: "사업 목적과 수혜 대상을 입력하면 SROI 기반 사회적 가치 지표를 설계합니다.",
+        prompt: `아래 사업의 사회적 가치를 측정하는 지표를 설계해줘.
 
 - 사업명: {사업명}
 - 사업 목적: {목적}
@@ -1659,12 +1953,12 @@ SROI(사회투자수익률) 접근법 기반으로:
 3. 결과 지표 (Outcome)
 4. 임팩트 지표 (Impact)
 각 영역별 측정 방법과 데이터 수집 방법도 포함해줘.`
-  },
-  {
-    cat: "ESG경영",
-    title: "경영 전략 SWOT 분석",
-    desc: "사업 현황을 입력하면 SWOT 분석과 SO/ST/WO/WT 전략을 도출해줍니다.",
-    prompt: `아래 정보를 바탕으로 경영 전략 SWOT 분석을 수행해줘.
+      },
+      {
+        cat: "ESG경영",
+        title: "경영 전략 SWOT 분석",
+        desc: "사업 현황을 입력하면 SWOT 분석과 SO/ST/WO/WT 전략을 도출해줍니다.",
+        prompt: `아래 정보를 바탕으로 경영 전략 SWOT 분석을 수행해줘.
 
 - 조직/사업명: {이름}
 - 주요 사업: {내용}
@@ -1677,12 +1971,12 @@ SWOT 매트릭스 작성 후:
 - WO전략 (약점×기회 보완)
 - WT전략 (약점×위협 회피)
 각 전략별 구체적 실행 방안 2~3개씩 제안해줘.`
-  },
-  {
-    cat: "ESG경영",
-    title: "정부지원사업 신청서 작성",
-    desc: "사업 내용과 요구 항목을 입력하면 선정 가능성 높은 지원사업 신청서를 작성합니다.",
-    prompt: `아래 정보를 바탕으로 정부지원사업 신청서를 작성해줘.
+      },
+      {
+        cat: "ESG경영",
+        title: "정부지원사업 신청서 작성",
+        desc: "사업 내용과 요구 항목을 입력하면 선정 가능성 높은 지원사업 신청서를 작성합니다.",
+        prompt: `아래 정보를 바탕으로 정부지원사업 신청서를 작성해줘.
 
 - 사업명: {지원사업명}
 - 신청 기관: {기관명}
@@ -1696,14 +1990,14 @@ SWOT 매트릭스 작성 후:
 3. 기대 성과 (정량·정성 지표)
 4. 지속가능성 (지원 종료 후 운영 방안)
 공무원 심사자가 선정하고 싶어지는 논리 구조로 작성해줘.`
-  },
+      },
 
-  // ── 일상·창작 ──
-  {
-    cat: "일상창작",
-    title: "자기소개서 핵심 스토리 발굴",
-    desc: "나의 경험과 강점을 입력하면 면접관의 기억에 남는 자기소개서 스토리를 만들어줍니다.",
-    prompt: `아래 정보로 인상 깊은 자기소개서 스토리를 만들어줘.
+      // ── 일상·창작 ──
+      {
+        cat: "일상창작",
+        title: "자기소개서 핵심 스토리 발굴",
+        desc: "나의 경험과 강점을 입력하면 면접관의 기억에 남는 자기소개서 스토리를 만들어줍니다.",
+        prompt: `아래 정보로 인상 깊은 자기소개서 스토리를 만들어줘.
 
 - 지원 직무: {직무}
 - 내 강점: {강점 3가지}
@@ -1711,12 +2005,12 @@ SWOT 매트릭스 작성 후:
 - 지원 이유: {이유}
 
 STAR 구조(상황-과제-행동-결과)로 핵심 에피소드를 구성하고, 숫자와 구체적 성과를 포함한 500자 이내 자기소개서로 작성해줘. 진부한 표현은 모두 제거해줘.`
-  },
-  {
-    cat: "일상창작",
-    title: "여행 일정 AI 플래닝",
-    desc: "목적지, 기간, 취향을 입력하면 최적화된 여행 일정과 꿀팁을 제공합니다.",
-    prompt: `아래 조건에 맞는 여행 일정을 만들어줘.
+      },
+      {
+        cat: "일상창작",
+        title: "여행 일정 AI 플래닝",
+        desc: "목적지, 기간, 취향을 입력하면 최적화된 여행 일정과 꿀팁을 제공합니다.",
+        prompt: `아래 조건에 맞는 여행 일정을 만들어줘.
 
 - 목적지: {나라/도시}
 - 여행 기간: {일수}
@@ -1725,12 +2019,12 @@ STAR 구조(상황-과제-행동-결과)로 핵심 에피소드를 구성하고,
 - 예산 수준: {예: 알뜰 / 보통 / 여유롭게}
 
 일자별 오전·오후·저녁 코스 + 교통 팁 + 현지 주의사항 + 꼭 먹어야 할 음식 리스트도 포함해줘.`
-  },
-  {
-    cat: "일상창작",
-    title: "창의적 글쓰기 시작하기",
-    desc: "장르와 키워드를 입력하면 흥미로운 첫 단락과 이야기 방향을 제안합니다.",
-    prompt: `아래 조건으로 창의적인 글쓰기를 시작해줘.
+      },
+      {
+        cat: "일상창작",
+        title: "창의적 글쓰기 시작하기",
+        desc: "장르와 키워드를 입력하면 흥미로운 첫 단락과 이야기 방향을 제안합니다.",
+        prompt: `아래 조건으로 창의적인 글쓰기를 시작해줘.
 
 - 장르: {예: 단편소설 / 에세이 / 시나리오}
 - 핵심 키워드: {단어 3개}
@@ -1738,12 +2032,12 @@ STAR 구조(상황-과제-행동-결과)로 핵심 에피소드를 구성하고,
 - 주인공: {특징 간단히}
 
 흥미로운 첫 단락 (200자) 작성 후, 3가지 다른 방향으로 이야기를 전개할 수 있는 플롯 개요도 제안해줘.`
-  },
-  {
-    cat: "일상창작",
-    title: "감사 메시지 & 손편지 작성",
-    desc: "받는 사람과 감사한 내용을 입력하면 마음이 전달되는 진심 어린 메시지를 작성합니다.",
-    prompt: `아래 상황에 맞는 감사 메시지를 작성해줘.
+      },
+      {
+        cat: "일상창작",
+        title: "감사 메시지 & 손편지 작성",
+        desc: "받는 사람과 감사한 내용을 입력하면 마음이 전달되는 진심 어린 메시지를 작성합니다.",
+        prompt: `아래 상황에 맞는 감사 메시지를 작성해줘.
 
 - 받는 사람: {관계/이름}
 - 감사한 이유: {구체적 이유}
@@ -1751,12 +2045,12 @@ STAR 구조(상황-과제-행동-결과)로 핵심 에피소드를 구성하고,
 - 톤앤매너: {따뜻하고 진지 / 유머 있게 / 격식 있게}
 
 진부하지 않고 받는 사람이 실제로 감동받을 수 있는 구체적인 표현을 사용해서 작성해줘.`
-  },
-  {
-    cat: "일상창작",
-    title: "개인 브랜딩 자기 소개",
-    desc: "나의 경력과 전문성을 입력하면 SNS 프로필·링크드인·명함 소개글을 만들어줍니다.",
-    prompt: `아래 정보로 강렬한 개인 브랜딩 소개글을 만들어줘.
+      },
+      {
+        cat: "일상창작",
+        title: "개인 브랜딩 자기 소개",
+        desc: "나의 경력과 전문성을 입력하면 SNS 프로필·링크드인·명함 소개글을 만들어줍니다.",
+        prompt: `아래 정보로 강렬한 개인 브랜딩 소개글을 만들어줘.
 
 - 이름: {이름}
 - 직업/역할: {역할}
@@ -1769,12 +2063,12 @@ STAR 구조(상황-과제-행동-결과)로 핵심 에피소드를 구성하고,
 2. 인스타그램 바이오 (50자 이내)
 3. 명함용 한 줄 소개 (20자)
 각각 다른 톤으로 작성해줘.`
-  },
-  {
-    cat: "일상창작",
-    title: "건강한 식단 & 운동 계획",
-    desc: "목표와 현재 상태를 입력하면 실천 가능한 맞춤형 건강 루틴을 설계합니다.",
-    prompt: `내 상황에 맞는 현실적인 건강 루틴을 만들어줘.
+      },
+      {
+        cat: "일상창작",
+        title: "건강한 식단 & 운동 계획",
+        desc: "목표와 현재 상태를 입력하면 실천 가능한 맞춤형 건강 루틴을 설계합니다.",
+        prompt: `내 상황에 맞는 현실적인 건강 루틴을 만들어줘.
 
 - 건강 목표: {예: 체중감량 / 근력 향상 / 피로 해소}
 - 나이/성별: {정보}
@@ -1783,15 +2077,15 @@ STAR 구조(상황-과제-행동-결과)로 핵심 에피소드를 구성하고,
 - 주간 가능한 운동 시간: {시간}
 
 1주일 식단 (간단하고 실천 가능하게) + 운동 루틴 (집/헬스장 중 선택) + 작심삼일 방지 습관 형성 팁도 포함해줘.`
-  }
-];
+      }
+    ];
 
-// ── RENDER ──
-function buildCard(p, i) {
-  const delay = (i % 9) * 0.04;
-  const promptEscaped = p.prompt.replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  const promptHighlighted = promptEscaped.replace(/\{([^}]+)\}/g, '<span class="var">{$1}</span>');
-  return `
+    // ── RENDER ──
+    function buildCard(p, i) {
+      const delay = (i % 9) * 0.04;
+      const promptEscaped = p.prompt.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const promptHighlighted = promptEscaped.replace(/\{([^}]+)\}/g, '<span class="var">{$1}</span>');
+      return `
 <div class="card" data-cat="${p.cat}" style="animation-delay:${delay}s">
   <div class="card-top">
     <div class="card-meta">
@@ -1801,82 +2095,103 @@ function buildCard(p, i) {
   </div>
   <div class="card-desc">${p.desc}</div>
   <div class="prompt-box">${promptHighlighted}</div>
-  <button class="copy-btn" onclick="copyPrompt(this, \`${p.prompt.replace(/`/g,'\\`')}\`)">
+  <button class="copy-btn" onclick="copyPrompt(this, \`${p.prompt.replace(/`/g, '\\`')}\`)">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
     프롬프트 복사
   </button>
 </div>`;
-}
+    }
 
-function getCatIcon(cat) {
-  const map = { '업무생산성':'💼','AI활용':'🤖','콘텐츠제작':'✍️','리더십조직':'🎯','교육학습':'📚','ESG경영':'🌿','일상창작':'✨' };
-  return map[cat] || '⚡';
-}
+    function getCatIcon(cat) {
+      const map = { '업무생산성': '💼', 'AI활용': '🤖', '콘텐츠제작': '✍️', '리더십조직': '🎯', '교육학습': '📚', 'ESG경영': '🌿', '일상창작': '✨' };
+      return map[cat] || '⚡';
+    }
 
-let currentCat = 'all';
-let currentSearch = '';
+    let currentCat = 'all';
+    let currentSearch = '';
 
-function render() {
-  const grid = document.getElementById('promptGrid');
-  let filtered = PROMPTS.filter(p => {
-    const catMatch = currentCat === 'all' || p.cat === currentCat;
-    const searchMatch = !currentSearch || 
-      p.title.includes(currentSearch) || 
-      p.desc.includes(currentSearch) ||
-      p.cat.includes(currentSearch);
-    return catMatch && searchMatch;
-  });
-  
-  document.getElementById('resultCount').innerHTML = `<strong>${filtered.length}</strong>개`;
-  
-  if (filtered.length === 0) {
-    grid.innerHTML = `<div class="empty-state">
+    function render() {
+      const grid = document.getElementById('promptGrid');
+      let filtered = PROMPTS.filter(p => {
+        const catMatch = currentCat === 'all' || p.cat === currentCat;
+        const searchMatch = !currentSearch ||
+          p.title.includes(currentSearch) ||
+          p.desc.includes(currentSearch) ||
+          p.cat.includes(currentSearch);
+        return catMatch && searchMatch;
+      });
+
+      document.getElementById('resultCount').innerHTML = `<strong>${filtered.length}</strong>개`;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="empty-state">
       <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       <p>검색 결과가 없습니다.<br><span style="color:var(--accent);">"${currentSearch}"</span> 에 해당하는 프롬프트를 찾을 수 없어요.</p>
     </div>`;
-    return;
-  }
-  grid.innerHTML = filtered.map((p,i) => buildCard(p,i)).join('');
-}
+        return;
+      }
+      grid.innerHTML = filtered.map((p, i) => buildCard(p, i)).join('');
+    }
 
-// ── CATEGORY FILTER ──
-document.getElementById('catTabs').addEventListener('click', e => {
-  const btn = e.target.closest('.cat-btn');
-  if (!btn) return;
-  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  currentCat = btn.dataset.cat;
-  render();
-});
+    // ── CATEGORY FILTER ──
+    document.getElementById('catTabs').addEventListener('click', e => {
+      const btn = e.target.closest('.cat-btn');
+      if (!btn) return;
+      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentCat = btn.dataset.cat;
+      render();
+    });
 
-// ── SEARCH ──
-document.getElementById('searchInput').addEventListener('input', e => {
-  currentSearch = e.target.value.trim();
-  render();
-});
+    // ── SEARCH ──
+    document.getElementById('searchInput').addEventListener('input', e => {
+      currentSearch = e.target.value.trim();
+      render();
+    });
 
-// ── COPY ──
-function copyPrompt(btn, text) {
-  navigator.clipboard.writeText(text).then(() => {
-    btn.classList.add('copied');
-    btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 복사 완료!`;
-    showToast();
-    setTimeout(() => {
-      btn.classList.remove('copied');
-      btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> 프롬프트 복사`;
-    }, 2500);
-  });
-}
+    // ── COPY ──
+    function copyPrompt(btn, text) {
+      navigator.clipboard.writeText(text).then(() => {
+        btn.classList.add('copied');
+        btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 복사 완료!`;
+        showToast();
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> 프롬프트 복사`;
+        }, 2500);
+      });
+    }
 
-function showToast() {
-  const t = document.getElementById('toast');
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
-}
+    function showToast() {
+      const t = document.getElementById('toast');
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2000);
+    }
 
-// ── INIT ──
-document.getElementById('totalCount').textContent = PROMPTS.length;
-render();
-</script>
+    // ── INIT ──
+    document.getElementById('totalCount').textContent = PROMPTS.length;
+    render();
+
+    // ── MOBILE NAV TOGGLE ──
+    const navToggle = document.getElementById('navToggle');
+    const navMobile = document.getElementById('navMobile');
+    if (navToggle && navMobile) {
+      navToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        navMobile.classList.toggle('open');
+      });
+      // 메뉴 링크 클릭 시 자동 닫힘
+      navMobile.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => navMobile.classList.remove('open'));
+      });
+      // 외부 클릭 시 닫힘
+      document.addEventListener('click', (e) => {
+        if (!navToggle.contains(e.target) && !navMobile.contains(e.target)) {
+          navMobile.classList.remove('open');
+        }
+      });
+    }
+  </script>
 </body>
+
 </html>

@@ -1,37 +1,64 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
-  <script src="security.js"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- ═══ 보안킷 (Security Kit) ═══ -->
+  <script src="보안킷/security.js"></script>
+  <meta name="robots" content="index, follow">
+  <meta name="googlebot" content="index, follow">
+  <meta name="author" content="청람M&C 정구영 대표">
+  <meta name="copyright" content="© 2025 청람M&C AI Lab. All Rights Reserved.">
+  <meta name="CCBot" content="noindex">
+  <meta name="GPTBot" content="noindex">
+  <meta name="anthropic-ai" content="noindex">
+  <meta name="Google-Extended" content="noindex">
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; frame-ancestors 'none';">
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <!-- ═══ /보안킷 ═══ -->
   <title>CHUNGRAM — AI 에이전트 기반 교육 컨설팅</title>
-  <meta name="description" content="22년 기업교육 전문가가 설계한 AI 활용 교육 플랫폼. 리더십·조직문화·ESG·생성형AI 분야 검증된 콘텐츠를 실전에서 바로 쓸 수 있는 형태로 제공합니다.">
+  <meta name="description"
+    content="22년 기업교육 전문가가 설계한 AI 활용 교육 플랫폼. 리더십·조직문화·ESG·생성형AI 분야 검증된 콘텐츠를 실전에서 바로 쓸 수 있는 형태로 제공합니다.">
   <meta property="og:title" content="CHUNGRAM AI Lab">
   <meta property="og:description" content="AI로 LEAD 하라 — 청람M&C 교육 컨설팅">
   <meta property="og:url" content="https://guyoung-chungram.github.io/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap"
+    rel="stylesheet">
   <style>
     /* ── Reset & Variables ─────────────────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     :root {
-      --bg:         #000000;
-      --surface:    #0d0d0d;
-      --surface2:   #141414;
-      --border:     rgba(212,255,94,0.2);
-      --border-dim: rgba(255,255,255,0.06);
-      --text:       #ffffff;
-      --text-2:     rgba(255,255,255,0.6);
-      --text-3:     rgba(255,255,255,0.35);
-      --accent:     #D4FF5E;
-      --accent-dim: rgba(212,255,94,0.1);
+      --bg: #000000;
+      --surface: #0d0d0d;
+      --surface2: #141414;
+      --border: rgba(212, 255, 94, 0.2);
+      --border-dim: rgba(255, 255, 255, 0.06);
+      --text: #ffffff;
+      --text-2: rgba(255, 255, 255, 0.6);
+      --text-3: rgba(255, 255, 255, 0.35);
+      --accent: #D4FF5E;
+      --accent-dim: rgba(212, 255, 94, 0.1);
       --fd: 'Bebas Neue', sans-serif;
       --fb: 'Noto Sans KR', sans-serif;
     }
 
-    html { scroll-behavior: smooth; }
+    html {
+      scroll-behavior: smooth;
+    }
 
     body {
       background: var(--bg);
@@ -42,69 +69,159 @@
       overflow-x: hidden;
     }
 
-    a { color: inherit; text-decoration: none; }
-    img { display: block; max-width: 100%; }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
 
     /* ── Keyframes ─────────────────────────────────────────── */
     @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: 0.25; }
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.25;
+      }
     }
+
     @keyframes fup {
-      from { opacity: 0; transform: translateY(24px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
+
     @keyframes fadeIn {
-      from { opacity: 0; }
-      to   { opacity: 1; }
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
     }
 
     /* Hero text animations */
     @keyframes hero-ai-in {
-      0%   { opacity: 0; transform: translateY(40px) scale(0.88); }
-      60%  { opacity: 1; transform: translateY(-4px) scale(1.03); }
-      100% { opacity: 1; transform: translateY(0) scale(1); }
+      0% {
+        opacity: 0;
+        transform: translateY(40px) scale(0.88);
+      }
+
+      60% {
+        opacity: 1;
+        transform: translateY(-4px) scale(1.03);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
+
     @keyframes hero-lead-in {
-      0%   { opacity: 0; transform: translateX(-30px) skewX(6deg); }
-      70%  { opacity: 1; transform: translateX(3px) skewX(-1deg); }
-      100% { opacity: 1; transform: translateX(0) skewX(0); }
+      0% {
+        opacity: 0;
+        transform: translateX(-30px) skewX(6deg);
+      }
+
+      70% {
+        opacity: 1;
+        transform: translateX(3px) skewX(-1deg);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateX(0) skewX(0);
+      }
     }
+
     @keyframes hero-hara-in {
-      0%   { opacity: 0; transform: translateY(30px); }
-      100% { opacity: 1; transform: translateY(0); }
+      0% {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
+
     @keyframes ro-in {
-      0%   { opacity: 0; transform: translateY(20px); }
-      100% { opacity: 1; transform: translateY(0); }
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
+
     @keyframes ai-glow-pulse {
-      0%, 100% {
-        text-shadow: 0 0 20px rgba(212,255,94,0.3), 0 0 40px rgba(212,255,94,0.1);
+
+      0%,
+      100% {
+        text-shadow: 0 0 20px rgba(212, 255, 94, 0.3), 0 0 40px rgba(212, 255, 94, 0.1);
         letter-spacing: 0.05em;
       }
+
       50% {
-        text-shadow: 0 0 35px rgba(212,255,94,0.65), 0 0 70px rgba(212,255,94,0.25);
+        text-shadow: 0 0 35px rgba(212, 255, 94, 0.65), 0 0 70px rgba(212, 255, 94, 0.25);
         letter-spacing: 0.07em;
       }
     }
+
     @keyframes lead-stroke-shimmer {
-      0%, 100% {
-        -webkit-text-stroke: 2px rgba(212,255,94,0.9);
-        filter: drop-shadow(0 0 8px rgba(212,255,94,0.2));
+
+      0%,
+      100% {
+        -webkit-text-stroke: 2px rgba(212, 255, 94, 0.9);
+        filter: drop-shadow(0 0 8px rgba(212, 255, 94, 0.2));
       }
+
       50% {
-        -webkit-text-stroke: 2.5px rgba(212,255,94,1);
-        filter: drop-shadow(0 0 18px rgba(212,255,94,0.55));
+        -webkit-text-stroke: 2.5px rgba(212, 255, 94, 1);
+        filter: drop-shadow(0 0 18px rgba(212, 255, 94, 0.55));
       }
     }
+
     @keyframes hara-shimmer {
-      0%, 100% { color: rgba(255,255,255,0.9);  text-shadow: none; }
-      50%       { color: rgba(255,255,255,1);    text-shadow: 0 0 30px rgba(255,255,255,0.15); }
+
+      0%,
+      100% {
+        color: rgba(255, 255, 255, 0.9);
+        text-shadow: none;
+      }
+
+      50% {
+        color: rgba(255, 255, 255, 1);
+        text-shadow: 0 0 30px rgba(255, 255, 255, 0.15);
+      }
     }
 
     /* ── Utility ───────────────────────────────────────────── */
-    .container { max-width: 1160px; margin: 0 auto; padding: 0 40px; }
+    .container {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
     .section-label {
       font-family: var(--fd);
       font-size: 11px;
@@ -113,6 +230,7 @@
       opacity: 0.7;
       margin-bottom: 12px;
     }
+
     .section-title {
       font-family: var(--fd);
       font-size: clamp(36px, 5vw, 60px);
@@ -120,13 +238,18 @@
       line-height: 1;
       margin-bottom: 16px;
     }
-    .section-title .hl { color: var(--accent); }
+
+    .section-title .hl {
+      color: var(--accent);
+    }
+
     .section-desc {
       font-size: 15px;
       color: var(--text-2);
       max-width: 520px;
       line-height: 1.7;
     }
+
     .tag {
       display: inline-block;
       font-size: 10px;
@@ -156,10 +279,12 @@
       transition: transform 0.2s, box-shadow 0.2s;
       letter-spacing: 0.02em;
     }
+
     .btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(212,255,94,0.35);
+      box-shadow: 0 8px 30px rgba(212, 255, 94, 0.35);
     }
+
     .btn-outline {
       display: inline-flex;
       align-items: center;
@@ -171,11 +296,12 @@
       font-size: 14px;
       padding: 14px 28px;
       border-radius: 50px;
-      border: 1px solid rgba(255,255,255,0.2);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       cursor: pointer;
       transition: border-color 0.2s, color 0.2s;
       letter-spacing: 0.02em;
     }
+
     .btn-outline:hover {
       border-color: var(--accent);
       color: var(--accent);
@@ -184,9 +310,11 @@
     /* ── Navigation ────────────────────────────────────────── */
     #nav {
       position: fixed;
-      top: 0; left: 0; right: 0;
+      top: 0;
+      left: 0;
+      right: 0;
       z-index: 1000;
-      background: rgba(0,0,0,0.85);
+      background: rgba(0, 0, 0, 0.85);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border-dim);
@@ -194,6 +322,7 @@
       display: flex;
       align-items: center;
     }
+
     .nav-inner {
       display: flex;
       align-items: center;
@@ -203,30 +332,35 @@
       margin: 0 auto;
       padding: 0 40px;
     }
+
     .nav-logo {
       display: flex;
       flex-direction: column;
       line-height: 1.1;
       text-decoration: none;
     }
+
     .nav-logo .logo-main {
       font-family: var(--fd);
       font-size: 18px;
       letter-spacing: 0.12em;
       color: var(--accent);
     }
+
     .nav-logo .logo-sub {
       font-size: 9px;
       letter-spacing: 0.08em;
       color: var(--text-3);
       font-weight: 300;
     }
+
     .nav-links {
       display: flex;
       align-items: center;
       gap: 4px;
       list-style: none;
     }
+
     .nav-links a {
       display: block;
       padding: 7px 12px;
@@ -237,15 +371,19 @@
       transition: color 0.2s, background 0.2s;
       white-space: nowrap;
     }
-    .nav-links a:hover, .nav-links a.active {
+
+    .nav-links a:hover,
+    .nav-links a.active {
       color: var(--accent);
       background: var(--accent-dim);
     }
+
     .nav-search {
       position: relative;
     }
+
     .nav-search input {
-      background: rgba(255,255,255,0.05);
+      background: rgba(255, 255, 255, 0.05);
       border: 1px solid var(--border-dim);
       border-radius: 8px;
       padding: 7px 14px;
@@ -256,11 +394,16 @@
       transition: border-color 0.2s, width 0.3s;
       outline: none;
     }
+
     .nav-search input:focus {
       border-color: var(--border);
       width: 220px;
     }
-    .nav-search input::placeholder { color: var(--text-3); }
+
+    .nav-search input::placeholder {
+      color: var(--text-3);
+    }
+
     .nav-toggle {
       display: none;
       flex-direction: column;
@@ -270,6 +413,7 @@
       border: none;
       padding: 6px;
     }
+
     .nav-toggle span {
       display: block;
       width: 22px;
@@ -291,6 +435,7 @@
       position: relative;
       overflow: hidden;
     }
+
     .hero-grid {
       position: absolute;
       inset: 0;
@@ -300,6 +445,7 @@
       background-size: 60px 60px;
       pointer-events: none;
     }
+
     .hero-glow {
       position: absolute;
       top: -10%;
@@ -307,9 +453,10 @@
       transform: translateX(-50%);
       width: 800px;
       height: 500px;
-      background: radial-gradient(rgba(212,255,94,0.06) 0%, transparent 65%);
+      background: radial-gradient(rgba(212, 255, 94, 0.06) 0%, transparent 65%);
       pointer-events: none;
     }
+
     .hero-tag {
       display: inline-flex;
       align-items: center;
@@ -327,8 +474,10 @@
       position: relative;
       z-index: 1;
     }
+
     .hero-tag .dot {
-      width: 6px; height: 6px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
       background: var(--accent);
       animation: blink 1.4s ease-in-out infinite;
@@ -344,37 +493,43 @@
       position: relative;
       z-index: 1;
     }
+
     .hl-ai {
       color: var(--accent);
       display: inline-block;
       animation:
-        hero-ai-in 0.75s cubic-bezier(0.22,1,0.36,1) 0.1s both,
+        hero-ai-in 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both,
         ai-glow-pulse 3.2s ease-in-out 1.2s infinite;
     }
+
     .hl-ro {
       display: inline-block;
       animation: ro-in 0.6s ease 0.35s both;
     }
+
     .hl-lead {
       -webkit-text-stroke: 2px var(--accent);
       color: transparent;
       display: inline-block;
       animation:
-        hero-lead-in 0.8s cubic-bezier(0.22,1,0.36,1) 0.35s both,
+        hero-lead-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both,
         lead-stroke-shimmer 3.8s ease-in-out 1.5s infinite;
     }
+
     .hl-hara {
       display: inline-block;
-      color: rgba(255,255,255,0.92);
+      color: rgba(255, 255, 255, 0.92);
       animation:
         hero-hara-in 0.7s ease 0.6s both,
         hara-shimmer 4.5s ease-in-out 1.8s infinite;
     }
+
     .hero h1:hover .hl-ai {
-      text-shadow: 0 0 40px rgba(212,255,94,0.8), 0 0 80px rgba(212,255,94,0.3);
+      text-shadow: 0 0 40px rgba(212, 255, 94, 0.8), 0 0 80px rgba(212, 255, 94, 0.3);
     }
+
     .hero h1:hover .hl-lead {
-      filter: drop-shadow(0 0 20px rgba(212,255,94,0.7));
+      filter: drop-shadow(0 0 20px rgba(212, 255, 94, 0.7));
     }
 
     .hero-sub {
@@ -387,6 +542,7 @@
       position: relative;
       z-index: 1;
     }
+
     .hero-desc {
       font-size: 15px;
       color: var(--text-2);
@@ -397,6 +553,7 @@
       position: relative;
       z-index: 1;
     }
+
     .hero-ctas {
       display: flex;
       align-items: center;
@@ -408,6 +565,7 @@
       position: relative;
       z-index: 1;
     }
+
     .hero-stats {
       display: flex;
       align-items: center;
@@ -418,9 +576,11 @@
       position: relative;
       z-index: 1;
     }
+
     .stat {
       text-align: center;
     }
+
     .stat-num {
       font-family: var(--fd);
       font-size: 36px;
@@ -428,17 +588,20 @@
       letter-spacing: 0.04em;
       line-height: 1;
     }
+
     .stat-label {
       font-size: 11px;
       color: var(--text-3);
       letter-spacing: 0.1em;
       margin-top: 4px;
     }
+
     .stat-div {
       width: 1px;
       height: 32px;
       background: var(--border-dim);
     }
+
     .hero-scroll {
       position: absolute;
       bottom: 32px;
@@ -454,6 +617,7 @@
       gap: 8px;
       animation: fup 0.7s ease 1.4s both;
     }
+
     .hero-scroll::after {
       content: '';
       width: 1px;
@@ -467,6 +631,7 @@
       padding: 120px 0;
       background: var(--bg);
     }
+
     .pages-header {
       display: flex;
       align-items: flex-end;
@@ -475,11 +640,13 @@
       gap: 24px;
       flex-wrap: wrap;
     }
+
     .pages-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 16px;
     }
+
     .page-card {
       background: var(--surface);
       border: 1px solid var(--border-dim);
@@ -493,42 +660,53 @@
       color: inherit;
       cursor: pointer;
     }
+
     .page-card:hover {
       border-color: var(--border);
       background: var(--surface2);
       transform: translateY(-3px);
     }
-    .page-card.span2 { grid-column: span 2; }
+
+    .page-card.span2 {
+      grid-column: span 2;
+    }
+
     .card-top {
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
+
     .card-icon {
       font-size: 28px;
       line-height: 1;
     }
+
     .card-arrow {
       font-size: 18px;
       color: var(--text-3);
       transition: color 0.2s, transform 0.2s;
     }
+
     .page-card:hover .card-arrow {
       color: var(--accent);
       transform: translate(3px, -3px);
     }
+
     .card-title {
       font-family: var(--fd);
       font-size: 22px;
       letter-spacing: 0.04em;
       line-height: 1.1;
     }
+
     .card-desc {
       font-size: 13px;
       color: var(--text-2);
       line-height: 1.6;
       flex: 1;
     }
+
     .card-meta {
       font-size: 11px;
       color: var(--text-3);
@@ -543,13 +721,16 @@
       border-top: 1px solid var(--border-dim);
       border-bottom: 1px solid var(--border-dim);
     }
+
     .about-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 80px;
       align-items: start;
     }
+
     .about-left {}
+
     .about-bio {
       margin-top: 28px;
       font-size: 14px;
@@ -559,15 +740,18 @@
       flex-direction: column;
       gap: 10px;
     }
+
     .about-bio strong {
       color: var(--text);
       font-weight: 700;
     }
+
     .about-right {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
     }
+
     .stat-card {
       background: var(--surface2);
       border: 1px solid var(--border-dim);
@@ -575,7 +759,11 @@
       padding: 20px;
       transition: border-color 0.2s;
     }
-    .stat-card:hover { border-color: var(--border); }
+
+    .stat-card:hover {
+      border-color: var(--border);
+    }
+
     .stat-card .num {
       font-family: var(--fd);
       font-size: 38px;
@@ -583,6 +771,7 @@
       letter-spacing: 0.03em;
       line-height: 1;
     }
+
     .stat-card .label {
       font-size: 12px;
       color: var(--text-3);
@@ -596,6 +785,7 @@
       background: var(--accent);
       text-align: center;
     }
+
     #cta .cta-title {
       font-family: var(--fd);
       font-size: clamp(48px, 7vw, 96px);
@@ -604,9 +794,10 @@
       line-height: 1;
       margin-bottom: 20px;
     }
+
     #cta .cta-desc {
       font-size: 15px;
-      color: rgba(0,0,0,0.6);
+      color: rgba(0, 0, 0, 0.6);
       margin-bottom: 36px;
     }
 
@@ -615,12 +806,14 @@
       padding: 120px 0;
       background: var(--bg);
     }
+
     .programs-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 16px;
       margin-top: 48px;
     }
+
     .program-card {
       background: var(--surface);
       border: 1px solid var(--border-dim);
@@ -628,15 +821,18 @@
       padding: 28px;
       transition: border-color 0.25s, background 0.25s;
     }
+
     .program-card:hover {
       border-color: var(--border);
       background: var(--surface2);
     }
+
     .program-card.featured-card {
       grid-column: span 2;
       background: var(--surface2);
-      border-color: rgba(212,255,94,0.15);
+      border-color: rgba(212, 255, 94, 0.15);
     }
+
     .prog-badge {
       display: inline-block;
       font-family: var(--fd);
@@ -649,6 +845,7 @@
       padding: 3px 8px;
       margin-bottom: 16px;
     }
+
     .prog-title {
       font-family: var(--fd);
       font-size: 26px;
@@ -657,17 +854,20 @@
       margin-bottom: 12px;
       color: var(--text);
     }
+
     .prog-desc {
       font-size: 13px;
       color: var(--text-2);
       line-height: 1.65;
       margin-bottom: 20px;
     }
+
     .prog-tags {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
     }
+
     .prog-tag {
       font-size: 10px;
       font-weight: 600;
@@ -677,6 +877,7 @@
       border-radius: 4px;
       padding: 3px 8px;
     }
+
     .prog-stat {
       margin-top: 20px;
       padding-top: 16px;
@@ -685,11 +886,13 @@
       align-items: center;
       gap: 6px;
     }
+
     .prog-stat .pnum {
       font-family: var(--fd);
       font-size: 22px;
       color: var(--accent);
     }
+
     .prog-stat .plabel {
       font-size: 11px;
       color: var(--text-3);
@@ -701,10 +904,12 @@
       background: var(--surface);
       border-top: 1px solid var(--border-dim);
     }
+
     .faq-header {
       text-align: center;
       margin-bottom: 56px;
     }
+
     .faq-list {
       max-width: 780px;
       margin: 0 auto;
@@ -712,13 +917,18 @@
       flex-direction: column;
       gap: 2px;
     }
+
     .faq-item {
       border: 1px solid var(--border-dim);
       border-radius: 12px;
       overflow: hidden;
       transition: border-color 0.2s;
     }
-    .faq-item:hover { border-color: var(--border); }
+
+    .faq-item:hover {
+      border-color: var(--border);
+    }
+
     .faq-q {
       width: 100%;
       background: none;
@@ -736,14 +946,22 @@
       font-weight: 500;
       transition: background 0.2s;
     }
-    .faq-q:hover { background: rgba(255,255,255,0.03); }
+
+    .faq-q:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
     .faq-icon {
       font-size: 18px;
       color: var(--accent);
       flex-shrink: 0;
       transition: transform 0.3s;
     }
-    .faq-item.open .faq-icon { transform: rotate(45deg); }
+
+    .faq-item.open .faq-icon {
+      transform: rotate(45deg);
+    }
+
     .faq-a {
       display: none;
       padding: 0 24px 20px;
@@ -752,7 +970,10 @@
       line-height: 1.7;
       border-top: 1px solid var(--border-dim);
     }
-    .faq-item.open .faq-a { display: block; }
+
+    .faq-item.open .faq-a {
+      display: block;
+    }
 
     /* ── Footer ────────────────────────────────────────────── */
     footer {
@@ -760,12 +981,14 @@
       background: var(--bg);
       border-top: 1px solid var(--border-dim);
     }
+
     .footer-inner {
       display: grid;
       grid-template-columns: 1.5fr 1fr 1fr 1fr;
       gap: 40px;
       margin-bottom: 48px;
     }
+
     .footer-brand .logo {
       font-family: var(--fd);
       font-size: 20px;
@@ -773,11 +996,13 @@
       color: var(--accent);
       margin-bottom: 12px;
     }
+
     .footer-brand p {
       font-size: 12px;
       color: var(--text-3);
       line-height: 1.7;
     }
+
     .footer-col h4 {
       font-size: 11px;
       font-weight: 700;
@@ -785,13 +1010,24 @@
       color: var(--text-3);
       margin-bottom: 16px;
     }
-    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+
+    .footer-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
     .footer-col ul a {
       font-size: 13px;
       color: var(--text-2);
       transition: color 0.2s;
     }
-    .footer-col ul a:hover { color: var(--accent); }
+
+    .footer-col ul a:hover {
+      color: var(--accent);
+    }
+
     .footer-bottom {
       padding-top: 24px;
       border-top: 1px solid var(--border-dim);
@@ -801,14 +1037,17 @@
       flex-wrap: wrap;
       gap: 12px;
     }
+
     .footer-bottom p {
       font-size: 12px;
       color: var(--text-3);
     }
+
     .footer-badges {
       display: flex;
       gap: 8px;
     }
+
     .footer-badge {
       font-family: var(--fd);
       font-size: 10px;
@@ -819,469 +1058,553 @@
       padding: 3px 8px;
       color: var(--text-3);
     }
-    .footer-badge span { color: var(--accent); }
+
+    .footer-badge span {
+      color: var(--accent);
+    }
 
     /* ── Responsive ────────────────────────────────────────── */
     @media (max-width: 900px) {
-      .container { padding: 0 24px; }
-      .pages-grid { grid-template-columns: 1fr 1fr; }
-      .page-card.span2 { grid-column: span 2; }
-      .about-grid { grid-template-columns: 1fr; gap: 48px; }
-      .programs-grid { grid-template-columns: 1fr 1fr; }
-      .program-card.featured-card { grid-column: span 2; }
-      .footer-inner { grid-template-columns: 1fr 1fr; }
+      .container {
+        padding: 0 24px;
+      }
+
+      .pages-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .page-card.span2 {
+        grid-column: span 2;
+      }
+
+      .about-grid {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+
+      .programs-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .program-card.featured-card {
+        grid-column: span 2;
+      }
+
+      .footer-inner {
+        grid-template-columns: 1fr 1fr;
+      }
     }
+
     @media (max-width: 640px) {
-      .nav-links, .nav-search { display: none; }
-      .nav-toggle { display: flex; }
+
+      .nav-links,
+      .nav-search {
+        display: none;
+      }
+
+      .nav-toggle {
+        display: flex;
+      }
+
       .nav-links.open {
         display: flex;
         flex-direction: column;
         position: absolute;
-        top: 64px; left: 0; right: 0;
-        background: rgba(0,0,0,0.97);
+        top: 64px;
+        left: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.97);
         border-bottom: 1px solid var(--border-dim);
         padding: 16px 24px;
         gap: 4px;
       }
-      .hero { padding: 100px 24px 60px; }
-      .hero h1 { font-size: 72px; }
-      .hero-stats { gap: 24px; }
-      .stat-div { display: none; }
-      .pages-grid { grid-template-columns: 1fr; }
-      .page-card.span2 { grid-column: span 1; }
-      .programs-grid { grid-template-columns: 1fr; }
-      .program-card.featured-card { grid-column: span 1; }
-      .footer-inner { grid-template-columns: 1fr; }
-      .hero-ctas { flex-direction: column; align-items: center; }
-      .btn-primary, .btn-outline { width: 100%; max-width: 300px; justify-content: center; }
+
+      .hero {
+        padding: 100px 24px 60px;
+      }
+
+      .hero h1 {
+        font-size: 72px;
+      }
+
+      .hero-stats {
+        gap: 24px;
+      }
+
+      .stat-div {
+        display: none;
+      }
+
+      .pages-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .page-card.span2 {
+        grid-column: span 1;
+      }
+
+      .programs-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .program-card.featured-card {
+        grid-column: span 1;
+      }
+
+      .footer-inner {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-ctas {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .btn-primary,
+      .btn-outline {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+      }
     }
   </style>
 </head>
+
 <body>
 
-<!-- ── Navigation ──────────────────────────────────────── -->
-<nav id="nav">
-  <div class="nav-inner">
-    <a href="https://guyoung-chungram.github.io/" class="nav-logo" aria-label="CHUNGRAM 홈">
-      <span class="logo-main">CHUNGRAM</span>
-      <span class="logo-sub">AI Lab · 청람M&C</span>
-    </a>
-    <ul class="nav-links" id="navLinks">
-      <li><a href="#home" class="active">홈</a></li>
-      <li><a href="https://betweenworld.org" target="_blank">블로그</a></li>
-      <li><a href="chungram-prompt-library.html">프롬프트</a></li>
-      <li><a href="chungram-chatbot-guide.html">챗봇 지침</a></li>
-      <li><a href="chungram-ai-tool-hub.html">AI 허브</a></li>
-      <li><a href="#ebooks">전자책</a></li>
-      <li><a href="#faq">FAQ</a></li>
-    </ul>
-    <div class="nav-search">
-      <input type="text" placeholder="통합 검색" aria-label="통합 검색">
-    </div>
-    <button class="nav-toggle" aria-label="메뉴" onclick="document.getElementById('navLinks').classList.toggle('open')">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
-</nav>
-
-<!-- ── Hero ────────────────────────────────────────────── -->
-<section class="hero" id="home">
-  <div class="hero-grid"></div>
-  <div class="hero-glow"></div>
-
-  <div class="hero-tag">
-    <span class="dot"></span>
-    LIVE &nbsp;·&nbsp; CHUNGRAM AI LAB
-  </div>
-
-  <p class="section-label">청람M&C · 교육학 박사 · AI 에이전트 기반 교육 컨설팅</p>
-
-  <h1>
-    <span class="hl-ai">AI</span><span class="hl-ro">로</span><br>
-    <span class="hl-lead">LEAD</span><br>
-    <span class="hl-hara">하라</span>
-  </h1>
-
-  <p class="hero-sub">CHUNGRAM AI LAB</p>
-
-  <p class="hero-desc">
-    22년 기업교육 전문가가 설계한 AI 활용 교육 플랫폼.<br>
-    리더십·조직문화·ESG·생성형AI 분야 검증된 콘텐츠를<br>
-    실전에서 바로 쓸 수 있는 형태로 제공합니다.
-  </p>
-
-  <div class="hero-ctas">
-    <a href="chungram-prompt-library.html" class="btn-primary">⚡ 프롬프트 라이브러리</a>
-    <a href="chungram-ai-tool-hub.html" class="btn-outline">🤖 AI Tool Hub →</a>
-  </div>
-
-  <div class="hero-stats">
-    <div class="stat">
-      <div class="stat-num">22+</div>
-      <div class="stat-label">Years Experience</div>
-    </div>
-    <div class="stat-div"></div>
-    <div class="stat">
-      <div class="stat-num">300+</div>
-      <div class="stat-label">기업·기관</div>
-    </div>
-    <div class="stat-div"></div>
-    <div class="stat">
-      <div class="stat-num">10,000H+</div>
-      <div class="stat-label">누적 강의시간</div>
-    </div>
-    <div class="stat-div"></div>
-    <div class="stat">
-      <div class="stat-num">1,000H+</div>
-      <div class="stat-label">누적 코칭시간</div>
-    </div>
-  </div>
-
-  <div class="hero-scroll">SCROLL</div>
-</section>
-
-<!-- ── Content Hub ──────────────────────────────────────── -->
-<section id="pages">
-  <div class="container">
-    <div class="pages-header">
-      <div>
-        <div class="section-label">콘텐츠 허브</div>
-        <h2 class="section-title">필요한 것을<br><span class="hl">바로 찾아라</span></h2>
-      </div>
-      <p class="section-desc">AI 활용 수업에서 바로 쓸 수 있는 검증된 콘텐츠를 카테고리별로 제공합니다.</p>
-    </div>
-
-    <div class="pages-grid">
-      <a href="chungram-prompt-library.html" class="page-card span2">
-        <div class="card-top">
-          <span class="tag">LIVE</span>
-          <span class="card-arrow">↗</span>
-        </div>
-        <div class="card-icon">⚡</div>
-        <div class="card-title">PROMPT LIBRARY</div>
-        <p class="card-desc">업무·교육·ESG·리더십 분야 36개 검증된 실전 프롬프트. 복사 한 번으로 AI 활용 효율 10배.</p>
-        <div class="card-meta">36 PROMPTS · 7 CATEGORIES</div>
+  <!-- ── Navigation ──────────────────────────────────────── -->
+  <nav id="nav">
+    <div class="nav-inner">
+      <a href="https://guyoung-chungram.github.io/" class="nav-logo" aria-label="CHUNGRAM 홈">
+        <span class="logo-main">CHUNGRAM</span>
+        <span class="logo-sub">AI Lab · 청람M&C</span>
       </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#home" class="active">홈</a></li>
+        <li><a href="https://betweenworld.org" target="_blank">블로그</a></li>
+        <li><a href="chungram-prompt-library.html">프롬프트</a></li>
+        <li><a href="chungram-chatbot-guide.html">챗봇 지침</a></li>
+        <li><a href="chungram-ai-tool-hub.html">AI 허브</a></li>
+        <li><a href="#ebooks">전자책</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="chungram-notice.html">공지사항</a></li>
+      </ul>
+      <div class="nav-search">
+        <input type="text" placeholder="통합 검색" aria-label="통합 검색">
+      </div>
+      <button class="nav-toggle" aria-label="메뉴" onclick="document.getElementById('navLinks').classList.toggle('open')">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
 
-      <a href="chungram-ai-tool-hub.html" class="page-card">
-        <div class="card-top">
-          <span class="tag">LIVE</span>
-          <span class="card-arrow">↗</span>
+  <!-- ── Hero ────────────────────────────────────────────── -->
+  <section class="hero" id="home">
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
+
+    <div class="hero-tag">
+      <span class="dot"></span>
+      LIVE &nbsp;·&nbsp; CHUNGRAM AI LAB
+    </div>
+
+    <p class="section-label">청람M&C · 교육학 박사 · AI 에이전트 기반 교육 컨설팅</p>
+
+    <h1>
+      <span class="hl-ai">AI</span><span class="hl-ro">로</span><br>
+      <span class="hl-lead">LEAD</span><br>
+      <span class="hl-hara">하라</span>
+    </h1>
+
+    <p class="hero-sub">CHUNGRAM AI LAB</p>
+
+    <p class="hero-desc">
+      22년 기업교육 전문가가 설계한 AI 활용 교육 플랫폼.<br>
+      리더십·조직문화·ESG·생성형AI 분야 검증된 콘텐츠를<br>
+      실전에서 바로 쓸 수 있는 형태로 제공합니다.
+    </p>
+
+    <div class="hero-ctas">
+      <a href="chungram-prompt-library.html" class="btn-primary">⚡ 프롬프트 라이브러리</a>
+      <a href="chungram-ai-tool-hub.html" class="btn-outline">🤖 AI Tool Hub →</a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">22+</div>
+        <div class="stat-label">Years Experience</div>
+      </div>
+      <div class="stat-div"></div>
+      <div class="stat">
+        <div class="stat-num">300+</div>
+        <div class="stat-label">기업·기관</div>
+      </div>
+      <div class="stat-div"></div>
+      <div class="stat">
+        <div class="stat-num">10,000H+</div>
+        <div class="stat-label">누적 강의시간</div>
+      </div>
+      <div class="stat-div"></div>
+      <div class="stat">
+        <div class="stat-num">1,000H+</div>
+        <div class="stat-label">누적 코칭시간</div>
+      </div>
+    </div>
+
+    <div class="hero-scroll">SCROLL</div>
+  </section>
+
+  <!-- ── Content Hub ──────────────────────────────────────── -->
+  <section id="pages">
+    <div class="container">
+      <div class="pages-header">
+        <div>
+          <div class="section-label">콘텐츠 허브</div>
+          <h2 class="section-title">필요한 것을<br><span class="hl">바로 찾아라</span></h2>
         </div>
-        <div class="card-icon">🤖</div>
-        <div class="card-title">AI TOOL HUB</div>
-        <p class="card-desc">카테고리별 핵심 AI 도구 모음. Chat·Research·Design·Video·Dev 등 즉시 활용 가능.</p>
-        <div class="card-meta">40+ TOOLS · 12 CATEGORIES</div>
+        <p class="section-desc">AI 활용 수업에서 바로 쓸 수 있는 검증된 콘텐츠를 카테고리별로 제공합니다.</p>
+      </div>
+
+      <div class="pages-grid">
+        <a href="chungram-prompt-library.html" class="page-card span2">
+          <div class="card-top">
+            <span class="tag">LIVE</span>
+            <span class="card-arrow">↗</span>
+          </div>
+          <div class="card-icon">⚡</div>
+          <div class="card-title">PROMPT LIBRARY</div>
+          <p class="card-desc">업무·교육·ESG·리더십 분야 36개 검증된 실전 프롬프트. 복사 한 번으로 AI 활용 효율 10배.</p>
+          <div class="card-meta">36 PROMPTS · 7 CATEGORIES</div>
+        </a>
+
+        <a href="chungram-ai-tool-hub.html" class="page-card">
+          <div class="card-top">
+            <span class="tag">LIVE</span>
+            <span class="card-arrow">↗</span>
+          </div>
+          <div class="card-icon">🤖</div>
+          <div class="card-title">AI TOOL HUB</div>
+          <p class="card-desc">카테고리별 핵심 AI 도구 모음. Chat·Research·Design·Video·Dev 등 즉시 활용 가능.</p>
+          <div class="card-meta">40+ TOOLS · 12 CATEGORIES</div>
+        </a>
+
+        <a href="https://betweenworld.org" target="_blank" class="page-card">
+          <div class="card-top">
+            <span class="tag">BTW</span>
+            <span class="card-arrow">↗</span>
+          </div>
+          <div class="card-icon">✍️</div>
+          <div class="card-title">BLOG · BTW</div>
+          <p class="card-desc">Between World — 리더십·AI·ESG·조직문화를 주제로 한 청람의 사유와 인사이트.</p>
+          <div class="card-meta">BETWEENWORLD.ORG</div>
+        </a>
+
+        <a href="chungram-chatbot-guide.html" class="page-card" id="chatbot">
+          <div class="card-top">
+            <span class="tag">LIVE</span>
+            <span class="card-arrow">↗</span>
+          </div>
+          <div class="card-icon">🤖</div>
+          <div class="card-title">챗봇 지침</div>
+          <p class="card-desc">GPT·Claude 등 주요 AI 챗봇 활용 지침 모음. 교육 현장에서 바로 활용 가능한 챗봇 운용 가이드.</p>
+          <div class="card-meta">CHATBOT GUIDE</div>
+        </a>
+
+        <a href="#ebooks" class="page-card" id="ebooks">
+          <div class="card-top">
+            <span class="tag">SOON</span>
+            <span class="card-arrow">↗</span>
+          </div>
+          <div class="card-icon">📖</div>
+          <div class="card-title">전자책</div>
+          <p class="card-desc">AI 활용·리더십·ESG 주제 전자책 시리즈. 강의 현장에서 검증된 내용을 압축한 실전형 가이드북.</p>
+          <div class="card-meta">출간 준비 중</div>
+        </a>
+
+        <a href="#faq" class="page-card">
+          <div class="card-top">
+            <span class="card-arrow">↗</span>
+          </div>
+          <div class="card-icon">💬</div>
+          <div class="card-title">FAQ</div>
+          <p class="card-desc">강의 문의·AI 활용법·프롬프트 사용법 등 자주 묻는 질문과 답변 모음.</p>
+          <div class="card-meta">8 QUESTIONS</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── About ────────────────────────────────────────────── -->
+  <section id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-left">
+          <div class="section-label">청람 소개</div>
+          <h2 class="section-title">22년<br><span class="hl">현장에서</span><br>검증됨</h2>
+          <div class="about-bio">
+            <p>기업교육 컨설턴트·KAIST 교수·ESG 전문가로서 축적한 실전 경험을 AI와 결합하여 새로운 교육 패러다임을 제시합니다.</p>
+            <p><strong>청람M&C 대표 · 한국지역개발경영교육원 원장</strong><br>AI 에이전트 기반 교육 컨설팅 전문기업</p>
+            <p><strong>KAIST 리더십 수업 14년</strong> · Midwest University ESG경영전공 Research Fellow</p>
+            <p><strong>자격:</strong> ISO17024(ESG) · PCC · FIRO-B · Harrison Assessment · 7Habits · FranklinCovey</p>
+            <p><strong>경기도사회서비스원 ESG위원장</strong> · 중앙정부(외교부·행안부) 및 지자체 컨설팅</p>
+          </div>
+        </div>
+        <div class="about-right">
+          <div class="stat-card">
+            <div class="num">13+</div>
+            <div class="label">MG새마을금고 장기 파트너십 (년)</div>
+          </div>
+          <div class="stat-card">
+            <div class="num">10+</div>
+            <div class="label">하나투어 장기 파트너십 (년)</div>
+          </div>
+          <div class="stat-card">
+            <div class="num">300+</div>
+            <div class="label">누적 고객사 — 기업·공공기관</div>
+          </div>
+          <div class="stat-card">
+            <div class="num">Ph.D</div>
+            <div class="label">교육학 박사 · AI 교육 전문가</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ──────────────────────────────────────────────── -->
+  <section id="cta">
+    <div class="container">
+      <p class="cta-title">지금 바로<br>시작하라</p>
+      <p class="cta-desc">프롬프트 라이브러리와 AI Tool Hub는 무료로 제공됩니다.<br>강의 문의 및 커스텀 교육 설계는 아래를 통해 연락주세요.</p>
+      <a href="mailto:supercrmnc@gmail.com?subject=안녕하세요.%20교육문의%20드립니다." class="btn-primary"
+        style="background:#000;color:var(--accent);border:2px solid #000;">
+        📧 교육 문의하기 →
       </a>
-
-      <a href="https://betweenworld.org" target="_blank" class="page-card">
-        <div class="card-top">
-          <span class="tag">BTW</span>
-          <span class="card-arrow">↗</span>
-        </div>
-        <div class="card-icon">✍️</div>
-        <div class="card-title">BLOG · BTW</div>
-        <p class="card-desc">Between World — 리더십·AI·ESG·조직문화를 주제로 한 청람의 사유와 인사이트.</p>
-        <div class="card-meta">BETWEENWORLD.ORG</div>
-      </a>
-
-      <a href="chungram-chatbot-guide.html" class="page-card" id="chatbot">
-        <div class="card-top">
-          <span class="tag">LIVE</span>
-          <span class="card-arrow">↗</span>
-        </div>
-        <div class="card-icon">🤖</div>
-        <div class="card-title">챗봇 지침</div>
-        <p class="card-desc">GPT·Claude 등 주요 AI 챗봇 활용 지침 모음. 교육 현장에서 바로 활용 가능한 챗봇 운용 가이드.</p>
-        <div class="card-meta">CHATBOT GUIDE</div>
-      </a>
-
-      <a href="#ebooks" class="page-card" id="ebooks">
-        <div class="card-top">
-          <span class="tag">SOON</span>
-          <span class="card-arrow">↗</span>
-        </div>
-        <div class="card-icon">📖</div>
-        <div class="card-title">전자책</div>
-        <p class="card-desc">AI 활용·리더십·ESG 주제 전자책 시리즈. 강의 현장에서 검증된 내용을 압축한 실전형 가이드북.</p>
-        <div class="card-meta">출간 준비 중</div>
-      </a>
-
-      <a href="#faq" class="page-card">
-        <div class="card-top">
-          <span class="card-arrow">↗</span>
-        </div>
-        <div class="card-icon">💬</div>
-        <div class="card-title">FAQ</div>
-        <p class="card-desc">강의 문의·AI 활용법·프롬프트 사용법 등 자주 묻는 질문과 답변 모음.</p>
-        <div class="card-meta">8 QUESTIONS</div>
-      </a>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ── About ────────────────────────────────────────────── -->
-<section id="about">
-  <div class="container">
-    <div class="about-grid">
-      <div class="about-left">
-        <div class="section-label">청람 소개</div>
-        <h2 class="section-title">22년<br><span class="hl">현장에서</span><br>검증됨</h2>
-        <div class="about-bio">
-          <p>기업교육 컨설턴트·KAIST 교수·ESG 전문가로서 축적한 실전 경험을 AI와 결합하여 새로운 교육 패러다임을 제시합니다.</p>
-          <p><strong>청람M&C 대표 · 한국지역개발경영교육원 원장</strong><br>AI 에이전트 기반 교육 컨설팅 전문기업</p>
-          <p><strong>KAIST 리더십 수업 14년</strong> · Midwest University ESG경영전공 Research Fellow</p>
-          <p><strong>자격:</strong> ISO17024(ESG) · PCC · FIRO-B · Harrison Assessment · 7Habits · FranklinCovey</p>
-          <p><strong>경기도사회서비스원 ESG위원장</strong> · 중앙정부(외교부·행안부) 및 지자체 컨설팅</p>
+  <!-- ── Featured Programs ─────────────────────────────────── -->
+  <section id="featured">
+    <div class="container">
+      <div class="section-label">전문 프로그램</div>
+      <h2 class="section-title">핵심 교육<br><span class="hl">프로그램</span></h2>
+      <p class="section-desc">현장에서 바로 적용 가능한 기업 맞춤형 교육 프로그램.</p>
+
+      <div class="programs-grid">
+        <div class="program-card featured-card">
+          <div class="prog-badge">FLAGSHIP</div>
+          <div class="prog-title">생성형 AI<br>실전 활용</div>
+          <p class="prog-desc">ChatGPT·Claude·Gemini 등 생성형 AI 도구를 업무에 즉시 적용하는 실습 중심 교육. 프롬프트 엔지니어링부터 AI 워크플로우 설계까지.</p>
+          <div class="prog-tags">
+            <span class="prog-tag">공공기관</span>
+            <span class="prog-tag">기업체</span>
+            <span class="prog-tag">대학교</span>
+            <span class="prog-tag">지자체</span>
+          </div>
+          <div class="prog-stat">
+            <span class="pnum">10,000H+</span>
+            <span class="plabel">누적 강의시간</span>
+          </div>
         </div>
-      </div>
-      <div class="about-right">
-        <div class="stat-card">
-          <div class="num">13+</div>
-          <div class="label">MG새마을금고 장기 파트너십 (년)</div>
+
+        <div class="program-card">
+          <div class="prog-badge">LEADERSHIP</div>
+          <div class="prog-title">AI 시대<br>리더십</div>
+          <p class="prog-desc">KAIST 검증 커리큘럼 기반. 7Habits 프레임워크와 AI 도구를 결합한 미래형 리더 육성.</p>
+          <div class="prog-stat">
+            <span class="pnum">14년</span>
+            <span class="plabel">KAIST 강의 경력</span>
+          </div>
         </div>
-        <div class="stat-card">
-          <div class="num">10+</div>
-          <div class="label">하나투어 장기 파트너십 (년)</div>
+
+        <div class="program-card">
+          <div class="prog-badge">ESG</div>
+          <div class="prog-title">ESG<br>경영 교육</div>
+          <p class="prog-desc">ISO17024 자격 기반 ESG 경영 교육. 실무 적용 가능한 지속가능경영 전략 수립.</p>
+          <div class="prog-stat">
+            <span class="pnum">ESG</span>
+            <span class="plabel">위원장 · Research Fellow</span>
+          </div>
         </div>
-        <div class="stat-card">
-          <div class="num">300+</div>
-          <div class="label">누적 고객사 — 기업·공공기관</div>
+
+        <div class="program-card">
+          <div class="prog-badge">COACHING</div>
+          <div class="prog-title">조직문화<br>코칭</div>
+          <p class="prog-desc">PCC 전문 코치 자격 기반. FIRO-B·Harrison Assessment를 활용한 조직 진단 및 문화 혁신 프로그램.</p>
+          <div class="prog-stat">
+            <span class="pnum">1,000H+</span>
+            <span class="plabel">누적 코칭시간</span>
+          </div>
         </div>
-        <div class="stat-card">
-          <div class="num">Ph.D</div>
-          <div class="label">교육학 박사 · AI 교육 전문가</div>
+
+        <div class="program-card">
+          <div class="prog-badge">STRESS</div>
+          <div class="prog-title">스트레스<br>리셋</div>
+          <p class="prog-desc">신경과학 기반 스트레스 관리 워크숍. 기아자동차 등 대기업 현장 검증 프로그램.</p>
+          <div class="prog-stat">
+            <span class="pnum">300+</span>
+            <span class="plabel">누적 고객사</span>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ── CTA ──────────────────────────────────────────────── -->
-<section id="cta">
-  <div class="container">
-    <p class="cta-title">지금 바로<br>시작하라</p>
-    <p class="cta-desc">프롬프트 라이브러리와 AI Tool Hub는 무료로 제공됩니다.<br>강의 문의 및 커스텀 교육 설계는 아래를 통해 연락주세요.</p>
-    <a href="mailto:supercrmnc@gmail.com?subject=안녕하세요.%20교육문의%20드립니다." class="btn-primary" style="background:#000;color:var(--accent);border:2px solid #000;">
-      📧 교육 문의하기 →
-    </a>
-  </div>
-</section>
-
-<!-- ── Featured Programs ─────────────────────────────────── -->
-<section id="featured">
-  <div class="container">
-    <div class="section-label">전문 프로그램</div>
-    <h2 class="section-title">핵심 교육<br><span class="hl">프로그램</span></h2>
-    <p class="section-desc">현장에서 바로 적용 가능한 기업 맞춤형 교육 프로그램.</p>
-
-    <div class="programs-grid">
-      <div class="program-card featured-card">
-        <div class="prog-badge">FLAGSHIP</div>
-        <div class="prog-title">생성형 AI<br>실전 활용</div>
-        <p class="prog-desc">ChatGPT·Claude·Gemini 등 생성형 AI 도구를 업무에 즉시 적용하는 실습 중심 교육. 프롬프트 엔지니어링부터 AI 워크플로우 설계까지.</p>
-        <div class="prog-tags">
-          <span class="prog-tag">공공기관</span>
-          <span class="prog-tag">기업체</span>
-          <span class="prog-tag">대학교</span>
-          <span class="prog-tag">지자체</span>
-        </div>
-        <div class="prog-stat">
-          <span class="pnum">10,000H+</span>
-          <span class="plabel">누적 강의시간</span>
-        </div>
+  <!-- ── FAQ ──────────────────────────────────────────────── -->
+  <section id="faq">
+    <div class="container">
+      <div class="faq-header">
+        <div class="section-label">자주 묻는 질문</div>
+        <h2 class="section-title">FAQ</h2>
+        <p class="section-desc" style="margin:0 auto;">강의 및 콘텐츠 활용에 관한 자주 묻는 질문입니다.</p>
       </div>
-
-      <div class="program-card">
-        <div class="prog-badge">LEADERSHIP</div>
-        <div class="prog-title">AI 시대<br>리더십</div>
-        <p class="prog-desc">KAIST 검증 커리큘럼 기반. 7Habits 프레임워크와 AI 도구를 결합한 미래형 리더 육성.</p>
-        <div class="prog-stat">
-          <span class="pnum">14년</span>
-          <span class="plabel">KAIST 강의 경력</span>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            프롬프트 라이브러리는 무료로 사용할 수 있나요?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">네, 모든 프롬프트는 무료로 제공됩니다. 복사 버튼을 눌러 즉시 ChatGPT·Claude 등 AI 도구에 붙여넣어 사용하실 수 있습니다. 교육 현장, 업무, 개인
+            학습 등 자유롭게 활용 가능합니다.</div>
         </div>
-      </div>
-
-      <div class="program-card">
-        <div class="prog-badge">ESG</div>
-        <div class="prog-title">ESG<br>경영 교육</div>
-        <p class="prog-desc">ISO17024 자격 기반 ESG 경영 교육. 실무 적용 가능한 지속가능경영 전략 수립.</p>
-        <div class="prog-stat">
-          <span class="pnum">ESG</span>
-          <span class="plabel">위원장 · Research Fellow</span>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            AI Tool Hub에 도구를 추가할 수 있나요?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">네, AI Tool Hub 우측 상단의 '편집 모드' 버튼을 클릭하면 카테고리와 링크를 자유롭게 추가·삭제할 수 있습니다. 변경사항은 브라우저에 자동 저장됩니다.
+          </div>
         </div>
-      </div>
-
-      <div class="program-card">
-        <div class="prog-badge">COACHING</div>
-        <div class="prog-title">조직문화<br>코칭</div>
-        <p class="prog-desc">PCC 전문 코치 자격 기반. FIRO-B·Harrison Assessment를 활용한 조직 진단 및 문화 혁신 프로그램.</p>
-        <div class="prog-stat">
-          <span class="pnum">1,000H+</span>
-          <span class="plabel">누적 코칭시간</span>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            기업 교육 및 강의 문의는 어떻게 하나요?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">이메일(supercrmnc@gmail.com) 또는 청람M&C 공식 채널을 통해 문의 주시면 됩니다. 교육 대상, 인원, 시간, 목적을 함께 알려주시면 맞춤형
+            커리큘럼을 설계해드립니다.</div>
         </div>
-      </div>
-
-      <div class="program-card">
-        <div class="prog-badge">STRESS</div>
-        <div class="prog-title">스트레스<br>리셋</div>
-        <p class="prog-desc">신경과학 기반 스트레스 관리 워크숍. 기아자동차 등 대기업 현장 검증 프로그램.</p>
-        <div class="prog-stat">
-          <span class="pnum">300+</span>
-          <span class="plabel">누적 고객사</span>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            KAIST 리더십 수업 내용을 일반인도 배울 수 있나요?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">기업 맞춤형 리더십 교육 프로그램으로 운영됩니다. KAIST에서 14년간 검증된 커리큘럼을 기반으로 7Habits 프레임워크와 AI 도구를 결합한 프로그램을 기업
+            단위로 신청하실 수 있습니다.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            블로그 BTW는 어떤 내용인가요?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">Between World(BTW)는 청람의 펜네임으로 운영하는 블로그입니다. 리더십·AI 활용·ESG·조직문화 주제의 인사이트를 직장인 관점에서 쉽게 풀어냅니다.
+            betweenworld.org에서 확인하실 수 있습니다.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            전자책은 언제 출시되나요?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">AI 활용·리더십·ESG 주제의 전자책 시리즈를 준비 중입니다. 출시 일정은 블로그(betweenworld.org)와 본 사이트를 통해 공지될 예정입니다.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            챗봇 지침 콘텐츠는 어떤 내용인가요?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">GPT·Claude·Gemini 등 주요 AI 챗봇을 교육·업무 현장에서 효과적으로 활용하기 위한 운용 지침과 시스템 프롬프트 가이드를 제공합니다. 현재 준비
+            중이며 곧 공개됩니다.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            프롬프트·자료를 교육에 활용해도 되나요?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">비상업적 교육 목적의 활용은 자유롭게 허용합니다. 상업적 목적의 재배포나 강의 교재로의 대량 활용은 사전 협의가 필요합니다. 출처(청람M&C / CHUNGRAM)를
+            명기해주시면 감사하겠습니다.</div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ── FAQ ──────────────────────────────────────────────── -->
-<section id="faq">
-  <div class="container">
-    <div class="faq-header">
-      <div class="section-label">자주 묻는 질문</div>
-      <h2 class="section-title">FAQ</h2>
-      <p class="section-desc" style="margin:0 auto;">강의 및 콘텐츠 활용에 관한 자주 묻는 질문입니다.</p>
-    </div>
-    <div class="faq-list">
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          프롬프트 라이브러리는 무료로 사용할 수 있나요?
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">네, 모든 프롬프트는 무료로 제공됩니다. 복사 버튼을 눌러 즉시 ChatGPT·Claude 등 AI 도구에 붙여넣어 사용하실 수 있습니다. 교육 현장, 업무, 개인 학습 등 자유롭게 활용 가능합니다.</div>
+  <!-- ── Footer ────────────────────────────────────────────── -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="logo">CHUNGRAM</div>
+          <p>AI 에이전트 기반 교육 컨설팅 전문기업.<br>청람M&C · 한국지역개발경영교육원<br>교육학 박사 · 누적 강의 10,000시간+</p>
+        </div>
+        <div class="footer-col">
+          <h4>콘텐츠</h4>
+          <ul>
+            <li><a href="chungram-prompt-library.html">프롬프트 라이브러리</a></li>
+            <li><a href="chungram-ai-tool-hub.html">AI Tool Hub</a></li>
+            <li><a href="#ebooks">전자책</a></li>
+            <li><a href="chungram-chatbot-guide.html">챗봇 지침</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>청람</h4>
+          <ul>
+            <li><a href="#about">소개</a></li>
+            <li><a href="#featured">프로그램</a></li>
+            <li><a href="https://betweenworld.org" target="_blank">블로그 BTW</a></li>
+            <li><a href="#faq">FAQ</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>전문 분야</h4>
+          <ul>
+            <li><a href="#featured">리더십 · 조직문화</a></li>
+            <li><a href="#featured">생성형 AI 활용</a></li>
+            <li><a href="#featured">ESG 경영</a></li>
+            <li><a href="#featured">코칭 · FIRO-B</a></li>
+          </ul>
+        </div>
       </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          AI Tool Hub에 도구를 추가할 수 있나요?
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">네, AI Tool Hub 우측 상단의 '편집 모드' 버튼을 클릭하면 카테고리와 링크를 자유롭게 추가·삭제할 수 있습니다. 변경사항은 브라우저에 자동 저장됩니다.</div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          기업 교육 및 강의 문의는 어떻게 하나요?
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">이메일(supercrmnc@gmail.com) 또는 청람M&C 공식 채널을 통해 문의 주시면 됩니다. 교육 대상, 인원, 시간, 목적을 함께 알려주시면 맞춤형 커리큘럼을 설계해드립니다.</div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          KAIST 리더십 수업 내용을 일반인도 배울 수 있나요?
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">기업 맞춤형 리더십 교육 프로그램으로 운영됩니다. KAIST에서 14년간 검증된 커리큘럼을 기반으로 7Habits 프레임워크와 AI 도구를 결합한 프로그램을 기업 단위로 신청하실 수 있습니다.</div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          블로그 BTW는 어떤 내용인가요?
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">Between World(BTW)는 청람의 펜네임으로 운영하는 블로그입니다. 리더십·AI 활용·ESG·조직문화 주제의 인사이트를 직장인 관점에서 쉽게 풀어냅니다. betweenworld.org에서 확인하실 수 있습니다.</div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          전자책은 언제 출시되나요?
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">AI 활용·리더십·ESG 주제의 전자책 시리즈를 준비 중입니다. 출시 일정은 블로그(betweenworld.org)와 본 사이트를 통해 공지될 예정입니다.</div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          챗봇 지침 콘텐츠는 어떤 내용인가요?
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">GPT·Claude·Gemini 등 주요 AI 챗봇을 교육·업무 현장에서 효과적으로 활용하기 위한 운용 지침과 시스템 프롬프트 가이드를 제공합니다. 현재 준비 중이며 곧 공개됩니다.</div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          프롬프트·자료를 교육에 활용해도 되나요?
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">비상업적 교육 목적의 활용은 자유롭게 허용합니다. 상업적 목적의 재배포나 강의 교재로의 대량 활용은 사전 협의가 필요합니다. 출처(청람M&C / CHUNGRAM)를 명기해주시면 감사하겠습니다.</div>
+      <div class="footer-bottom">
+        <p>© 2025 <strong>CHUNGRAM</strong> · 청람M&C · 한국지역개발경영교육원 · All rights reserved.</p>
+        <div class="footer-badges">
+          <span class="footer-badge"><span>10,000H</span> 강의</span>
+          <span class="footer-badge"><span>1,000H</span> 코칭</span>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </footer>
 
-<!-- ── Footer ────────────────────────────────────────────── -->
-<footer>
-  <div class="container">
-    <div class="footer-inner">
-      <div class="footer-brand">
-        <div class="logo">CHUNGRAM</div>
-        <p>AI 에이전트 기반 교육 컨설팅 전문기업.<br>청람M&C · 한국지역개발경영교육원<br>교육학 박사 · 누적 강의 10,000시간+</p>
-      </div>
-      <div class="footer-col">
-        <h4>콘텐츠</h4>
-        <ul>
-          <li><a href="chungram-prompt-library.html">프롬프트 라이브러리</a></li>
-          <li><a href="chungram-ai-tool-hub.html">AI Tool Hub</a></li>
-          <li><a href="#ebooks">전자책</a></li>
-          <li><a href="chungram-chatbot-guide.html">챗봇 지침</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>청람</h4>
-        <ul>
-          <li><a href="#about">소개</a></li>
-          <li><a href="#featured">프로그램</a></li>
-          <li><a href="https://betweenworld.org" target="_blank">블로그 BTW</a></li>
-          <li><a href="#faq">FAQ</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>전문 분야</h4>
-        <ul>
-          <li><a href="#featured">리더십 · 조직문화</a></li>
-          <li><a href="#featured">생성형 AI 활용</a></li>
-          <li><a href="#featured">ESG 경영</a></li>
-          <li><a href="#featured">코칭 · FIRO-B</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>© 2025 <strong>CHUNGRAM</strong> · 청람M&C · 한국지역개발경영교육원 · All rights reserved.</p>
-      <div class="footer-badges">
-        <span class="footer-badge"><span>10,000H</span> 강의</span>
-        <span class="footer-badge"><span>1,000H</span> 코칭</span>
-      </div>
-    </div>
-  </div>
-</footer>
+  <!-- ── Scripts ───────────────────────────────────────────── -->
+  <script>
+    /* FAQ 토글 */
+    function toggleFaq(btn) {
+      const item = btn.closest('.faq-item');
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    }
 
-<!-- ── Scripts ───────────────────────────────────────────── -->
-<script>
-  /* FAQ 토글 */
-  function toggleFaq(btn) {
-    const item = btn.closest('.faq-item');
-    const isOpen = item.classList.contains('open');
-    document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
-    if (!isOpen) item.classList.add('open');
-  }
+    /* Nav 스크롤 active */
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-links a');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          navLinks.forEach(a => {
+            a.classList.toggle('active',
+              a.getAttribute('href') === '#' + id ||
+              (id === 'home' && a.getAttribute('href') === '#home')
+            );
+          });
+        }
+      });
+    }, { threshold: 0.4 });
+    sections.forEach(s => observer.observe(s));
+  </script>
 
-  /* Nav 스크롤 active */
-  const sections = document.querySelectorAll('section[id]');
-  const navLinks = document.querySelectorAll('.nav-links a');
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const id = entry.target.id;
-        navLinks.forEach(a => {
-          a.classList.toggle('active',
-            a.getAttribute('href') === '#' + id ||
-            (id === 'home' && a.getAttribute('href') === '#home')
-          );
-        });
-      }
-    });
-  }, { threshold: 0.4 });
-  sections.forEach(s => observer.observe(s));
-</script>
-
-<!-- chungram-shared.js: Top/Bottom 버튼 + 서브페이지 네비 통합 -->
-<script src="chungram-shared.js"></script>
+  <!-- chungram-shared.js: Top/Bottom 버튼 + 서브페이지 네비 통합 -->
+  <script src="chungram-shared.js"></script>
 
 </body>
+
 </html>
