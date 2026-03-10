@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CHUNGRAM — 공지사항</title>
+<meta name="description" content="청람M&C AI Lab 공지사항 게시판">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #000000;
+    --bg2: #0a0a0a;
+    --bg3: #111111;
+    --bg4: #1a1a1a;
+    --accent: #D4FF5E;
+    --accent2: #b8e040;
+    --text: #ffffff;
+    --text2: #aaaaaa;
+    --text3: #666666;
+    --border: #222222;
+    --border2: #333333;
+    --red: #ff4444;
+    --blue: #5eaaff;
+    --font-mono: 'Space Mono', monospace;
+    --font-kr: 'Noto Sans KR', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-kr);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── 스캔라인 배경 텍스처 ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(212,255,94,0.012) 2px,
+      rgba(212,255,94,0.012) 4px
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ═══════════════ NAV ═══════════════ */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(0,0,0,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border2);
+    padding: 0 40px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    transition: color 0.2s;
+  }
+  .nav-logo:hover { color: var(--accent); }
+  .logo-mark {
+    width: 32px; height: 32px;
+    border: 2px solid var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; color: var(--accent);
+    font-family: var(--font-mono);
+    transition: background 0.2s;
+  }
+  .nav-logo:hover .logo-mark { background: var(--accent); color: #000; }
+
+  .nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    list-style: none;
+  }
+  .nav-menu a {
+    display: block;
+    padding: 6px 14px;
+    color: var(--text2);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+  }
+  .nav-menu a:hover,
+  .nav-menu a.active {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  .nav-badge {
+    padding: 4px 10px;
+    background: var(--accent);
+    color: #000;
+    font-size: 11px;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    letter-spacing: 0.06em;
+  }
+
+  /* ═══════════════ HERO HEADER ═══════════════ */
+  .page-header {
+    position: relative;
+    padding: 80px 40px 60px;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+    z-index: 1;
+  }
+  .page-header::before {
+    content: 'NOTICE';
+    position: absolute;
+    right: -20px; top: 10px;
+    font-family: var(--font-mono);
+    font-size: 160px;
+    font-weight: 700;
+    color: rgba(212,255,94,0.03);
+    letter-spacing: -5px;
+    pointer-events: none;
+    user-select: none;
+  }
+  .header-tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    margin-bottom: 16px;
+    border: 1px solid var(--accent);
+    padding: 4px 12px;
+  }
+  .header-tag::before { content: '▶ '; }
+  .page-header h1 {
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+  .page-header h1 span { color: var(--accent); }
+  .page-header p {
+    font-size: 15px;
+    color: var(--text2);
+    font-weight: 300;
+  }
+
+  /* ═══════════════ MAIN LAYOUT ═══════════════ */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .board-wrap {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 40px;
+    padding: 48px 0 80px;
+  }
+
+  /* ═══════════════ 필터 툴바 ═══════════════ */
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    padding: 6px 16px;
+    background: transparent;
+    border: 1px solid var(--border2);
+    color: var(--text3);
+    font-family: var(--font-kr);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.03em;
+  }
+  .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .filter-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+    font-weight: 700;
+  }
+  .search-wrap {
+    margin-left: auto;
+    position: relative;
+  }
+  .search-wrap input {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    padding: 7px 36px 7px 14px;
+    font-family: var(--font-kr);
+    font-size: 12px;
+    width: 200px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-wrap input:focus { border-color: var(--accent); }
+  .search-wrap input::placeholder { color: var(--text3); }
+  .search-wrap::after {
+    content: '🔍';
+    position: absolute;
+    right: 10px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    pointer-events: none;
+  }
+
+  /* ═══════════════ 게시글 목록 ═══════════════ */
+  .post-list { display: flex; flex-direction: column; gap: 1px; }
+
+  .post-item {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .post-item::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: transparent;
+    transition: background 0.2s;
+  }
+  .post-item:hover { border-color: var(--border2); background: var(--bg3); }
+  .post-item:hover::before { background: var(--accent); }
+  .post-item.pinned { border-color: rgba(212,255,94,0.3); }
+  .post-item.pinned::before { background: var(--accent); }
+
+  .post-summary {
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .post-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text3);
+    min-width: 32px;
+    text-align: center;
+  }
+  .pin-icon {
+    font-size: 14px;
+    min-width: 32px;
+    text-align: center;
+  }
+  .post-category {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 2px 8px;
+    border: 1px solid;
+    min-width: 64px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .cat-notice { color: var(--accent); border-color: var(--accent); }
+  .cat-update { color: var(--blue); border-color: var(--blue); }
+  .cat-event  { color: #ff9f5e; border-color: #ff9f5e; }
+  .cat-edu    { color: #c45eff; border-color: #c45eff; }
+  .cat-ai     { color: #5effce; border-color: #5effce; }
+
+  .post-title-wrap { flex: 1; min-width: 0; }
+  .post-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 4px;
+    transition: color 0.2s;
+  }
+  .post-item:hover .post-title { color: var(--accent); }
+  .post-item.pinned .post-title { font-weight: 700; }
+  .post-meta {
+    display: flex;
+    gap: 12px;
+    font-size: 11px;
+    color: var(--text3);
+    font-family: var(--font-mono);
+  }
+  .post-date::before { content: '📅 '; font-size: 9px; }
+  .post-new {
+    display: inline-block;
+    background: var(--red);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 5px;
+    margin-left: 6px;
+    vertical-align: middle;
+    font-family: var(--font-mono);
+    letter-spacing: 0.05em;
+  }
+  .post-views {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text3);
+    flex-shrink: 0;
+  }
+  .post-views::before { content: '👁 '; font-size: 9px; }
+
+  /* ═══════════════ 게시글 상세 (accordion) ═══════════════ */
+  .post-detail {
+    display: none;
+    border-top: 1px solid var(--border);
+    background: var(--bg3);
+    padding: 28px 24px 28px 76px;
+    animation: slideDown 0.25s ease;
+  }
+  .post-detail.open { display: block; }
+
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .detail-content {
+    font-size: 14px;
+    line-height: 1.9;
+    color: var(--text2);
+    white-space: pre-line;
+  }
+  .detail-content strong { color: var(--accent); font-weight: 700; }
+  .detail-content a { color: var(--blue); text-decoration: underline; }
+
+  .detail-footer {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .detail-author {
+    font-size: 12px;
+    color: var(--text3);
+    font-family: var(--font-mono);
+  }
+  .detail-author span { color: var(--accent); }
+  .close-btn {
+    background: transparent;
+    border: 1px solid var(--border2);
+    color: var(--text3);
+    padding: 5px 14px;
+    font-size: 11px;
+    cursor: pointer;
+    font-family: var(--font-kr);
+    transition: all 0.2s;
+  }
+  .close-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ═══════════════ 사이드바 ═══════════════ */
+  .sidebar { display: flex; flex-direction: column; gap: 24px; }
+
+  .widget {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    padding: 24px;
+  }
+  .widget-title {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .widget-title::before { content: '// '; }
+
+  /* 통계 위젯 */
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .stat-item { text-align: center; padding: 12px; background: var(--bg3); }
+  .stat-num {
+    font-family: var(--font-mono);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent);
+    display: block;
+  }
+  .stat-label { font-size: 10px; color: var(--text3); margin-top: 4px; }
+
+  /* 카테고리 위젯 */
+  .cat-list { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+  .cat-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    cursor: pointer;
+    transition: background 0.15s;
+    font-size: 13px;
+    color: var(--text2);
+  }
+  .cat-list li:hover { background: var(--bg3); color: var(--accent); }
+  .cat-list li .dot { width: 6px; height: 6px; border-radius: 50%; margin-right: 8px; flex-shrink: 0; }
+  .cat-list li span:last-child {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text3);
+  }
+
+  /* 최근 게시글 */
+  .recent-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .recent-list li {
+    font-size: 12px;
+    color: var(--text2);
+    cursor: pointer;
+    line-height: 1.5;
+    padding: 8px 10px;
+    border-left: 2px solid var(--border);
+    transition: all 0.15s;
+  }
+  .recent-list li:hover { border-color: var(--accent); color: var(--accent); }
+  .recent-date { display: block; font-family: var(--font-mono); font-size: 10px; color: var(--text3); margin-top: 3px; }
+
+  /* 관리자 버튼 */
+  .admin-btn {
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: var(--font-kr);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .admin-btn:hover { background: var(--accent); color: #000; }
+
+  /* ═══════════════ 페이지네이션 ═══════════════ */
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 32px;
+  }
+  .page-btn {
+    width: 34px; height: 34px;
+    display: flex; align-items: center; justify-content: center;
+    background: transparent;
+    border: 1px solid var(--border2);
+    color: var(--text3);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .page-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .page-btn.active { background: var(--accent); border-color: var(--accent); color: #000; font-weight: 700; }
+
+  /* ═══════════════ 모달 (글쓰기) ═══════════════ */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(4px);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    width: min(600px, 90vw);
+    max-height: 85vh;
+    overflow-y: auto;
+    animation: modalIn 0.25s ease;
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.96) translateY(10px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .modal-header h3 {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+  .modal-header h3::before { content: '// '; }
+  .modal-close {
+    background: none; border: none; color: var(--text3);
+    font-size: 20px; cursor: pointer; padding: 0;
+    transition: color 0.2s; line-height: 1;
+  }
+  .modal-close:hover { color: var(--accent); }
+
+  .modal-body { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    font-family: var(--font-mono);
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    padding: 10px 14px;
+    font-family: var(--font-kr);
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus { border-color: var(--accent); }
+  .form-group textarea { resize: vertical; min-height: 160px; line-height: 1.7; }
+  .form-group select option { background: var(--bg3); }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text2);
+    cursor: pointer;
+  }
+  .form-check input[type=checkbox] {
+    width: 16px; height: 16px;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 10px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+  .btn-submit {
+    flex: 1;
+    padding: 12px;
+    background: var(--accent);
+    border: none;
+    color: #000;
+    font-family: var(--font-kr);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-submit:hover { background: var(--accent2); }
+  .btn-cancel {
+    padding: 12px 20px;
+    background: transparent;
+    border: 1px solid var(--border2);
+    color: var(--text3);
+    font-family: var(--font-kr);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-cancel:hover { border-color: var(--text3); color: var(--text); }
+
+  /* ═══════════════ PWD 프롬프트 ═══════════════ */
+  .pwd-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.9);
+    z-index: 3000;
+    align-items: center;
+    justify-content: center;
+  }
+  .pwd-overlay.open { display: flex; }
+  .pwd-box {
+    background: var(--bg2);
+    border: 1px solid var(--accent);
+    padding: 36px;
+    width: 320px;
+    text-align: center;
+  }
+  .pwd-box h4 {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    margin-bottom: 20px;
+  }
+  .pwd-box input {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    padding: 10px 14px;
+    font-size: 16px;
+    text-align: center;
+    letter-spacing: 0.3em;
+    outline: none;
+    margin-bottom: 14px;
+    font-family: var(--font-mono);
+  }
+  .pwd-box input:focus { border-color: var(--accent); }
+  .pwd-error { color: var(--red); font-size: 11px; margin-bottom: 10px; display: none; }
+  .pwd-btns { display: flex; gap: 8px; }
+  .pwd-btns button {
+    flex: 1;
+    padding: 10px;
+    font-family: var(--font-kr);
+    font-size: 13px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+  .pwd-confirm { background: var(--accent); color: #000; font-weight: 700; }
+  .pwd-confirm:hover { background: var(--accent2); }
+  .pwd-cancel { background: var(--bg4); color: var(--text2); border: 1px solid var(--border2) !important; }
+
+  /* ═══════════════ FOOTER ═══════════════ */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--text3);
+    font-family: var(--font-mono);
+    position: relative;
+    z-index: 1;
+  }
+  footer a { color: var(--text3); text-decoration: none; }
+  footer a:hover { color: var(--accent); }
+
+  /* ═══════════════ 빈 상태 ═══════════════ */
+  .empty-state {
+    text-align: center;
+    padding: 60px 0;
+    color: var(--text3);
+    font-size: 14px;
+    border: 1px dashed var(--border2);
+  }
+  .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
+
+  /* ═══════════════ 토스트 ═══════════════ */
+  #toast {
+    position: fixed;
+    bottom: 30px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--bg2);
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 12px 24px;
+    font-size: 13px;
+    font-weight: 600;
+    z-index: 9999;
+    opacity: 0;
+    transition: all 0.3s;
+    pointer-events: none;
+    font-family: var(--font-kr);
+    box-shadow: 0 4px 20px rgba(212,255,94,0.2);
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ═══════════════ 반응형 ═══════════════ */
+  @media (max-width: 768px) {
+    nav { padding: 0 20px; }
+    .nav-menu { display: none; }
+    .page-header { padding: 48px 20px 40px; }
+    .container { padding: 0 20px; }
+    .board-wrap { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .post-summary { flex-wrap: wrap; gap: 10px; }
+    .form-row { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 8px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── 네비게이션 ── -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="logo-mark">CG</div>
+    CHUNGRAM
+  </a>
+  <ul class="nav-menu">
+    <li><a href="index.html">홈</a></li>
+    <li><a href="chungram-prompt-library.html">프롬프트 라이브러리</a></li>
+    <li><a href="chungram-ai-hub.html">AI 허브</a></li>
+    <li><a href="chungram-chatbot-guide.html">챗봇 지침</a></li>
+    <li><a href="chungram-notice.html" class="active">공지사항</a></li>
+    <li><a href="https://betweenworld.org" target="_blank" class="nav-badge">BLOG ↗</a></li>
+  </ul>
+</nav>
+
+<!-- ── 페이지 헤더 ── -->
+<div class="page-header">
+  <div class="container">
+    <div class="header-tag">NOTICE BOARD</div>
+    <h1>공지<span>사항</span></h1>
+    <p>청람M&C AI Lab의 새로운 소식과 업데이트를 확인하세요.</p>
+  </div>
+</div>
+
+<!-- ── 본문 ── -->
+<div class="container">
+  <div class="board-wrap">
+
+    <!-- 게시글 목록 -->
+    <main>
+      <div class="toolbar">
+        <button class="filter-btn active" data-cat="all">전체</button>
+        <button class="filter-btn" data-cat="notice">공지</button>
+        <button class="filter-btn" data-cat="update">업데이트</button>
+        <button class="filter-btn" data-cat="event">이벤트</button>
+        <button class="filter-btn" data-cat="edu">교육</button>
+        <button class="filter-btn" data-cat="ai">AI 소식</button>
+        <div class="search-wrap">
+          <input type="text" id="searchInput" placeholder="검색어를 입력하세요">
+        </div>
+      </div>
+
+      <div class="post-list" id="postList"></div>
+
+      <div class="pagination" id="pagination"></div>
+    </main>
+
+    <!-- 사이드바 -->
+    <aside class="sidebar">
+      <div class="widget">
+        <div class="widget-title">STATISTICS</div>
+        <div class="stat-grid">
+          <div class="stat-item">
+            <span class="stat-num" id="totalCount">0</span>
+            <div class="stat-label">전체 게시글</div>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num" id="todayCount">0</span>
+            <div class="stat-label">오늘 등록</div>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num" id="pinnedCount">0</span>
+            <div class="stat-label">공지 고정</div>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num" id="newCount">0</span>
+            <div class="stat-label">NEW</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="widget">
+        <div class="widget-title">CATEGORY</div>
+        <ul class="cat-list" id="catList"></ul>
+      </div>
+
+      <div class="widget">
+        <div class="widget-title">RECENT POSTS</div>
+        <ul class="recent-list" id="recentList"></ul>
+      </div>
+
+      <div class="widget">
+        <div class="widget-title">ADMIN</div>
+        <button class="admin-btn" onclick="openAdminWrite()">
+          ✏️ 새 공지 작성
+        </button>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- ── Footer ── -->
+<footer>
+  <div>
+    <strong style="color:var(--accent)">CHUNGRAM</strong> AI Lab &nbsp;|&nbsp;
+    청람M&C · 한국지역개발경영교육원 &nbsp;|&nbsp; © 2025
+  </div>
+  <div>
+    <a href="https://betweenworld.org" target="_blank">Blog</a> &nbsp;·&nbsp;
+    <a href="index.html">Home</a>
+  </div>
+</footer>
+
+<!-- ── 글쓰기 모달 ── -->
+<div class="modal-overlay" id="writeModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalTitle">NEW POST</h3>
+      <button class="modal-close" onclick="closeModal('writeModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label>카테고리</label>
+          <select id="f_cat">
+            <option value="notice">📢 공지</option>
+            <option value="update">🔄 업데이트</option>
+            <option value="event">🎉 이벤트</option>
+            <option value="edu">📚 교육</option>
+            <option value="ai">🤖 AI 소식</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>작성자</label>
+          <input type="text" id="f_author" value="청람M&C 정구영" placeholder="작성자">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>제목</label>
+        <input type="text" id="f_title" placeholder="게시글 제목을 입력하세요">
+      </div>
+      <div class="form-group">
+        <label>내용</label>
+        <textarea id="f_content" placeholder="내용을 입력하세요&#10;&#10;**굵게** 표시하려면 **텍스트** 형식으로 입력하세요."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-check">
+          <input type="checkbox" id="f_pin"> 상단 고정 (중요 공지)
+        </label>
+      </div>
+      <input type="hidden" id="f_edit_id" value="">
+      <div class="form-actions">
+        <button class="btn-submit" id="submitBtn" onclick="submitPost()">게시글 등록</button>
+        <button class="btn-cancel" onclick="closeModal('writeModal')">취소</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── 관리자 비밀번호 ── -->
+<div class="pwd-overlay" id="pwdOverlay">
+  <div class="pwd-box">
+    <h4>// ADMIN ACCESS</h4>
+    <input type="password" id="pwdInput" placeholder="••••••••"
+           onkeydown="if(event.key==='Enter')checkPwd()">
+    <p class="pwd-error" id="pwdError">⚠ 비밀번호가 틀렸습니다.</p>
+    <div class="pwd-btns">
+      <button class="pwd-confirm" onclick="checkPwd()">확인</button>
+      <button class="pwd-cancel" onclick="closeModal('pwdOverlay')">취소</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── 토스트 ── -->
+<div id="toast"></div>
+
+<script>
+/* ════════════════════════════════════════
+   데이터 관리 (localStorage)
+════════════════════════════════════════ */
+const STORAGE_KEY = 'chungram_notices';
+const ADMIN_PWD   = 'chungram2025'; // 초기 비밀번호 (변경 가능)
+
+const CAT_META = {
+  notice: { label: '공지',    color: '#D4FF5E', icon: '📢' },
+  update: { label: '업데이트', color: '#5eaaff', icon: '🔄' },
+  event:  { label: '이벤트',   color: '#ff9f5e', icon: '🎉' },
+  edu:    { label: '교육',     color: '#c45eff', icon: '📚' },
+  ai:     { label: 'AI 소식',  color: '#5effce', icon: '🤖' },
+};
+
+/* 기본 게시글 */
+const DEFAULT_POSTS = [
+  {
+    id: 1,
+    cat: 'notice',
+    title: '청람M&C AI Lab 공식 웹사이트 오픈 안내',
+    content: `안녕하세요, 청람M&C 정구영 대표입니다. 🎉
+
+**CHUNGRAM AI Lab 공식 웹사이트**가 정식 오픈하였습니다!
+
+이 사이트는 기업 교육 현장에서 AI를 실질적으로 활용할 수 있도록 설계된 플랫폼입니다.
+
+주요 제공 콘텐츠:
+• AI 프롬프트 라이브러리 — 검증된 실전 프롬프트 36종 이상
+• AI 허브 — 업무별 AI 도구 큐레이션
+• 챗봇 지침 가이드 — 조직 맞춤형 AI 활용 전략
+
+앞으로도 지속적으로 콘텐츠를 업데이트할 예정이오니 많은 관심과 방문 부탁드립니다.`,
+    author: '청람M&C 정구영',
+    date: '2025-01-15',
+    pinned: true,
+    views: 248,
+    isNew: false,
+  },
+  {
+    id: 2,
+    cat: 'edu',
+    title: '2025년 기업 AI 활용 교육 과정 안내',
+    content: `2025년도 기업 대상 생성형 AI 활용 교육 과정을 아래와 같이 안내드립니다.
+
+**과정 1: AI 리더십 워크숍** (4H)
+대상: 팀장급 이상 리더
+내용: ChatGPT·Claude를 활용한 의사결정 고도화, 보고서 작성 자동화
+
+**과정 2: AI 업무 혁신 실습** (8H)
+대상: 전 직원
+내용: 업무별 프롬프트 설계, AI 도구 실습, 사례 분석
+
+**과정 3: AI 기반 기획력 향상** (1일 과정)
+대상: 기획·마케팅 부서
+내용: AI를 활용한 전략 기획, 콘텐츠 제작, 데이터 분석
+
+문의: betweenworld.org 또는 직접 연락 주시기 바랍니다.`,
+    author: '청람M&C 정구영',
+    date: '2025-02-03',
+    pinned: false,
+    views: 187,
+    isNew: false,
+  },
+  {
+    id: 3,
+    cat: 'update',
+    title: 'AI 프롬프트 라이브러리 v2.0 업데이트',
+    content: `**프롬프트 라이브러리가 대규모 업데이트** 되었습니다!
+
+주요 변경 사항:
+• 총 프롬프트 수: 24개 → **36개** (12개 신규 추가)
+• 신규 카테고리: ESG·경영, 일상·창작 추가
+• 프롬프트 복사 기능 UI 개선
+• 카테고리 필터 반응속도 향상
+
+신규 추가 프롬프트:
+✅ ESG 보고서 초안 작성
+✅ 조직문화 진단 분석
+✅ 회의 의사록 자동화
+✅ SNS 콘텐츠 캘린더 생성 등
+
+앞으로도 현장에서 검증된 프롬프트를 지속적으로 추가할 예정입니다.`,
+    author: '청람M&C 정구영',
+    date: '2025-03-01',
+    pinned: false,
+    views: 134,
+    isNew: true,
+  },
+  {
+    id: 4,
+    cat: 'ai',
+    title: 'Claude 3.5 Sonnet 활용 교육 사례 공유',
+    content: `최근 하나투어 AI 활용 교육에서 적용한 **Claude 3.5 Sonnet 활용 사례**를 공유합니다.
+
+**활용 분야:**
+• 고객 응대 스크립트 실시간 생성
+• 여행 상품 기획안 초안 작성
+• 팀별 회의록 자동 요약
+
+**주요 성과:**
+✅ 업무 초안 작성 시간 평균 68% 단축
+✅ 참여자 만족도 4.8/5.0
+✅ 3개월 후 자체 활용률 82%
+
+교육 프로그램 도입 문의는 언제든지 환영합니다.`,
+    author: '청람M&C 정구영',
+    date: '2025-03-08',
+    pinned: false,
+    views: 96,
+    isNew: true,
+  },
+  {
+    id: 5,
+    cat: 'event',
+    title: '[무료 웨비나] 생성형 AI로 바꾸는 기업 교육의 미래',
+    content: `**무료 온라인 웨비나**에 여러분을 초대합니다!
+
+📅 일시: 2025년 4월 중 (별도 공지 예정)
+💻 방식: Zoom 온라인 (무료)
+⏱ 시간: 90분
+
+**주요 내용:**
+1. 생성형 AI 시대의 HRD 전략
+2. 현장에서 바로 쓰는 AI 프롬프트 실습
+3. AI 도입 기업의 성공 사례 분석
+4. Q&A 세션
+
+강사: 청람M&C 정구영 대표 (교육학 박사, 기업교육 컨설턴트 22년)
+
+사전 신청: betweenworld.org 블로그를 통해 신청 접수 예정입니다.`,
+    author: '청람M&C 정구영',
+    date: '2025-03-10',
+    pinned: true,
+    views: 203,
+    isNew: true,
+  },
+];
+
+/* 데이터 로드/저장 */
+function loadPosts() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (!raw) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_POSTS));
+    return DEFAULT_POSTS;
+  }
+  return JSON.parse(raw);
+}
+function savePosts(posts) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
+}
+
+/* ════════════════════════════════════════
+   상태
+════════════════════════════════════════ */
+let posts       = loadPosts();
+let currentCat  = 'all';
+let searchQuery = '';
+let currentPage = 1;
+const PER_PAGE  = 8;
+let openPostId  = null;
+let adminUnlocked = false;
+
+function getFiltered() {
+  return posts
+    .filter(p => currentCat === 'all' || p.cat === currentCat)
+    .filter(p => !searchQuery || p.title.includes(searchQuery) || p.content.includes(searchQuery))
+    .sort((a,b) => (b.pinned - a.pinned) || b.id - a.id);
+}
+
+/* ════════════════════════════════════════
+   렌더링
+════════════════════════════════════════ */
+function render() {
+  renderStats();
+  renderCatList();
+  renderRecentList();
+  renderPostList();
+  renderPagination();
+}
+
+function renderStats() {
+  const today = new Date().toISOString().slice(0,10);
+  document.getElementById('totalCount').textContent  = posts.length;
+  document.getElementById('todayCount').textContent  = posts.filter(p=>p.date===today).length;
+  document.getElementById('pinnedCount').textContent = posts.filter(p=>p.pinned).length;
+  document.getElementById('newCount').textContent    = posts.filter(p=>p.isNew).length;
+}
+
+function renderCatList() {
+  const el = document.getElementById('catList');
+  const cats = Object.entries(CAT_META);
+  el.innerHTML = [
+    `<li data-cat="all" onclick="setFilter('all')">
+       <span class="dot" style="background:#D4FF5E"></span>전체
+       <span>${posts.length}</span>
+     </li>`,
+    ...cats.map(([key, m]) => {
+      const cnt = posts.filter(p=>p.cat===key).length;
+      return `<li data-cat="${key}" onclick="setFilter('${key}')">
+        <span class="dot" style="background:${m.color}"></span>${m.icon} ${m.label}
+        <span>${cnt}</span>
+      </li>`;
+    })
+  ].join('');
+}
+
+function renderRecentList() {
+  const el = document.getElementById('recentList');
+  const recent = [...posts].sort((a,b)=>b.id-a.id).slice(0,5);
+  el.innerHTML = recent.map(p =>
+    `<li onclick="jumpToPost(${p.id})">
+       ${p.title}
+       <span class="recent-date">${p.date}</span>
+     </li>`
+  ).join('');
+}
+
+function renderPostList() {
+  const filtered  = getFiltered();
+  const totalPage = Math.ceil(filtered.length / PER_PAGE) || 1;
+  if (currentPage > totalPage) currentPage = 1;
+
+  const sliced = filtered.slice((currentPage-1)*PER_PAGE, currentPage*PER_PAGE);
+  const el = document.getElementById('postList');
+
+  if (!sliced.length) {
+    el.innerHTML = `<div class="empty-state">
+      <div class="icon">📭</div>
+      게시글이 없습니다.
+    </div>`;
+    return;
+  }
+
+  el.innerHTML = sliced.map((p, idx) => {
+    const globalIdx = filtered.length - (currentPage-1)*PER_PAGE - idx;
+    const catM = CAT_META[p.cat] || CAT_META.notice;
+    const detailOpen = openPostId === p.id;
+
+    const contentHtml = p.content
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/https?:\/\/[^\s]+/g, url => `<a href="${url}" target="_blank">${url}</a>`);
+
+    return `
+    <div class="post-item${p.pinned?' pinned':''}" id="post_${p.id}">
+      <div class="post-summary" onclick="togglePost(${p.id})">
+        ${p.pinned
+          ? `<span class="pin-icon">📌</span>`
+          : `<span class="post-num">${globalIdx}</span>`
+        }
+        <span class="post-category cat-${p.cat}">${catM.label.toUpperCase()}</span>
+        <div class="post-title-wrap">
+          <div class="post-title">
+            ${p.title}
+            ${p.isNew ? '<span class="post-new">NEW</span>' : ''}
+          </div>
+          <div class="post-meta">
+            <span class="post-date">${p.date}</span>
+            <span>${p.author}</span>
+          </div>
+        </div>
+        <div class="post-views">${p.views.toLocaleString()}</div>
+      </div>
+      <div class="post-detail${detailOpen?' open':''}" id="detail_${p.id}">
+        <div class="detail-content">${contentHtml}</div>
+        <div class="detail-footer">
+          <div class="detail-author">작성자: <span>${p.author}</span> &nbsp;|&nbsp; ${p.date}${p.updatedAt ? ` &nbsp;<span style="color:var(--accent);font-size:10px">[수정: ${p.updatedAt}]</span>` : ''}</div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            ${adminUnlocked ? `
+              <button class="close-btn" style="border-color:#5eaaff;color:#5eaaff" onclick="editPost(event,${p.id})">✏️ 수정</button>
+              <button class="close-btn" style="border-color:#ff4444;color:#ff4444" onclick="deletePost(event,${p.id})">🗑 삭제</button>
+            ` : ''}
+            <button class="close-btn" onclick="togglePost(${p.id})">닫기 ↑</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderPagination() {
+  const total = Math.ceil(getFiltered().length / PER_PAGE) || 1;
+  const el = document.getElementById('pagination');
+  if (total <= 1) { el.innerHTML = ''; return; }
+  let html = '';
+  if (currentPage > 1) html += `<button class="page-btn" onclick="goPage(${currentPage-1})">‹</button>`;
+  for (let i=1; i<=total; i++) {
+    html += `<button class="page-btn${i===currentPage?' active':''}" onclick="goPage(${i})">${i}</button>`;
+  }
+  if (currentPage < total) html += `<button class="page-btn" onclick="goPage(${currentPage+1})">›</button>`;
+  el.innerHTML = html;
+}
+
+/* ════════════════════════════════════════
+   이벤트 핸들러
+════════════════════════════════════════ */
+function togglePost(id) {
+  // 조회수 증가
+  const p = posts.find(x=>x.id===id);
+  if (p && openPostId !== id) {
+    p.views++;
+    p.isNew = false;
+    savePosts(posts);
+  }
+  openPostId = openPostId === id ? null : id;
+  render();
+  // 열린 게시글로 스크롤
+  if (openPostId) {
+    setTimeout(()=>{
+      const el = document.getElementById('post_'+id);
+      if (el) el.scrollIntoView({ behavior:'smooth', block:'nearest' });
+    }, 50);
+  }
+}
+
+function jumpToPost(id) {
+  const p = posts.find(x=>x.id===id);
+  if (!p) return;
+  currentCat = 'all'; searchQuery = ''; currentPage = 1;
+  openPostId = id;
+  render();
+  setTimeout(()=>{
+    const el = document.getElementById('post_'+id);
+    if (el) el.scrollIntoView({ behavior:'smooth', block:'center' });
+  }, 100);
+}
+
+function setFilter(cat) {
+  currentCat = cat; currentPage = 1; openPostId = null;
+  document.querySelectorAll('.filter-btn').forEach(b=>{
+    b.classList.toggle('active', b.dataset.cat===cat);
+  });
+  render();
+}
+
+function goPage(n) { currentPage = n; openPostId = null; render(); window.scrollTo({top:200,behavior:'smooth'}); }
+
+document.getElementById('searchInput').addEventListener('input', e => {
+  searchQuery = e.target.value.trim();
+  currentPage = 1; openPostId = null;
+  render();
+});
+
+/* ════════════════════════════════════════
+   관리자 글쓰기
+════════════════════════════════════════ */
+function openAdminWrite() {
+  if (adminUnlocked) {
+    // 신규 작성 모드 초기화
+    document.getElementById('f_edit_id').value = '';
+    document.getElementById('modalTitle').textContent = 'NEW POST';
+    document.getElementById('submitBtn').textContent = '게시글 등록';
+    document.getElementById('f_title').value = '';
+    document.getElementById('f_content').value = '';
+    document.getElementById('f_author').value = '청람M&C 정구영';
+    document.getElementById('f_cat').value = 'notice';
+    document.getElementById('f_pin').checked = false;
+    openModal('writeModal');
+  } else {
+    document.getElementById('pwdInput').value = '';
+    document.getElementById('pwdError').style.display = 'none';
+    openModal('pwdOverlay');
+  }
+}
+
+function editPost(e, id) {
+  e.stopPropagation();
+  const p = posts.find(x => x.id === id);
+  if (!p) return;
+  // 수정 모드로 폼 채우기
+  document.getElementById('f_edit_id').value  = id;
+  document.getElementById('modalTitle').textContent = 'EDIT POST';
+  document.getElementById('submitBtn').textContent  = '수정 완료';
+  document.getElementById('f_title').value   = p.title;
+  document.getElementById('f_content').value = p.content;
+  document.getElementById('f_author').value  = p.author;
+  document.getElementById('f_cat').value     = p.cat;
+  document.getElementById('f_pin').checked   = p.pinned;
+  openModal('writeModal');
+}
+
+function checkPwd() {
+  const v = document.getElementById('pwdInput').value;
+  if (v === ADMIN_PWD) {
+    adminUnlocked = true;
+    closeModal('pwdOverlay');
+    // 신규 작성 모드 초기화 후 모달 열기
+    document.getElementById('f_edit_id').value = '';
+    document.getElementById('modalTitle').textContent = 'NEW POST';
+    document.getElementById('submitBtn').textContent  = '게시글 등록';
+    openModal('writeModal');
+    showToast('✅ 관리자 모드 활성화');
+  } else {
+    document.getElementById('pwdError').style.display = 'block';
+    document.getElementById('pwdInput').value = '';
+    document.getElementById('pwdInput').focus();
+  }
+}
+
+function submitPost() {
+  const title   = document.getElementById('f_title').value.trim();
+  const content = document.getElementById('f_content').value.trim();
+  const author  = document.getElementById('f_author').value.trim() || '청람M&C';
+  const cat     = document.getElementById('f_cat').value;
+  const pinned  = document.getElementById('f_pin').checked;
+  const editId  = document.getElementById('f_edit_id').value;
+
+  if (!title) { showToast('⚠ 제목을 입력해주세요.'); return; }
+  if (!content) { showToast('⚠ 내용을 입력해주세요.'); return; }
+
+  if (editId) {
+    // ── 수정 모드 ──
+    const idx = posts.findIndex(p => p.id == editId);
+    if (idx !== -1) {
+      posts[idx] = {
+        ...posts[idx],
+        cat, title, content, author, pinned,
+        updatedAt: new Date().toISOString().slice(0,10),
+      };
+      savePosts(posts);
+      closeModal('writeModal');
+      render();
+      showToast('✅ 게시글이 수정되었습니다!');
+    }
+  } else {
+    // ── 신규 등록 모드 ──
+    const newPost = {
+      id:      Date.now(),
+      cat, title, content, author,
+      date:    new Date().toISOString().slice(0,10),
+      pinned,  views: 0,  isNew: true,
+    };
+    posts.unshift(newPost);
+    savePosts(posts);
+    closeModal('writeModal');
+    currentCat = 'all'; currentPage = 1;
+    render();
+    showToast('✅ 게시글이 등록되었습니다!');
+  }
+
+  // 폼 초기화
+  ['f_title','f_content'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f_pin').checked = false;
+  document.getElementById('f_edit_id').value = '';
+}
+
+function deletePost(e, id) {
+  e.stopPropagation();
+  if (!confirm('정말 삭제하시겠습니까?')) return;
+  posts = posts.filter(p=>p.id!==id);
+  savePosts(posts);
+  openPostId = null;
+  render();
+  showToast('🗑 게시글이 삭제되었습니다.');
+}
+
+/* ════════════════════════════════════════
+   유틸
+════════════════════════════════════════ */
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => { if(e.target===el) closeModal(el.id); });
+});
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 2500);
+}
+
+// Enter key for pwd
+document.getElementById('pwdInput')?.addEventListener('keydown', e=>{
+  if(e.key==='Enter') checkPwd();
+});
+
+/* ════════════════════════════════════════
+   초기 렌더
+════════════════════════════════════════ */
+render();
+</script>
+</body>
+</html>
