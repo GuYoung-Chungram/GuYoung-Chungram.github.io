@@ -169,6 +169,7 @@
     { label: 'AI 허브',   href: 'https://guyoung-chungram.github.io/chungram-ai-tool-hub.html',  anchor: false },
     { label: '전자책',    href: HOME_URL + '#ebooks',                                             anchor: false },
     { label: 'FAQ',       href: HOME_URL + '#faq',                                                anchor: false },
+    { label: '공지사항',  href: 'https://guyoung-chungram.github.io/chungram-notice.html',        anchor: false },
   ];
 
   /* ── 3. Nav DOM 생성 ──────────────────────────────── */
@@ -203,6 +204,12 @@
       const a = document.createElement('a');
       a.href = item.href;
       a.textContent = item.label;
+
+      // 외부 링크는 새 탭에서 열기
+      if (item.href.startsWith('http') && !item.href.includes('guyoung-chungram.github.io')) {
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+      }
 
       // 현재 페이지 active 표시
       const itemFile = item.href.split('/').pop().split('#')[0] || 'index.html';

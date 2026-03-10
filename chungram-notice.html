@@ -752,3 +752,266 @@
 <body>
 
 <script src="chungram-shared.js"></script>
+
+
+<!-- ── 페이지 헤더 ── -->
+<div class="page-header">
+  <div class="container">
+    <div class="header-tag">NOTICE BOARD</div>
+    <h1>공지<span>사항</span></h1>
+    <p>청람M&C AI Lab의 새로운 소식과 업데이트를 확인하세요.</p>
+  </div>
+</div>
+
+<!-- ── 메인 영역 ── -->
+<div class="container">
+  <div class="board-wrap">
+
+    <!-- 좌측: 게시글 목록 -->
+    <div class="board-main">
+      <div class="toolbar">
+        <button class="filter-btn active" data-cat="all">전체</button>
+        <button class="filter-btn" data-cat="notice">공지</button>
+        <button class="filter-btn" data-cat="update">업데이트</button>
+        <button class="filter-btn" data-cat="event">이벤트</button>
+        <button class="filter-btn" data-cat="edu">교육</button>
+        <button class="filter-btn" data-cat="ai">AI</button>
+        <div class="search-wrap">
+          <input type="text" id="searchInput" placeholder="검색어 입력">
+        </div>
+      </div>
+
+      <div class="post-list" id="postList"></div>
+
+      <div class="pagination" id="pagination"></div>
+    </div>
+
+    <!-- 우측: 사이드바 -->
+    <div class="sidebar">
+      <div class="widget">
+        <div class="widget-title">STATISTICS</div>
+        <div class="stat-grid">
+          <div class="stat-item"><span class="stat-num" id="totalPosts">0</span><div class="stat-label">전체 글</div></div>
+          <div class="stat-item"><span class="stat-num" id="totalViews">0</span><div class="stat-label">총 조회</div></div>
+          <div class="stat-item"><span class="stat-num" id="thisMonth">0</span><div class="stat-label">이번달</div></div>
+          <div class="stat-item"><span class="stat-num" id="pinnedCount">0</span><div class="stat-label">고정글</div></div>
+        </div>
+      </div>
+      <div class="widget">
+        <div class="widget-title">CATEGORIES</div>
+        <ul class="cat-list" id="catList"></ul>
+      </div>
+      <div class="widget">
+        <div class="widget-title">RECENT POSTS</div>
+        <ul class="recent-list" id="recentList"></ul>
+      </div>
+      <button class="admin-btn" onclick="openAdminPwd()">🔐 관리자 모드</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── 글쓰기 모달 ── -->
+<div class="modal-overlay" id="writeModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>NEW POST</h3>
+      <button class="modal-close" onclick="closeWriteModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label>CATEGORY</label>
+          <select id="postCat">
+            <option value="notice">공지</option>
+            <option value="update">업데이트</option>
+            <option value="event">이벤트</option>
+            <option value="edu">교육</option>
+            <option value="ai">AI</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>AUTHOR</label>
+          <input type="text" id="postAuthor" value="청람M&C" placeholder="작성자">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>TITLE</label>
+        <input type="text" id="postTitle" placeholder="제목을 입력하세요">
+      </div>
+      <div class="form-group">
+        <label>CONTENT</label>
+        <textarea id="postContent" placeholder="내용을 입력하세요. URL은 자동으로 링크됩니다."></textarea>
+      </div>
+      <label class="form-check"><input type="checkbox" id="postPinned"> 상단 고정</label>
+      <div class="form-actions">
+        <button class="btn-submit" onclick="submitPost()">등록</button>
+        <button class="btn-cancel" onclick="closeWriteModal()">취소</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── 비밀번호 모달 ── -->
+<div class="pwd-overlay" id="pwdOverlay">
+  <div class="pwd-box">
+    <h4>ADMIN ACCESS</h4>
+    <input type="password" id="pwdInput" placeholder="••••" maxlength="10">
+    <div class="pwd-error" id="pwdError">비밀번호가 올바르지 않습니다</div>
+    <div class="pwd-btns">
+      <button class="pwd-confirm" onclick="checkAdminPwd()">확인</button>
+      <button class="pwd-cancel" onclick="closeAdminPwd()">취소</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<footer>
+  <span>&copy; 2025 청람M&C AI Lab</span>
+  <span>
+    <a href="https://betweenworld.org" target="_blank">Blog</a> &nbsp;&middot;&nbsp;
+    <a href="index.html">Home</a>
+  </span>
+</footer>
+
+<script>
+  var ADMIN_PWD = 'chungram2025';
+  var isAdmin = false;
+  var currentFilter = 'all';
+  var currentPage = 1;
+  var PER_PAGE = 10;
+
+  var defaultPosts = [
+    {
+      id: 1, cat: 'notice', pinned: true,
+      title: '\uccad\ub78cM&C AI Lab \uc6f9\uc0ac\uc774\ud2b8 \uc624\ud508 \uc548\ub0b4',
+      date: '2025-03-10', author: '\uccad\ub78cM&C', views: 128,
+      content: '\uc548\ub155\ud558\uc138\uc694, \uccad\ub78cM&C\uc785\ub2c8\ub2e4.\n\nAI \uad50\uc721 \ucee8\uc124\ud305 \uc804\ubb38 \ud50c\ub7ab\ud3fc CHUNGRAM AI Lab \uc6f9\uc0ac\uc774\ud2b8\uac00 \uc0c8\ub86d\uac8c \uc624\ud508\ud558\uc600\uc2b5\ub2c8\ub2e4.\n\n\uc8fc\uc694 \uae30\ub2a5:\n\u2022 \ud504\ub86c\ud504\ud2b8 \ub77c\uc774\ube0c\ub7ec\ub9ac \u2014 \uac80\uc99d\ub41c \uc2e4\uc804 \ud504\ub86c\ud504\ud2b8 \ucef4\ub809\uc158\n\u2022 \ucc57\ubd07 \uc9c0\uce68 \ub77c\uc774\ube0c\ub7ec\ub9ac \u2014 Gems/GPTs\uc6a9 \uc2dc\uc2a4\ud15c \ud504\ub86c\ud504\ud2b8\n\u2022 AI \ud5c8\ube0c \u2014 \uc5c5\ubb34\ubcc4 AI \ub3c4\uad6c \ud050\ub808\uc774\uc158\n\u2022 \uacf5\uc9c0\uc0ac\ud56d \u2014 \ucd5c\uc2e0 \uc18c\uc2dd \ubc0f \uc5c5\ub370\uc774\ud2b8\n\n\uc55e\uc73c\ub85c \uc9c0\uc18d\uc801\uc73c\ub85c \ucf58\ud150\uce20\ub97c \ud655\ucda9\ud574 \ub098\uac00\uaca0\uc2b5\ub2c8\ub2e4.\n\uac10\uc0ac\ud569\ub2c8\ub2e4.'
+    },
+    {
+      id: 2, cat: 'update', pinned: true,
+      title: '\ud504\ub86c\ud504\ud2b8 \ub77c\uc774\ube0c\ub7ec\ub9ac v2.0 \uc5c5\ub370\uc774\ud2b8 \uc644\ub8cc',
+      date: '2025-03-09', author: '\uccad\ub78cM&C', views: 95,
+      content: '\ud504\ub86c\ud504\ud2b8 \ub77c\uc774\ube0c\ub7ec\ub9ac\uac00 v2.0\uc73c\ub85c \uc5c5\ub370\uc774\ud2b8\ub418\uc5c8\uc2b5\ub2c8\ub2e4.\n\n\ubcc0\uacbd\uc0ac\ud56d:\n\u2022 UI/UX \uc804\uba74 \uac1c\ud3b8 \u2014 \ub2e4\ud06c \ubaa8\ub4dc \uae30\ubc18 \uc0c8\ub85c\uc6b4 \ub514\uc790\uc778\n\u2022 \uce74\ud14c\uace0\ub9ac \ud544\ud130\ub9c1 \uae30\ub2a5 \uac15\ud654\n\u2022 \uc6d0\ud074\ub9ad \ubcf5\uc0ac \uae30\ub2a5 \uac1c\uc120\n\u2022 \ubaa8\ubc14\uc77c \ubc18\uc751\ud615 \ucd5c\uc801\ud654\n\n\ub9ce\uc740 \ud65c\uc6a9 \ubd80\ud0c1\ub4dc\ub9bd\ub2c8\ub2e4.'
+    },
+    {
+      id: 3, cat: 'ai', pinned: false,
+      title: 'AI \ud5c8\ube0c \u2014 \uc5c5\ubb34\ubcc4 AI \ub3c4\uad6c \ud050\ub808\uc774\uc158 \uc624\ud508',
+      date: '2025-03-08', author: '\uccad\ub78cM&C', views: 72,
+      content: 'AI \ud5c8\ube0c \ud398\uc774\uc9c0\uac00 \uc624\ud508\ub418\uc5c8\uc2b5\ub2c8\ub2e4.\n\n5\uac00\uc9c0 \uce74\ud14c\uace0\ub9ac\ub85c \ubd84\ub958\ub41c AI \ub3c4\uad6c \ubaa8\uc74c:\n\u2022 Chat \u2014 \ub300\ud654\ud615 AI \uc5b4\uc2dc\uc2a4\ud134\ud2b8\n\u2022 Research \u2014 \ub9ac\uc11c\uce58 \ubc0f \ubd84\uc11d \ub3c4\uad6c\n\u2022 Design \u2014 \ub514\uc790\uc778 \ubc0f \uc774\ubbf8\uc9c0 \uc0dd\uc131\n\u2022 Video \u2014 \uc601\uc0c1 \uc81c\uc791 \ubc0f \ud3b8\uc9d1\n\u2022 Dev \u2014 \uac1c\ubc1c \uc9c0\uc6d0 \ub3c4\uad6c\n\n\uac01 \ub3c4\uad6c\uc758 \ud2b9\uc9d5\uacfc \ud65c\uc6a9\ubc95\uc744 \ud655\uc778\ud574\ubcf4\uc138\uc694.'
+    },
+    {
+      id: 4, cat: 'edu', pinned: false,
+      title: '2025\ub144 \uc0c1\ubc18\uae30 \uae30\uc5c5\uad50\uc721 \ud504\ub85c\uadf8\ub7a8 \uc548\ub0b4',
+      date: '2025-03-07', author: '\uc815\uad6c\uc601 \ub300\ud45c', views: 156,
+      content: '2025\ub144 \uc0c1\ubc18\uae30 \uae30\uc5c5\uad50\uc721 \ud504\ub85c\uadf8\ub7a8\uc744 \uc548\ub0b4\ub4dc\ub9bd\ub2c8\ub2e4.\n\n\u25a0 \uc8fc\uc694 \uad50\uc721\uacfc\uc815\n\u2022 AI \ud65c\uc6a9 \uc5c5\ubb34\ud601\uc2e0 \u2014 \uc0dd\uc131\ud615 AI\ub97c \ud65c\uc6a9\ud55c \uc5c5\ubb34 \uc0dd\uc0b0\uc131 \ud5a5\uc0c1\n\u2022 \ub9ac\ub354\uc2ed \uc5ed\ub7c9\uac15\ud654 \u2014 \ubcc0\ud654 \uc2dc\ub300\uc758 \ub9ac\ub354\uc2ed \uc2a4\ud0ac\n\u2022 ESG \uacbd\uc601 \uc2e4\ubb34 \u2014 \uc9c0\uc18d\uac00\ub2a5\uacbd\uc601 \uc804\ub7b5\uacfc \uc2e4\ud589\n\u2022 \uc870\uc9c1\ubb38\ud654 \ud601\uc2e0 \u2014 \uc2ec\ub9ac\uc801 \uc548\uc804\uac10\uacfc \ud300 \ube4c\ub529\n\n\ubb38\uc758: cheongram@naver.com'
+    },
+    {
+      id: 5, cat: 'notice', pinned: false,
+      title: '\ucc57\ubd07 \uc9c0\uce68 \ub77c\uc774\ube0c\ub7ec\ub9ac \uc2e0\uaddc \ucf58\ud150\uce20 \ucd94\uac00',
+      date: '2025-03-06', author: '\uccad\ub78cM&C', views: 63,
+      content: '\ucc57\ubd07 \uc9c0\uce68 \ub77c\uc774\ube0c\ub7ec\ub9ac\uc5d0 \uc0c8\ub85c\uc6b4 \uc2dc\uc2a4\ud15c \ud504\ub86c\ud504\ud2b8\uac00 \ucd94\uac00\ub418\uc5c8\uc2b5\ub2c8\ub2e4.\n\n\uc2e0\uaddc \ucd94\uac00 \uc9c0\uce68:\n\u2022 \uc804\ub7b5\uc801 \ubcf4\uace0\uc11c \uc791\uc131 \ub3c4\uc6b0\ubbf8\n\u2022 \uc18c\ud06c\ub77c\ud14c\uc2a4\uc2dd \ud559\uc2b5 \ucf54\uce58\n\u2022 ESG \uacbd\uc601 \ubd84\uc11d\uad00\n\u2022 \uc870\uc9c1\ubb38\ud654 \uc9c4\ub2e8 \ucee8\uc124\ud134\ud2b8\n\u2022 \ucc3d\uc758\uc801 \uae00\uc4f0\uae30 \ud30c\ud2b8\ub108\n\nGemini Gems \ub610\ub294 ChatGPT\uc758 \ub098\ub9cc\uc758 GPTs\uc5d0\uc11c \ud65c\uc6a9\ud558\uc138\uc694.'
+    },
+    {
+      id: 6, cat: 'event', pinned: false,
+      title: '\ube14\ub85c\uadf8 BTW(Between World) \uc5f0\ub3d9 \uc548\ub0b4',
+      date: '2025-03-05', author: '\uccad\ub78cM&C', views: 89,
+      content: '\uccad\ub78cM&C\uc758 \uacf5\uc2dd \ube14\ub85c\uadf8 BTW(Between World)\uac00 AI Lab\uacfc \uc5f0\ub3d9\ub418\uc5c8\uc2b5\ub2c8\ub2e4.\n\n\ube14\ub85c\uadf8 \ubc14\ub85c\uac00\uae30: https://betweenworld.org'
+    },
+    {
+      id: 7, cat: 'update', pinned: false,
+      title: '\ubcf4\uc548 \uac15\ud654 \uc5c5\ub370\uc774\ud2b8 \uc801\uc6a9 \uc644\ub8cc',
+      date: '2025-03-04', author: '\uccad\ub78cM&C', views: 45,
+      content: '\uc6f9\uc0ac\uc774\ud2b8 \ubcf4\uc548\uc774 \uac15\ud654\ub418\uc5c8\uc2b5\ub2c8\ub2e4.\n\n\uc801\uc6a9 \ud56d\ubaa9:\n\u2022 \ucf58\ud150\uce20 \ubcf4\uc548 \uc815\ucc45(CSP) \uc801\uc6a9\n\u2022 AI \ud06c\ub864\ub7ec \ud559\uc2b5 \ucc28\ub2e8 \uc124\uc815\n\u2022 \uc6b0\ud074\ub9ad \ubcf5\uc0ac \ubcf4\ud638 \uae30\ub2a5\n\u2022 XSS/\uc778\uc81d\uc158 \ubc29\uc5b4 \ud5e4\ub354 \ucd94\uac00\n\n\uc548\uc804\ud558\uac8c \uc774\uc6a9\ud574 \uc8fc\uc138\uc694.'
+    }
+  ];
+
+  var posts = JSON.parse(localStorage.getItem('chungram_posts')) || defaultPosts.slice();
+
+  function savePosts() { localStorage.setItem('chungram_posts', JSON.stringify(posts)); }
+  function showToast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(function() { t.classList.remove('show'); }, 2500);
+  }
+  function isNew(d) { return (new Date() - new Date(d)) < 604800000; }
+  var catLabel = { notice: '\uacf5\uc9c0', update: '\uc5c5\ub370\uc774\ud2b8', event: '\uc774\ubca4\ud2b8', edu: '\uad50\uc721', ai: 'AI' };
+
+  function getFiltered() {
+    var l = posts.slice();
+    var q = document.getElementById('searchInput').value.trim().toLowerCase();
+    if (q) l = l.filter(function(p){ return p.title.toLowerCase().includes(q)||p.content.toLowerCase().includes(q); });
+    if (currentFilter !== 'all') l = l.filter(function(p){ return p.cat === currentFilter; });
+    l.sort(function(a,b){ if(a.pinned!==b.pinned) return b.pinned?1:-1; return new Date(b.date)-new Date(a.date); });
+    return l;
+  }
+
+  function renderPosts() {
+    var l = getFiltered(), total = l.length;
+    var tp = Math.max(1, Math.ceil(total/PER_PAGE));
+    if (currentPage > tp) currentPage = tp;
+    var s = (currentPage-1)*PER_PAGE, pi = l.slice(s, s+PER_PAGE);
+    var c = document.getElementById('postList');
+    if (!pi.length) { c.innerHTML = '<div class="empty-state"><div class="icon">\ud83d\udccb</div>\uac8c\uc2dc\uae00\uc774 \uc5c6\uc2b5\ub2c8\ub2e4.</div>'; }
+    else {
+      c.innerHTML = pi.map(function(p,i){
+        var n=total-s-i, cc='cat-'+p.cat;
+        var nb = isNew(p.date)?'<span class="post-new">NEW</span>':'';
+        var ec = p.content.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/https?:\/\/[^\s]+/g,function(u){return '<a href="'+u+'" target="_blank">'+u+'</a>';});
+        var del = isAdmin?'<button class="close-btn" style="border-color:var(--red);color:var(--red);margin-left:8px" onclick="event.stopPropagation();deletePost('+p.id+')">\uc0ad\uc81c</button>':'';
+        return '<div class="post-item '+(p.pinned?'pinned':'')+'" onclick="togglePost(this)"><div class="post-summary">'
+          +(p.pinned?'<div class="pin-icon">\ud83d\udccc</div>':'<div class="post-num">'+n+'</div>')
+          +'<div class="post-category '+cc+'">'+catLabel[p.cat]+'</div>'
+          +'<div class="post-title-wrap"><div class="post-title">'+p.title+nb+'</div>'
+          +'<div class="post-meta"><span class="post-date">'+p.date+'</span></div></div>'
+          +'<div class="post-views">'+(p.views||0)+'</div></div>'
+          +'<div class="post-detail"><div class="detail-content">'+ec+'</div>'
+          +'<div class="detail-footer"><div class="detail-author">\uc791\uc131\uc790: <span>'+p.author+'</span></div>'
+          +'<div><button class="close-btn" onclick="event.stopPropagation();this.closest(\'.post-item\').querySelector(\'.post-detail\').classList.remove(\'open\')">\ub2eb\uae30</button>'+del+'</div></div></div></div>';
+      }).join('');
+    }
+    var pe = document.getElementById('pagination');
+    if (tp<=1){pe.innerHTML='';return;}
+    var h='';for(var i=1;i<=tp;i++) h+='<button class="page-btn '+(i===currentPage?'active':'')+'" onclick="goPage('+i+')">'+i+'</button>';
+    pe.innerHTML=h;
+  }
+
+  function renderSidebar() {
+    document.getElementById('totalPosts').textContent = posts.length;
+    document.getElementById('totalViews').textContent = posts.reduce(function(s,p){return s+(p.views||0);},0);
+    var now=new Date();
+    document.getElementById('thisMonth').textContent = posts.filter(function(p){var d=new Date(p.date);return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();}).length;
+    document.getElementById('pinnedCount').textContent = posts.filter(function(p){return p.pinned;}).length;
+    var cats={};posts.forEach(function(p){cats[p.cat]=(cats[p.cat]||0)+1;});
+    var cl={notice:'var(--accent)',update:'var(--blue)',event:'#ff9f5e',edu:'#c45eff',ai:'#5effce'};
+    document.getElementById('catList').innerHTML = Object.keys(catLabel).map(function(k){
+      return '<li onclick="filterCat(\''+k+'\')" style="cursor:pointer"><span style="display:flex;align-items:center;gap:6px"><span class="dot" style="background:'+(cl[k]||'#888')+'"></span>'+catLabel[k]+'</span><span>'+(cats[k]||0)+'</span></li>';
+    }).join('');
+    var rc=posts.slice().sort(function(a,b){return new Date(b.date)-new Date(a.date);}).slice(0,5);
+    document.getElementById('recentList').innerHTML = rc.map(function(p){
+      return '<li onclick="filterCat(\'all\')">'+p.title+'<span class="recent-date">'+p.date+'</span></li>';
+    }).join('');
+  }
+
+  function togglePost(el){var d=el.querySelector('.post-detail'),w=d.classList.contains('open');document.querySelectorAll('.post-detail.open').forEach(function(x){x.classList.remove('open');});if(!w)d.classList.add('open');}
+  function goPage(n){currentPage=n;renderPosts();window.scrollTo({top:300,behavior:'smooth'});}
+  function filterCat(cat){currentFilter=cat;currentPage=1;document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.toggle('active',b.dataset.cat===cat);});renderPosts();}
+  document.querySelectorAll('.filter-btn').forEach(function(b){b.addEventListener('click',function(){filterCat(b.dataset.cat);});});
+  document.getElementById('searchInput').addEventListener('input',function(){currentPage=1;renderPosts();});
+
+  function openAdminPwd(){document.getElementById('pwdOverlay').classList.add('open');document.getElementById('pwdInput').value='';document.getElementById('pwdError').style.display='none';setTimeout(function(){document.getElementById('pwdInput').focus();},100);}
+  function closeAdminPwd(){document.getElementById('pwdOverlay').classList.remove('open');}
+  function checkAdminPwd(){var v=document.getElementById('pwdInput').value;if(v===ADMIN_PWD){isAdmin=true;closeAdminPwd();showToast('\ud83d\udd13 \uad00\ub9ac\uc790 \ubaa8\ub4dc \ud65c\uc131\ud654');document.querySelector('.admin-btn').textContent='\u270f\ufe0f \uc0c8 \uae00 \uc791\uc131';document.querySelector('.admin-btn').onclick=openWriteModal;renderPosts();}else{document.getElementById('pwdError').style.display='block';}}
+  document.getElementById('pwdInput').addEventListener('keydown',function(e){if(e.key==='Enter')checkAdminPwd();});
+  function openWriteModal(){document.getElementById('writeModal').classList.add('open');}
+  function closeWriteModal(){document.getElementById('writeModal').classList.remove('open');}
+  function submitPost(){var t=document.getElementById('postTitle').value.trim(),co=document.getElementById('postContent').value.trim(),ca=document.getElementById('postCat').value,au=document.getElementById('postAuthor').value.trim()||'\uccad\ub78cM&C',pi=document.getElementById('postPinned').checked;if(!t||!co){showToast('\u26a0\ufe0f \uc81c\ubaa9\uacfc \ub0b4\uc6a9\uc744 \uc785\ub825\ud558\uc138\uc694');return;}var mx=posts.reduce(function(m,p){return Math.max(m,p.id);},0);posts.unshift({id:mx+1,cat:ca,pinned:pi,title:t,date:new Date().toISOString().slice(0,10),author:au,views:0,content:co});savePosts();closeWriteModal();showToast('\u2705 \uac8c\uc2dc\uae00\uc774 \ub4f1\ub85d\ub418\uc5c8\uc2b5\ub2c8\ub2e4');currentPage=1;renderPosts();renderSidebar();}
+  function deletePost(id){event.stopPropagation();if(!confirm('\uc774 \uac8c\uc2dc\uae00\uc744 \uc0ad\uc81c\ud558\uc2dc\uaca0\uc2b5\ub2c8\uae4c?'))return;posts=posts.filter(function(p){return p.id!==id;});savePosts();showToast('\ud83d\uddd1\ufe0f \uc0ad\uc81c\ub418\uc5c8\uc2b5\ub2c8\ub2e4');renderPosts();renderSidebar();}
+
+  renderPosts();
+  renderSidebar();
+</script>
+
+</body>
+</html>
+

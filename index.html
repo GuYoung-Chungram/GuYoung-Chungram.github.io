@@ -1590,6 +1590,8 @@
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           const id = entry.target.id;
+          // 전자책·FAQ는 하이라이트 대상에서 제외
+          if (id === 'ebooks' || id === 'faq') return;
           navLinks.forEach(a => {
             a.classList.toggle('active',
               a.getAttribute('href') === '#' + id ||
