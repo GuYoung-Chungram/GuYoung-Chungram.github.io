@@ -394,6 +394,24 @@
       background: transparent !important;
     }
 
+    /* 협업 문의하기 버튼 */
+    .nav-links a.nav-collab {
+      background: var(--accent);
+      color: #000 !important;
+      font-weight: 700;
+      border-radius: 6px;
+      padding: 7px 14px;
+      letter-spacing: -0.2px;
+      box-shadow: 0 0 10px rgba(212,255,94,0.35);
+      transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+    }
+    .nav-links a.nav-collab:hover {
+      background: #c8f54a;
+      box-shadow: 0 0 18px rgba(212,255,94,0.55);
+      transform: translateY(-1px);
+      color: #000 !important;
+    }
+
     .nav-toggle {
       display: none;
       flex-direction: column;
@@ -1179,6 +1197,7 @@
         <li><a href="#ebooks" style="background:transparent!important;color:rgba(255,255,255,0.55)!important;" class="no-hl">전자책</a></li>
         <li><a href="#faq" style="background:transparent!important;color:rgba(255,255,255,0.55)!important;" class="no-hl">FAQ</a></li>
         <li><a href="chungram-notice.html">공지사항</a></li>
+        <li><a href="https://forms.gle/dQsqqGZ16b5YizBu8" target="_blank" rel="noopener noreferrer" class="nav-collab">🤝 협업 문의하기</a></li>
       </ul>
       <button class="nav-toggle" aria-label="메뉴" onclick="document.getElementById('navLinks').classList.toggle('open')">
         <span></span><span></span><span></span>
