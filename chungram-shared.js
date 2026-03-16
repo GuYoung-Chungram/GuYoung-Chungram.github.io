@@ -160,6 +160,23 @@
     .chungram-scroll-btn:active {
       transform: scale(0.96);
     }
+    /* 협업 문의하기 버튼 */
+    #chungram-nav .nav-links li a.nav-collab {
+      background: #D4FF5E;
+      color: #000 !important;
+      font-weight: 700;
+      border-radius: 6px;
+      padding: 7px 14px;
+      letter-spacing: -0.2px;
+      box-shadow: 0 0 10px rgba(212,255,94,0.35);
+      transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+    }
+    #chungram-nav .nav-links li a.nav-collab:hover {
+      background: #c8f54a;
+      box-shadow: 0 0 18px rgba(212,255,94,0.55);
+      transform: translateY(-1px);
+      color: #000 !important;
+    }
     /* 페이지 상단 여백 확보 (nav 높이만큼) */
     body.chungram-nav-injected {
       padding-top: 60px !important;
@@ -177,6 +194,7 @@
     { label: '전자책',    href: HOME_URL + '#ebooks',                                             anchor: false },
     { label: 'FAQ',       href: HOME_URL + '#faq',                                                anchor: false },
     { label: '공지사항',  href: 'https://guyoung-chungram.github.io/chungram-notice.html',        anchor: false },
+    { label: '🤝 협업 문의하기', href: 'https://forms.gle/dQsqqGZ16b5YizBu8', collab: true, anchor: false },
   ];
 
   /* ── 3. Nav DOM 생성 ──────────────────────────────── */
@@ -215,6 +233,7 @@
       const a = document.createElement('a');
       a.href = item.href;
       a.textContent = item.label;
+      if (item.collab) a.classList.add('nav-collab');
 
       // 외부 링크는 새 탭에서 열기
       if (item.href.startsWith('http') && !item.href.includes('guyoung-chungram.github.io')) {

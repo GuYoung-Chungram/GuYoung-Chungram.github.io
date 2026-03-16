@@ -208,6 +208,9 @@
       margin: 0 auto;
       position: relative;
       z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       text-align: center;
     }
 
@@ -243,6 +246,8 @@
       letter-spacing: 0.06em;
       line-height: 0.95;
       margin-bottom: 16px;
+      text-align: center;
+      width: 100%;
       animation: fadeUp .7s .08s both;
     }
 
@@ -258,6 +263,7 @@
       line-height: 1.7;
       max-width: 560px;
       margin: 0 auto 32px;
+      text-align: center;
       animation: fadeUp .7s .14s both;
     }
 
@@ -900,7 +906,7 @@
 
       .header-controls {
         flex-direction: column;
-        align-items: stretch;
+        align-items: center;
       }
 
       .search-wrap {
@@ -909,13 +915,31 @@
 
       .stats-strip {
         flex-direction: column;
-        width: 100%;
+        width: fit-content;
+        margin: 28px auto 0;
       }
 
       .stat-item {
         border-right: none;
         border-bottom: 1px solid var(--cg-border-dim);
       }
+    }
+    /* 협업 문의하기 버튼 */
+    .nav-collab-btn {
+      background: var(--cg-accent) !important;
+      color: #000 !important;
+      font-weight: 700 !important;
+      border-radius: 6px !important;
+      padding: 7px 14px !important;
+      letter-spacing: -0.2px !important;
+      box-shadow: 0 0 10px rgba(212,255,94,0.35) !important;
+      transition: background 0.2s, box-shadow 0.2s, transform 0.15s !important;
+    }
+    .nav-collab-btn:hover {
+      background: #c8f54a !important;
+      box-shadow: 0 0 18px rgba(212,255,94,0.55) !important;
+      transform: translateY(-1px) !important;
+      color: #000 !important;
     }
   </style>
 </head>
@@ -937,6 +961,7 @@
       <a href="index.html#ebooks">전자책</a>
       <a href="index.html#faq">FAQ</a>
       <a href="chungram-notice.html">공지사항</a>
+      <a href="https://forms.gle/dQsqqGZ16b5YizBu8" target="_blank" rel="noopener noreferrer" class="nav-collab-btn">🤝 협업 문의하기</a>
     </div>
     
   </nav>
