@@ -1090,20 +1090,15 @@
 
       const d = collectData();
 
-      try {
-        // Google Apps Script CORS 우회: no-cors + text/plain (Simple Request)
-        await fetch(SCRIPT_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify(d)
-        });
-        // no-cors = opaque response, 성공 여부 불명이지만 데이터는 전달됨
-      } catch (err) {
-        // 네트워크 오류 시에도 성공 화면 표시 (UX 유지)
-        console.warn('fetch error:', err);
-      }
+      // 🔥 fire-and-forget: 보내고 응답 기다리지 않음
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(d)
+      }).catch(function (err) { console.warn('fetch error:', err); });
 
+      // 전송과 동시에 즉시 성공 화면 표시
       showSuccess(d);
     }
 
