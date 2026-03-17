@@ -194,7 +194,7 @@
     { label: '전자책',    href: HOME_URL + '#ebooks',                                             anchor: false },
     { label: 'FAQ',       href: HOME_URL + '#faq',                                                anchor: false },
     { label: '공지사항',  href: 'https://guyoung-chungram.github.io/chungram-notice.html',        anchor: false },
-    { label: '🤝 협업 문의하기', href: 'https://forms.gle/dQsqqGZ16b5YizBu8', collab: true, anchor: false },
+    { label: '🤝 협업 문의하기', href: 'cheongram_proposal_v2.html', collab: true, anchor: false },
   ];
 
   /* ── 3. Nav DOM 생성 ──────────────────────────────── */

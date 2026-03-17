@@ -112,6 +112,17 @@ body{font-family:var(--ff);color:#1A1A1A;background:#F4F6FB;min-height:100vh;dis
 .notice-icon{font-size:15px;flex-shrink:0;margin-top:1px;}
 .notice-text{font-size:12px;color:#3B5FC0;line-height:1.7;}
 
+
+/* === PRIVACY AGREE === */
+.privacy-agree{margin-bottom:14px;}
+.privacy-label{display:flex;align-items:flex-start;gap:10px;cursor:pointer;}
+.privacy-label input[type=checkbox]{
+  width:16px;height:16px;flex-shrink:0;margin-top:2px;
+  accent-color:var(--cr);cursor:pointer;
+}
+.privacy-text{font-size:12px;color:#555;line-height:1.7;}
+.privacy-label:hover .privacy-text{color:#333;}
+
 /* === SUBMIT BTN === */
 .submit-btn{
   width:100%;padding:15px;border-radius:8px;border:none;
@@ -164,7 +175,7 @@ body{font-family:var(--ff);color:#1A1A1A;background:#F4F6FB;min-height:100vh;dis
 /* === FOOTER === */
 .card-footer{
   background:#F8F9FB;border-top:1px solid #ECEDF0;
-  padding:12px 36px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;
+  padding:12px 36px;display:flex;justify-content:flex-end;align-items:center;
 }
 .cf-brand{display:flex;align-items:center;gap:7px;}
 .cf-dot{width:5px;height:5px;background:var(--cr);border-radius:1px;}
@@ -358,15 +369,27 @@ body{font-family:var(--ff);color:#1A1A1A;background:#F4F6FB;min-height:100vh;dis
           <span class="notice-text">요청하신 내용을 바탕으로 <strong>1~2일 이내</strong>에 담당 컨설턴트가 직접 검토하여<br>귀 기관에 최적화된 맞춤형 제안서를 발송해 드리겠습니다.</span>
         </div>
 
-        <button class="submit-btn" id="submit-btn" onclick="submitRequest()">
+        <div class="privacy-agree" id="g-privacy">
+          <label class="privacy-label">
+            <input type="checkbox" id="privacy-check" onchange="updatePrivacy()">
+            <span class="privacy-text">
+              수집된 개인정보(이름, 소속, 이메일, 전화번호)는 교육 문의 답변 및 제안서 발송 목적으로만 사용되며,
+              응답 완료 후 1년간 보관 후 파기됩니다.
+              <strong><a href="#" onclick="return false;" style="color:var(--cr);text-decoration:underline;" title="개인정보처리방침">개인정보 수집·이용에 동의합니다.</a></strong>
+              <span class="req" style="color:#D93025;margin-left:2px;">*</span>
+            </span>
+          </label>
+          <span class="field-error" id="privacy-error" style="display:none;font-size:11px;color:#D93025;margin-top:4px;">개인정보 수집·이용에 동의해 주세요.</span>
+        </div>
+
+                <button class="submit-btn" id="submit-btn" onclick="submitRequest()">
           <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M2.5 8.5h10M9 4.5l4.5 4-4.5 4" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
           문의 접수하기
         </button>
       </div>
 
       <div class="card-footer">
-        <div class="cf-brand"><div class="cf-dot"></div><span class="cf-name">청람M&amp;C</span></div>
-        <span class="cf-meta">정구영 Ph.D. · 기업교육 컨설팅 22년 · crmc.co.kr</span>
+        <span class="cf-name" style="font-size:12px;font-weight:700;color:#1A1A1A;">청람M&amp;C</span>
       </div>
     </div><!-- /form-view -->
 
@@ -395,8 +418,7 @@ body{font-family:var(--ff);color:#1A1A1A;background:#F4F6FB;min-height:100vh;dis
         <button class="back-btn" onclick="resetForm()">다른 과정 문의하기</button>
       </div>
       <div class="card-footer">
-        <div class="cf-brand"><div class="cf-dot"></div><span class="cf-name">청람M&amp;C</span></div>
-        <span class="cf-meta">정구영 Ph.D. · 기업교육 컨설팅 22년 · crmc.co.kr</span>
+        <span class="cf-name" style="font-size:12px;font-weight:700;color:#1A1A1A;">청람M&amp;C</span>
       </div>
     </div>
 
@@ -405,7 +427,7 @@ body{font-family:var(--ff);color:#1A1A1A;background:#F4F6FB;min-height:100vh;dis
 
 <script>
 // ★ Apps Script 웹앱 URL (doPost 엔드포인트)
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyUSTjxp0w7vuU8-PRBHan-0Bf1mU8xdaB8KIhIvsYu1Lxrz6W4logoZ2zHxYQuuVtEVA/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxtlmhcvvJidRBY_V1eD3vKb_8HRFAZnBnlIU-zDllbA2YY_aCCDPf3QoxHMEzUUgdy3w/exec';
 
 // ── 라디오 선택 ──────────────────────────────────────────
 function selectRadio(el, groupId) {
@@ -460,13 +482,23 @@ function validate() {
   const emailOk = email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   setError('g-email', !emailOk);
 
+  const privacyOk = document.getElementById('privacy-check').checked;
+  document.getElementById('privacy-error').style.display = privacyOk ? 'none' : 'block';
+  document.getElementById('g-privacy').style.borderColor = privacyOk ? '' : '#D93025';
+
   if (!client || !name || !emailOk) {
     if (!client) document.getElementById('f-client').focus();
     else if (!name) document.getElementById('f-name').focus();
     else document.getElementById('f-email').focus();
     ok = false;
   }
+  if (!privacyOk) ok = false;
   return ok;
+}
+
+function updatePrivacy() {
+  const checked = document.getElementById('privacy-check').checked;
+  document.getElementById('privacy-error').style.display = checked ? 'none' : 'block';
 }
 
 // ── 데이터 수집 ──────────────────────────────────────────
@@ -570,6 +602,8 @@ function resetForm() {
     document.getElementById(id).checked = false;
   });
   ['g-client','g-name','g-email'].forEach(g => setError(g, false));
+  document.getElementById('privacy-check').checked = false;
+  document.getElementById('privacy-error').style.display = 'none';
   document.getElementById('submit-btn').disabled = false;
   document.getElementById('progress-fill').style.width = '0%';
 
