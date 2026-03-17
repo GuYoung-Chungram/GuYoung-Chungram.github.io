@@ -720,7 +720,7 @@
             <div class="form-grid">
               <div class="form-group" id="g-client">
                 <label>기관명 / 고객사명 <span class="req">*</span></label>
-                <input id="f-client" type="text" placeholder="예) 소속기관명>
+                <input id="f-client" type="text" placeholder="예) 소속기관명">
                 <span class=" field-error">기관명을 입력해 주세요.</span>
               </div>
               <div class="form-group" id="g-name">
@@ -881,8 +881,9 @@
             <div class="form-grid">
               <div class="form-group form-full">
                 <label>문의 상세 내용</label>
-                <textarea id="f-goal" rows="4"
+                <textarea id="f-goal" rows="4" maxlength="300"
                   placeholder="필요하신 교육 내용, 특별 요청사항, 현재 조직의 고민 등을 자유롭게 적어주세요.&#10;예) 리더십 교육 후 변화가 없어 고민 중입니다. 실습 위주로 구성되면 좋겠습니다."></textarea>
+                <div style="text-align:right;font-size:11px;color:#AAA;margin-top:3px;"><span id="goal-count">0</span>/300자</div>
               </div>
               <div class="form-group form-full">
                 <label>현재 가장 어려운 업무 <span style="font-weight:400;color:#AAA;">(복수 선택 가능)</span></label>
@@ -970,17 +971,21 @@
   </div><!-- /app -->
 
   <script>
-    // ★ Apps Script 웹앱 URL (doPost 엔드포인트)
+    // ★ Apps Script 웹앱 URL (doGet 엔드포인트)
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwXMue8CkelX8xwpTk163lCGW-MtdGi8Pt3EkPmsN401G78_VJXIhoxIXGgpAbsmo2e3A/exec';
 
     // ── 라디오 선택 ──────────────────────────────────────────
     function selectRadio(el, groupId) {
       document.querySelectorAll('#' + groupId + ' .radio-btn').forEach(b => b.classList.remove('on'));
       el.classList.add('on');
+      updateProgress();
     }
 
     // ── 태그 토글 ───────────────────────────────────────────
-    function toggleTag(el) { el.classList.toggle('on'); }
+    function toggleTag(el) { 
+      el.classList.toggle('on'); 
+      updateProgress();
+    }
 
     // ── 선택된 태그 수집 ─────────────────────────────────────
     function getSelectedTags() {
@@ -1004,8 +1009,15 @@
       const pct = Math.min(100, Math.round(((filled + extra) / total) * 100));
       document.getElementById('progress-fill').style.width = pct + '%';
     }
-    ['f-client', 'f-name', 'f-email', 'f-course', 'f-goal'].forEach(id => {
+    ['f-client', 'f-name', 'f-email', 'f-course', 'f-goal', 'f-target', 'f-when', 'f-hours'].forEach(id => {
       document.getElementById(id).addEventListener('input', updateProgress);
+      if (document.getElementById(id).tagName === 'SELECT') {
+        document.getElementById(id).addEventListener('change', updateProgress);
+      }
+    });
+    // goal 글자수 카운터
+    document.getElementById('f-goal').addEventListener('input', function() {
+      document.getElementById('goal-count').textContent = this.value.length;
     });
 
     // ── 유효성 검사 ──────────────────────────────────────────
@@ -1141,6 +1153,7 @@
         document.getElementById(id).value = '';
       });
       document.getElementById('f-hours').value = '미정';
+      document.getElementById('goal-count').textContent = '0';
       ['monAM', 'monPM', 'tueAM', 'tuePM', 'wedAM', 'wedPM', 'thuAM', 'thuPM', 'friAM', 'friPM', 'weekend'].forEach(id => {
         document.getElementById(id).checked = false;
       });
