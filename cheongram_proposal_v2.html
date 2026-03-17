@@ -1,616 +1,1161 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>청람M&C 맞춤 교육 문의</title>
-<meta name="robots" content="noindex">
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
-:root{
-  --cr:#1652D8;--cr-dark:#0F0F0F;--cr-light:#EEF3FD;--cr-border:#D0D9F5;
-  --cr-success:#0C7B4E;--cr-success-bg:#E6F7F1;
-  --ff:'Noto Sans KR',sans-serif;
-}
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:var(--ff);color:#1A1A1A;background:#F4F6FB;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:32px 16px 60px;}
-#app{width:100%;max-width:680px;}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>청람M&C 맞춤 교육 문의</title>
+  <meta name="robots" content="noindex">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
 
-/* === HEADER === */
-.site-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
-.site-dot{width:7px;height:7px;background:var(--cr);border-radius:1px;}
-.site-name{font-size:13px;font-weight:700;color:var(--cr-dark);}
-.site-divider{width:1px;height:14px;background:#CCC;margin:0 2px;}
-.site-sub{font-size:12px;color:#888;}
-.back-home{margin-left:auto;font-size:12px;color:var(--cr);text-decoration:none;display:flex;align-items:center;gap:4px;}
-.back-home:hover{opacity:.75;}
+    :root {
+      --cr: #1652D8;
+      --cr-dark: #0F0F0F;
+      --cr-light: #EEF3FD;
+      --cr-border: #D0D9F5;
+      --cr-success: #0C7B4E;
+      --cr-success-bg: #E6F7F1;
+      --ff: 'Noto Sans KR', sans-serif;
+    }
 
-/* === CARD === */
-.card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,.08);}
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-/* === HERO STRIP === */
-.card-hero{background:var(--cr-dark);padding:30px 36px 26px;position:relative;overflow:hidden;}
-.card-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--cr);}
-.card-hero::after{content:'INQUIRY';position:absolute;right:28px;bottom:-10px;font-size:72px;font-weight:900;color:rgba(255,255,255,.04);letter-spacing:.05em;line-height:1;pointer-events:none;}
-.hero-badge{display:inline-block;background:var(--cr);color:#fff;font-size:10px;font-weight:700;letter-spacing:.12em;padding:3px 10px;border-radius:2px;margin-bottom:14px;}
-.hero-title{color:#fff;font-size:22px;font-weight:900;line-height:1.35;margin-bottom:8px;}
-.hero-sub{color:rgba(255,255,255,.5);font-size:12.5px;line-height:1.7;}
+    body {
+      font-family: var(--ff);
+      color: #1A1A1A;
+      background: #F4F6FB;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 32px 16px 60px;
+    }
 
-/* === PROGRESS === */
-.progress-bar{height:3px;background:#EAECF0;position:relative;}
-.progress-fill{height:100%;background:var(--cr);transition:width .4s ease;width:0%;}
+    #app {
+      width: 100%;
+      max-width: 680px;
+    }
 
-/* === FORM BODY === */
-.card-body{padding:32px 36px 28px;}
-.section-block{margin-bottom:28px;}
-.section-block:last-child{margin-bottom:0;}
-.section-title{font-size:11px;font-weight:700;color:var(--cr);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
-.section-title::after{content:'';flex:1;height:1px;background:#EAECF0;}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-.form-full{grid-column:1/-1;}
-.form-group{display:flex;flex-direction:column;gap:5px;}
-.form-group label{font-size:11px;font-weight:700;color:#555;letter-spacing:.04em;}
-.form-group label .req{color:var(--cr);}
-.form-group input,
-.form-group select,
-.form-group textarea{
-  padding:10px 13px;border:1.5px solid #D0D9F5;border-radius:8px;
-  font-size:13.5px;font-family:var(--ff);color:#1A1A1A;background:#fff;
-  transition:border-color .15s,box-shadow .15s;outline:none;width:100%;
-}
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus{border-color:var(--cr);box-shadow:0 0 0 3px rgba(22,82,216,.09);}
-.form-group textarea{resize:none;line-height:1.65;}
-.form-group input::placeholder,
-.form-group textarea::placeholder{color:#BBBBBB;}
+    /* === HEADER === */
+    .site-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
 
-/* === RADIO GROUP (교육방식) === */
-.radio-group{display:flex;flex-wrap:wrap;gap:7px;margin-top:2px;}
-.radio-btn{
-  padding:6px 14px;border-radius:20px;font-size:12.5px;cursor:pointer;
-  border:1.5px solid #D0D9F5;background:#fff;color:#666;
-  transition:all .15s;font-family:var(--ff);font-weight:500;
-}
-.radio-btn:hover{border-color:var(--cr);color:var(--cr);}
-.radio-btn.on{background:var(--cr);color:#fff;border-color:var(--cr);}
+    .site-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--cr);
+      border-radius: 1px;
+    }
 
-/* === TAGS (어려운 업무) === */
-.need-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px;}
-.need-tag{
-  padding:5px 13px;border-radius:20px;font-size:12px;cursor:pointer;
-  border:1.5px solid #D0D9F5;background:#fff;color:#666;
-  transition:all .15s;font-family:var(--ff);
-}
-.need-tag:hover{border-color:var(--cr);color:var(--cr);}
-.need-tag.on{background:var(--cr);color:#fff;border-color:var(--cr);}
+    .site-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--cr-dark);
+    }
 
-/* === SCHEDULE TABLE === */
-.schedule-table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:2px;}
-.schedule-table th{background:#F4F6FB;font-weight:700;color:#555;padding:8px 10px;text-align:center;border:1px solid #E4E7F0;}
-.schedule-table td{border:1px solid #E4E7F0;padding:0;text-align:center;}
-.sched-cell{
-  display:flex;align-items:center;justify-content:center;
-  width:100%;height:38px;cursor:pointer;transition:background .12s;
-}
-.sched-cell input[type=checkbox]{display:none;}
-.sched-cell .cb-label{
-  width:100%;height:100%;display:flex;align-items:center;justify-content:center;
-  cursor:pointer;color:#AAA;font-size:11.5px;
-}
-.sched-cell input:checked + .cb-label{background:#EEF3FD;color:var(--cr);font-weight:700;}
-.sched-cell:has(input:checked){background:#EEF3FD;}
-.weekend-row td{background:#FFF8F0;}
-.weekend-row input:checked + .cb-label{background:#FFF3CD;color:#B07D00;}
-.schedule-hint{font-size:11px;color:#AAA;margin-top:6px;}
+    .site-divider {
+      width: 1px;
+      height: 14px;
+      background: #CCC;
+      margin: 0 2px;
+    }
 
-/* === NOTICE BOX === */
-.notice{
-  display:flex;align-items:flex-start;gap:10px;
-  background:#EEF3FD;border-radius:8px;padding:14px 16px;margin:20px 0 22px;
-}
-.notice-icon{font-size:15px;flex-shrink:0;margin-top:1px;}
-.notice-text{font-size:12px;color:#3B5FC0;line-height:1.7;}
+    .site-sub {
+      font-size: 12px;
+      color: #888;
+    }
+
+    .back-home {
+      margin-left: auto;
+      font-size: 12px;
+      color: var(--cr);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .back-home:hover {
+      opacity: .75;
+    }
+
+    /* === CARD === */
+    .card {
+      background: #fff;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, .08);
+    }
+
+    /* === HERO STRIP === */
+    .card-hero {
+      background: var(--cr-dark);
+      padding: 30px 36px 26px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--cr);
+    }
+
+    .card-hero::after {
+      content: 'INQUIRY';
+      position: absolute;
+      right: 28px;
+      bottom: -10px;
+      font-size: 72px;
+      font-weight: 900;
+      color: rgba(255, 255, 255, .04);
+      letter-spacing: .05em;
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: var(--cr);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      padding: 3px 10px;
+      border-radius: 2px;
+      margin-bottom: 14px;
+    }
+
+    .hero-title {
+      color: #fff;
+      font-size: 22px;
+      font-weight: 900;
+      line-height: 1.35;
+      margin-bottom: 8px;
+    }
+
+    .hero-sub {
+      color: rgba(255, 255, 255, .5);
+      font-size: 12.5px;
+      line-height: 1.7;
+    }
+
+    /* === PROGRESS === */
+    .progress-bar {
+      height: 3px;
+      background: #EAECF0;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--cr);
+      transition: width .4s ease;
+      width: 0%;
+    }
+
+    /* === FORM BODY === */
+    .card-body {
+      padding: 32px 36px 28px;
+    }
+
+    .section-block {
+      margin-bottom: 28px;
+    }
+
+    .section-block:last-child {
+      margin-bottom: 0;
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--cr);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #EAECF0;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .form-full {
+      grid-column: 1/-1;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .form-group label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #555;
+      letter-spacing: .04em;
+    }
+
+    .form-group label .req {
+      color: var(--cr);
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 10px 13px;
+      border: 1.5px solid #D0D9F5;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-family: var(--ff);
+      color: #1A1A1A;
+      background: #fff;
+      transition: border-color .15s, box-shadow .15s;
+      outline: none;
+      width: 100%;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--cr);
+      box-shadow: 0 0 0 3px rgba(22, 82, 216, .09);
+    }
+
+    .form-group textarea {
+      resize: none;
+      line-height: 1.65;
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: #BBBBBB;
+    }
+
+    /* === RADIO GROUP (교육방식) === */
+    .radio-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 2px;
+    }
+
+    .radio-btn {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12.5px;
+      cursor: pointer;
+      border: 1.5px solid #D0D9F5;
+      background: #fff;
+      color: #666;
+      transition: all .15s;
+      font-family: var(--ff);
+      font-weight: 500;
+    }
+
+    .radio-btn:hover {
+      border-color: var(--cr);
+      color: var(--cr);
+    }
+
+    .radio-btn.on {
+      background: var(--cr);
+      color: #fff;
+      border-color: var(--cr);
+    }
+
+    /* === TAGS (어려운 업무) === */
+    .need-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 4px;
+    }
+
+    .need-tag {
+      padding: 5px 13px;
+      border-radius: 20px;
+      font-size: 12px;
+      cursor: pointer;
+      border: 1.5px solid #D0D9F5;
+      background: #fff;
+      color: #666;
+      transition: all .15s;
+      font-family: var(--ff);
+    }
+
+    .need-tag:hover {
+      border-color: var(--cr);
+      color: var(--cr);
+    }
+
+    .need-tag.on {
+      background: var(--cr);
+      color: #fff;
+      border-color: var(--cr);
+    }
+
+    /* === SCHEDULE TABLE === */
+    .schedule-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+      margin-top: 2px;
+    }
+
+    .schedule-table th {
+      background: #F4F6FB;
+      font-weight: 700;
+      color: #555;
+      padding: 8px 10px;
+      text-align: center;
+      border: 1px solid #E4E7F0;
+    }
+
+    .schedule-table td {
+      border: 1px solid #E4E7F0;
+      padding: 0;
+      text-align: center;
+    }
+
+    .sched-cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 38px;
+      cursor: pointer;
+      transition: background .12s;
+    }
+
+    .sched-cell input[type=checkbox] {
+      display: none;
+    }
+
+    .sched-cell .cb-label {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #AAA;
+      font-size: 11.5px;
+    }
+
+    .sched-cell input:checked+.cb-label {
+      background: #EEF3FD;
+      color: var(--cr);
+      font-weight: 700;
+    }
+
+    .sched-cell:has(input:checked) {
+      background: #EEF3FD;
+    }
+
+    .weekend-row td {
+      background: #FFF8F0;
+    }
+
+    .weekend-row input:checked+.cb-label {
+      background: #FFF3CD;
+      color: #B07D00;
+    }
+
+    .schedule-hint {
+      font-size: 11px;
+      color: #AAA;
+      margin-top: 6px;
+    }
+
+    /* === NOTICE BOX === */
+    .notice {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: #EEF3FD;
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin: 20px 0 22px;
+    }
+
+    .notice-icon {
+      font-size: 15px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .notice-text {
+      font-size: 12px;
+      color: #3B5FC0;
+      line-height: 1.7;
+    }
 
 
-/* === PRIVACY AGREE === */
-.privacy-agree{margin-bottom:14px;}
-.privacy-label{display:flex;align-items:flex-start;gap:10px;cursor:pointer;}
-.privacy-label input[type=checkbox]{
-  width:16px;height:16px;flex-shrink:0;margin-top:2px;
-  accent-color:var(--cr);cursor:pointer;
-}
-.privacy-text{font-size:12px;color:#555;line-height:1.7;}
-.privacy-label:hover .privacy-text{color:#333;}
+    /* === PRIVACY AGREE === */
+    .privacy-agree {
+      margin-bottom: 14px;
+    }
 
-/* === SUBMIT BTN === */
-.submit-btn{
-  width:100%;padding:15px;border-radius:8px;border:none;
-  background:var(--cr);color:#fff;font-size:15px;font-weight:700;
-  cursor:pointer;font-family:var(--ff);letter-spacing:.02em;
-  display:flex;align-items:center;justify-content:center;gap:9px;
-  transition:opacity .15s,transform .1s,box-shadow .15s;
-  box-shadow:0 4px 16px rgba(22,82,216,.25);
-}
-.submit-btn:hover{opacity:.92;box-shadow:0 6px 22px rgba(22,82,216,.35);}
-.submit-btn:active{transform:scale(.99);}
-.submit-btn:disabled{opacity:.5;cursor:not-allowed;box-shadow:none;}
+    .privacy-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      cursor: pointer;
+    }
 
-/* === SUCCESS VIEW === */
-#success-view{display:none;}
-.success-inner{padding:52px 36px;text-align:center;}
-.success-icon{
-  width:68px;height:68px;background:var(--cr-success-bg);border-radius:50%;
-  display:flex;align-items:center;justify-content:center;margin:0 auto 22px;
-}
-.success-icon svg{width:30px;height:30px;}
-.success-title{font-size:22px;font-weight:900;color:var(--cr-dark);margin-bottom:10px;}
-.success-msg{font-size:14px;color:#444;line-height:1.8;margin-bottom:28px;}
-.success-msg strong{color:var(--cr);}
-.success-summary{
-  background:#F8F9FB;border-radius:10px;padding:16px 20px;
-  text-align:left;margin-bottom:24px;border:1px solid #EAECF0;
-}
-.ss-row{display:flex;gap:12px;padding:7px 0;border-bottom:1px solid #EEEFF2;font-size:12.5px;}
-.ss-row:last-child{border-bottom:none;}
-.ss-label{color:#888;min-width:76px;flex-shrink:0;}
-.ss-value{color:#1A1A1A;font-weight:500;line-height:1.5;}
-.back-btn{
-  padding:10px 24px;border-radius:7px;border:1.5px solid #D0D9F5;
-  background:#fff;color:#555;font-size:13px;font-weight:600;
-  cursor:pointer;font-family:var(--ff);transition:all .15s;
-}
-.back-btn:hover{border-color:var(--cr);color:var(--cr);}
+    .privacy-label input[type=checkbox] {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      margin-top: 2px;
+      accent-color: var(--cr);
+      cursor: pointer;
+    }
 
-/* === LOADING === */
-#loading-view{display:none;padding:52px 36px;text-align:center;}
-.ld-spinner{
-  width:42px;height:42px;border:3px solid #EEF3FD;
-  border-top-color:var(--cr);border-radius:50%;
-  animation:spin .7s linear infinite;margin:0 auto 18px;
-}
-@keyframes spin{to{transform:rotate(360deg);}}
-.ld-text{font-size:14px;color:#666;}
+    .privacy-text {
+      font-size: 12px;
+      color: #555;
+      line-height: 1.7;
+    }
 
-/* === FOOTER === */
-.card-footer{
-  background:#F8F9FB;border-top:1px solid #ECEDF0;
-  padding:12px 36px;display:flex;justify-content:flex-end;align-items:center;
-}
-.cf-brand{display:flex;align-items:center;gap:7px;}
-.cf-dot{width:5px;height:5px;background:var(--cr);border-radius:1px;}
-.cf-name{font-size:11.5px;font-weight:700;}
-.cf-meta{font-size:11px;color:#AAA;}
+    .privacy-label:hover .privacy-text {
+      color: #333;
+    }
 
-/* === ERROR === */
-.field-error{font-size:11px;color:#D93025;margin-top:3px;display:none;}
-.is-error input,.is-error select,.is-error textarea{border-color:#D93025 !important;box-shadow:0 0 0 3px rgba(217,48,37,.08) !important;}
-.is-error .field-error{display:block;}
+    /* === SUBMIT BTN === */
+    .submit-btn {
+      width: 100%;
+      padding: 15px;
+      border-radius: 8px;
+      border: none;
+      background: var(--cr);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: var(--ff);
+      letter-spacing: .02em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      transition: opacity .15s, transform .1s, box-shadow .15s;
+      box-shadow: 0 4px 16px rgba(22, 82, 216, .25);
+    }
 
-@media(max-width:520px){
-  .form-grid{grid-template-columns:1fr;}
-  .card-hero,.card-body,.success-inner,.card-footer{padding-left:20px;padding-right:20px;}
-  .schedule-table{font-size:11px;}
-  .schedule-table th,.schedule-table td{padding:4px 3px;}
-}
-</style>
+    .submit-btn:hover {
+      opacity: .92;
+      box-shadow: 0 6px 22px rgba(22, 82, 216, .35);
+    }
+
+    .submit-btn:active {
+      transform: scale(.99);
+    }
+
+    .submit-btn:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* === SUCCESS VIEW === */
+    #success-view {
+      display: none;
+    }
+
+    .success-inner {
+      padding: 52px 36px;
+      text-align: center;
+    }
+
+    .success-icon {
+      width: 68px;
+      height: 68px;
+      background: var(--cr-success-bg);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 22px;
+    }
+
+    .success-icon svg {
+      width: 30px;
+      height: 30px;
+    }
+
+    .success-title {
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--cr-dark);
+      margin-bottom: 10px;
+    }
+
+    .success-msg {
+      font-size: 14px;
+      color: #444;
+      line-height: 1.8;
+      margin-bottom: 28px;
+    }
+
+    .success-msg strong {
+      color: var(--cr);
+    }
+
+    .success-summary {
+      background: #F8F9FB;
+      border-radius: 10px;
+      padding: 16px 20px;
+      text-align: left;
+      margin-bottom: 24px;
+      border: 1px solid #EAECF0;
+    }
+
+    .ss-row {
+      display: flex;
+      gap: 12px;
+      padding: 7px 0;
+      border-bottom: 1px solid #EEEFF2;
+      font-size: 12.5px;
+    }
+
+    .ss-row:last-child {
+      border-bottom: none;
+    }
+
+    .ss-label {
+      color: #888;
+      min-width: 76px;
+      flex-shrink: 0;
+    }
+
+    .ss-value {
+      color: #1A1A1A;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+
+    .back-btn {
+      padding: 10px 24px;
+      border-radius: 7px;
+      border: 1.5px solid #D0D9F5;
+      background: #fff;
+      color: #555;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--ff);
+      transition: all .15s;
+    }
+
+    .back-btn:hover {
+      border-color: var(--cr);
+      color: var(--cr);
+    }
+
+    /* === LOADING === */
+    #loading-view {
+      display: none;
+      padding: 52px 36px;
+      text-align: center;
+    }
+
+    .ld-spinner {
+      width: 42px;
+      height: 42px;
+      border: 3px solid #EEF3FD;
+      border-top-color: var(--cr);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      margin: 0 auto 18px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .ld-text {
+      font-size: 14px;
+      color: #666;
+    }
+
+    /* === FOOTER === */
+    .card-footer {
+      background: #F8F9FB;
+      border-top: 1px solid #ECEDF0;
+      padding: 12px 36px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .cf-brand {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .cf-dot {
+      width: 5px;
+      height: 5px;
+      background: var(--cr);
+      border-radius: 1px;
+    }
+
+    .cf-name {
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+
+    .cf-meta {
+      font-size: 11px;
+      color: #AAA;
+    }
+
+    /* === ERROR === */
+    .field-error {
+      font-size: 11px;
+      color: #D93025;
+      margin-top: 3px;
+      display: none;
+    }
+
+    .is-error input,
+    .is-error select,
+    .is-error textarea {
+      border-color: #D93025 !important;
+      box-shadow: 0 0 0 3px rgba(217, 48, 37, .08) !important;
+    }
+
+    .is-error .field-error {
+      display: block;
+    }
+
+    @media(max-width:520px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .card-hero,
+      .card-body,
+      .success-inner,
+      .card-footer {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+
+      .schedule-table {
+        font-size: 11px;
+      }
+
+      .schedule-table th,
+      .schedule-table td {
+        padding: 4px 3px;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<div id="app">
+  <div id="app">
 
-  <div class="site-header">
-    <div class="site-dot"></div>
-    <span class="site-name">청람M&amp;C</span>
-    <div class="site-divider"></div>
-    <span class="site-sub">맞춤형 교육 문의</span>
-    <a href="index.html" class="back-home">← 홈으로</a>
-  </div>
-
-  <div class="card">
-
-    <!-- PROGRESS -->
-    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-
-    <!-- ① FORM VIEW -->
-    <div id="form-view">
-      <div class="card-hero">
-        <div class="hero-badge">EDUCATION INQUIRY</div>
-        <div class="hero-title">맞춤형 교육 문의하기</div>
-        <div class="hero-sub">귀 기관의 교육 니즈를 알려주시면 전문 컨설턴트가<br>직접 검토 후 <strong style="color:rgba(255,255,255,.85);">1~2일 이내</strong>에 맞춤형 제안서를 발송해 드립니다.</div>
-      </div>
-
-      <div class="card-body">
-
-        <!-- SECTION 1: 기본 정보 -->
-        <div class="section-block">
-          <div class="section-title">01 &nbsp;기본 정보</div>
-          <div class="form-grid">
-            <div class="form-group" id="g-client">
-              <label>기관명 / 고객사명 <span class="req">*</span></label>
-              <input id="f-client" type="text" placeholder="예) 세종시교육청교육원">
-              <span class="field-error">기관명을 입력해 주세요.</span>
-            </div>
-            <div class="form-group" id="g-name">
-              <label>담당자명 <span class="req">*</span></label>
-              <input id="f-name" type="text" placeholder="예) 홍길동 팀장">
-              <span class="field-error">담당자명을 입력해 주세요.</span>
-            </div>
-            <div class="form-group" id="g-email">
-              <label>이메일 <span class="req">*</span></label>
-              <input id="f-email" type="email" placeholder="예) contact@example.go.kr">
-              <span class="field-error">올바른 이메일 주소를 입력해 주세요.</span>
-            </div>
-            <div class="form-group">
-              <label>연락처 (전화)</label>
-              <input id="f-phone" type="tel" placeholder="예) 010-0000-0000">
-            </div>
-          </div>
-        </div>
-
-        <!-- SECTION 2: 문의 상세 -->
-        <div class="section-block">
-          <div class="section-title">02 &nbsp;문의 상세</div>
-          <div class="form-grid">
-            <div class="form-group form-full">
-              <label>문의 유형 <span class="req">*</span></label>
-              <div class="radio-group" id="rg-inquiryType">
-                <button type="button" class="radio-btn on" data-val="제안서 요청" onclick="selectRadio(this,'rg-inquiryType')">📄 제안서 요청</button>
-                <button type="button" class="radio-btn" data-val="강의 단순 문의" onclick="selectRadio(this,'rg-inquiryType')">💬 강의 단순 문의</button>
-                <button type="button" class="radio-btn" data-val="컨설팅 문의" onclick="selectRadio(this,'rg-inquiryType')">🔍 컨설팅 문의</button>
-                <button type="button" class="radio-btn" data-val="일정 확인" onclick="selectRadio(this,'rg-inquiryType')">📅 일정 확인</button>
-                <button type="button" class="radio-btn" data-val="기타" onclick="selectRadio(this,'rg-inquiryType')">기타</button>
-              </div>
-            </div>
-            <div class="form-group">
-              <label>희망 과정 / 주제</label>
-              <input id="f-course" type="text" placeholder="예) 생성형 AI 실무 활용">
-            </div>
-            <div class="form-group">
-              <label>교육 대상 / 인원</label>
-              <input id="f-target" type="text" placeholder="예) 직원 30명, 관리자급">
-            </div>
-            <div class="form-group">
-              <label>희망 강의 시간</label>
-              <select id="f-hours">
-                <option value="미정">미정</option>
-                <option value="2시간">2시간</option>
-                <option value="3시간">3시간</option>
-                <option value="4시간">4시간</option>
-                <option value="6시간">6시간</option>
-                <option value="8시간 (1일)">8시간 (1일)</option>
-                <option value="16시간 (2일)">16시간 (2일)</option>
-                <option value="24시간 (3일)">24시간 (3일)</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>희망 교육 시기</label>
-              <input id="f-when" type="text" placeholder="예) 2026년 4월 중">
-            </div>
-            <div class="form-group form-full">
-              <label>교육 방식</label>
-              <div class="radio-group" id="rg-method">
-                <button type="button" class="radio-btn on" data-val="집합교육 (대면)" onclick="selectRadio(this,'rg-method')">🏢 집합교육 (대면)</button>
-                <button type="button" class="radio-btn" data-val="온라인 (비대면)" onclick="selectRadio(this,'rg-method')">💻 온라인 (비대면)</button>
-                <button type="button" class="radio-btn" data-val="블렌디드 (혼합)" onclick="selectRadio(this,'rg-method')">🔀 블렌디드 (혼합)</button>
-                <button type="button" class="radio-btn" data-val="미정" onclick="selectRadio(this,'rg-method')">미정</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- SECTION 3: 가능 일정 -->
-        <div class="section-block">
-          <div class="section-title">03 &nbsp;가능 일정 (복수 선택)</div>
-          <table class="schedule-table">
-            <thead>
-              <tr>
-                <th style="width:60px;"></th>
-                <th>월</th><th>화</th><th>수</th><th>목</th><th>금</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th style="background:#F4F6FB;padding:8px 10px;font-weight:700;color:#555;font-size:12px;">오전</th>
-                <td><div class="sched-cell"><input type="checkbox" id="monAM"><label class="cb-label" for="monAM">✓</label></div></td>
-                <td><div class="sched-cell"><input type="checkbox" id="tueAM"><label class="cb-label" for="tueAM">✓</label></div></td>
-                <td><div class="sched-cell"><input type="checkbox" id="wedAM"><label class="cb-label" for="wedAM">✓</label></div></td>
-                <td><div class="sched-cell"><input type="checkbox" id="thuAM"><label class="cb-label" for="thuAM">✓</label></div></td>
-                <td><div class="sched-cell"><input type="checkbox" id="friAM"><label class="cb-label" for="friAM">✓</label></div></td>
-              </tr>
-              <tr>
-                <th style="background:#F4F6FB;padding:8px 10px;font-weight:700;color:#555;font-size:12px;">오후</th>
-                <td><div class="sched-cell"><input type="checkbox" id="monPM"><label class="cb-label" for="monPM">✓</label></div></td>
-                <td><div class="sched-cell"><input type="checkbox" id="tuePM"><label class="cb-label" for="tuePM">✓</label></div></td>
-                <td><div class="sched-cell"><input type="checkbox" id="wedPM"><label class="cb-label" for="wedPM">✓</label></div></td>
-                <td><div class="sched-cell"><input type="checkbox" id="thuPM"><label class="cb-label" for="thuPM">✓</label></div></td>
-                <td><div class="sched-cell"><input type="checkbox" id="friPM"><label class="cb-label" for="friPM">✓</label></div></td>
-              </tr>
-              <tr class="weekend-row">
-                <th colspan="6" style="background:#FFF8F0;padding:8px 10px;font-weight:700;color:#8B6000;font-size:12px;text-align:left;">
-                  <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:700;">
-                    <input type="checkbox" id="weekend" style="width:14px;height:14px;accent-color:#E09000;">
-                    주말 / 공휴일 가능
-                  </label>
-                </th>
-              </tr>
-            </tbody>
-          </table>
-          <p class="schedule-hint">※ 가능한 시간대를 모두 선택해 주세요. 선택 안 하셔도 무관합니다.</p>
-        </div>
-
-        <!-- SECTION 4: 요청사항 -->
-        <div class="section-block">
-          <div class="section-title">04 &nbsp;상세 요청사항</div>
-          <div class="form-grid">
-            <div class="form-group form-full">
-              <label>문의 상세 내용</label>
-              <textarea id="f-goal" rows="4" placeholder="필요하신 교육 내용, 특별 요청사항, 현재 조직의 고민 등을 자유롭게 적어주세요.&#10;예) 리더십 교육 후 변화가 없어 고민 중입니다. 실습 위주로 구성되면 좋겠습니다."></textarea>
-            </div>
-            <div class="form-group form-full">
-              <label>현재 가장 어려운 업무 <span style="font-weight:400;color:#AAA;">(복수 선택 가능)</span></label>
-              <div class="need-tags">
-                <button type="button" class="need-tag" onclick="toggleTag(this)">보고서/문서 작성</button>
-                <button type="button" class="need-tag" onclick="toggleTag(this)">데이터 분석</button>
-                <button type="button" class="need-tag" onclick="toggleTag(this)">발표자료 제작</button>
-                <button type="button" class="need-tag" onclick="toggleTag(this)">이메일/공문 작성</button>
-                <button type="button" class="need-tag" onclick="toggleTag(this)">회의록 정리</button>
-                <button type="button" class="need-tag" onclick="toggleTag(this)">기획서 작성</button>
-                <button type="button" class="need-tag" onclick="toggleTag(this)">정보 조사·요약</button>
-                <button type="button" class="need-tag" onclick="toggleTag(this)">리더십/조직문화</button>
-                <button type="button" class="need-tag" onclick="toggleTag(this)">ESG 대응</button>
-                <button type="button" class="need-tag" onclick="toggleTag(this)">코칭·피드백</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="notice">
-          <span class="notice-icon">💬</span>
-          <span class="notice-text">요청하신 내용을 바탕으로 <strong>1~2일 이내</strong>에 담당 컨설턴트가 직접 검토하여<br>귀 기관에 최적화된 맞춤형 제안서를 발송해 드리겠습니다.</span>
-        </div>
-
-        <div class="privacy-agree" id="g-privacy">
-          <label class="privacy-label">
-            <input type="checkbox" id="privacy-check" onchange="updatePrivacy()">
-            <span class="privacy-text">
-              수집된 개인정보(이름, 소속, 이메일, 전화번호)는 교육 문의 답변 및 제안서 발송 목적으로만 사용되며,
-              응답 완료 후 1년간 보관 후 파기됩니다.
-              <strong><a href="#" onclick="return false;" style="color:var(--cr);text-decoration:underline;" title="개인정보처리방침">개인정보 수집·이용에 동의합니다.</a></strong>
-              <span class="req" style="color:#D93025;margin-left:2px;">*</span>
-            </span>
-          </label>
-          <span class="field-error" id="privacy-error" style="display:none;font-size:11px;color:#D93025;margin-top:4px;">개인정보 수집·이용에 동의해 주세요.</span>
-        </div>
-
-                <button class="submit-btn" id="submit-btn" onclick="submitRequest()">
-          <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M2.5 8.5h10M9 4.5l4.5 4-4.5 4" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          문의 접수하기
-        </button>
-      </div>
-
-      <div class="card-footer">
-        <span class="cf-name" style="font-size:12px;font-weight:700;color:#1A1A1A;">청람M&amp;C</span>
-      </div>
-    </div><!-- /form-view -->
-
-    <!-- ② LOADING VIEW -->
-    <div id="loading-view">
-      <div class="ld-spinner"></div>
-      <div class="ld-text">문의 내용을 전송하고 있습니다...</div>
+    <div class="site-header">
+      <div class="site-dot"></div>
+      <span class="site-name">청람M&amp;C</span>
+      <div class="site-divider"></div>
+      <span class="site-sub">맞춤형 교육 문의</span>
+      <a href="index.html" class="back-home">← 홈으로</a>
     </div>
 
-    <!-- ③ SUCCESS VIEW -->
-    <div id="success-view">
-      <div class="success-inner">
-        <div class="success-icon">
-          <svg viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="15" cy="15" r="14" fill="#0C7B4E"/>
-            <path d="M8 15l5 5 9-9" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <div class="success-title">문의가 접수되었습니다!</div>
-        <div class="success-msg">
-          요청하신 내용을 꼼꼼히 검토하여<br>
-          <strong>1~2일 이내</strong>에 맞춤형 제안서를 보내드리겠습니다.<br>
-          접수 확인 메일이 입력하신 이메일로 자동 발송됩니다.
-        </div>
-        <div class="success-summary" id="success-summary"></div>
-        <button class="back-btn" onclick="resetForm()">다른 과정 문의하기</button>
+    <div class="card">
+
+      <!-- PROGRESS -->
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
       </div>
-      <div class="card-footer">
-        <span class="cf-name" style="font-size:12px;font-weight:700;color:#1A1A1A;">청람M&amp;C</span>
+
+      <!-- ① FORM VIEW -->
+      <div id="form-view">
+        <div class="card-hero">
+          <div class="hero-badge">EDUCATION INQUIRY</div>
+          <div class="hero-title">맞춤형 교육 문의하기</div>
+          <div class="hero-sub">귀 기관의 교육 니즈를 알려주시면 전문 컨설턴트가<br>직접 검토 후 <strong style="color:rgba(255,255,255,.85);">1~2일
+              이내</strong>에 맞춤형 제안서를 발송해 드립니다.</div>
+        </div>
+
+        <div class="card-body">
+
+          <!-- SECTION 1: 기본 정보 -->
+          <div class="section-block">
+            <div class="section-title">01 &nbsp;기본 정보</div>
+            <div class="form-grid">
+              <div class="form-group" id="g-client">
+                <label>기관명 / 고객사명 <span class="req">*</span></label>
+                <input id="f-client" type="text" placeholder="예) 세종시교육청교육원">
+                <span class="field-error">기관명을 입력해 주세요.</span>
+              </div>
+              <div class="form-group" id="g-name">
+                <label>담당자명 <span class="req">*</span></label>
+                <input id="f-name" type="text" placeholder="예) 홍길동 팀장">
+                <span class="field-error">담당자명을 입력해 주세요.</span>
+              </div>
+              <div class="form-group" id="g-email">
+                <label>이메일 <span class="req">*</span></label>
+                <input id="f-email" type="email" placeholder="예) contact@example.go.kr">
+                <span class="field-error">올바른 이메일 주소를 입력해 주세요.</span>
+              </div>
+              <div class="form-group">
+                <label>연락처 (전화)</label>
+                <input id="f-phone" type="tel" placeholder="예) 010-0000-0000">
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 2: 문의 상세 -->
+          <div class="section-block">
+            <div class="section-title">02 &nbsp;문의 상세</div>
+            <div class="form-grid">
+              <div class="form-group form-full">
+                <label>문의 유형 <span class="req">*</span></label>
+                <div class="radio-group" id="rg-inquiryType">
+                  <button type="button" class="radio-btn on" data-val="제안서 요청"
+                    onclick="selectRadio(this,'rg-inquiryType')">📄 제안서 요청</button>
+                  <button type="button" class="radio-btn" data-val="강의 단순 문의"
+                    onclick="selectRadio(this,'rg-inquiryType')">💬 강의 단순 문의</button>
+                  <button type="button" class="radio-btn" data-val="컨설팅 문의"
+                    onclick="selectRadio(this,'rg-inquiryType')">🔍 컨설팅 문의</button>
+                  <button type="button" class="radio-btn" data-val="일정 확인"
+                    onclick="selectRadio(this,'rg-inquiryType')">📅 일정 확인</button>
+                  <button type="button" class="radio-btn" data-val="기타"
+                    onclick="selectRadio(this,'rg-inquiryType')">기타</button>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>희망 과정 / 주제</label>
+                <input id="f-course" type="text" placeholder="예) 생성형 AI 실무 활용">
+              </div>
+              <div class="form-group">
+                <label>교육 대상 / 인원</label>
+                <input id="f-target" type="text" placeholder="예) 직원 30명, 관리자급">
+              </div>
+              <div class="form-group">
+                <label>희망 강의 시간</label>
+                <select id="f-hours">
+                  <option value="미정">미정</option>
+                  <option value="2시간">2시간</option>
+                  <option value="3시간">3시간</option>
+                  <option value="4시간">4시간</option>
+                  <option value="6시간">6시간</option>
+                  <option value="8시간 (1일)">8시간 (1일)</option>
+                  <option value="16시간 (2일)">16시간 (2일)</option>
+                  <option value="24시간 (3일)">24시간 (3일)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>희망 교육 시기</label>
+                <input id="f-when" type="text" placeholder="예) 2026년 4월 중">
+              </div>
+              <div class="form-group form-full">
+                <label>교육 방식</label>
+                <div class="radio-group" id="rg-method">
+                  <button type="button" class="radio-btn on" data-val="집합교육 (대면)"
+                    onclick="selectRadio(this,'rg-method')">🏢 집합교육 (대면)</button>
+                  <button type="button" class="radio-btn" data-val="온라인 (비대면)"
+                    onclick="selectRadio(this,'rg-method')">💻 온라인 (비대면)</button>
+                  <button type="button" class="radio-btn" data-val="블렌디드 (혼합)"
+                    onclick="selectRadio(this,'rg-method')">🔀 블렌디드 (혼합)</button>
+                  <button type="button" class="radio-btn" data-val="미정"
+                    onclick="selectRadio(this,'rg-method')">미정</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 3: 가능 일정 -->
+          <div class="section-block">
+            <div class="section-title">03 &nbsp;가능 일정 (복수 선택)</div>
+            <table class="schedule-table">
+              <thead>
+                <tr>
+                  <th style="width:60px;"></th>
+                  <th>월</th>
+                  <th>화</th>
+                  <th>수</th>
+                  <th>목</th>
+                  <th>금</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th style="background:#F4F6FB;padding:8px 10px;font-weight:700;color:#555;font-size:12px;">오전</th>
+                  <td>
+                    <div class="sched-cell"><input type="checkbox" id="monAM"><label class="cb-label"
+                        for="monAM">✓</label></div>
+                  </td>
+                  <td>
+                    <div class="sched-cell"><input type="checkbox" id="tueAM"><label class="cb-label"
+                        for="tueAM">✓</label></div>
+                  </td>
+                  <td>
+                    <div class="sched-cell"><input type="checkbox" id="wedAM"><label class="cb-label"
+                        for="wedAM">✓</label></div>
+                  </td>
+                  <td>
+                    <div class="sched-cell"><input type="checkbox" id="thuAM"><label class="cb-label"
+                        for="thuAM">✓</label></div>
+                  </td>
+                  <td>
+                    <div class="sched-cell"><input type="checkbox" id="friAM"><label class="cb-label"
+                        for="friAM">✓</label></div>
+                  </td>
+                </tr>
+                <tr>
+                  <th style="background:#F4F6FB;padding:8px 10px;font-weight:700;color:#555;font-size:12px;">오후</th>
+                  <td>
+                    <div class="sched-cell"><input type="checkbox" id="monPM"><label class="cb-label"
+                        for="monPM">✓</label></div>
+                  </td>
+                  <td>
+                    <div class="sched-cell"><input type="checkbox" id="tuePM"><label class="cb-label"
+                        for="tuePM">✓</label></div>
+                  </td>
+                  <td>
+                    <div class="sched-cell"><input type="checkbox" id="wedPM"><label class="cb-label"
+                        for="wedPM">✓</label></div>
+                  </td>
+                  <td>
+                    <div class="sched-cell"><input type="checkbox" id="thuPM"><label class="cb-label"
+                        for="thuPM">✓</label></div>
+                  </td>
+                  <td>
+                    <div class="sched-cell"><input type="checkbox" id="friPM"><label class="cb-label"
+                        for="friPM">✓</label></div>
+                  </td>
+                </tr>
+                <tr class="weekend-row">
+                  <th colspan="6"
+                    style="background:#FFF8F0;padding:8px 10px;font-weight:700;color:#8B6000;font-size:12px;text-align:left;">
+                    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:700;">
+                      <input type="checkbox" id="weekend" style="width:14px;height:14px;accent-color:#E09000;">
+                      주말 / 공휴일 가능
+                    </label>
+                  </th>
+                </tr>
+              </tbody>
+            </table>
+            <p class="schedule-hint">※ 가능한 시간대를 모두 선택해 주세요. 선택 안 하셔도 무관합니다.</p>
+          </div>
+
+          <!-- SECTION 4: 요청사항 -->
+          <div class="section-block">
+            <div class="section-title">04 &nbsp;상세 요청사항</div>
+            <div class="form-grid">
+              <div class="form-group form-full">
+                <label>문의 상세 내용</label>
+                <textarea id="f-goal" rows="4"
+                  placeholder="필요하신 교육 내용, 특별 요청사항, 현재 조직의 고민 등을 자유롭게 적어주세요.&#10;예) 리더십 교육 후 변화가 없어 고민 중입니다. 실습 위주로 구성되면 좋겠습니다."></textarea>
+              </div>
+              <div class="form-group form-full">
+                <label>현재 가장 어려운 업무 <span style="font-weight:400;color:#AAA;">(복수 선택 가능)</span></label>
+                <div class="need-tags">
+                  <button type="button" class="need-tag" onclick="toggleTag(this)">보고서/문서 작성</button>
+                  <button type="button" class="need-tag" onclick="toggleTag(this)">데이터 분석</button>
+                  <button type="button" class="need-tag" onclick="toggleTag(this)">발표자료 제작</button>
+                  <button type="button" class="need-tag" onclick="toggleTag(this)">이메일/공문 작성</button>
+                  <button type="button" class="need-tag" onclick="toggleTag(this)">회의록 정리</button>
+                  <button type="button" class="need-tag" onclick="toggleTag(this)">기획서 작성</button>
+                  <button type="button" class="need-tag" onclick="toggleTag(this)">정보 조사·요약</button>
+                  <button type="button" class="need-tag" onclick="toggleTag(this)">리더십/조직문화</button>
+                  <button type="button" class="need-tag" onclick="toggleTag(this)">ESG 대응</button>
+                  <button type="button" class="need-tag" onclick="toggleTag(this)">코칭·피드백</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="notice">
+            <span class="notice-icon">💬</span>
+            <span class="notice-text">요청하신 내용을 바탕으로 <strong>1~2일 이내</strong>에 담당 컨설턴트가 직접 검토하여<br>귀 기관에 최적화된 맞춤형 제안서를
+              발송해 드리겠습니다.</span>
+          </div>
+
+          <div class="privacy-agree" id="g-privacy">
+            <label class="privacy-label">
+              <input type="checkbox" id="privacy-check" onchange="updatePrivacy()">
+              <span class="privacy-text">
+                수집된 개인정보(이름, 소속, 이메일, 전화번호)는 교육 문의 답변 및 제안서 발송 목적으로만 사용되며,
+                응답 완료 후 1년간 보관 후 파기됩니다.
+                <strong><a href="#" onclick="return false;" style="color:var(--cr);text-decoration:underline;"
+                    title="개인정보처리방침">개인정보 수집·이용에 동의합니다.</a></strong>
+                <span class="req" style="color:#D93025;margin-left:2px;">*</span>
+              </span>
+            </label>
+            <span class="field-error" id="privacy-error"
+              style="display:none;font-size:11px;color:#D93025;margin-top:4px;">개인정보 수집·이용에 동의해 주세요.</span>
+          </div>
+
+          <button class="submit-btn" id="submit-btn" onclick="submitRequest()">
+            <svg width="17" height="17" viewBox="0 0 17 17" fill="none">
+              <path d="M2.5 8.5h10M9 4.5l4.5 4-4.5 4" stroke="#fff" stroke-width="1.7" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+            문의 접수하기
+          </button>
+        </div>
+
+        <div class="card-footer">
+          <span class="cf-name" style="font-size:12px;font-weight:700;color:#1A1A1A;">청람M&amp;C</span>
+        </div>
+      </div><!-- /form-view -->
+
+      <!-- ② LOADING VIEW -->
+      <div id="loading-view">
+        <div class="ld-spinner"></div>
+        <div class="ld-text">문의 내용을 전송하고 있습니다...</div>
       </div>
-    </div>
 
-  </div><!-- /card -->
-</div><!-- /app -->
+      <!-- ③ SUCCESS VIEW -->
+      <div id="success-view">
+        <div class="success-inner">
+          <div class="success-icon">
+            <svg viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="15" cy="15" r="14" fill="#0C7B4E" />
+              <path d="M8 15l5 5 9-9" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </div>
+          <div class="success-title">문의가 접수되었습니다!</div>
+          <div class="success-msg">
+            요청하신 내용을 꼼꼼히 검토하여<br>
+            <strong>1~2일 이내</strong>에 맞춤형 제안서를 보내드리겠습니다.<br>
+            접수 확인 메일이 입력하신 이메일로 자동 발송됩니다.
+          </div>
+          <div class="success-summary" id="success-summary"></div>
+          <button class="back-btn" onclick="resetForm()">다른 과정 문의하기</button>
+        </div>
+        <div class="card-footer">
+          <span class="cf-name" style="font-size:12px;font-weight:700;color:#1A1A1A;">청람M&amp;C</span>
+        </div>
+      </div>
 
-<script>
-// ★ Apps Script 웹앱 URL (doPost 엔드포인트)
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxtlmhcvvJidRBY_V1eD3vKb_8HRFAZnBnlIU-zDllbA2YY_aCCDPf3QoxHMEzUUgdy3w/exec';
+    </div><!-- /card -->
+  </div><!-- /app -->
 
-// ── 라디오 선택 ──────────────────────────────────────────
-function selectRadio(el, groupId) {
-  document.querySelectorAll('#' + groupId + ' .radio-btn').forEach(b => b.classList.remove('on'));
-  el.classList.add('on');
-}
+  <script>
+    // ★ Apps Script 웹앱 URL (doPost 엔드포인트)
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwLEWfr9Hv_31gfUAVBazCn1TTy4m_nET4aSDHRTmnQCiCI2yxdoEC7snVsKxZlwODx2Q/exec';
 
-// ── 태그 토글 ───────────────────────────────────────────
-function toggleTag(el) { el.classList.toggle('on'); }
+    // ── 라디오 선택 ──────────────────────────────────────────
+    function selectRadio(el, groupId) {
+      document.querySelectorAll('#' + groupId + ' .radio-btn').forEach(b => b.classList.remove('on'));
+      el.classList.add('on');
+    }
 
-// ── 선택된 태그 수집 ─────────────────────────────────────
-function getSelectedTags() {
-  return [...document.querySelectorAll('.need-tag.on')].map(t => t.textContent.trim()).join(', ') || '';
-}
+    // ── 태그 토글 ───────────────────────────────────────────
+    function toggleTag(el) { el.classList.toggle('on'); }
 
-// ── 라디오 값 ────────────────────────────────────────────
-function getRadioVal(groupId) {
-  const on = document.querySelector('#' + groupId + ' .radio-btn.on');
-  return on ? on.dataset.val : '';
-}
+    // ── 선택된 태그 수집 ─────────────────────────────────────
+    function getSelectedTags() {
+      return [...document.querySelectorAll('.need-tag.on')].map(t => t.textContent.trim()).join(', ') || '';
+    }
 
-// ── 진행률 업데이트 ──────────────────────────────────────
-function updateProgress() {
-  const fields = ['f-client','f-name','f-email'];
-  const filled = fields.filter(id => document.getElementById(id).value.trim()).length;
-  const total = 6; // client, name, email + course + goal + inquiryType
-  const extra = (document.getElementById('f-course').value.trim() ? 1 : 0)
-              + (document.getElementById('f-goal').value.trim() ? 1 : 0)
-              + 1; // inquiryType always has default
-  const pct = Math.min(100, Math.round(((filled + extra) / total) * 100));
-  document.getElementById('progress-fill').style.width = pct + '%';
-}
-['f-client','f-name','f-email','f-course','f-goal'].forEach(id => {
-  document.getElementById(id).addEventListener('input', updateProgress);
-});
+    // ── 라디오 값 ────────────────────────────────────────────
+    function getRadioVal(groupId) {
+      const on = document.querySelector('#' + groupId + ' .radio-btn.on');
+      return on ? on.dataset.val : '';
+    }
 
-// ── 유효성 검사 ──────────────────────────────────────────
-function setError(groupId, show) {
-  const g = document.getElementById(groupId);
-  if (!g) return;
-  g.classList.toggle('is-error', show);
-}
-
-function validate() {
-  let ok = true;
-  const client = document.getElementById('f-client').value.trim();
-  const name   = document.getElementById('f-name').value.trim();
-  const email  = document.getElementById('f-email').value.trim();
-
-  setError('g-client', !client);
-  setError('g-name',   !name);
-  const emailOk = email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  setError('g-email', !emailOk);
-
-  const privacyOk = document.getElementById('privacy-check').checked;
-  document.getElementById('privacy-error').style.display = privacyOk ? 'none' : 'block';
-  document.getElementById('g-privacy').style.borderColor = privacyOk ? '' : '#D93025';
-
-  if (!client || !name || !emailOk) {
-    if (!client) document.getElementById('f-client').focus();
-    else if (!name) document.getElementById('f-name').focus();
-    else document.getElementById('f-email').focus();
-    ok = false;
-  }
-  if (!privacyOk) ok = false;
-  return ok;
-}
-
-function updatePrivacy() {
-  const checked = document.getElementById('privacy-check').checked;
-  document.getElementById('privacy-error').style.display = checked ? 'none' : 'block';
-}
-
-// ── 데이터 수집 ──────────────────────────────────────────
-function collectData() {
-  const needs   = getSelectedTags();
-  const goalRaw = document.getElementById('f-goal').value.trim();
-  const goal    = needs ? goalRaw + (goalRaw ? '\n\n[어려운 업무] ' : '[어려운 업무] ') + needs : goalRaw;
-
-  return {
-    timestamp  : new Date().toLocaleString('ko-KR', {timeZone:'Asia/Seoul'}),
-    name       : document.getElementById('f-name').value.trim(),
-    client     : document.getElementById('f-client').value.trim(),
-    email      : document.getElementById('f-email').value.trim(),
-    phone      : document.getElementById('f-phone').value.trim() || '',
-    inquiryType: getRadioVal('rg-inquiryType'),
-    when       : document.getElementById('f-when').value.trim() || '',
-    hours      : document.getElementById('f-hours').value,
-    course     : document.getElementById('f-course').value.trim() || '',
-    target     : document.getElementById('f-target').value.trim() || '',
-    method     : getRadioVal('rg-method'),
-    monAM      : document.getElementById('monAM').checked ? 'O' : '',
-    monPM      : document.getElementById('monPM').checked ? 'O' : '',
-    tueAM      : document.getElementById('tueAM').checked ? 'O' : '',
-    tuePM      : document.getElementById('tuePM').checked ? 'O' : '',
-    wedAM      : document.getElementById('wedAM').checked ? 'O' : '',
-    wedPM      : document.getElementById('wedPM').checked ? 'O' : '',
-    thuAM      : document.getElementById('thuAM').checked ? 'O' : '',
-    thuPM      : document.getElementById('thuPM').checked ? 'O' : '',
-    friAM      : document.getElementById('friAM').checked ? 'O' : '',
-    friPM      : document.getElementById('friPM').checked ? 'O' : '',
-    weekend    : document.getElementById('weekend').checked ? 'O' : '',
-    goal       : goal || '(내용 없음)'
-  };
-}
-
-// ── 제출 ─────────────────────────────────────────────────
-async function submitRequest() {
-  if (!validate()) return;
-
-  const btn = document.getElementById('submit-btn');
-  btn.disabled = true;
-
-  document.getElementById('form-view').style.display = 'none';
-  document.getElementById('loading-view').style.display = 'block';
-
-  const d = collectData();
-
-  try {
-    // Google Apps Script CORS 우회: no-cors + text/plain (Simple Request)
-    await fetch(SCRIPT_URL, {
-      method : 'POST',
-      mode   : 'no-cors',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body   : JSON.stringify(d)
+    // ── 진행률 업데이트 ──────────────────────────────────────
+    function updateProgress() {
+      const fields = ['f-client', 'f-name', 'f-email'];
+      const filled = fields.filter(id => document.getElementById(id).value.trim()).length;
+      const total = 6; // client, name, email + course + goal + inquiryType
+      const extra = (document.getElementById('f-course').value.trim() ? 1 : 0)
+        + (document.getElementById('f-goal').value.trim() ? 1 : 0)
+        + 1; // inquiryType always has default
+      const pct = Math.min(100, Math.round(((filled + extra) / total) * 100));
+      document.getElementById('progress-fill').style.width = pct + '%';
+    }
+    ['f-client', 'f-name', 'f-email', 'f-course', 'f-goal'].forEach(id => {
+      document.getElementById(id).addEventListener('input', updateProgress);
     });
-    // no-cors = opaque response, 성공 여부 불명이지만 데이터는 전달됨
-  } catch(err) {
-    // 네트워크 오류 시에도 성공 화면 표시 (UX 유지)
-    console.warn('fetch error:', err);
-  }
 
-  showSuccess(d);
-}
+    // ── 유효성 검사 ──────────────────────────────────────────
+    function setError(groupId, show) {
+      const g = document.getElementById(groupId);
+      if (!g) return;
+      g.classList.toggle('is-error', show);
+    }
 
-// ── 성공 화면 ────────────────────────────────────────────
-function showSuccess(d) {
-  document.getElementById('loading-view').style.display = 'none';
-  document.getElementById('success-view').style.display = 'block';
-  document.getElementById('progress-fill').style.width = '100%';
+    function validate() {
+      let ok = true;
+      const client = document.getElementById('f-client').value.trim();
+      const name = document.getElementById('f-name').value.trim();
+      const email = document.getElementById('f-email').value.trim();
 
-  const schedCols = ['monAM','tueAM','wedAM','thuAM','friAM'].filter(k => d[k]);
-  const schedText = schedCols.length
-    ? schedCols.map(k => ({monAM:'월오전',tueAM:'화오전',wedAM:'수오전',thuAM:'목오전',friAM:'금오전'}[k])).join(' ') +
-      (['monPM','tuePM','wedPM','thuPM','friPM'].filter(k=>d[k]).length ? ' 외' : '')
-    : '미선택';
+      setError('g-client', !client);
+      setError('g-name', !name);
+      const emailOk = email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      setError('g-email', !emailOk);
 
-  const rows = [
-    ['기관명',   d.client],
-    ['담당자',   d.name],
-    ['이메일',   d.email],
-    ['문의유형', d.inquiryType],
-    ['희망과정', d.course || '미정'],
-    ['교육방식', d.method],
-    ['강의시간', d.hours],
-  ];
-  document.getElementById('success-summary').innerHTML = rows.map(([l,v]) =>
-    `<div class="ss-row"><span class="ss-label">${l}</span><span class="ss-value">${v}</span></div>`
-  ).join('');
-}
+      const privacyOk = document.getElementById('privacy-check').checked;
+      document.getElementById('privacy-error').style.display = privacyOk ? 'none' : 'block';
+      document.getElementById('g-privacy').style.borderColor = privacyOk ? '' : '#D93025';
 
-// ── 폼 초기화 ────────────────────────────────────────────
-function resetForm() {
-  document.getElementById('success-view').style.display = 'none';
-  document.getElementById('form-view').style.display = 'block';
-  document.querySelectorAll('.need-tag').forEach(t => t.classList.remove('on'));
-  ['f-client','f-name','f-email','f-phone','f-course','f-target','f-when','f-goal'].forEach(id => {
-    document.getElementById(id).value = '';
-  });
-  document.getElementById('f-hours').value = '미정';
-  ['monAM','monPM','tueAM','tuePM','wedAM','wedPM','thuAM','thuPM','friAM','friPM','weekend'].forEach(id => {
-    document.getElementById(id).checked = false;
-  });
-  ['g-client','g-name','g-email'].forEach(g => setError(g, false));
-  document.getElementById('privacy-check').checked = false;
-  document.getElementById('privacy-error').style.display = 'none';
-  document.getElementById('submit-btn').disabled = false;
-  document.getElementById('progress-fill').style.width = '0%';
+      if (!client || !name || !emailOk) {
+        if (!client) document.getElementById('f-client').focus();
+        else if (!name) document.getElementById('f-name').focus();
+        else document.getElementById('f-email').focus();
+        ok = false;
+      }
+      if (!privacyOk) ok = false;
+      return ok;
+    }
 
-  // 라디오 기본값 복원
-  selectRadio(document.querySelector('#rg-inquiryType .radio-btn'), 'rg-inquiryType');
-  selectRadio(document.querySelector('#rg-method .radio-btn'), 'rg-method');
-}
-</script>
+    function updatePrivacy() {
+      const checked = document.getElementById('privacy-check').checked;
+      document.getElementById('privacy-error').style.display = checked ? 'none' : 'block';
+    }
+
+    // ── 데이터 수집 ──────────────────────────────────────────
+    function collectData() {
+      const needs = getSelectedTags();
+      const goalRaw = document.getElementById('f-goal').value.trim();
+      const goal = needs ? goalRaw + (goalRaw ? '\n\n[어려운 업무] ' : '[어려운 업무] ') + needs : goalRaw;
+
+      return {
+        timestamp: new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' }),
+        name: document.getElementById('f-name').value.trim(),
+        client: document.getElementById('f-client').value.trim(),
+        email: document.getElementById('f-email').value.trim(),
+        phone: document.getElementById('f-phone').value.trim() || '',
+        inquiryType: getRadioVal('rg-inquiryType'),
+        when: document.getElementById('f-when').value.trim() || '',
+        hours: document.getElementById('f-hours').value,
+        course: document.getElementById('f-course').value.trim() || '',
+        target: document.getElementById('f-target').value.trim() || '',
+        method: getRadioVal('rg-method'),
+        monAM: document.getElementById('monAM').checked ? 'O' : '',
+        monPM: document.getElementById('monPM').checked ? 'O' : '',
+        tueAM: document.getElementById('tueAM').checked ? 'O' : '',
+        tuePM: document.getElementById('tuePM').checked ? 'O' : '',
+        wedAM: document.getElementById('wedAM').checked ? 'O' : '',
+        wedPM: document.getElementById('wedPM').checked ? 'O' : '',
+        thuAM: document.getElementById('thuAM').checked ? 'O' : '',
+        thuPM: document.getElementById('thuPM').checked ? 'O' : '',
+        friAM: document.getElementById('friAM').checked ? 'O' : '',
+        friPM: document.getElementById('friPM').checked ? 'O' : '',
+        weekend: document.getElementById('weekend').checked ? 'O' : '',
+        goal: goal || '(내용 없음)'
+      };
+    }
+
+    // ── 제출 ─────────────────────────────────────────────────
+    async function submitRequest() {
+      if (!validate()) return;
+
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+
+      document.getElementById('form-view').style.display = 'none';
+      document.getElementById('loading-view').style.display = 'block';
+
+      const d = collectData();
+
+      try {
+        // Google Apps Script CORS 우회: no-cors + text/plain (Simple Request)
+        await fetch(SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(d)
+        });
+        // no-cors = opaque response, 성공 여부 불명이지만 데이터는 전달됨
+      } catch (err) {
+        // 네트워크 오류 시에도 성공 화면 표시 (UX 유지)
+        console.warn('fetch error:', err);
+      }
+
+      showSuccess(d);
+    }
+
+    // ── 성공 화면 ────────────────────────────────────────────
+    function showSuccess(d) {
+      document.getElementById('loading-view').style.display = 'none';
+      document.getElementById('success-view').style.display = 'block';
+      document.getElementById('progress-fill').style.width = '100%';
+
+      const schedCols = ['monAM', 'tueAM', 'wedAM', 'thuAM', 'friAM'].filter(k => d[k]);
+      const schedText = schedCols.length
+        ? schedCols.map(k => ({ monAM: '월오전', tueAM: '화오전', wedAM: '수오전', thuAM: '목오전', friAM: '금오전' }[k])).join(' ') +
+        (['monPM', 'tuePM', 'wedPM', 'thuPM', 'friPM'].filter(k => d[k]).length ? ' 외' : '')
+        : '미선택';
+
+      const rows = [
+        ['기관명', d.client],
+        ['담당자', d.name],
+        ['이메일', d.email],
+        ['문의유형', d.inquiryType],
+        ['희망과정', d.course || '미정'],
+        ['교육방식', d.method],
+        ['강의시간', d.hours],
+      ];
+      document.getElementById('success-summary').innerHTML = rows.map(([l, v]) =>
+        `<div class="ss-row"><span class="ss-label">${l}</span><span class="ss-value">${v}</span></div>`
+      ).join('');
+    }
+
+    // ── 폼 초기화 ────────────────────────────────────────────
+    function resetForm() {
+      document.getElementById('success-view').style.display = 'none';
+      document.getElementById('form-view').style.display = 'block';
+      document.querySelectorAll('.need-tag').forEach(t => t.classList.remove('on'));
+      ['f-client', 'f-name', 'f-email', 'f-phone', 'f-course', 'f-target', 'f-when', 'f-goal'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+      document.getElementById('f-hours').value = '미정';
+      ['monAM', 'monPM', 'tueAM', 'tuePM', 'wedAM', 'wedPM', 'thuAM', 'thuPM', 'friAM', 'friPM', 'weekend'].forEach(id => {
+        document.getElementById(id).checked = false;
+      });
+      ['g-client', 'g-name', 'g-email'].forEach(g => setError(g, false));
+      document.getElementById('privacy-check').checked = false;
+      document.getElementById('privacy-error').style.display = 'none';
+      document.getElementById('submit-btn').disabled = false;
+      document.getElementById('progress-fill').style.width = '0%';
+
+      // 라디오 기본값 복원
+      selectRadio(document.querySelector('#rg-inquiryType .radio-btn'), 'rg-inquiryType');
+      selectRadio(document.querySelector('#rg-method .radio-btn'), 'rg-method');
+    }
+  </script>
 </body>
+
 </html>
