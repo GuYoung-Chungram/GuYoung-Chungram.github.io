@@ -2266,7 +2266,7 @@ STAR 구조(상황-과제-행동-결과)로 핵심 에피소드를 구성하고,
   </div>
   <div class="card-desc">${p.desc}</div>
   <div class="prompt-box">${promptHighlighted}</div>
-  <button class="copy-btn" onclick="copyPrompt(this, \`${p.prompt.replace(/`/g, '\\`')}\`)">
+  <button class="copy-btn" data-prompt-index="${PROMPTS.indexOf(p)}">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
     프롬프트 복사
   </button>
@@ -2320,18 +2320,48 @@ STAR 구조(상황-과제-행동-결과)로 핵심 에피소드를 구성하고,
       render();
     });
 
-    // ── COPY ──
-    function copyPrompt(btn, text) {
-      navigator.clipboard.writeText(text).then(() => {
-        btn.classList.add('copied');
-        btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 복사 완료!`;
-        showToast();
-        setTimeout(() => {
-          btn.classList.remove('copied');
-          btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> 프롬프트 복사`;
-        }, 2500);
-      });
+    // ── COPY (이벤트 위임 방식 — 인라인 onclick 이스케이프 문제 완전 해결) ──
+    function fallbackCopy(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;opacity:0';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      let ok = false;
+      try { ok = document.execCommand('copy'); } catch(e) { ok = false; }
+      document.body.removeChild(ta);
+      return ok;
     }
+
+    function doCopy(btn, text) {
+      btn.classList.add('copied');
+      btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 복사 완료!`;
+      showToast();
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> 프롬프트 복사`;
+      }, 2500);
+    }
+
+    document.addEventListener('click', function(e) {
+      const btn = e.target.closest('.copy-btn');
+      if (!btn) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const idx = btn.getAttribute('data-prompt-index');
+      if (idx === null) return;
+      const text = PROMPTS[parseInt(idx)].prompt;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          doCopy(btn, text);
+        }).catch(() => {
+          if (fallbackCopy(text)) doCopy(btn, text);
+        });
+      } else {
+        if (fallbackCopy(text)) doCopy(btn, text);
+      }
+    });
 
     function showToast() {
       const t = document.getElementById('toast');
