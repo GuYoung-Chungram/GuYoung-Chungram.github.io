@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 도구 모음 — 청람M&C</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cr-primary:#004B87;--cr-primary-light:#0a6bc4;--cr-primary-dark:#003562;
+            --cr-accent:#FF0000;--cr-text:#1a1a2e;--cr-text-gray:#64748b;
+            --cr-border:#e2e8f0;--cr-highlight:#f1f5f9;--cr-card-bg:rgba(255,255,255,0.88);
+            --cr-danger:#e53e3e;--cr-font:'Noto Sans KR',sans-serif;
+            --cr-font-display:'Poppins','Noto Sans KR',sans-serif;
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:var(--cr-font);background:#f0f4f8;min-height:100vh;color:var(--cr-text);overflow-x:hidden}
+        .header{background:linear-gradient(135deg,var(--cr-primary-dark) 0%,var(--cr-primary) 40%,var(--cr-primary-light) 70%,#2980b9 100%);padding:44px 40px 36px;position:relative;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-60%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,255,255,0.08) 0%,transparent 70%);border-radius:50%}
+        .header::after{content:'';position:absolute;bottom:-40%;left:-5%;width:400px;height:400px;background:radial-gradient(circle,rgba(255,255,255,0.05) 0%,transparent 70%);border-radius:50%}
+        .header-inner{max-width:1400px;margin:0 auto;position:relative;z-index:1}
+        .brand-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:6px 16px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.9);letter-spacing:0.5px;margin-bottom:18px;backdrop-filter:blur(10px)}
+        .brand-badge .dot{width:6px;height:6px;background:var(--cr-accent);border-radius:50%;animation:pulse-dot 2s ease-in-out infinite}
+        @keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
+        .header h1{font-family:var(--cr-font-display);font-size:2.6rem;font-weight:800;color:#fff;margin-bottom:8px}
+        .header p{color:rgba(255,255,255,0.7);font-size:1rem;font-weight:300;line-height:1.6;max-width:600px}
+        .header-controls{display:flex;gap:12px;margin-top:24px;flex-wrap:wrap;align-items:center}
+        .search-box{position:relative;flex:1;max-width:380px;min-width:220px}
+        .search-box svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:17px;height:17px;color:var(--cr-text-gray)}
+        .search-box input{width:100%;padding:11px 16px 11px 42px;border:1px solid rgba(255,255,255,0.2);border-radius:12px;font-size:14px;font-family:var(--cr-font);background:rgba(255,255,255,0.95);color:var(--cr-text);transition:all .3s}
+        .search-box input::placeholder{color:var(--cr-text-gray)}
+        .search-box input:focus{outline:none;border-color:rgba(255,255,255,0.5);box-shadow:0 0 0 3px rgba(255,255,255,0.15)}
+        .btn-header{display:inline-flex;align-items:center;gap:6px;padding:11px 20px;border-radius:12px;font-size:14px;font-weight:600;font-family:var(--cr-font);cursor:pointer;transition:all .2s;border:none}
+        .btn-edit{background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.3)}
+        .btn-edit:hover{background:rgba(255,255,255,0.25)}
+        .btn-edit.active{background:var(--cr-accent);border-color:var(--cr-accent)}
+        .btn-add-cat{background:rgba(255,255,255,0.95);color:var(--cr-primary);border:1px solid rgba(255,255,255,0.3)}
+        .btn-add-cat:hover{background:#fff}
+        .btn-reset{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.15);font-size:13px;padding:10px 16px}
+        .btn-reset:hover{background:rgba(255,255,255,0.2);color:#fff}
+        .stats-bar{display:flex;gap:24px;margin-top:20px}
+        .stat-item{color:rgba(255,255,255,0.6);font-size:13px}
+        .stat-item strong{color:#fff;font-weight:700;font-size:17px;margin-right:4px}
+        .main{max-width:1400px;margin:0 auto;padding:28px 40px 60px}
+        .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+        .card{background:var(--cr-card-bg);border-radius:16px;border:1px solid var(--cr-border);padding:22px;backdrop-filter:blur(20px);transition:all .3s;display:flex;flex-direction:column;animation:card-in .45s ease-out both}
+        .card:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(0,75,135,0.1);border-color:rgba(0,75,135,0.15)}
+        @keyframes card-in{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+        .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid var(--cr-highlight)}
+        .card-title-group{display:flex;align-items:center;gap:8px}
+        .cat-icon{width:28px;height:28px;background:linear-gradient(135deg,var(--cr-primary),var(--cr-primary-light));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+        .card-title{font-family:var(--cr-font-display);font-size:1.1rem;font-weight:700;color:var(--cr-primary)}
+        .btn-delete-cat{width:28px;height:28px;border-radius:8px;border:1px solid var(--cr-border);background:#fff;color:var(--cr-danger);font-size:16px;cursor:pointer;display:none;align-items:center;justify-content:center;transition:all .2s}
+        .btn-delete-cat:hover{background:#fee;border-color:var(--cr-danger)}
+        .edit-mode .btn-delete-cat{display:flex}
+        .card-links{list-style:none;flex:1}
+        .card-links li{margin-bottom:2px}
+        .link-row{display:flex;align-items:center;gap:0;border-radius:10px;transition:all .2s}
+        .link-row:hover{background:var(--cr-highlight)}
+        .link-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;text-decoration:none;color:var(--cr-text);font-size:14px;font-weight:400;transition:all .2s;cursor:pointer;flex:1;min-width:0}
+        .link-row:hover .link-item{color:var(--cr-primary);transform:translateX(3px)}
+        .link-icon{width:30px;height:30px;border-radius:8px;background:#fff;border:1px solid var(--cr-border);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.06)}
+        .link-icon img{width:20px;height:20px;object-fit:contain}
+        .link-name{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .link-arrow{opacity:0;color:var(--cr-primary);transition:all .2s;font-size:12px;flex-shrink:0}
+        .link-row:hover .link-arrow{opacity:1}
+        .btn-delete-link{width:32px;height:32px;border-radius:8px;border:1px solid transparent;background:none;color:var(--cr-danger);font-size:15px;cursor:pointer;display:none;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;margin-right:4px}
+        .btn-delete-link:hover{background:#fee;border-color:var(--cr-danger)}
+        .edit-mode .btn-delete-link{display:flex}
+        .edit-mode .link-arrow{display:none}
+        .edit-mode .link-item{pointer-events:none}
+        .edit-mode .btn-delete-link{pointer-events:auto}
+        .btn-add-link{display:none;align-items:center;justify-content:center;gap:6px;width:100%;margin-top:8px;padding:10px;border:2px dashed var(--cr-border);border-radius:10px;background:none;color:var(--cr-text-gray);font-size:13px;font-family:var(--cr-font);cursor:pointer;transition:all .2s}
+        .btn-add-link:hover{border-color:var(--cr-primary);color:var(--cr-primary);background:rgba(0,75,135,0.03)}
+        .edit-mode .btn-add-link{display:flex}
+        .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:1000;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+        .modal-overlay.show{display:flex}
+        .modal{background:#fff;border-radius:20px;padding:32px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,0.2);animation:modal-in .25s ease-out}
+        @keyframes modal-in{from{opacity:0;transform:scale(0.95) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+        .modal h3{font-family:var(--cr-font-display);font-size:1.2rem;color:var(--cr-primary);margin-bottom:20px}
+        .form-group{margin-bottom:16px}
+        .form-group label{display:block;font-size:13px;font-weight:600;color:var(--cr-text);margin-bottom:6px}
+        .form-group input{width:100%;padding:10px 14px;border:1.5px solid var(--cr-border);border-radius:10px;font-size:14px;font-family:var(--cr-font);color:var(--cr-text);transition:all .2s}
+        .form-group input:focus{outline:none;border-color:var(--cr-primary);box-shadow:0 0 0 3px rgba(0,75,135,0.1)}
+        .modal-actions{display:flex;gap:10px;margin-top:24px}
+        .btn-modal{flex:1;padding:11px;border-radius:10px;font-size:14px;font-weight:600;font-family:var(--cr-font);cursor:pointer;transition:all .2s;border:none}
+        .btn-cancel{background:var(--cr-highlight);color:var(--cr-text-gray)}
+        .btn-cancel:hover{background:#e2e8f0}
+        .btn-confirm{background:var(--cr-primary);color:#fff}
+        .btn-confirm:hover{background:var(--cr-primary-dark)}
+        .no-results{grid-column:1/-1;text-align:center;padding:72px 20px;color:var(--cr-text-gray)}
+        .no-results p{font-size:15px;margin-top:8px}
+        .toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--cr-primary);color:#fff;padding:12px 24px;border-radius:12px;font-size:14px;font-weight:500;z-index:2000;opacity:0;transition:all .35s ease;box-shadow:0 8px 30px rgba(0,0,0,0.2);white-space:nowrap}
+        .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+        .footer{text-align:center;padding:20px 40px 40px;color:var(--cr-text-gray);font-size:13px;max-width:1400px;margin:0 auto}
+        .footer a{color:var(--cr-primary);text-decoration:none}
+        @media(max-width:1200px){.grid{grid-template-columns:repeat(3,1fr)}}
+        @media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}.header{padding:28px 20px}.header h1{font-size:2rem}.main{padding:20px 20px 40px}}
+        @media(max-width:560px){.grid{grid-template-columns:1fr}.header h1{font-size:1.5rem}.header p{font-size:.9rem}.header-controls{flex-direction:column;align-items:stretch}.search-box{max-width:100%}.modal{padding:24px}}
+    </style>
+</head>
+<body>
+<header class="header">
+    <div class="header-inner">
+        <div class="brand-badge"><span class="dot"></span>청람M&amp;C &middot; AI 에이전트 기반 교육 컨설팅</div>
+        <h1>AI Tool Hub</h1>
+        <p>업무 효율을 높이는 AI 도구를 한눈에. 카테고리별로 정리된 핵심 도구들을 바로 활용하세요.</p>
+        <div class="header-controls">
+            <div class="search-box">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+                <input type="text" id="searchInput" placeholder="도구 이름으로 검색..." autocomplete="off">
+            </div>
+            <button class="btn-header btn-edit" id="btnEdit" onclick="toggleEditMode()">
+                <span id="editIcon">&#9999;&#65039;</span>
+                <span id="editLabel">편집 모드</span>
+            </button>
+            <button class="btn-header btn-add-cat" id="btnAddCat" onclick="openAddCategoryModal()" style="display:none">＋ 새 카테고리</button>
+            <button class="btn-header btn-reset" id="btnReset" onclick="resetData()" style="display:none">&#128260; 초기화</button>
+        </div>
+        <div class="stats-bar">
+            <div class="stat-item"><strong id="totalTools">0</strong>개 도구</div>
+            <div class="stat-item"><strong id="totalCats">0</strong>개 카테고리</div>
+        </div>
+    </div>
+</header>
+<main class="main" id="mainArea"><div class="grid" id="grid"></div></main>
+<div class="modal-overlay" id="addLinkModal">
+    <div class="modal">
+        <h3>&#128279; 웹사이트 추가</h3>
+        <div class="form-group"><label>이름</label><input type="text" id="linkName" placeholder="예: ChatGPT"></div>
+        <div class="form-group"><label>URL</label><input type="url" id="linkUrl" placeholder="https://chat.openai.com"></div>
+        <input type="hidden" id="linkCatIndex">
+        <div class="modal-actions">
+            <button class="btn-modal btn-cancel" onclick="closeModal('addLinkModal')">취소</button>
+            <button class="btn-modal btn-confirm" onclick="addLink()">추가</button>
+        </div>
+    </div>
+</div>
+<div class="modal-overlay" id="addCatModal">
+    <div class="modal">
+        <h3>&#128193; 새 카테고리 추가</h3>
+        <div class="form-group"><label>카테고리 이름</label><input type="text" id="catName" placeholder="예: Coding"></div>
+        <div class="form-group"><label>아이콘 (이모지)</label><input type="text" id="catIcon" placeholder="예: 💡" maxlength="4" value="📂"></div>
+        <div class="modal-actions">
+            <button class="btn-modal btn-cancel" onclick="closeModal('addCatModal')">취소</button>
+            <button class="btn-modal btn-confirm" onclick="addCategory()">추가</button>
+        </div>
+    </div>
+</div>
+<div class="toast" id="toast"></div>
+<footer class="footer">청람M&amp;C &middot; AI 도구 모음 &middot; 2025 &nbsp;|&nbsp; 문의: <a href="mailto:cheongram@naver.com">cheongram@naver.com</a></footer>
+<script>
+// ══ Logo map: site name → direct logo URL ══
+var LOGO_MAP = {
+    "ChatGPT":      "https://cdn.oaistatic.com/assets/favicon-o20kmmos.svg",
+    "Gemini":       "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690b6.svg",
+    "Copilot":      "https://copilot.microsoft.com/rp/eMBEqnRjss7gFjSfIVPJyyJAWCM.svg",
+    "Claude":       "https://claude.ai/favicon.ico",
+    "Genspark":     "https://www.genspark.ai/favicon.ico",
+    "Grok":         "https://grok.com/favicon.ico",
+    "Felo AI":      "https://felo.ai/favicon.ico",
+    "Google":       "https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png",
+    "Naver":        "https://www.naver.com/favicon.ico?1",
+    "NotebookLM":   "https://notebooklm.google.com/favicon.ico",
+    "ChatPDF":      "https://www.chatpdf.com/favicon.ico",
+    "AI Literacy":  "https://www.google.com/s2/favicons?domain=ailiteracy.kr&sz=128",
+    "Chrome Web Store": "https://ssl.gstatic.com/chrome/webstore/images/icon_96px.png",
+    "editGPT":      "https://www.google.com/s2/favicons?domain=editgpt.app&sz=128",
+    "YouTube Summary": "https://glasp.co/favicon.ico",
+    "DeepL: AI":    "https://static.deepl.com/img/logo/deepl-logo-blue.svg",
+    "AI Studio":    "https://aistudio.google.com/favicon.ico",
+    "Replit":       "https://replit.com/public/icons/favicon-196.png",
+    "Lovable":      "https://lovable.dev/favicon.ico",
+    "Canva":        "https://static.canva.com/static/images/favicon-1.ico",
+    "Miricanvas":   "https://www.miricanvas.com/favicon.ico",
+    "Napkin AI":    "https://www.napkin.ai/favicon.ico",
+    "Recraft":      "https://www.recraft.ai/favicon.ico",
+    "Whimsical":    "https://whimsical.com/favicon.ico",
+    "Gamma":        "https://gamma.app/favicon.ico",
+    "DeepL":        "https://static.deepl.com/img/logo/deepl-logo-blue.svg",
+    "AI PDF 편집기":  "https://www.ilovepdf.com/img/favicons/favicon-32x32.png",
+    "Suno":         "https://suno.com/favicon.ico",
+    "Sora":         "https://sora.com/favicon.ico",
+    "Vrew":         "https://vrew.voyagerx.com/favicon.ico",
+    "CapCut":       "https://lf16-web-buz.capcut.com/obj/capcut-web-buz-us/common/images/capcut-favicon.ico",
+    "Pictory":      "https://pictory.ai/favicon.ico",
+    "HeyGen":       "https://www.heygen.com/favicon.ico",
+    "D-ID":         "https://www.d-id.com/favicon.ico",
+    "CLOVA Note":   "https://clovanote.naver.com/favicon.ico",
+    "Google Forms": "https://ssl.gstatic.com/docs/forms/device_home/android_192dp.png",
+    "Naver Forms":  "https://form.naver.com/favicon.ico"
+};
+
+var DEFAULT_DATA=[
+{title:"AI Chat",icon:"\uD83D\uDCAC",links:[
+{name:"ChatGPT",url:"https://chat.openai.com"},{name:"Gemini",url:"https://gemini.google.com"},
+{name:"Copilot",url:"https://copilot.microsoft.com"},{name:"Claude",url:"https://claude.ai"},
+{name:"Genspark",url:"https://www.genspark.ai"},{name:"Grok",url:"https://grok.com"},
+{name:"Felo AI",url:"https://felo.ai"}]},
+{title:"Search",icon:"\uD83D\uDD0D",links:[
+{name:"Google",url:"https://www.google.com"},{name:"Naver",url:"https://www.naver.com"}]},
+{title:"Research",icon:"\uD83D\uDCDA",links:[
+{name:"NotebookLM",url:"https://notebooklm.google.com"},{name:"ChatPDF",url:"https://www.chatpdf.com"}]},
+{title:"Generative AI Textbooks",icon:"\uD83D\uDCD6",links:[
+{name:"AI Literacy",url:"https://www.ailiteracy.kr"}]},
+{title:"Chrome Web Store",icon:"\uD83E\uDDE9",links:[
+{name:"Chrome Web Store",url:"https://chromewebstore.google.com"},{name:"editGPT",url:"https://www.editgpt.app"},
+{name:"YouTube Summary",url:"https://glasp.co/youtube-summary"},{name:"DeepL: AI",url:"https://www.deepl.com/translator"}]},
+{title:"Dev",icon:"\u26A1",links:[
+{name:"AI Studio",url:"https://aistudio.google.com"},{name:"Replit",url:"https://replit.com"},
+{name:"Lovable",url:"https://lovable.dev"}]},
+{title:"Design",icon:"\uD83C\uDFA8",links:[
+{name:"Canva",url:"https://www.canva.com"},{name:"Miricanvas",url:"https://www.miricanvas.com"},
+{name:"Napkin AI",url:"https://www.napkin.ai"},{name:"Recraft",url:"https://www.recraft.ai"}]},
+{title:"Productivity",icon:"\uD83D\uDCCA",links:[
+{name:"Whimsical",url:"https://whimsical.com"},{name:"Gamma",url:"https://gamma.app"}]},
+{title:"Tools",icon:"\uD83D\uDD27",links:[
+{name:"DeepL",url:"https://www.deepl.com"},{name:"AI PDF \uD3B8\uC9D1\uAE30",url:"https://www.ilovepdf.com"}]},
+{title:"Audio",icon:"\uD83C\uDFB5",links:[
+{name:"Suno",url:"https://suno.com"}]},
+{title:"Video",icon:"\uD83C\uDFAC",links:[
+{name:"Sora",url:"https://sora.com"},{name:"Vrew",url:"https://vrew.voyagerx.com"},
+{name:"CapCut",url:"https://www.capcut.com"},{name:"Pictory",url:"https://pictory.ai"},
+{name:"HeyGen",url:"https://www.heygen.com"},{name:"D-ID",url:"https://www.d-id.com"}]},
+{title:"Utility",icon:"\uD83D\uDEE0",links:[
+{name:"CLOVA Note",url:"https://clovanote.naver.com"},{name:"Google Forms",url:"https://docs.google.com/forms"},
+{name:"Naver Forms",url:"https://form.naver.com"}]}
+];
+
+var categories=[],editMode=false,STORAGE_KEY='cheongram_ai_tools_v4';
+var grid=document.getElementById('grid');
+var searchInput=document.getElementById('searchInput');
+
+function loadData(){
+    try{var s=localStorage.getItem(STORAGE_KEY);categories=s?JSON.parse(s):JSON.parse(JSON.stringify(DEFAULT_DATA));}
+    catch(e){categories=JSON.parse(JSON.stringify(DEFAULT_DATA));}
+}
+function saveData(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(categories));}catch(e){}}
+function resetData(){
+    if(confirm('\uBAA8\uB4E0 \uBCC0\uACBD\uC0AC\uD56D\uC744 \uCD08\uAE30 \uC0C1\uD0DC\uB85C \uB418\uB3CC\uB9AC\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?')){
+        localStorage.removeItem(STORAGE_KEY);
+        categories=JSON.parse(JSON.stringify(DEFAULT_DATA));
+        renderCards(searchInput.value);showToast('\uCD08\uAE30 \uC0C1\uD0DC\uB85C \uBCF5\uC6D0\uB418\uC5C8\uC2B5\uB2C8\uB2E4');
+    }
+}
+
+function getLogoUrl(name,url){
+    // 1) Check direct logo map
+    if(LOGO_MAP[name]) return LOGO_MAP[name];
+    // 2) Fallback: Google favicon service (multiple sizes for reliability)
+    try{
+        var domain=new URL(url).hostname;
+        return 'https://www.google.com/s2/favicons?domain='+domain+'&sz=128';
+    }catch(e){return '';}
+}
+
+function updateStats(){
+    var t=0;categories.forEach(function(c){t+=c.links.length;});
+    document.getElementById('totalTools').textContent=t;
+    document.getElementById('totalCats').textContent=categories.length;
+}
+
+function renderCards(filter){
+    filter=filter||'';grid.innerHTML='';
+    var q=filter.toLowerCase().trim(),hasResults=false;
+
+    categories.forEach(function(cat,catIdx){
+        var fl=cat.links.filter(function(l){
+            return l.name.toLowerCase().indexOf(q)!==-1||cat.title.toLowerCase().indexOf(q)!==-1;
+        });
+        if(q&&fl.length===0)return;
+        hasResults=true;
+
+        var card=document.createElement('div');
+        card.className='card';
+        card.style.animationDelay=(catIdx*0.04)+'s';
+
+        var show=q?fl:cat.links;
+        var lhtml='';
+        show.forEach(function(link){
+            var ri=cat.links.indexOf(link);
+            var logo=getLogoUrl(link.name,link.url);
+            var imgTag=logo
+                ?'<img src="'+logo+'" alt="" loading="lazy" onerror="this.onerror=null;this.src=\'https://www.google.com/s2/favicons?domain='+encodeURIComponent(new URL(link.url).hostname)+'&sz=128\';this.onerror=function(){this.style.display=\'none\';this.parentElement.textContent=\'🔗\';}">'
+                :'🔗';
+
+            lhtml+='<li><div class="link-row">'
+                +'<a class="link-item" href="'+link.url+'" target="_blank" rel="noopener noreferrer">'
+                +'<span class="link-icon">'+imgTag+'</span>'
+                +'<span class="link-name">'+link.name+'</span>'
+                +'<span class="link-arrow">\u2192</span>'
+                +'</a>'
+                +'<button class="btn-delete-link" onclick="deleteLink('+catIdx+','+ri+')" title="\uC0AD\uC81C">\u2715</button>'
+                +'</div></li>';
+        });
+
+        card.innerHTML='<div class="card-header">'
+            +'<div class="card-title-group"><span class="cat-icon">'+cat.icon+'</span><span class="card-title">'+cat.title+'</span></div>'
+            +'<button class="btn-delete-cat" onclick="deleteCategory('+catIdx+')" title="\uCE74\uD14C\uACE0\uB9AC \uC0AD\uC81C">\u2715</button>'
+            +'</div>'
+            +'<ul class="card-links">'+lhtml+'</ul>'
+            +'<button class="btn-add-link" onclick="openAddLinkModal('+catIdx+')">＋&nbsp; Add Website</button>';
+        grid.appendChild(card);
+    });
+
+    if(!hasResults){
+        grid.innerHTML='<div class="no-results"><p>\uD83D\uDD0D "'+filter+'" \uC5D0 \uD574\uB2F9\uD558\uB294 \uB3C4\uAD6C\uB97C \uCC3E\uC744 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.</p></div>';
+    }
+    updateStats();
+}
+
+function toggleEditMode(){
+    editMode=!editMode;
+    var ma=document.getElementById('mainArea'),ac=document.getElementById('btnAddCat'),
+        rs=document.getElementById('btnReset'),be=document.getElementById('btnEdit'),
+        el=document.getElementById('editLabel'),ei=document.getElementById('editIcon');
+    if(editMode){
+        ma.classList.add('edit-mode');ac.style.display='inline-flex';rs.style.display='inline-flex';
+        be.classList.add('active');el.textContent='\uD3B8\uC9D1 \uC644\uB8CC';ei.textContent='\u2705';
+        showToast('\uD3B8\uC9D1 \uBAA8\uB4DC: \uD56D\uBAA9\uC744 \uCD94\uAC00\u00B7\uC0AD\uC81C\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4');
+    }else{
+        ma.classList.remove('edit-mode');ac.style.display='none';rs.style.display='none';
+        be.classList.remove('active');el.textContent='\uD3B8\uC9D1 \uBAA8\uB4DC';ei.textContent='\u270F\uFE0F';
+        showToast('\uBCC0\uACBD\uC0AC\uD56D\uC774 \uC800\uC7A5\uB418\uC5C8\uC2B5\uB2C8\uB2E4');
+    }
+    renderCards(searchInput.value);
+}
+
+function openAddLinkModal(ci){
+    document.getElementById('linkCatIndex').value=ci;
+    document.getElementById('linkName').value='';
+    document.getElementById('linkUrl').value='';
+    document.getElementById('addLinkModal').classList.add('show');
+    setTimeout(function(){document.getElementById('linkName').focus();},100);
+}
+function addLink(){
+    var ci=parseInt(document.getElementById('linkCatIndex').value);
+    var n=document.getElementById('linkName').value.trim();
+    var u=document.getElementById('linkUrl').value.trim();
+    if(!n){showToast('\uC774\uB984\uC744 \uC785\uB825\uD574\uC8FC\uC138\uC694');return;}
+    if(!u){showToast('URL\uC744 \uC785\uB825\uD574\uC8FC\uC138\uC694');return;}
+    if(u.indexOf('http')!==0)u='https://'+u;
+    categories[ci].links.push({name:n,url:u});
+    saveData();closeModal('addLinkModal');renderCards(searchInput.value);
+    showToast('"'+n+'" \uCD94\uAC00 \uC644\uB8CC');
+}
+function deleteLink(ci,li){
+    var n=categories[ci].links[li].name;
+    if(confirm('"'+n+'"\uC744(\uB97C) \uC0AD\uC81C\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?')){
+        categories[ci].links.splice(li,1);saveData();renderCards(searchInput.value);
+        showToast('"'+n+'" \uC0AD\uC81C\uB428');
+    }
+}
+function openAddCategoryModal(){
+    document.getElementById('catName').value='';
+    document.getElementById('catIcon').value='\uD83D\uDCC2';
+    document.getElementById('addCatModal').classList.add('show');
+    setTimeout(function(){document.getElementById('catName').focus();},100);
+}
+function addCategory(){
+    var t=document.getElementById('catName').value.trim();
+    var i=document.getElementById('catIcon').value.trim()||'\uD83D\uDCC2';
+    if(!t){showToast('\uCE74\uD14C\uACE0\uB9AC \uC774\uB984\uC744 \uC785\uB825\uD574\uC8FC\uC138\uC694');return;}
+    categories.push({title:t,icon:i,links:[]});
+    saveData();closeModal('addCatModal');renderCards(searchInput.value);
+    showToast('"'+t+'" \uCE74\uD14C\uACE0\uB9AC \uCD94\uAC00 \uC644\uB8CC');
+}
+function deleteCategory(ci){
+    var n=categories[ci].title;
+    if(confirm('"'+n+'" \uCE74\uD14C\uACE0\uB9AC\uC640 \uD3EC\uD568\uB41C \uBAA8\uB4E0 \uB9C1\uD06C\uB97C \uC0AD\uC81C\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?')){
+        categories.splice(ci,1);saveData();renderCards(searchInput.value);
+        showToast('"'+n+'" \uC0AD\uC81C\uB428');
+    }
+}
+function closeModal(id){document.getElementById(id).classList.remove('show');}
+
+document.querySelectorAll('.modal-overlay').forEach(function(o){
+    o.addEventListener('click',function(e){if(e.target===o)o.classList.remove('show');});
+});
+document.addEventListener('keydown',function(e){
+    if(e.key==='Escape')document.querySelectorAll('.modal-overlay.show').forEach(function(m){m.classList.remove('show');});
+    if(e.key==='Enter'){
+        if(document.getElementById('addLinkModal').classList.contains('show'))addLink();
+        if(document.getElementById('addCatModal').classList.contains('show'))addCategory();
+    }
+});
+
+var toastTimeout;
+function showToast(msg){
+    var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+    clearTimeout(toastTimeout);toastTimeout=setTimeout(function(){t.classList.remove('show');},2400);
+}
+searchInput.addEventListener('input',function(e){renderCards(e.target.value);});
+loadData();renderCards();
+</script>
+</body>
+</html>
