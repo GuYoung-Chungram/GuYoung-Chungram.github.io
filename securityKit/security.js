@@ -5,7 +5,7 @@
  * ╚══════════════════════════════════════════════════════════╝
  *
  * [적용 방법] 모든 HTML 파일 <head> 최상단에 삽입:
- *   <script src="보안킷/security.js"></script>
+ *   <script src="securityKit/security.js"></script>
  *
  * [v1.1 수정]
  *  - FIXED: DOMContentLoaded 래핑 → head 최상단 로드 시 body null 오류 해결
