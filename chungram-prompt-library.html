@@ -715,6 +715,311 @@
       transform: translateY(-1px) !important;
       color: #000 !important;
     }
+
+    /* ══════════════════════════
+   ADMIN MODE
+══════════════════════════ */
+    /* 편집하기 FAB 버튼 */
+    .admin-fab {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 600;
+      background: var(--accent);
+      color: #000;
+      border: none;
+      border-radius: 50px;
+      padding: 11px 22px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(212,255,94,0.4);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      transition: all .2s;
+      letter-spacing: -0.2px;
+    }
+    .admin-fab:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(212,255,94,0.55); }
+    .admin-fab.active { background: #ff4757; color: #fff; box-shadow: 0 4px 20px rgba(255,71,87,0.45); }
+    .admin-fab.active:hover { box-shadow: 0 6px 28px rgba(255,71,87,0.6); }
+
+    /* 관리자 모드 배지 */
+    .admin-badge {
+      position: fixed;
+      top: 72px;
+      right: 16px;
+      background: rgba(255,71,87,0.12);
+      border: 1px solid rgba(255,71,87,0.4);
+      color: #ff4757;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 14px;
+      border-radius: 100px;
+      z-index: 550;
+      letter-spacing: 0.08em;
+      display: none;
+      animation: fadeIn .3s ease;
+    }
+    .admin-badge.visible { display: block; }
+
+    /* 카드 편집/삭제 버튼 영역 */
+    .card-admin-btns {
+      display: none;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .admin-mode .card-admin-btns { display: flex; }
+
+    .card-edit-btn, .card-del-btn {
+      flex: 1;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .15s;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+    .card-edit-btn {
+      background: rgba(212,255,94,0.07);
+      border-color: rgba(212,255,94,0.3);
+      color: var(--accent);
+    }
+    .card-edit-btn:hover { background: rgba(212,255,94,0.18); border-color: var(--accent); }
+    .card-del-btn {
+      background: rgba(255,71,87,0.07);
+      border-color: rgba(255,71,87,0.3);
+      color: #ff4757;
+    }
+    .card-del-btn:hover { background: rgba(255,71,87,0.2); border-color: #ff4757; }
+
+    /* 새 프롬프트 추가 버튼 (카드 형태) */
+    .card-add-btn {
+      width: 100%;
+      min-height: 140px;
+      border-radius: var(--radius);
+      border: 2px dashed rgba(212,255,94,0.28);
+      background: rgba(212,255,94,0.03);
+      color: var(--accent);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+    .admin-mode .card-add-btn { display: flex; }
+    .card-add-btn:hover { background: rgba(212,255,94,0.09); border-color: rgba(212,255,94,0.6); }
+    .card-add-btn-icon { font-size: 28px; line-height: 1; }
+
+    /* ── 비밀번호 모달 ── */
+    .pwd-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.88);
+      z-index: 9000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .pwd-overlay.open { display: flex; }
+
+    .pwd-box {
+      background: #141414;
+      border: 1px solid rgba(212,255,94,0.25);
+      border-radius: 24px;
+      padding: 40px 36px;
+      width: min(360px, 92vw);
+      text-align: center;
+      box-shadow: 0 24px 70px rgba(0,0,0,0.85);
+      animation: slideUp .25s ease;
+    }
+    .pwd-icon { font-size: 36px; margin-bottom: 12px; }
+    .pwd-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 0.22em;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .pwd-sub {
+      font-size: 12px;
+      color: var(--text-dimmer);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+    .pwd-input {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(212,255,94,0.2);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 20px;
+      text-align: center;
+      letter-spacing: 0.35em;
+      padding: 14px;
+      outline: none;
+      margin-bottom: 8px;
+      transition: border .2s;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .pwd-input:focus { border-color: rgba(212,255,94,0.6); }
+    .pwd-error { color: #ff4757; font-size: 12px; min-height: 18px; margin-bottom: 16px; }
+    .pwd-btns { display: flex; gap: 10px; }
+    .pwd-confirm {
+      flex: 1;
+      background: var(--accent);
+      color: #000;
+      border: none;
+      border-radius: 12px;
+      padding: 13px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all .15s;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+    .pwd-confirm:hover { background: #c8f54a; }
+    .pwd-cancel {
+      flex: 1;
+      background: rgba(255,255,255,0.06);
+      color: var(--text-dim);
+      border: 1px solid var(--border-dim);
+      border-radius: 12px;
+      padding: 13px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all .15s;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+    .pwd-cancel:hover { background: rgba(255,255,255,0.1); }
+
+    /* ── 편집 모달 ── */
+    .edit-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.88);
+      z-index: 9100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .edit-overlay.open { display: flex; }
+
+    .edit-box {
+      background: #141414;
+      border: 1px solid rgba(212,255,94,0.2);
+      border-radius: 24px;
+      padding: 36px;
+      width: min(580px, 94vw);
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 24px 70px rgba(0,0,0,0.85);
+      animation: slideUp .25s ease;
+    }
+    .edit-box::-webkit-scrollbar { width: 4px; }
+    .edit-box::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+    .edit-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .edit-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px;
+      letter-spacing: 0.18em;
+      color: var(--accent);
+    }
+    .edit-close {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      border: 1px solid var(--border-dim);
+      background: none;
+      color: var(--text-dim);
+      cursor: pointer;
+      font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .edit-close:hover { background: rgba(255,255,255,0.08); color: #fff; }
+
+    .edit-field { margin-bottom: 16px; }
+    .edit-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-dimmer);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 7px;
+      display: block;
+    }
+    .edit-input, .edit-select, .edit-textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 13px;
+      font-family: 'Noto Sans KR', sans-serif;
+      padding: 11px 14px;
+      outline: none;
+      transition: border .2s;
+    }
+    .edit-input:focus, .edit-select:focus, .edit-textarea:focus {
+      border-color: rgba(212,255,94,0.45);
+    }
+    .edit-select { cursor: pointer; }
+    .edit-select option { background: #1a1a1a; }
+    .edit-textarea {
+      resize: vertical;
+      min-height: 180px;
+      line-height: 1.7;
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .edit-btns { display: flex; gap: 10px; margin-top: 4px; }
+    .edit-save {
+      flex: 2;
+      background: var(--accent);
+      color: #000;
+      border: none;
+      border-radius: 12px;
+      padding: 13px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all .15s;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+    .edit-save:hover { background: #c8f54a; }
+    .edit-cancel {
+      flex: 1;
+      background: rgba(255,255,255,0.06);
+      color: var(--text-dim);
+      border: 1px solid var(--border-dim);
+      border-radius: 12px;
+      padding: 13px;
+      font-size: 14px;
+      cursor: pointer;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+    .edit-cancel:hover { background: rgba(255,255,255,0.1); }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 
@@ -809,6 +1114,66 @@
   <!-- ── GRID ── -->
   <div class="main-wrap">
     <div class="grid" id="promptGrid"></div>
+  </div>
+
+
+  <!-- ── 관리자 배지 ── -->
+  <div class="admin-badge" id="adminBadge">🔐 관리자 모드 ON</div>
+
+  <!-- ── 편집하기 FAB ── -->
+  <button class="admin-fab" id="adminFab" onclick="toggleAdmin()">🔐 편집하기</button>
+
+  <!-- ── 비밀번호 모달 ── -->
+  <div class="pwd-overlay" id="pwdOverlay">
+    <div class="pwd-box">
+      <div class="pwd-icon">🔐</div>
+      <div class="pwd-title">ADMIN ACCESS</div>
+      <div class="pwd-sub">관리자 비밀번호를 입력하세요</div>
+      <input type="password" class="pwd-input" id="pwdInput" placeholder="••••••" maxlength="20" autocomplete="off">
+      <div class="pwd-error" id="pwdError"></div>
+      <div class="pwd-btns">
+        <button class="pwd-confirm" onclick="checkAdminPwd()">확인</button>
+        <button class="pwd-cancel" onclick="closeAdminPwd()">취소</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 프롬프트 편집 모달 ── -->
+  <div class="edit-overlay" id="editOverlay">
+    <div class="edit-box">
+      <div class="edit-header">
+        <div class="edit-title" id="editModalTitle">프롬프트 편집</div>
+        <button class="edit-close" onclick="closeEdit()">✕</button>
+      </div>
+      <div class="edit-field">
+        <label class="edit-label">카테고리</label>
+        <select class="edit-select" id="editCat">
+          <option value="업무생산성">💼 업무·생산성</option>
+          <option value="AI활용">🤖 AI 활용</option>
+          <option value="콘텐츠제작">✍️ 콘텐츠 제작</option>
+          <option value="리더십조직">🎯 리더십·조직</option>
+          <option value="교육학습">📚 교육·학습</option>
+          <option value="ESG경영">🌿 ESG·경영</option>
+          <option value="일상창작">✨ 일상·창작</option>
+        </select>
+      </div>
+      <div class="edit-field">
+        <label class="edit-label">제목</label>
+        <input type="text" class="edit-input" id="editTitle" placeholder="프롬프트 제목을 입력하세요">
+      </div>
+      <div class="edit-field">
+        <label class="edit-label">한 줄 설명</label>
+        <input type="text" class="edit-input" id="editDesc" placeholder="카드에 표시될 설명">
+      </div>
+      <div class="edit-field">
+        <label class="edit-label">프롬프트 내용</label>
+        <textarea class="edit-textarea" id="editPrompt" placeholder="프롬프트 내용을 입력하세요. {변수}는 중괄호로 표시됩니다."></textarea>
+      </div>
+      <div class="edit-btns">
+        <button class="edit-save" onclick="saveEdit()">✅ 저장하기</button>
+        <button class="edit-cancel" onclick="closeEdit()">취소</button>
+      </div>
+    </div>
   </div>
 
   <!-- ── TOAST ── -->
@@ -2251,6 +2616,35 @@ STAR 구조(상황-과제-행동-결과)로 핵심 에피소드를 구성하고,
       },
     ];
 
+
+    // ══════════════════════════
+    // WORKING_PROMPTS: localStorage 연동 편집 가능 배열
+    // ══════════════════════════
+    var _deletedPids = JSON.parse(localStorage.getItem('crml_deleted') || '[]');
+    var _editedPids  = JSON.parse(localStorage.getItem('crml_edited')  || '{}');
+    var _customPmpts = JSON.parse(localStorage.getItem('crml_custom')  || '[]');
+
+    // 기본 PROMPTS에 pid 부여 후 삭제/수정 반영
+    var WORKING_PROMPTS = PROMPTS
+      .map((p, i) => ({ ...p, _pid: 'b_' + i }))
+      .filter(p => !_deletedPids.includes(p._pid))
+      .map(p => {
+        var origIdx = parseInt(p._pid.split('_')[1]);
+        return _editedPids[origIdx] ? { ...p, ..._editedPids[origIdx] } : p;
+      });
+
+    // 커스텀 프롬프트 추가
+    _customPmpts.forEach((p, i) => WORKING_PROMPTS.push({ ...p, _pid: 'c_' + i }));
+
+    function _saveStorage() {
+      localStorage.setItem('crml_deleted', JSON.stringify(_deletedPids));
+      localStorage.setItem('crml_edited',  JSON.stringify(_editedPids));
+      localStorage.setItem('crml_custom',  JSON.stringify(_customPmpts));
+    }
+
+    // 현재 필터링된 카드 목록 (copy에서 참조)
+    var _filteredCache = [];
+
     // ── RENDER ──
     function buildCard(p, i) {
       const delay = (i % 9) * 0.04;
@@ -2266,7 +2660,7 @@ STAR 구조(상황-과제-행동-결과)로 핵심 에피소드를 구성하고,
   </div>
   <div class="card-desc">${p.desc}</div>
   <div class="prompt-box">${promptHighlighted}</div>
-  <button class="copy-btn" data-prompt-index="${PROMPTS.indexOf(p)}">
+  <button class="copy-btn" data-pid="${PROMPTS.indexOf(p)}" onclick="copyPrompt(this)">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
     프롬프트 복사
   </button>
@@ -2283,7 +2677,7 @@ STAR 구조(상황-과제-행동-결과)로 핵심 에피소드를 구성하고,
 
     function render() {
       const grid = document.getElementById('promptGrid');
-      let filtered = PROMPTS.filter(p => {
+      let filtered = WORKING_PROMPTS.filter(p => {
         const catMatch = currentCat === 'all' || p.cat === currentCat;
         const searchMatch = !currentSearch ||
           p.title.includes(currentSearch) ||
@@ -2291,17 +2685,21 @@ STAR 구조(상황-과제-행동-결과)로 핵심 에피소드를 구성하고,
           p.cat.includes(currentSearch);
         return catMatch && searchMatch;
       });
+      _filteredCache = filtered;
 
       document.getElementById('resultCount').innerHTML = `<strong>${filtered.length}</strong>개`;
 
-      if (filtered.length === 0) {
+      if (filtered.length === 0 && !isAdmin) {
         grid.innerHTML = `<div class="empty-state">
       <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       <p>검색 결과가 없습니다.<br><span style="color:var(--accent);">"${currentSearch}"</span> 에 해당하는 프롬프트를 찾을 수 없어요.</p>
     </div>`;
         return;
       }
-      grid.innerHTML = filtered.map((p, i) => buildCard(p, i)).join('');
+      const addBtn = isAdmin ? `<button class="card-add-btn" onclick="openAddModal()"><span class="card-add-btn-icon">＋</span>새 프롬프트 추가</button>` : '';
+      grid.innerHTML = filtered.map((p, i) => buildCard(p, i)).join('') + addBtn;
+      if (isAdmin) grid.classList.add('admin-mode');
+      else grid.classList.remove('admin-mode');
     }
 
     // ── CATEGORY FILTER ──
@@ -2320,48 +2718,43 @@ STAR 구조(상황-과제-행동-결과)로 핵심 에피소드를 구성하고,
       render();
     });
 
-    // ── COPY (이벤트 위임 방식 — 인라인 onclick 이스케이프 문제 완전 해결) ──
-    function fallbackCopy(text) {
+    // ── COPY ──
+    function copyPrompt(btn) {
+      const fid = parseInt(btn.dataset.fid);
+      const text = _filteredCache[fid].prompt;
+
+      const onSuccess = () => {
+        btn.classList.add('copied');
+        btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 복사 완료!`;
+        showToast();
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> 프롬프트 복사`;
+        }, 2500);
+      };
+
+      // HTTPS: Clipboard API 사용 / HTTP: execCommand fallback
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(onSuccess).catch(() => fallbackCopy(text, onSuccess));
+      } else {
+        fallbackCopy(text, onSuccess);
+      }
+    }
+
+    function fallbackCopy(text, callback) {
       const ta = document.createElement('textarea');
       ta.value = text;
-      ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;opacity:0';
+      ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;pointer-events:none;';
       document.body.appendChild(ta);
       ta.focus();
       ta.select();
-      let ok = false;
-      try { ok = document.execCommand('copy'); } catch(e) { ok = false; }
-      document.body.removeChild(ta);
-      return ok;
-    }
-
-    function doCopy(btn, text) {
-      btn.classList.add('copied');
-      btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 복사 완료!`;
-      showToast();
-      setTimeout(() => {
-        btn.classList.remove('copied');
-        btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> 프롬프트 복사`;
-      }, 2500);
-    }
-
-    document.addEventListener('click', function(e) {
-      const btn = e.target.closest('.copy-btn');
-      if (!btn) return;
-      e.preventDefault();
-      e.stopPropagation();
-      const idx = btn.getAttribute('data-prompt-index');
-      if (idx === null) return;
-      const text = PROMPTS[parseInt(idx)].prompt;
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(() => {
-          doCopy(btn, text);
-        }).catch(() => {
-          if (fallbackCopy(text)) doCopy(btn, text);
-        });
-      } else {
-        if (fallbackCopy(text)) doCopy(btn, text);
+      try {
+        if (document.execCommand('copy')) callback();
+      } catch (e) {
+        console.warn('복사 실패:', e);
       }
-    });
+      document.body.removeChild(ta);
+    }
 
     function showToast() {
       const t = document.getElementById('toast');
@@ -2369,8 +2762,157 @@ STAR 구조(상황-과제-행동-결과)로 핵심 에피소드를 구성하고,
       setTimeout(() => t.classList.remove('show'), 2000);
     }
 
+
+    // ══════════════════════════
+    // ADMIN 기능
+    // ══════════════════════════
+    var ADMIN_PWD = '0zgoodman!';
+    var isAdmin = false;
+    var _editingPid = null; // 현재 편집 중인 프롬프트 pid
+
+    function toggleAdmin() {
+      if (isAdmin) {
+        // 관리자 모드 종료
+        isAdmin = false;
+        document.getElementById('adminFab').innerHTML = '🔐 편집하기';
+        document.getElementById('adminFab').classList.remove('active');
+        document.getElementById('adminBadge').classList.remove('visible');
+        render();
+      } else {
+        // 비밀번호 입력창 표시
+        document.getElementById('pwdError').textContent = '';
+        document.getElementById('pwdInput').value = '';
+        document.getElementById('pwdOverlay').classList.add('open');
+        setTimeout(() => document.getElementById('pwdInput').focus(), 120);
+      }
+    }
+
+    function closeAdminPwd() {
+      document.getElementById('pwdOverlay').classList.remove('open');
+    }
+
+    function checkAdminPwd() {
+      var v = document.getElementById('pwdInput').value;
+      if (v === ADMIN_PWD) {
+        isAdmin = true;
+        closeAdminPwd();
+        document.getElementById('adminFab').innerHTML = '🔓 편집 종료';
+        document.getElementById('adminFab').classList.add('active');
+        document.getElementById('adminBadge').classList.add('visible');
+        showToast('🔓 관리자 모드 활성화');
+        render();
+      } else {
+        document.getElementById('pwdError').textContent = '비밀번호가 올바르지 않습니다';
+        document.getElementById('pwdInput').value = '';
+        document.getElementById('pwdInput').focus();
+      }
+    }
+
+    document.getElementById('pwdInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') checkAdminPwd();
+      if (e.key === 'Escape') closeAdminPwd();
+    });
+
+    // ── 편집 모달 ──
+    function openEditModal(pid) {
+      _editingPid = pid;
+      var p = WORKING_PROMPTS.find(x => x._pid === pid);
+      if (!p) return;
+      document.getElementById('editModalTitle').textContent = '✏️ 프롬프트 편집';
+      document.getElementById('editCat').value = p.cat;
+      document.getElementById('editTitle').value = p.title;
+      document.getElementById('editDesc').value = p.desc || '';
+      document.getElementById('editPrompt').value = p.prompt;
+      document.getElementById('editOverlay').classList.add('open');
+    }
+
+    function openAddModal() {
+      _editingPid = '__new__';
+      document.getElementById('editModalTitle').textContent = '➕ 새 프롬프트 추가';
+      document.getElementById('editCat').value = '업무생산성';
+      document.getElementById('editTitle').value = '';
+      document.getElementById('editDesc').value = '';
+      document.getElementById('editPrompt').value = '';
+      document.getElementById('editOverlay').classList.add('open');
+      setTimeout(() => document.getElementById('editTitle').focus(), 120);
+    }
+
+    function closeEdit() {
+      document.getElementById('editOverlay').classList.remove('open');
+      _editingPid = null;
+    }
+
+    function saveEdit() {
+      var cat    = document.getElementById('editCat').value;
+      var title  = document.getElementById('editTitle').value.trim();
+      var desc   = document.getElementById('editDesc').value.trim();
+      var prompt = document.getElementById('editPrompt').value.trim();
+
+      if (!title || !prompt) {
+        alert('제목과 프롬프트 내용은 필수입니다.');
+        return;
+      }
+
+      var newData = { cat, title, desc, prompt };
+
+      if (_editingPid === '__new__') {
+        // 새 커스텀 프롬프트 추가
+        var cidx = _customPmpts.length;
+        _customPmpts.push(newData);
+        WORKING_PROMPTS.push({ ...newData, _pid: 'c_' + cidx });
+      } else if (_editingPid.startsWith('c_')) {
+        // 기존 커스텀 프롬프트 수정
+        var cidx = parseInt(_editingPid.split('_')[1]);
+        _customPmpts[cidx] = newData;
+        var wp = WORKING_PROMPTS.find(x => x._pid === _editingPid);
+        if (wp) Object.assign(wp, newData);
+      } else {
+        // 기본 프롬프트 수정 (b_N)
+        var origIdx = parseInt(_editingPid.split('_')[1]);
+        _editedPids[origIdx] = newData;
+        var wp = WORKING_PROMPTS.find(x => x._pid === _editingPid);
+        if (wp) Object.assign(wp, newData);
+      }
+
+      _saveStorage();
+      closeEdit();
+      render();
+      showToast('✅ 저장되었습니다!');
+    }
+
+    function deletePrompt(pid) {
+      if (!confirm('이 프롬프트를 삭제하시겠습니까?\n(삭제 후 브라우저 새로고침 시에도 반영됩니다)')) return;
+
+      if (pid.startsWith('c_')) {
+        var cidx = parseInt(pid.split('_')[1]);
+        _customPmpts.splice(cidx, 1);
+        // c_ pid 재정렬
+        WORKING_PROMPTS = WORKING_PROMPTS.filter(p => p._pid !== pid);
+        _customPmpts.forEach((p, i) => {
+          var wp = WORKING_PROMPTS.find(x => x._pid === 'c_' + (i + 1));
+          // 재색인은 다음 render에서 처리
+        });
+      } else {
+        var origIdx = parseInt(pid.split('_')[1]);
+        _deletedPids.push(pid);
+        WORKING_PROMPTS = WORKING_PROMPTS.filter(p => p._pid !== pid);
+      }
+
+      _saveStorage();
+      render();
+      showToast('🗑️ 삭제되었습니다');
+    }
+
+    // ESC로 편집 모달 닫기
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeEdit();
+        closeAdminPwd();
+      }
+    });
+
     // ── INIT ──
-    document.getElementById('totalCount').textContent = PROMPTS.length;
+    document.getElementById('totalCount').textContent = WORKING_PROMPTS.length;
     render();
 
     // ── MOBILE NAV TOGGLE ──
