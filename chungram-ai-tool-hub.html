@@ -165,6 +165,57 @@
       color: var(--cg-accent);
     }
 
+
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 6px;
+      background: none;
+      border: none;
+    }
+    .nav-toggle span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--cg-accent);
+      border-radius: 2px;
+      transition: all .2s;
+    }
+    .nav-mobile {
+      display: none;
+      position: fixed;
+      top: 64px;
+      left: 0;
+      right: 0;
+      background: rgba(0,0,0,0.97);
+      backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--cg-border-dim);
+      flex-direction: column;
+      gap: 4px;
+      padding: 16px 20px 20px;
+      z-index: 499;
+    }
+    .nav-mobile.open { display: flex; }
+    .nav-mobile a {
+      padding: 11px 16px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--cg-text-dim);
+      text-decoration: none;
+      border: 1px solid transparent;
+      transition: all .2s;
+    }
+    .nav-mobile a:hover {
+      color: var(--cg-text);
+      background: var(--cg-glass);
+      border-color: var(--cg-border-dim);
+    }
+    @media(max-width:900px) {
+      .nav-toggle { display: flex; }
+    }
     @media(max-width:900px) {
       .nav-links {
         display: none;
@@ -1049,8 +1100,24 @@
       <a href="chungram-notice.html">공지사항</a>
       <a href="cheongram_proposal_v2.html" class="nav-collab-btn">🤝 협업 문의하기</a>
     </div>
-    
+        <!-- 모바일 햄버거 -->
+    <button class="nav-toggle" id="navToggle" aria-label="메뉴 열기">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
+
+  <!-- 모바일 메뉴 -->
+  <div class="nav-mobile" id="navMobile">
+    <a href="index.html">🏠 홈</a>
+    <a href="https://betweenworld.org" target="_blank">✍️ 블로그 BTW</a>
+    <a href="chungram-prompt-library.html">⚡ 프롬프트 라이브러리</a>
+    <a href="chungram-chatbot-guide.html">📋 챗봇 지침</a>
+    <a href="chungram-ai-tool-hub.html">🤖 AI 허브</a>
+    <a href="index.html#ebooks">📖 전자책</a>
+    <a href="index.html#faq">💬 FAQ</a>
+    <a href="chungram-notice.html">📢 공지사항</a>
+    <a href="cheongram_proposal_v2.html" style="color:var(--cg-accent);font-weight:700;">🤝 협업 문의하기</a>
+  </div>
 
   <!-- ── HEADER ── -->
   <header class="header">
@@ -1534,6 +1601,23 @@
     // Init
     loadData();
     renderCards();
+    // ── 모바일 햄버거 메뉴 ──
+    const navToggle = document.getElementById('navToggle');
+    const navMobile = document.getElementById('navMobile');
+    if (navToggle && navMobile) {
+      navToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        navMobile.classList.toggle('open');
+      });
+      navMobile.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => navMobile.classList.remove('open'));
+      });
+      document.addEventListener('click', (e) => {
+        if (!navMobile.contains(e.target) && !navToggle.contains(e.target)) {
+          navMobile.classList.remove('open');
+        }
+      });
+    }
   </script>
 </body>
 

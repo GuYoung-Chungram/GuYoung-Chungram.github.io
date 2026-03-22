@@ -562,6 +562,107 @@
         padding: 20px
       }
     }
+
+    /* ── 편집하기 FAB 버튼 ── */
+    .admin-fab {
+      position: fixed; bottom: 28px; right: 28px;
+      background: var(--accent); color: #000;
+      border: none; border-radius: 100px;
+      padding: 13px 22px;
+      font-family: var(--fb); font-size: 13px; font-weight: 700;
+      letter-spacing: .04em; cursor: pointer; z-index: 800;
+      box-shadow: 0 4px 20px rgba(212,255,94,0.4);
+      display: flex; align-items: center; gap: 8px; transition: all .2s;
+    }
+    .admin-fab:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(212,255,94,0.55); }
+    .admin-fab.active { background: #ff4757; color: #fff; box-shadow: 0 4px 20px rgba(255,71,87,0.45); }
+    .admin-fab.active:hover { box-shadow: 0 6px 28px rgba(255,71,87,0.6); }
+    .admin-badge {
+      position: fixed; top: 16px; right: 16px;
+      background: #ff4757; color: #fff;
+      font-size: 10px; font-weight: 700; letter-spacing: .12em;
+      padding: 4px 10px; border-radius: 100px; z-index: 900; display: none;
+    }
+    .admin-badge.visible { display: block; }
+    .card-admin-btns { display: none; gap: 6px; margin-top: 10px; }
+    .admin-mode .card-admin-btns { display: flex; }
+    .card-edit-btn, .card-del-btn {
+      flex: 1; padding: 8px; border-radius: 8px;
+      font-size: 11px; font-weight: 600; cursor: pointer;
+      transition: all .18s; border: 1px solid;
+    }
+    .card-edit-btn { background: transparent; border-color: rgba(212,255,94,0.3); color: var(--accent); }
+    .card-edit-btn:hover { background: rgba(212,255,94,0.12); }
+    .card-del-btn { background: transparent; border-color: rgba(255,71,87,0.3); color: #ff4757; }
+    .card-del-btn:hover { background: rgba(255,71,87,0.12); }
+    .card-add-btn {
+      display: none; width: 100%;
+      border: 2px dashed rgba(212,255,94,0.25); border-radius: 16px;
+      background: transparent; color: rgba(212,255,94,0.5);
+      font-size: 28px; cursor: pointer; min-height: 120px;
+      align-items: center; justify-content: center; transition: all .2s;
+    }
+    .card-add-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(212,255,94,0.04); }
+    .admin-mode .card-add-btn { display: flex; }
+    /* 비밀번호 모달 */
+    .pwd-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+      display: none; align-items: center; justify-content: center;
+      z-index: 2000; backdrop-filter: blur(6px);
+    }
+    .pwd-overlay.open { display: flex; }
+    .pwd-box {
+      background: #141414; border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px; padding: 40px 36px; width: 340px;
+      max-width: 90vw; text-align: center;
+      box-shadow: 0 24px 70px rgba(0,0,0,0.85);
+    }
+    .pwd-icon { font-size: 36px; margin-bottom: 12px; }
+    .pwd-title { font-family: var(--fb); font-size: 15px; font-weight: 700; letter-spacing: .18em; color: var(--accent); margin-bottom: 6px; }
+    .pwd-sub { font-size: 12px; color: var(--text-dimmer); margin-bottom: 22px; line-height: 1.6; }
+    .pwd-input {
+      width: 100%; background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.12); border-radius: 10px;
+      padding: 12px 16px; font-size: 15px; color: #fff;
+      text-align: center; letter-spacing: .2em; outline: none;
+      margin-bottom: 8px; box-sizing: border-box; transition: border-color .2s;
+    }
+    .pwd-input:focus { border-color: rgba(212,255,94,0.6); }
+    .pwd-error { color: #ff4757; font-size: 12px; min-height: 18px; margin-bottom: 16px; }
+    .pwd-btns { display: flex; gap: 10px; }
+    .pwd-confirm { flex: 1; background: var(--accent); color: #000; border: none; border-radius: 10px; padding: 12px; font-size: 13px; font-weight: 700; cursor: pointer; transition: background .2s; }
+    .pwd-confirm:hover { background: #c8f54a; }
+    .pwd-cancel { flex: 1; background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 12px; font-size: 13px; cursor: pointer; transition: all .2s; }
+    .pwd-cancel:hover { background: rgba(255,255,255,0.1); }
+    /* 편집 모달 */
+    .edit-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+      display: none; align-items: center; justify-content: center;
+      z-index: 2000; padding: 20px; backdrop-filter: blur(6px);
+    }
+    .edit-overlay.open { display: flex; }
+    .edit-box {
+      background: #141414; border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px; padding: 28px; width: 560px;
+      max-width: 95vw; max-height: 90vh; overflow-y: auto;
+      box-shadow: 0 24px 70px rgba(0,0,0,0.85);
+    }
+    .edit-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+    .edit-modal-title { font-size: 16px; font-weight: 700; color: #fff; }
+    .edit-close { background: none; border: none; color: rgba(255,255,255,0.4); font-size: 20px; cursor: pointer; padding: 4px 8px; border-radius: 6px; }
+    .edit-close:hover { background: rgba(255,255,255,0.08); color: #fff; }
+    .edit-field { margin-bottom: 16px; }
+    .edit-label { font-size: 11px; font-weight: 600; letter-spacing: .1em; color: var(--text-dimmer); text-transform: uppercase; margin-bottom: 6px; display: block; }
+    .edit-input, .edit-select, .edit-textarea { width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 14px; font-size: 13px; color: #fff; font-family: var(--fm); outline: none; box-sizing: border-box; transition: border-color .2s; }
+    .edit-input:focus, .edit-select:focus, .edit-textarea:focus { border-color: rgba(212,255,94,0.5); }
+    .edit-select { cursor: pointer; }
+    .edit-select option { background: #1a1a1a; }
+    .edit-textarea { resize: vertical; min-height: 240px; line-height: 1.7; }
+    .edit-btns { display: flex; gap: 10px; margin-top: 4px; }
+    .edit-save { flex: 1; background: var(--accent); color: #000; border: none; border-radius: 10px; padding: 12px; font-size: 13px; font-weight: 700; cursor: pointer; }
+    .edit-save:hover { background: #c8f54a; }
+    .edit-cancel { flex: 1; background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 12px; font-size: 13px; cursor: pointer; }
+    .edit-cancel:hover { background: rgba(255,255,255,0.1); }
   </style>
 </head>
 
