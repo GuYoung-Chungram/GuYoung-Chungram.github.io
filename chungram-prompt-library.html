@@ -683,6 +683,11 @@
       opacity: 1;
     }
 
+    .toast.toast-error {
+      background: #ff4d4d;
+      color: #fff;
+    }
+
     /* ══════════════════════════
    FOOTER
 ══════════════════════════ */
@@ -2676,7 +2681,7 @@ STAR 구조(상황-과제-행동-결과)로 핵심 에피소드를 구성하고,
   </div>
   <div class="card-desc">${p.desc}</div>
   <div class="prompt-box">${promptHighlighted}</div>
-  <button class="copy-btn" data-pid="${PROMPTS.indexOf(p)}" onclick="copyPrompt(this)">
+  <button class="copy-btn" data-fid="${i}" data-prompt="${p.prompt.replace(/"/g, '&quot;').replace(/`/g, '&#96;')}" onclick="copyPrompt(this)">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
     프롬프트 복사
   </button>
@@ -2736,13 +2741,30 @@ STAR 구조(상황-과제-행동-결과)로 핵심 에피소드를 구성하고,
 
     // ── COPY ──
     function copyPrompt(btn) {
+      // ── [Guard Clause] fid 유효성 검증 ──
       const fid = parseInt(btn.dataset.fid);
-      const text = _filteredCache[fid].prompt;
+      let text = null;
+
+      // 1차: _filteredCache 인덱스 조회
+      if (!isNaN(fid) && _filteredCache[fid] && _filteredCache[fid].prompt) {
+        text = _filteredCache[fid].prompt;
+      }
+      // 2차 fallback: data-prompt 직접 속성 (buildCard에서 저장한 백업)
+      if (!text && btn.dataset.prompt) {
+        text = btn.dataset.prompt;
+        console.warn('[copyPrompt] _filteredCache miss — data-prompt fallback 사용 (fid:', fid, ')');
+      }
+      // 최종 실패 처리
+      if (!text) {
+        console.error('[copyPrompt] 복사할 텍스트를 찾을 수 없습니다. fid:', fid, 'cache len:', _filteredCache.length);
+        showToast('⚠️ 복사 실패 — 페이지를 새로고침 후 다시 시도해주세요.', 'error');
+        return;
+      }
 
       const onSuccess = () => {
         btn.classList.add('copied');
         btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 복사 완료!`;
-        showToast();
+        showToast('✓ 프롬프트가 복사되었습니다!');
         setTimeout(() => {
           btn.classList.remove('copied');
           btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> 프롬프트 복사`;
@@ -2765,17 +2787,31 @@ STAR 구조(상황-과제-행동-결과)로 핵심 에피소드를 구성하고,
       ta.focus();
       ta.select();
       try {
-        if (document.execCommand('copy')) callback();
+        if (document.execCommand('copy')) {
+          callback();
+        } else {
+          console.warn('[fallbackCopy] execCommand 반환값 false');
+          showToast('⚠️ 클립보드 복사에 실패했습니다. 직접 선택 후 복사해주세요.', 'error');
+        }
       } catch (e) {
-        console.warn('복사 실패:', e);
+        console.warn('[fallbackCopy] 예외 발생:', e);
+        showToast('⚠️ 클립보드 복사에 실패했습니다.', 'error');
       }
       document.body.removeChild(ta);
     }
 
-    function showToast() {
+    function showToast(msg, type) {
       const t = document.getElementById('toast');
+      // 메시지가 있으면 내용 교체, 없으면 기본 복사 메시지
+      t.textContent = msg || '✓ 프롬프트가 복사되었습니다!';
+      // 에러 타입일 경우 에러 스타일 적용
+      if (type === 'error') {
+        t.classList.add('toast-error');
+      } else {
+        t.classList.remove('toast-error');
+      }
       t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 2000);
+      setTimeout(() => t.classList.remove('show'), 2500);
     }
 
 

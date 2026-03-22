@@ -526,6 +526,11 @@
       transform: translateX(-50%) translateY(0)
     }
 
+    .toast.toast-error {
+      background: #ff4d4d;
+      color: #fff;
+    }
+
     /* ── FOOTER ── */
     footer {
       border-top: 1px solid var(--border-dim);
@@ -1170,7 +1175,8 @@
         var delay = (i % 9) * 0.045;
         var rawPrompt = d.prompt;
         var highlighted = highlightPrompt(rawPrompt);
-        var escaped = rawPrompt.replace(/\\/g, '\\\\').replace(/`/g, '\\`');
+        // data-prompt 속성에 직접 저장 (인라인 백틱 방식 제거 → 특수문자 안전)
+        var safePrompt = rawPrompt.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
         return '<div class="card" style="animation-delay:' + delay + 's">'
           + '<div class="card-top"><div>'
           + '<div class="card-cat">' + getCatIcon(d.cat) + ' ' + d.cat + '</div>'
@@ -1178,7 +1184,7 @@
           + '</div></div>'
           + '<div class="card-desc">' + d.desc + '</div>'
           + '<div class="prompt-box">' + highlighted + '</div>'
-          + '<button class="copy-btn" onclick="doCopy(this,`' + escaped + '`)">'
+          + '<button class="copy-btn" data-prompt="' + safePrompt + '" onclick="doCopy(this)">'
           + '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>'
           + '프롬프트 복사'
           + '</button>'
@@ -1203,24 +1209,71 @@
     });
 
     /* copy */
-    function doCopy(btn, text) {
-      navigator.clipboard.writeText(text).then(function () {
+    function doCopy(btn) {
+      // ── [Guard Clause] data-prompt 유효성 검증 ──
+      var text = btn.dataset.prompt;
+      if (!text) {
+        console.error('[doCopy] data-prompt 속성이 없거나 비어있습니다.');
+        showToast('⚠️ 복사 실패 — 페이지를 새로고침 후 다시 시도해주세요.', 'error');
+        return;
+      }
+
+      var SVG_COPY = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+      var SVG_CHECK = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+
+      var onSuccess = function () {
         btn.classList.add('copied');
-        btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 복사 완료!';
-        showToast();
+        btn.innerHTML = SVG_CHECK + ' 복사 완료!';
+        showToast('✓ 시스템 프롬프트가 복사되었습니다!');
         setTimeout(function () {
           btn.classList.remove('copied');
-          btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>프롬프트 복사';
+          btn.innerHTML = SVG_COPY + ' 프롬프트 복사';
         }, 2500);
-      });
+      };
+
+      // HTTPS: Clipboard API / HTTP: execCommand fallback
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(onSuccess).catch(function () {
+          fallbackCopy(text, onSuccess);
+        });
+      } else {
+        fallbackCopy(text, onSuccess);
+      }
+    }
+
+    function fallbackCopy(text, callback) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;pointer-events:none;';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try {
+        if (document.execCommand('copy')) {
+          callback();
+        } else {
+          console.warn('[fallbackCopy] execCommand 반환값 false');
+          showToast('⚠️ 클립보드 복사에 실패했습니다. 직접 선택 후 복사해주세요.', 'error');
+        }
+      } catch (e) {
+        console.warn('[fallbackCopy] 예외 발생:', e);
+        showToast('⚠️ 클립보드 복사에 실패했습니다.', 'error');
+      }
+      document.body.removeChild(ta);
     }
 
     var _tt;
-    function showToast() {
+    function showToast(msg, type) {
       var t = document.getElementById('toast');
+      t.textContent = msg || '✓ 시스템 프롬프트가 복사되었습니다!';
+      if (type === 'error') {
+        t.classList.add('toast-error');
+      } else {
+        t.classList.remove('toast-error');
+      }
       t.classList.add('show');
       clearTimeout(_tt);
-      _tt = setTimeout(function () { t.classList.remove('show') }, 2000);
+      _tt = setTimeout(function () { t.classList.remove('show'); }, 2500);
     }
 
     render();
