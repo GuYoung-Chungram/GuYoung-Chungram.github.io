@@ -194,6 +194,7 @@
     { label: '전자책',    href: HOME_URL + '#ebooks',                                             anchor: false },
     { label: 'FAQ',       href: HOME_URL + '#faq',                                                anchor: false },
     { label: '공지사항',  href: 'https://guyoung-chungram.github.io/chungram-notice.html',        anchor: false },
+    { label: '소개',      href: 'https://guyoung-chungram.github.io/about.html',                  anchor: false },
     { label: '🤝 협업 문의하기', href: 'cheongram_proposal_v2.html', collab: true, anchor: false },
   ];
 
@@ -204,7 +205,7 @@
     // 자체 nav가 있는 페이지는 중복 주입 방지
     if (document.getElementById('nav') || document.querySelector('nav.navbar') || document.querySelector('nav[role="navigation"]')) return;
     // 홈/프롬프트/허브 페이지는 자체 nav 사용
-    if (currentPage === 'index.html' || currentPage === '' || currentPage === 'chungram-prompt-library.html' || currentPage === 'chungram-ai-tool-hub.html') return;
+    if (currentPage === 'index.html' || currentPage === '' || currentPage === 'chungram-prompt-library.html' || currentPage === 'chungram-ai-tool-hub.html' || currentPage === 'chungram-chatbot-guide.html') return;
 
     const nav = document.createElement('nav');
     nav.id = 'chungram-nav';
