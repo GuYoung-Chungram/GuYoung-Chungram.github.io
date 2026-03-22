@@ -803,6 +803,7 @@
   <span>
     <a href="https://betweenworld.org" target="_blank">Blog</a> &nbsp;&middot;&nbsp;
     <a href="index.html">Home</a> &nbsp;&middot;&nbsp;
+    <a href="about.html">소개</a> &nbsp;&middot;&nbsp;
     <a href="cheongram_proposal_v2.html" style="color:var(--accent);font-weight:700;">🤝 협업 문의하기</a>
   </span>
   <br><span style="font-size:10px; opacity:0.5;">사업자등록번호 125-25-00428 | 대표자 고숙진 | 서울시 광진구 능동로 19길 35, 1417호</span>
@@ -947,6 +948,19 @@
   renderSidebar();
 </script>
 
+
+  <script>
+    /* ── 보안: 우클릭 방지 ── */
+    document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; });
+    /* ── 보안: F12 / 개발자도구 단축키 차단 ── */
+    document.addEventListener('keydown', function(e) {
+      if (
+        e.key === 'F12' ||
+        (e.ctrlKey && e.shiftKey && ['I','i','J','j','C','c'].includes(e.key)) ||
+        (e.ctrlKey && ['U','u'].includes(e.key))
+      ) { e.preventDefault(); return false; }
+    });
+  </script>
 </body>
 </html>
 
