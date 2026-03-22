@@ -1,610 +1,526 @@
 <!DOCTYPE html>
-<html lang="ko" class="theme-light">
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>청람M&C 소개 — AI 에이전트 기반 교육 컨설팅 전문기업</title>
+  <title>청람M&C 소개 — AI 에이전트 기반 교육 컨설팅</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg: #000000;
+      --surface: #0d0d0d;
+      --surface2: #141414;
+      --border: rgba(212, 255, 94, 0.2);
+      --border-dim: rgba(255, 255, 255, 0.06);
+      --text: #ffffff;
+      --text-2: rgba(255, 255, 255, 0.6);
+      --text-3: rgba(255, 255, 255, 0.35);
+      --accent: #D4FF5E;
+      --accent-dim: rgba(212, 255, 94, 0.08);
+      --fd: 'Bebas Neue', sans-serif;
+      --fb: 'Noto Sans KR', sans-serif;
+    }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root { interpolate-size: allow-keywords; }
-
-    html.theme-light {
-      --bg: #FFFFFF; --surface: #F8FAFF; --surface-hover: #EEF3FD;
-      --border: rgba(22,82,216,0.08);
-      --text: #1A1A1A; --text-secondary: #666666;
-      --accent: #1652D8; --accent-secondary: #0F3D99;
-      --positive: #059669; --negative: #e11d48; --warning: #d97706;
-      --cr-header-bar: #1652D8;
-      --cr-light-bg: #EEF3FD;
-      --cr-card-border: #D0D9F5;
-      --cr-dark-section: #0F0F0F;
-      --menu-bg: rgba(255,255,255,0.9); --menu-bg-hover: rgba(255,255,255,0.98);
-      --menu-border: rgba(22,82,216,0.12); --menu-text: #1A1A1A;
-      --menu-item-hover: rgba(22,82,216,0.06);
-    }
-    html.theme-dark {
-      --bg: #0F0F0F; --surface: #1A1A2E; --surface-hover: #252540;
-      --border: rgba(255,255,255,0.06);
-      --text: #EDEDED; --text-secondary: #888888;
-      --accent: #4B7BF5; --accent-secondary: #6B8FFF;
-      --positive: #10b981; --negative: #f43f5e; --warning: #f59e0b;
-      --cr-header-bar: #4B7BF5;
-      --cr-light-bg: #1A1A2E;
-      --cr-card-border: rgba(75,123,245,0.15);
-      --cr-dark-section: #0A0A0A;
-      --menu-bg: rgba(15,15,15,0.9); --menu-bg-hover: rgba(15,15,15,0.98);
-      --menu-border: rgba(75,123,245,0.15); --menu-text: #EDEDED;
-      --menu-item-hover: rgba(75,123,245,0.1);
-    }
-
+    html { scroll-behavior: smooth; }
     body {
-      font-family: 'Noto Sans KR', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--bg); color: var(--text);
-      line-height: 1.7; -webkit-font-smoothing: antialiased;
-      letter-spacing: -0.01em;
-      transition: background 0.3s, color 0.3s;
+      font-family: var(--fb); font-size: 15px;
+      line-height: 1.6; overflow-x: hidden;
     }
-    h1, h2, h3, h4, h5, h6 { color: var(--text); letter-spacing: -0.03em; line-height: 1.2; text-wrap: balance; }
-    h1 { font-weight: 700; font-size: clamp(2.5rem, 5vw, 3.5rem); }
-    h2 { font-weight: 600; font-size: clamp(2rem, 4vw, 2.5rem); letter-spacing: -0.02em; }
-    h3 { font-weight: 600; font-size: clamp(1.25rem, 2.5vw, 1.5rem); letter-spacing: -0.02em; }
-    p, li, span, td, th, label { color: var(--text); }
-    .text-secondary { color: var(--text-secondary); }
     a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
 
-    /* === LAYOUT === */
-    .container { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
-    section { padding: 80px 0; }
-
-    /* === NAV (dark, matches crmc.co.kr) === */
-    .site-nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-      background: rgba(8,8,8,0.92); backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      padding: 0 24px; height: 60px;
-      display: flex; align-items: center; justify-content: space-between;
+    /* ── Animations ── */
+    @keyframes fup {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
-    .nav-logo {
-      font-size: 1rem; font-weight: 700; color: #fff;
-      letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px;
-    }
-    .nav-logo .dot { width: 7px; height: 7px; background: #1652D8; border-radius: 50%; display: inline-block; }
-    .nav-links { display: flex; align-items: center; gap: 4px; }
-    .nav-links a {
-      font-size: 0.82rem; color: rgba(255,255,255,0.6); padding: 6px 12px;
-      border-radius: 6px; transition: all 0.2s; white-space: nowrap;
-      font-weight: 500;
-    }
-    .nav-links a:hover { color: #fff; background: rgba(255,255,255,0.06); }
-    .nav-links a.active { color: #fff; background: rgba(22,82,216,0.25); }
-    .nav-cta {
-      background: #1652D8; color: #fff !important;
-      padding: 7px 16px !important; border-radius: 8px !important;
-      font-weight: 600 !important;
-    }
-    .nav-cta:hover { background: #0F3D99 !important; }
-    .nav-mobile-btn { display: none; background: none; border: none; cursor: pointer; padding: 8px; color: #fff; }
-
-    /* === SKIP LINK === */
-    .skip-link {
-      position: absolute; left: -9999px; top: auto; width: 1px; height: 1px;
-      overflow: hidden; z-index: 10000; padding: 8px 16px;
-      background: var(--accent); color: white; text-decoration: none; border-radius: 4px;
-    }
-    .skip-link:focus { position: fixed; left: 16px; top: 16px; width: auto; height: auto; overflow: visible; }
-
-    /* === VIZ MENU === */
-    .viz-menu { position: fixed; top: 70px; right: 16px; z-index: 9999; }
-    .viz-menu-toggle {
-      width: 40px; height: 40px; border-radius: 10px;
-      background: var(--menu-bg); border: 1px solid var(--menu-border);
-      color: var(--menu-text); cursor: pointer; display: flex;
-      align-items: center; justify-content: center;
-      backdrop-filter: blur(12px); transition: all 0.2s;
-    }
-    .viz-menu-toggle:hover { background: var(--menu-bg-hover); }
-    .viz-menu-dropdown {
-      position: absolute; top: 48px; right: 0; min-width: 180px;
-      background: var(--menu-bg); border: 1px solid var(--menu-border);
-      border-radius: 12px; padding: 8px;
-      opacity: 0; visibility: hidden; transform: translateY(-8px);
-      transition: all 0.2s; backdrop-filter: blur(16px);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-    }
-    .viz-menu-dropdown.open { opacity: 1; visibility: visible; transform: translateY(0); }
-    .viz-menu-dropdown button {
-      width: 100%; padding: 9px 12px; border: none; border-radius: 8px;
-      background: transparent; color: var(--menu-text); font-size: 13px;
-      font-family: inherit; cursor: pointer; text-align: left;
-      display: flex; align-items: center; gap: 8px; transition: background 0.15s;
-    }
-    .viz-menu-dropdown button:hover { background: var(--menu-item-hover); }
-
-    /* === HERO === */
-    .hero {
-      padding-top: 140px; padding-bottom: 100px;
-      background: linear-gradient(135deg, #0a0f1e 0%, #0d1b3e 50%, #0a0f1e 100%);
-      position: relative; overflow: hidden;
-    }
-    .hero::before {
-      content: ''; position: absolute; inset: 0;
-      background-image: radial-gradient(circle at 20% 50%, rgba(22,82,216,0.18) 0%, transparent 55%),
-                        radial-gradient(circle at 80% 20%, rgba(75,123,245,0.08) 0%, transparent 45%);
-    }
-    .hero-dot-grid {
-      position: absolute; inset: 0; pointer-events: none;
-      background-image: radial-gradient(circle, rgba(22,82,216,0.4) 0.5px, transparent 0.5px);
-      background-size: 28px 28px; opacity: 0.12;
-    }
-    .hero-inner { position: relative; z-index: 1; }
-    .hero-badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(22,82,216,0.2); border: 1px solid rgba(22,82,216,0.35);
-      color: #93b4ff; padding: 6px 14px; border-radius: 20px;
-      font-size: 0.78rem; font-weight: 500; letter-spacing: 0.04em;
-      text-transform: uppercase; margin-bottom: 24px;
-    }
-    .hero-badge-dot { width: 6px; height: 6px; background: #4B7BF5; border-radius: 50%; animation: pulse 2s infinite; }
-    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-    .hero h1 { color: #fff; font-size: clamp(2.8rem, 5.5vw, 4rem); margin-bottom: 20px; }
-    .hero h1 em { color: #4B7BF5; font-style: normal; }
-    .hero-sub { color: rgba(255,255,255,0.65); font-size: 1.1rem; max-width: 560px; line-height: 1.8; margin-bottom: 48px; }
-    .hero-stats { display: flex; gap: 48px; flex-wrap: wrap; }
-    .hero-stat-num { font-size: 2.8rem; font-weight: 700; color: #fff; line-height: 1; font-family: 'Inter', sans-serif; }
-    .hero-stat-num span { font-size: 1.4rem; font-weight: 500; color: #4B7BF5; }
-    .hero-stat-label { font-size: 0.78rem; color: rgba(255,255,255,0.45); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 6px; }
-
-    /* === SECTION LABEL === */
-    .section-label {
-      display: inline-flex; align-items: center; gap: 10px;
-      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em;
-      text-transform: uppercase; color: var(--accent); margin-bottom: 16px;
-    }
-    .section-label::before { content: ''; width: 24px; height: 2px; background: var(--accent); display: block; }
-
-    /* === ABOUT SECTION === */
-    .about-section { background: var(--bg); }
-    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; margin-top: 40px; }
-    .about-values { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 32px; }
-    .value-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 12px; padding: 20px;
-      border-left: 3px solid var(--accent);
-    }
-    .value-card h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 6px; }
-    .value-card p { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6; }
-    .about-visual {
-      background: linear-gradient(135deg, #0a0f1e, #0d1b3e);
-      border-radius: 20px; padding: 48px 40px;
-      position: relative; overflow: hidden;
-    }
-    .about-visual::before {
-      content: ''; position: absolute; inset: 0;
-      background: radial-gradient(circle at 70% 30%, rgba(22,82,216,0.25), transparent 60%);
-    }
-    .about-visual-inner { position: relative; z-index: 1; }
-    .av-title { font-size: 1.6rem; font-weight: 700; color: #fff; margin-bottom: 8px; }
-    .av-sub { font-size: 0.85rem; color: rgba(255,255,255,0.5); margin-bottom: 32px; }
-    .av-item { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; }
-    .av-icon {
-      width: 36px; height: 36px; border-radius: 8px;
-      background: rgba(22,82,216,0.25); border: 1px solid rgba(22,82,216,0.3);
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0; font-size: 1rem;
-    }
-    .av-text-title { font-size: 0.88rem; font-weight: 600; color: #fff; margin-bottom: 2px; }
-    .av-text-desc { font-size: 0.78rem; color: rgba(255,255,255,0.5); line-height: 1.5; }
-
-    /* === CEO SECTION === */
-    .ceo-section { background: var(--surface); }
-    .ceo-grid { display: grid; grid-template-columns: 340px 1fr; gap: 60px; align-items: start; margin-top: 48px; }
-    .ceo-card {
-      background: linear-gradient(160deg, #0a0f1e, #111935);
-      border-radius: 20px; overflow: hidden;
-      border: 1px solid rgba(22,82,216,0.2);
-    }
-    .ceo-card-header {
-      background: linear-gradient(135deg, #1652D8, #0F3D99);
-      padding: 40px 32px 28px;
-    }
-    .ceo-avatar {
-      width: 72px; height: 72px; border-radius: 50%;
-      background: rgba(255,255,255,0.15);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 2rem; font-weight: 700; color: #fff;
-      margin-bottom: 16px; border: 2px solid rgba(255,255,255,0.25);
-    }
-    .ceo-name { font-size: 1.5rem; font-weight: 700; color: #fff; }
-    .ceo-title { font-size: 0.82rem; color: rgba(255,255,255,0.65); margin-top: 4px; }
-    .ceo-card-body { padding: 24px 32px; }
-    .ceo-tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
-    .ceo-tag {
-      font-size: 0.72rem; font-weight: 600; padding: 4px 10px;
-      border-radius: 4px; background: rgba(22,82,216,0.15);
-      color: #93b4ff; border: 1px solid rgba(22,82,216,0.25);
-      letter-spacing: 0.03em;
-    }
-    .ceo-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .ceo-stat { text-align: center; padding: 12px; background: rgba(255,255,255,0.04); border-radius: 8px; }
-    .ceo-stat-n { font-size: 1.4rem; font-weight: 700; color: #4B7BF5; font-family: 'Inter', sans-serif; }
-    .ceo-stat-l { font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-top: 2px; }
-
-    .ceo-detail h3 { margin-bottom: 24px; }
-    .career-list { list-style: none; padding: 0; }
-    .career-item {
-      display: flex; gap: 16px; padding: 16px 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .career-item:last-child { border-bottom: none; }
-    .career-year {
-      font-size: 0.78rem; font-weight: 700; color: var(--accent);
-      min-width: 72px; padding-top: 2px; font-family: 'Inter', sans-serif;
-      letter-spacing: 0.04em;
-    }
-    .career-title { font-size: 0.92rem; font-weight: 600; margin-bottom: 3px; }
-    .career-desc { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6; }
-    .cert-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
-    .cert-badge {
-      font-size: 0.78rem; padding: 5px 12px; border-radius: 6px;
-      background: var(--cr-light-bg); color: var(--accent);
-      border: 1px solid var(--cr-card-border); font-weight: 500;
-    }
-
-    /* === PROGRAMS SECTION === */
-    .programs-section { background: var(--bg); }
-    .prog-filter { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 36px; }
-    .prog-filter-btn {
-      padding: 7px 18px; border-radius: 20px; border: 1px solid var(--border);
-      background: transparent; color: var(--text-secondary); font-size: 0.82rem;
-      font-family: inherit; cursor: pointer; transition: all 0.2s; font-weight: 500;
-    }
-    .prog-filter-btn.active, .prog-filter-btn:hover {
-      background: var(--accent); color: #fff; border-color: var(--accent);
-    }
-    .prog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-    .prog-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 14px; padding: 24px;
-      transition: all 0.25s; position: relative; overflow: hidden;
-    }
-    .prog-card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0;
-      height: 3px; background: var(--accent);
-    }
-    .prog-card.org::before { background: #1652D8; }
-    .prog-card.team::before { background: #2EC4B6; }
-    .prog-card.personal::before { background: #C8A96E; }
-    .prog-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.1); transform: translateY(-3px); }
-    .prog-category {
-      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em;
-      text-transform: uppercase; margin-bottom: 10px; padding: 3px 8px;
-      border-radius: 4px; display: inline-block;
-    }
-    .prog-category.org { background: rgba(22,82,216,0.08); color: #1652D8; }
-    .prog-category.team { background: rgba(46,196,182,0.1); color: #2EC4B6; }
-    .prog-category.personal { background: rgba(200,169,110,0.1); color: #C8A96E; }
-    .prog-title { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
-    .prog-desc { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.65; margin-bottom: 16px; }
-    .prog-meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-    .prog-tag {
-      font-size: 0.72rem; padding: 3px 8px; border-radius: 4px;
-      background: var(--bg); border: 1px solid var(--border);
-      color: var(--text-secondary); font-weight: 500;
-    }
-    .prog-time { font-size: 0.72rem; color: var(--accent); font-weight: 600; margin-left: auto; }
-
-    /* === CLIENTS SECTION === */
-    .clients-section { background: var(--surface); }
-    .client-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 56px; }
-    .client-stat-card {
-      background: var(--bg); border: 1px solid var(--border);
-      border-radius: 14px; padding: 28px 24px; text-align: center;
-      border-top: 3px solid var(--accent);
-    }
-    .client-stat-n { font-size: 2.2rem; font-weight: 700; color: var(--accent); font-family: 'Inter', sans-serif; }
-    .client-stat-l { font-size: 0.82rem; color: var(--text-secondary); margin-top: 6px; font-weight: 500; }
-    .client-logos-title { font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 16px; letter-spacing: 0.06em; text-transform: uppercase; }
-    .client-logos-grid { display: flex; flex-wrap: wrap; gap: 10px; }
-    .client-chip {
-      padding: 6px 14px; background: var(--bg); border: 1px solid var(--cr-card-border);
-      border-radius: 20px; font-size: 0.8rem; font-weight: 500; color: var(--text-secondary);
-      transition: all 0.2s;
-    }
-    .client-chip:hover { border-color: var(--accent); color: var(--accent); background: var(--cr-light-bg); }
-    .client-chip.highlight { border-color: var(--accent); color: var(--accent); background: var(--cr-light-bg); font-weight: 600; }
-
-    /* === TIMELINE SECTION === */
-    .timeline-section {
-      background: var(--cr-dark-section); padding: 80px 0; position: relative;
-    }
-    .timeline-section h2 { color: #fff; }
-    .timeline-section .section-label { color: #4B7BF5; }
-    .timeline-section .section-label::before { background: #4B7BF5; }
-    .tl-sub { color: rgba(255,255,255,0.5); margin-top: 12px; max-width: 480px; }
-    .timeline { margin-top: 56px; position: relative; }
-    .timeline::before {
-      content: ''; position: absolute; left: 140px; top: 0; bottom: 0;
-      width: 1px; background: rgba(255,255,255,0.08);
-    }
-    .tl-item { display: flex; gap: 40px; margin-bottom: 40px; position: relative; }
-    .tl-year {
-      min-width: 100px; text-align: right;
-      font-size: 0.85rem; font-weight: 700; color: #4B7BF5;
-      font-family: 'Inter', sans-serif; padding-top: 3px; letter-spacing: 0.02em;
-      flex-shrink: 0;
-    }
-    .tl-dot {
-      position: absolute; left: 133px; top: 6px;
-      width: 15px; height: 15px; border-radius: 50%;
-      background: #1652D8; border: 2px solid #4B7BF5;
-      box-shadow: 0 0 0 4px rgba(22,82,216,0.15);
-      flex-shrink: 0; z-index: 1;
-    }
-    .tl-content { padding-left: 50px; }
-    .tl-title { font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 6px; }
-    .tl-desc { font-size: 0.82rem; color: rgba(255,255,255,0.45); line-height: 1.7; }
-
-    /* === CTA SECTION === */
-    .cta-section {
-      background: linear-gradient(135deg, #1652D8, #0F3D99);
-      padding: 80px 0; text-align: center; position: relative; overflow: hidden;
-    }
-    .cta-section::before {
-      content: ''; position: absolute; inset: 0;
-      background-image: radial-gradient(circle, rgba(255,255,255,0.06) 0.5px, transparent 0.5px);
-      background-size: 24px 24px;
-    }
-    .cta-inner { position: relative; z-index: 1; }
-    .cta-section h2 { color: #fff; margin-bottom: 16px; }
-    .cta-section p { color: rgba(255,255,255,0.7); margin-bottom: 36px; font-size: 1.05rem; }
-    .btn-white {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: #fff; color: #1652D8; padding: 14px 32px;
-      border-radius: 10px; font-weight: 700; font-size: 0.95rem;
-      transition: all 0.2s; text-decoration: none;
-    }
-    .btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
-    .btn-outline-white {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: transparent; color: #fff; padding: 14px 32px;
-      border-radius: 10px; border: 1px solid rgba(255,255,255,0.35);
-      font-weight: 600; font-size: 0.95rem; transition: all 0.2s;
-    }
-    .btn-outline-white:hover { background: rgba(255,255,255,0.1); }
-    .cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-
-    /* === FOOTER === */
-    .site-footer {
-      background: #080808; color: rgba(255,255,255,0.35);
-      padding: 40px 0; font-size: 0.82rem;
-    }
-    .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
-    .footer-logo { font-size: 1rem; font-weight: 700; color: rgba(255,255,255,0.7); }
-    .footer-links { display: flex; gap: 20px; }
-    .footer-links a { color: rgba(255,255,255,0.35); transition: color 0.2s; }
-    .footer-links a:hover { color: rgba(255,255,255,0.7); }
-
-    /* === CARDS BASE === */
-    .card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 8px; padding: 24px; transition: box-shadow 0.2s ease;
-    }
-    .card:hover { box-shadow: 0 0 0 1px var(--border), 0 8px 16px rgba(0,0,0,0.08); }
-
-    /* === ANIMATIONS === */
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    .animate { animation: fadeInUp 0.6s ease-out both; }
-    .animate.delay-1 { animation-delay: 0.1s; }
-    .animate.delay-2 { animation-delay: 0.2s; }
-    .animate.delay-3 { animation-delay: 0.3s; }
-    .animate.delay-4 { animation-delay: 0.4s; }
-    .animate.delay-5 { animation-delay: 0.5s; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
     .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
     .reveal.visible { opacity: 1; transform: translateY(0); }
-
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation: none !important; transition: none !important; }
       .reveal { opacity: 1; transform: none; }
     }
 
-    /* === PRINT === */
-    @media print {
-      body { background: white !important; color: black !important; }
-      .viz-menu, .site-nav, .nav-cta { display: none !important; }
-      .reveal { opacity: 1 !important; transform: none !important; }
-      .card { break-inside: avoid; border: 1px solid #ddd; box-shadow: none; }
-      * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-      main { padding-top: 0 !important; }
+    /* ── Nav ── */
+    #nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(0,0,0,0.85); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-dim);
+      height: 64px; display: flex; align-items: center;
     }
-    @page { margin: 0.8in; }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      width: 100%; max-width: 1160px; margin: 0 auto; padding: 0 40px;
+    }
+    .nav-logo { display: flex; flex-direction: row; align-items: center; gap: 10px; line-height: 1.1; }
+    .nav-logo .logo-main { font-family: var(--fd); font-size: 26px; letter-spacing: 0.18em; color: var(--accent); }
+    .nav-logo .logo-sub {
+      font-size: 10px; letter-spacing: 0.22em; color: var(--text-3); font-weight: 500;
+      border-left: 1px solid rgba(255,255,255,0.15); padding-left: 10px; line-height: 1.3;
+    }
+    .nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
+    .nav-links a {
+      display: block; padding: 7px 12px; font-size: 13px; font-weight: 500;
+      color: var(--text-2); border-radius: 6px; transition: color 0.2s, background 0.2s; white-space: nowrap;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--accent); background: var(--accent-dim); }
+    .nav-links a.nav-collab {
+      background: var(--accent); color: #000 !important; font-weight: 700;
+      border-radius: 6px; padding: 7px 14px; letter-spacing: -0.2px;
+      box-shadow: 0 0 10px rgba(212,255,94,0.35); transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+    }
+    .nav-links a.nav-collab:hover { background: #c8f54a; box-shadow: 0 0 18px rgba(212,255,94,0.55); transform: translateY(-1px); }
+    .nav-toggle {
+      display: none; flex-direction: column; gap: 5px;
+      cursor: pointer; background: none; border: none; padding: 6px;
+    }
+    .nav-toggle span { display: block; width: 22px; height: 2px; background: var(--accent); border-radius: 2px; }
+    @media (max-width: 860px) {
+      .nav-toggle { display: flex; }
+      .nav-links {
+        display: none; flex-direction: column; gap: 4px;
+        position: fixed; top: 64px; left: 0; right: 0;
+        background: rgba(0,0,0,0.97); padding: 20px 24px 28px;
+        border-bottom: 1px solid var(--border-dim); z-index: 999;
+      }
+      .nav-links.open { display: flex; }
+      .nav-links a { padding: 10px 14px; font-size: 14px; }
+    }
 
-    /* === RESPONSIVE === */
+    /* ── Layout ── */
+    .wrap { max-width: 1160px; margin: 0 auto; padding: 0 40px; }
+    section { padding: 100px 0; }
+
+    /* ── Section Label ── */
+    .sec-label {
+      font-family: var(--fd); font-size: 11px; letter-spacing: 0.3em;
+      color: var(--accent); margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
+    }
+    .sec-label::before { content: ''; width: 20px; height: 1px; background: var(--accent); display: block; }
+    .sec-title {
+      font-family: var(--fd); font-size: clamp(2.8rem, 5vw, 4rem);
+      letter-spacing: 0.04em; line-height: 1.05; color: var(--text); margin-bottom: 0;
+    }
+    .sec-title .hl { color: var(--accent); }
+    .sec-desc { font-size: 15px; color: var(--text-2); line-height: 1.8; margin-top: 20px; max-width: 600px; }
+
+    /* ── Grid BG ── */
+    .grid-bg {
+      background-image:
+        linear-gradient(var(--border-dim) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border-dim) 1px, transparent 1px);
+      background-size: 60px 60px;
+      position: relative;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 80vh; display: flex; align-items: center;
+      padding: 120px 0 80px; position: relative; overflow: hidden;
+    }
+    .hero-glow {
+      position: absolute; top: -15%; left: 50%; transform: translateX(-50%);
+      width: 900px; height: 600px;
+      background: radial-gradient(rgba(212,255,94,0.05) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-inner { position: relative; z-index: 1; }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--accent-dim); border: 1px solid var(--border);
+      border-radius: 50px; padding: 6px 16px; font-size: 12px;
+      font-weight: 500; color: var(--accent); letter-spacing: 0.06em;
+      margin-bottom: 32px; animation: fup 0.6s ease both;
+    }
+    .hero-tag .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: blink 1.4s ease-in-out infinite; }
+    .hero h1 {
+      font-family: var(--fd); font-size: clamp(3.5rem, 8vw, 7rem);
+      letter-spacing: 0.04em; line-height: 1; margin-bottom: 24px;
+      animation: fup 0.7s ease 0.15s both;
+    }
+    .hero h1 .hl { color: var(--accent); }
+    .hero-sub { font-size: 15px; color: var(--text-2); max-width: 520px; line-height: 1.8; margin-bottom: 52px; animation: fup 0.7s ease 0.3s both; }
+    .hero-stats { display: flex; gap: 0; flex-wrap: wrap; animation: fup 0.7s ease 0.45s both; }
+    .h-stat { padding: 0 40px 0 0; }
+    .h-stat:first-child { padding-left: 0; }
+    .h-stat + .h-stat { border-left: 1px solid var(--border-dim); padding-left: 40px; }
+    .h-stat-num { font-family: var(--fd); font-size: 2.6rem; color: var(--accent); letter-spacing: 0.04em; line-height: 1; }
+    .h-stat-label { font-size: 11px; color: var(--text-3); letter-spacing: 0.1em; margin-top: 4px; text-transform: uppercase; }
+
+    /* ── About (회사 소개) ── */
+    .about-sec { background: var(--bg); }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; margin-top: 56px; }
+    .diff-list { list-style: none; margin-top: 32px; }
+    .diff-item {
+      display: flex; gap: 16px; padding: 20px 0;
+      border-bottom: 1px solid var(--border-dim);
+    }
+    .diff-item:last-child { border-bottom: none; }
+    .diff-num {
+      font-family: var(--fd); font-size: 1.8rem; color: var(--accent);
+      min-width: 40px; line-height: 1; flex-shrink: 0;
+    }
+    .diff-title { font-size: 0.92rem; font-weight: 700; margin-bottom: 4px; }
+    .diff-desc { font-size: 0.82rem; color: var(--text-2); line-height: 1.7; }
+    .value-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .v-card {
+      background: var(--surface); border: 1px solid var(--border-dim);
+      border-radius: 12px; padding: 20px;
+      transition: border-color 0.25s, background 0.25s;
+    }
+    .v-card:hover { border-color: var(--border); background: var(--surface2); }
+    .v-card-icon { font-size: 1.4rem; margin-bottom: 10px; }
+    .v-card-title { font-size: 0.88rem; font-weight: 700; margin-bottom: 6px; }
+    .v-card-desc { font-size: 0.78rem; color: var(--text-2); line-height: 1.6; }
+
+    /* ── CEO ── */
+    .ceo-sec { background: var(--surface); }
+    .ceo-grid { display: grid; grid-template-columns: 320px 1fr; gap: 64px; align-items: start; margin-top: 56px; }
+    .ceo-card {
+      background: var(--bg); border: 1px solid var(--border-dim);
+      border-radius: 16px; overflow: hidden; position: sticky; top: 88px;
+    }
+    .ceo-card-top {
+      background: linear-gradient(135deg, #0d1100, #1a2200);
+      border-bottom: 1px solid var(--border); padding: 32px 28px;
+    }
+    .ceo-initial {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: var(--accent); display: flex; align-items: center; justify-content: center;
+      font-family: var(--fd); font-size: 1.8rem; color: #000; margin-bottom: 16px;
+    }
+    .ceo-name { font-family: var(--fd); font-size: 2rem; letter-spacing: 0.06em; color: var(--text); margin-bottom: 4px; }
+    .ceo-title-txt { font-size: 0.78rem; color: var(--text-3); line-height: 1.6; }
+    .ceo-card-body { padding: 24px 28px; }
+    .ceo-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+    .ceo-tag {
+      font-size: 0.68rem; font-weight: 600; padding: 3px 9px;
+      border-radius: 4px; background: var(--accent-dim);
+      color: var(--accent); border: 1px solid rgba(212,255,94,0.2); letter-spacing: 0.03em;
+    }
+    .ceo-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .cs-item { text-align: center; padding: 12px 8px; background: var(--surface); border-radius: 8px; }
+    .cs-num { font-family: var(--fd); font-size: 1.6rem; color: var(--accent); line-height: 1; }
+    .cs-lbl { font-size: 0.68rem; color: var(--text-3); margin-top: 3px; }
+
+    .career-list { list-style: none; }
+    .career-item { display: flex; gap: 20px; padding: 18px 0; border-bottom: 1px solid var(--border-dim); }
+    .career-item:last-child { border-bottom: none; }
+    .c-year { font-family: var(--fd); font-size: 0.9rem; color: var(--accent); min-width: 64px; padding-top: 2px; letter-spacing: 0.04em; flex-shrink: 0; }
+    .c-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; }
+    .c-desc { font-size: 0.8rem; color: var(--text-2); line-height: 1.7; }
+    .cert-wrap { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--border-dim); }
+    .cert-label { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-3); margin-bottom: 10px; }
+    .cert-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    .cert-badge {
+      font-size: 0.72rem; padding: 4px 10px; border-radius: 4px;
+      background: var(--surface); border: 1px solid var(--border-dim); color: var(--text-2); font-weight: 500;
+    }
+
+    /* ── Programs ── */
+    .prog-sec { background: var(--bg); }
+    .prog-filter { display: flex; gap: 8px; flex-wrap: wrap; margin: 36px 0 28px; }
+    .pf-btn {
+      padding: 6px 18px; border-radius: 20px; border: 1px solid var(--border-dim);
+      background: transparent; color: var(--text-2); font-size: 13px;
+      font-family: var(--fb); cursor: pointer; transition: all 0.2s; font-weight: 500;
+    }
+    .pf-btn.active, .pf-btn:hover {
+      background: var(--accent-dim); color: var(--accent); border-color: var(--border);
+    }
+    .prog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .prog-card {
+      background: var(--surface); border: 1px solid var(--border-dim);
+      border-radius: 14px; padding: 24px;
+      transition: border-color 0.25s, transform 0.25s, background 0.25s;
+      position: relative;
+    }
+    .prog-card:hover { border-color: var(--border); background: var(--surface2); transform: translateY(-3px); }
+    .prog-cat {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; margin-bottom: 12px; color: var(--accent);
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .prog-cat::before { content: ''; width: 14px; height: 1px; background: var(--accent); display: block; }
+    .prog-cat.team { color: #7ee8e1; }
+    .prog-cat.team::before { background: #7ee8e1; }
+    .prog-cat.personal { color: #e8c87e; }
+    .prog-cat.personal::before { background: #e8c87e; }
+    .prog-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; line-height: 1.4; }
+    .prog-desc { font-size: 0.8rem; color: var(--text-2); line-height: 1.7; margin-bottom: 16px; }
+    .prog-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .p-tag {
+      font-size: 0.7rem; padding: 3px 8px; border-radius: 4px;
+      background: var(--surface2); border: 1px solid var(--border-dim); color: var(--text-3);
+    }
+    .p-time { margin-left: auto; font-size: 0.7rem; color: var(--accent); font-weight: 600; }
+
+    /* ── Clients ── */
+    .clients-sec { background: var(--surface); }
+    .client-kpi { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin: 48px 0; }
+    .kpi-card {
+      background: var(--bg); border: 1px solid var(--border-dim);
+      border-radius: 12px; padding: 24px 20px; text-align: center;
+      transition: border-color 0.2s;
+    }
+    .kpi-card:hover { border-color: var(--border); }
+    .kpi-num { font-family: var(--fd); font-size: 2.4rem; color: var(--accent); line-height: 1; }
+    .kpi-lbl { font-size: 0.78rem; color: var(--text-3); margin-top: 6px; }
+    .client-group { margin-bottom: 32px; }
+    .cg-label { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-3); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border-dim); }
+    .cg-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .c-chip {
+      padding: 5px 13px; background: var(--surface2); border: 1px solid var(--border-dim);
+      border-radius: 20px; font-size: 0.8rem; color: var(--text-2);
+      transition: all 0.2s; cursor: default;
+    }
+    .c-chip:hover { border-color: var(--border); color: var(--accent); background: var(--accent-dim); }
+    .c-chip.star { border-color: rgba(212,255,94,0.3); color: var(--accent); background: var(--accent-dim); font-weight: 600; }
+
+    /* ── Timeline ── */
+    .tl-sec { background: var(--bg); }
+    .timeline { margin-top: 56px; position: relative; }
+    .tl-line {
+      position: absolute; left: 116px; top: 8px; bottom: 8px;
+      width: 1px; background: var(--border-dim);
+    }
+    .tl-item { display: flex; gap: 40px; margin-bottom: 36px; position: relative; align-items: flex-start; }
+    .tl-year {
+      font-family: var(--fd); font-size: 1rem; color: var(--accent);
+      min-width: 76px; text-align: right; letter-spacing: 0.04em; padding-top: 2px; flex-shrink: 0;
+    }
+    .tl-dot-wrap { display: flex; align-items: flex-start; padding-top: 6px; width: 40px; flex-shrink: 0; justify-content: center; }
+    .tl-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); flex-shrink: 0; box-shadow: 0 0 8px rgba(212,255,94,0.5); }
+    .tl-content { flex: 1; }
+    .tl-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 6px; }
+    .tl-desc { font-size: 0.8rem; color: var(--text-2); line-height: 1.75; }
+
+    /* ── CTA ── */
+    .cta-sec {
+      background: var(--surface); padding: 100px 0; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .cta-glow {
+      position: absolute; top: -20%; left: 50%; transform: translateX(-50%);
+      width: 800px; height: 500px;
+      background: radial-gradient(rgba(212,255,94,0.06) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .cta-inner { position: relative; z-index: 1; }
+    .cta-sec h2 { font-family: var(--fd); font-size: clamp(2.2rem, 4vw, 3.2rem); letter-spacing: 0.04em; margin-bottom: 16px; }
+    .cta-sec h2 .hl { color: var(--accent); }
+    .cta-sec p { color: var(--text-2); margin-bottom: 40px; font-size: 15px; }
+    .cta-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-accent {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--accent); color: #000; padding: 13px 28px;
+      border-radius: 8px; font-weight: 700; font-size: 14px;
+      transition: all 0.2s; box-shadow: 0 0 16px rgba(212,255,94,0.3);
+    }
+    .btn-accent:hover { background: #c8f54a; transform: translateY(-2px); box-shadow: 0 0 24px rgba(212,255,94,0.5); }
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: var(--text-2); padding: 13px 28px;
+      border-radius: 8px; border: 1px solid var(--border-dim); font-weight: 500; font-size: 14px;
+      transition: all 0.2s;
+    }
+    .btn-ghost:hover { border-color: var(--border); color: var(--accent); }
+
+    /* ── Footer ── */
+    footer {
+      background: #000; border-top: 1px solid var(--border-dim);
+      padding: 40px 0; font-size: 13px; color: var(--text-3);
+    }
+    .foot-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+    .foot-logo { font-family: var(--fd); font-size: 1.2rem; letter-spacing: 0.15em; color: var(--accent); }
+    .foot-info { margin-top: 6px; font-size: 12px; line-height: 1.7; }
+    .foot-links { display: flex; gap: 20px; }
+    .foot-links a { transition: color 0.2s; }
+    .foot-links a:hover { color: var(--accent); }
+
+    /* ── Responsive ── */
     @media (max-width: 900px) {
-      .about-grid, .ceo-grid { grid-template-columns: 1fr; gap: 40px; }
-      .prog-grid { grid-template-columns: repeat(2, 1fr); }
-      .client-stats { grid-template-columns: repeat(2, 1fr); }
-      .hero-stats { gap: 32px; }
-      .nav-links { display: none; }
-      .nav-mobile-btn { display: block; }
+      .about-grid, .ceo-grid { grid-template-columns: 1fr; gap: 48px; }
+      .ceo-card { position: static; }
+      .prog-grid { grid-template-columns: repeat(2,1fr); }
+      .client-kpi { grid-template-columns: repeat(2,1fr); }
+      .tl-line { display: none; }
     }
     @media (max-width: 600px) {
+      section { padding: 72px 0; }
+      .wrap { padding: 0 20px; }
       .prog-grid { grid-template-columns: 1fr; }
-      .client-stats { grid-template-columns: 1fr 1fr; }
-      .hero h1 { font-size: 2.2rem; }
-      .ceo-grid { grid-template-columns: 1fr; }
-      .ceo-card { max-width: 340px; }
-      .timeline::before { left: 0; display: none; }
-      .tl-year { display: none; }
-      .tl-dot { display: none; }
-      .tl-content { padding-left: 0; }
-      section { padding: 60px 0; }
-      .about-values { grid-template-columns: 1fr; }
-      body { overflow-x: hidden; }
+      .client-kpi { grid-template-columns: 1fr 1fr; }
+      .hero h1 { font-size: 3rem; }
+      .h-stat + .h-stat { border-left: none; padding-left: 0; }
+      .hero-stats { gap: 20px; }
+      .value-cards { grid-template-columns: 1fr; }
+      .tl-year { font-size: 0.8rem; min-width: 56px; }
     }
-    @media (max-width: 375px) {
-      body { overflow-x: hidden; }
+    @media print {
+      #nav, .cta-sec { display: none; }
+      body { background: white !important; color: black !important; }
+      .reveal { opacity: 1 !important; transform: none !important; }
     }
   </style>
 </head>
 <body>
-  <a href="#main-content" class="skip-link">본문으로 건너뛰기</a>
 
-  <!-- SITE NAV -->
-  <nav class="site-nav" aria-label="사이트 내비게이션">
-    <a href="/" class="nav-logo">
-      <span class="dot"></span>CHUNGRAM
-    </a>
-    <div class="nav-links">
-      <a href="/">홈</a>
-      <a href="/#programs">프로그램</a>
-      <a href="/chungram-prompt-library.html">프롬프트</a>
-      <a href="/chungram-ai-tool-hub.html">AI 허브</a>
-      <a href="https://betweenworld.org" target="_blank" rel="noopener">블로그 BTW</a>
-      <a href="/about.html" class="active">소개</a>
-      <a href="/#contact" class="nav-cta">협업 문의</a>
+  <!-- NAV -->
+  <nav id="nav">
+    <div class="nav-inner">
+      <a href="https://guyoung-chungram.github.io/" class="nav-logo" aria-label="CHUNGRAM 홈">
+        <span class="logo-main">CHUNGRAM</span>
+        <span class="logo-sub">AI Lab · 청람M&C</span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="/">홈</a></li>
+        <li><a href="https://betweenworld.org" target="_blank" rel="noopener">블로그</a></li>
+        <li><a href="/chungram-prompt-library.html">프롬프트</a></li>
+        <li><a href="/chungram-chatbot-guide.html">챗봇 지침</a></li>
+        <li><a href="/chungram-ai-tool-hub.html">AI 허브</a></li>
+        <li><a href="/chungram-notice.html">공지사항</a></li>
+        <li><a href="/about.html" class="active">소개</a></li>
+        <li><a href="/cheongram_proposal_v2.html" class="nav-collab">🤝 협업 문의하기</a></li>
+      </ul>
+      <button class="nav-toggle" aria-label="메뉴" onclick="document.getElementById('navLinks').classList.toggle('open')">
+        <span></span><span></span><span></span>
+      </button>
     </div>
-    <button class="nav-mobile-btn" onclick="toggleMobileNav()" aria-label="메뉴 열기">
-      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-        <line x1="3" y1="6" x2="19" y2="6"/><line x1="3" y1="11" x2="19" y2="11"/><line x1="3" y1="16" x2="19" y2="16"/>
-      </svg>
-    </button>
   </nav>
 
-  <!-- VIZ MENU -->
-  <div class="viz-menu">
-    <button class="viz-menu-toggle" onclick="toggleMenu()" aria-label="메뉴">
-      <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-        <line x1="3" y1="5" x2="17" y2="5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="15" x2="17" y2="15"/>
-      </svg>
-    </button>
-    <div class="viz-menu-dropdown" id="vizMenuDropdown">
-      <button onclick="cycleTheme()"><span id="themeIcon">☀️</span><span id="themeLabel">라이트</span></button>
-      <button onclick="downloadImage()"><span>📥</span><span>PNG 다운로드</span></button>
-      <button onclick="window.print()"><span>🖨️</span><span>인쇄 / PDF</span></button>
-    </div>
-  </div>
-
-  <main id="main-content" role="main">
+  <main id="main-content">
 
     <!-- HERO -->
-    <section class="hero" aria-label="소개 히어로">
-      <div class="container hero-inner">
-        <div class="hero-badge animate">
-          <span class="hero-badge-dot"></span>
-          SINCE 2013 · 22년 교육 컨설팅
+    <section class="hero grid-bg">
+      <div class="hero-glow"></div>
+      <div class="wrap hero-inner">
+        <div class="hero-tag">
+          <span class="dot"></span>SINCE 2013 · 22년 교육 컨설팅
         </div>
-        <h1 class="animate delay-1">교육이 바뀌면<br><em>조직이 바뀝니다</em></h1>
-        <p class="hero-sub animate delay-2">기업교육 컨설턴트 22년, KAIST 14년, 누적 300여 기업·기관과 함께 걸어온 청람M&C. AI 에이전트 기반으로 교육의 새 패러다임을 열어갑니다.</p>
-        <div class="hero-stats animate delay-3">
-          <div>
-            <div class="hero-stat-num"><span data-count="22" data-suffix="+">22+</span></div>
-            <div class="hero-stat-label">Years Experience</div>
+        <h1>
+          교육이 바뀌면<br>
+          <span class="hl">조직이 바뀝니다</span>
+        </h1>
+        <p class="hero-sub">기업교육 컨설턴트 22년, KAIST 14년, 누적 300여 기업·기관과 함께 걸어온 청람M&C. AI 에이전트 기반으로 교육의 새 패러다임을 열어갑니다.</p>
+        <div class="hero-stats">
+          <div class="h-stat">
+            <div class="h-stat-num">22+</div>
+            <div class="h-stat-label">Years Experience</div>
           </div>
-          <div>
-            <div class="hero-stat-num"><span data-count="300" data-suffix="+">300+</span></div>
-            <div class="hero-stat-label">기업·기관</div>
+          <div class="h-stat">
+            <div class="h-stat-num">300+</div>
+            <div class="h-stat-label">기업·기관</div>
           </div>
-          <div>
-            <div class="hero-stat-num"><span data-count="10000" data-suffix="H+">10,000H+</span></div>
-            <div class="hero-stat-label">누적 강의시간</div>
+          <div class="h-stat">
+            <div class="h-stat-num">10,000H+</div>
+            <div class="h-stat-label">누적 강의시간</div>
           </div>
-          <div>
-            <div class="hero-stat-num"><span data-count="1000" data-suffix="H+">1,000H+</span></div>
-            <div class="hero-stat-label">누적 코칭시간</div>
+          <div class="h-stat">
+            <div class="h-stat-num">1,000H+</div>
+            <div class="h-stat-label">누적 코칭시간</div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ABOUT: COMPANY -->
-    <section class="about-section" id="about" aria-label="회사 소개">
-      <div class="container">
-        <div class="section-label" data-reveal>청람M&C 소개</div>
-        <h2 data-reveal>AI 에이전트 기반<br>교육 컨설팅 전문기업</h2>
+    <!-- 회사 소개 -->
+    <section class="about-sec" id="about">
+      <div class="wrap">
+        <div class="sec-label reveal">ABOUT</div>
+        <h2 class="sec-title reveal">청람M&C <span class="hl">차별점</span></h2>
+        <p class="sec-desc reveal">AI 에이전트 기반 교육 컨설팅 전문기업. 이론과 현장, 기술과 인문의 교차점에서 가장 실질적인 교육을 설계합니다.</p>
         <div class="about-grid">
-          <div data-reveal>
-            <p style="font-size:1.05rem; line-height:1.9; margin-bottom:24px;">
-              청람M&C는 기업교육 컨설턴트 경력 22년의 전문성을 바탕으로, 리더십·조직문화·ESG·생성형AI 분야에서 국내 최고 수준의 교육 서비스를 제공합니다.
-            </p>
-            <p style="font-size:0.95rem; line-height:1.9; color:var(--text-secondary); margin-bottom:32px;">
-              KAIST 리더십 수업 14년, Midwest University ESG경영전공 Research Fellow, 경기도사회서비스원 ESG위원장 등 현장과 학문을 잇는 깊이 있는 콘텐츠로 300여 기업·기관과 신뢰를 쌓아왔습니다.
-            </p>
-            <div class="about-values">
-              <div class="value-card" data-reveal>
-                <h4>현장 검증</h4>
-                <p>10,000시간+ 누적 강의를 통해 실전에서 검증된 콘텐츠만 제공합니다</p>
+          <ul class="diff-list">
+            <li class="diff-item reveal">
+              <div class="diff-num">01</div>
+              <div>
+                <div class="diff-title">교육학 박사 × 22년 현장</div>
+                <div class="diff-desc">이론적 깊이와 22년 현장 경험을 동시에 보유한 희소한 전문가. 이론이 현장에서 살아있어야 진짜 교육입니다.</div>
               </div>
-              <div class="value-card" data-reveal>
-                <h4>AI 기반 혁신</h4>
-                <p>생성형AI를 활용해 교육 설계·운영·콘텐츠 전 과정을 고도화합니다</p>
+            </li>
+            <li class="diff-item reveal">
+              <div class="diff-num">02</div>
+              <div>
+                <div class="diff-title">KAIST 14년 검증 커리큘럼</div>
+                <div class="diff-desc">KAIST 리더십 수업 14년의 강의 경험으로 검증된 프리미엄 콘텐츠. 7Habits와 AI를 결합한 미래형 리더십 교육.</div>
               </div>
-              <div class="value-card" data-reveal>
-                <h4>맞춤형 설계</h4>
-                <p>고객사 니즈를 깊이 분석해 조직에 딱 맞는 커리큘럼을 설계합니다</p>
+            </li>
+            <li class="diff-item reveal">
+              <div class="diff-num">03</div>
+              <div>
+                <div class="diff-title">AI 에이전트 교육 선도</div>
+                <div class="diff-desc">ChatGPT·Claude·Gemini 활용 교육을 기업 현장에 가장 빠르게 접목. 생성형 AI를 실무에 직결시키는 유일한 방법론.</div>
               </div>
-              <div class="value-card" data-reveal>
-                <h4>장기 파트너십</h4>
-                <p>MG새마을금고 13년+, 하나투어 9년+의 신뢰가 청람의 증거입니다</p>
+            </li>
+            <li class="diff-item reveal">
+              <div class="diff-num">04</div>
+              <div>
+                <div class="diff-title">ESG × 리더십 완전 융합</div>
+                <div class="diff-desc">ISO17024 ESG 자격과 FranklinCovey 공인 자격을 동시 보유. 지속가능경영과 인재개발을 하나의 흐름으로 설계.</div>
               </div>
+            </li>
+            <li class="diff-item reveal">
+              <div class="diff-num">05</div>
+              <div>
+                <div class="diff-title">장기 파트너십의 증거</div>
+                <div class="diff-desc">MG새마을금고 13년+, 하나투어 9년+. 한 번 인연이 오래가는 이유는 결과로 말하기 때문입니다.</div>
+              </div>
+            </li>
+          </ul>
+          <div class="value-cards reveal">
+            <div class="v-card">
+              <div class="v-card-icon">🎯</div>
+              <div class="v-card-title">현장 검증</div>
+              <div class="v-card-desc">10,000시간+ 누적 강의에서 살아남은 콘텐츠만 제공합니다</div>
             </div>
-          </div>
-          <div class="about-visual animate delay-2" data-reveal>
-            <div class="about-visual-inner">
-              <div class="av-title">청람M&C의 차별점</div>
-              <div class="av-sub">왜 300여 기업이 청람을 선택하는가</div>
-              <div class="av-item">
-                <div class="av-icon">🎯</div>
-                <div>
-                  <div class="av-text-title">교육학 박사 × 현장 전문가</div>
-                  <div class="av-text-desc">이론적 깊이와 22년 현장 경험을 동시에 보유한 희소한 전문가</div>
-                </div>
-              </div>
-              <div class="av-item">
-                <div class="av-icon">🤖</div>
-                <div>
-                  <div class="av-text-title">AI 에이전트 교육 선도</div>
-                  <div class="av-text-desc">ChatGPT·Claude·Gemini 활용 교육을 기업 최초로 도입 및 운영</div>
-                </div>
-              </div>
-              <div class="av-item">
-                <div class="av-icon">🌿</div>
-                <div>
-                  <div class="av-text-title">ESG × 리더십 융합</div>
-                  <div class="av-text-desc">ISO17024 ESG 자격과 FranklinCovey 공인 자격을 함께 보유</div>
-                </div>
-              </div>
-              <div class="av-item">
-                <div class="av-icon">🏛</div>
-                <div>
-                  <div class="av-text-title">KAIST 검증 커리큘럼</div>
-                  <div class="av-text-desc">14년간 KAIST 리더십 수업을 통해 검증된 프리미엄 콘텐츠</div>
-                </div>
-              </div>
+            <div class="v-card">
+              <div class="v-card-icon">🤖</div>
+              <div class="v-card-title">AI 기반 혁신</div>
+              <div class="v-card-desc">생성형AI로 교육 설계·운영·콘텐츠 전 과정을 고도화합니다</div>
+            </div>
+            <div class="v-card">
+              <div class="v-card-icon">🔬</div>
+              <div class="v-card-title">진단 기반 설계</div>
+              <div class="v-card-desc">FIRO-B·Harrison Assessment로 조직을 먼저 진단 후 설계합니다</div>
+            </div>
+            <div class="v-card">
+              <div class="v-card-icon">🌿</div>
+              <div class="v-card-title">ESG 통합</div>
+              <div class="v-card-desc">지속가능경영과 리더십·조직문화를 하나의 언어로 통합합니다</div>
+            </div>
+            <div class="v-card">
+              <div class="v-card-icon">📐</div>
+              <div class="v-card-title">맞춤 커리큘럼</div>
+              <div class="v-card-desc">고객사 경영전략·시장환경·구성원 니즈를 4단계로 분석합니다</div>
+            </div>
+            <div class="v-card">
+              <div class="v-card-icon">🤝</div>
+              <div class="v-card-title">장기 파트너십</div>
+              <div class="v-card-desc">평균 파트너십 기간 7년+. 한 번 시작하면 오래 함께합니다</div>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- CEO PROFILE -->
-    <section class="ceo-section" id="ceo" aria-label="대표 소개">
-      <div class="container">
-        <div class="section-label" data-reveal>대표 소개</div>
-        <h2 data-reveal>교육을 바꾸는 사람,<br>정구영 대표</h2>
+    <!-- CEO -->
+    <section class="ceo-sec" id="ceo">
+      <div class="wrap">
+        <div class="sec-label reveal">FOUNDER</div>
+        <h2 class="sec-title reveal"><span class="hl">정구영</span> 대표</h2>
         <div class="ceo-grid">
-          <div class="ceo-card animate delay-1" data-reveal>
-            <div class="ceo-card-header">
-              <div class="ceo-avatar">정</div>
+          <div class="ceo-card reveal">
+            <div class="ceo-card-top">
+              <div class="ceo-initial">정</div>
               <div class="ceo-name">정구영 Ph.D</div>
-              <div class="ceo-title">교육학 박사 · 청람M&C 대표<br>한국지역개발경영교육원 원장</div>
+              <div class="ceo-title-txt">교육학 박사 · 청람M&C 대표<br>한국지역개발경영교육원 원장</div>
             </div>
             <div class="ceo-card-body">
-              <div class="ceo-tag-list">
+              <div class="ceo-tags">
                 <span class="ceo-tag">교육학 박사</span>
                 <span class="ceo-tag">KAIST 14년</span>
                 <span class="ceo-tag">ESG 위원장</span>
@@ -612,75 +528,77 @@
                 <span class="ceo-tag">7Habits</span>
                 <span class="ceo-tag">Research Fellow</span>
               </div>
-              <div class="ceo-stat-grid">
-                <div class="ceo-stat">
-                  <div class="ceo-stat-n">22+</div>
-                  <div class="ceo-stat-l">년 교육 경력</div>
-                </div>
-                <div class="ceo-stat">
-                  <div class="ceo-stat-n">300+</div>
-                  <div class="ceo-stat-l">누적 고객사</div>
-                </div>
-                <div class="ceo-stat">
-                  <div class="ceo-stat-n">10K+</div>
-                  <div class="ceo-stat-l">강의시간</div>
-                </div>
-                <div class="ceo-stat">
-                  <div class="ceo-stat-n">1K+</div>
-                  <div class="ceo-stat-l">코칭시간</div>
-                </div>
+              <div class="ceo-stats-grid">
+                <div class="cs-item"><div class="cs-num">22+</div><div class="cs-lbl">년 교육 경력</div></div>
+                <div class="cs-item"><div class="cs-num">300+</div><div class="cs-lbl">누적 고객사</div></div>
+                <div class="cs-item"><div class="cs-num">10K+</div><div class="cs-lbl">강의시간</div></div>
+                <div class="cs-item"><div class="cs-num">1K+</div><div class="cs-lbl">코칭시간</div></div>
               </div>
             </div>
           </div>
-          <div class="ceo-detail" data-reveal>
-            <h3 class="cr-accent-underline">주요 이력</h3>
-            <ul class="career-list">
+          <div>
+            <ul class="career-list reveal">
               <li class="career-item">
-                <span class="career-year">현재</span>
+                <span class="c-year">현재</span>
                 <div>
-                  <div class="career-title">청람M&C 대표 · 한국지역개발경영교육원 원장</div>
-                  <div class="career-desc">AI 에이전트 기반 교육 컨설팅 전문기업 운영. 리더십·조직문화·ESG·생성형AI 기업교육 설계 및 운영</div>
+                  <div class="c-title">청람M&C 대표 · 한국지역개발경영교육원 원장</div>
+                  <div class="c-desc">AI 에이전트 기반 교육 컨설팅 전문기업 운영. 리더십·조직문화·ESG·생성형AI 기업교육 설계 및 운영</div>
                 </div>
               </li>
               <li class="career-item">
-                <span class="career-year">12년+</span>
+                <span class="c-year">14년+</span>
                 <div>
-                  <div class="career-title">KAIST 리더십 수업</div>
-                  <div class="career-desc">KAIST 경영대학원 리더십 교과목 14년 출강. 7Habits·AI 리더십 융합 커리큘럼 개발</div>
+                  <div class="c-title">KAIST 리더십 수업</div>
+                  <div class="c-desc">KAIST 경영대학원 리더십 교과목 출강. 7Habits·AI 리더십 융합 커리큘럼 개발 및 운영</div>
                 </div>
               </li>
               <li class="career-item">
-                <span class="career-year">현재</span>
+                <span class="c-year">현재</span>
                 <div>
-                  <div class="career-title">경기도사회서비스원 ESG위원장</div>
-                  <div class="career-desc">ISO17024 ESG 자격 기반 공공기관 ESG 경영 자문 및 위원회 운영</div>
+                  <div class="c-title">경기도사회서비스원 ESG위원장</div>
+                  <div class="c-desc">ISO17024 ESG 자격 기반 공공기관 ESG 경영 자문 및 위원회 운영</div>
                 </div>
               </li>
               <li class="career-item">
-                <span class="career-year">진행</span>
+                <span class="c-year">진행</span>
                 <div>
-                  <div class="career-title">Midwest University ESG경영전공 Research Fellow</div>
-                  <div class="career-desc">글로벌 ESG 경영 연구 및 학문적 기여</div>
+                  <div class="c-title">Midwest University ESG경영전공 Research Fellow</div>
+                  <div class="c-desc">글로벌 ESG 경영 연구 및 학문적 기여</div>
                 </div>
               </li>
               <li class="career-item">
-                <span class="career-year">자격</span>
+                <span class="c-year">2019</span>
                 <div>
-                  <div class="career-title">국제 공인 자격 다수 보유</div>
-                  <div class="career-desc">ISO17024(ESG) · PCC · FIRO-B · Harrison Assessment · FranklinCovey(7Habits·PM·PA·CTT·Leadership Pathfinder)</div>
+                  <div class="c-title">금융·공공 리더십 다각화</div>
+                  <div class="c-desc">외교부 2~5급 리더십P · 한국은행·산업은행 핵심인재P · 삼성SDI 명장급 교수법 개발 · 안양시청 역량강화 연수</div>
+                </div>
+              </li>
+              <li class="career-item">
+                <span class="c-year">2017</span>
+                <div>
+                  <div class="c-title">대기업 리더십 전성기</div>
+                  <div class="c-desc">삼성전자 글로벌 HRD · SK텔레콤 긍정심리 · 세메스 전직급 리더십 · 대우조선해양 명장급 사내강사양성</div>
+                </div>
+              </li>
+              <li class="career-item">
+                <span class="c-year">2013</span>
+                <div>
+                  <div class="c-title">청람M&C 창업</div>
+                  <div class="c-desc">삼성 멀티캠퍼스 7H 리더십 P 계약으로 본격 출발. 22년 여정의 시작.</div>
                 </div>
               </li>
             </ul>
-            <div>
-              <div class="cert-grid">
+            <div class="cert-wrap reveal">
+              <div class="cert-label">보유 자격</div>
+              <div class="cert-list">
                 <span class="cert-badge">ISO17024 (ESG)</span>
-                <span class="cert-badge">PCC (국제코치)</span>
+                <span class="cert-badge">PCC 국제코치</span>
                 <span class="cert-badge">FIRO-B</span>
                 <span class="cert-badge">Harrison Assessment</span>
                 <span class="cert-badge">FranklinCovey 7Habits</span>
                 <span class="cert-badge">FranklinCovey PM</span>
                 <span class="cert-badge">Leadership Pathfinder</span>
-                <span class="cert-badge">CTT 공인 강사</span>
+                <span class="cert-badge">CTT 공인강사</span>
               </div>
             </div>
           </div>
@@ -689,237 +607,171 @@
     </section>
 
     <!-- PROGRAMS -->
-    <section class="programs-section" id="programs" aria-label="교육 프로그램">
-      <div class="container">
-        <div class="section-label" data-reveal>교육 프로그램</div>
-        <h2 data-reveal>현장에서 바로 쓰는<br>기업 맞춤형 교육</h2>
-        <p style="color:var(--text-secondary);margin-top:12px;margin-bottom:36px;" data-reveal>조직역량·팀역량·개인역량 세 축으로 설계된 검증된 교육 프로그램입니다.</p>
-        <div class="prog-filter" role="group" aria-label="프로그램 필터">
-          <button class="prog-filter-btn active" onclick="filterPrograms('all', this)">전체</button>
-          <button class="prog-filter-btn" onclick="filterPrograms('org', this)">조직역량</button>
-          <button class="prog-filter-btn" onclick="filterPrograms('team', this)">팀역량</button>
-          <button class="prog-filter-btn" onclick="filterPrograms('personal', this)">개인역량</button>
+    <section class="prog-sec" id="programs">
+      <div class="wrap">
+        <div class="sec-label reveal">PROGRAMS</div>
+        <h2 class="sec-title reveal">핵심 <span class="hl">교육 프로그램</span></h2>
+        <p class="sec-desc reveal">조직역량·팀역량·개인역량 세 축으로 설계된 검증된 교육 프로그램. 현장에서 바로 적용 가능합니다.</p>
+        <div class="prog-filter">
+          <button class="pf-btn active" onclick="filterProg('all',this)">전체</button>
+          <button class="pf-btn" onclick="filterProg('org',this)">조직역량</button>
+          <button class="pf-btn" onclick="filterProg('team',this)">팀역량</button>
+          <button class="pf-btn" onclick="filterProg('personal',this)">개인역량</button>
         </div>
         <div class="prog-grid" id="progGrid">
-          <div class="prog-card org" data-cat="org" data-reveal>
-            <span class="prog-category org">조직역량</span>
+          <div class="prog-card reveal" data-cat="org">
+            <div class="prog-cat">조직역량</div>
             <div class="prog-title">생성형 AI 실전 활용</div>
-            <div class="prog-desc">ChatGPT·Claude·Gemini 등 생성형 AI 도구를 업무에 즉시 적용하는 실습 중심 교육. 프롬프트 엔지니어링부터 AI 워크플로우 설계까지.</div>
-            <div class="prog-meta">
-              <span class="prog-tag">🤖 AI 활용</span>
-              <span class="prog-tag">전 직급</span>
-              <span class="prog-time">⏱ 4~8시간</span>
-            </div>
+            <div class="prog-desc">ChatGPT·Claude·Gemini를 업무에 즉시 적용하는 실습 중심 교육. 프롬프트 엔지니어링부터 AI 워크플로우 설계까지.</div>
+            <div class="prog-meta"><span class="p-tag">🤖 AI 활용</span><span class="p-tag">전 직급</span><span class="p-time">⏱ 4~8H</span></div>
           </div>
-          <div class="prog-card org" data-cat="org" data-reveal>
-            <span class="prog-category org">조직역량</span>
+          <div class="prog-card reveal" data-cat="org">
+            <div class="prog-cat">조직역량</div>
             <div class="prog-title">AI 시대 리더십</div>
             <div class="prog-desc">KAIST 검증 커리큘럼 기반. 7Habits 프레임워크와 AI 도구를 결합한 미래형 리더 육성 프로그램.</div>
-            <div class="prog-meta">
-              <span class="prog-tag">🏛 KAIST 기반</span>
-              <span class="prog-tag">관리자·임원</span>
-              <span class="prog-time">⏱ 6~16시간</span>
-            </div>
+            <div class="prog-meta"><span class="p-tag">🏛 KAIST 기반</span><span class="p-tag">관리자·임원</span><span class="p-time">⏱ 6~16H</span></div>
           </div>
-          <div class="prog-card org" data-cat="org" data-reveal>
-            <span class="prog-category org">조직역량</span>
+          <div class="prog-card reveal" data-cat="org">
+            <div class="prog-cat">조직역량</div>
             <div class="prog-title">ESG 경영 교육</div>
             <div class="prog-desc">ISO17024 자격 기반 ESG 경영 교육. 실무 적용 가능한 지속가능경영 전략 수립과 ESG 보고서 작성 실습.</div>
-            <div class="prog-meta">
-              <span class="prog-tag">🌿 ISO17024</span>
-              <span class="prog-tag">공공·민간</span>
-              <span class="prog-time">⏱ 4~8시간</span>
-            </div>
+            <div class="prog-meta"><span class="p-tag">🌿 ISO17024</span><span class="p-tag">공공·민간</span><span class="p-time">⏱ 4~8H</span></div>
           </div>
-          <div class="prog-card team" data-cat="team" data-reveal>
-            <span class="prog-category team">팀역량</span>
+          <div class="prog-card reveal" data-cat="team">
+            <div class="prog-cat team">팀역량</div>
             <div class="prog-title">긍정탐구 리더십 워크숍</div>
-            <div class="prog-desc">긍정 질문을 통해 구성원이 조직과 팀을 바라보는 관점의 확장을 돕고 긍정 속성을 시각화하는 체험형 워크숍.</div>
-            <div class="prog-meta">
-              <span class="prog-tag">💡 AI·긍정탐구</span>
-              <span class="prog-tag">팀 단위</span>
-              <span class="prog-time">⏱ 4시간</span>
-            </div>
+            <div class="prog-desc">긍정 질문으로 팀이 조직을 바라보는 관점을 확장하고 긍정 속성을 시각화하는 체험형 워크숍.</div>
+            <div class="prog-meta"><span class="p-tag">💡 AI·긍정탐구</span><span class="p-tag">팀 단위</span><span class="p-time">⏱ 4H</span></div>
           </div>
-          <div class="prog-card team" data-cat="team" data-reveal>
-            <span class="prog-category team">팀역량</span>
+          <div class="prog-card reveal" data-cat="team">
+            <div class="prog-cat team">팀역량</div>
             <div class="prog-title">강점 시너지 팀 워크숍</div>
-            <div class="prog-desc">AI 및 강점 발견 활동을 통해 개인의 강점을 발견하고, 업무 흐름 속에 강점을 활용하여 동기를 향상시키는 워크숍.</div>
-            <div class="prog-meta">
-              <span class="prog-tag">💪 강점 기반</span>
-              <span class="prog-tag">팀 단위</span>
-              <span class="prog-time">⏱ 4시간</span>
-            </div>
+            <div class="prog-desc">AI와 강점 발견 활동으로 개인의 강점을 발굴하고 업무 흐름에 적용해 동기를 향상시키는 워크숍.</div>
+            <div class="prog-meta"><span class="p-tag">💪 강점 기반</span><span class="p-tag">팀 단위</span><span class="p-time">⏱ 4H</span></div>
           </div>
-          <div class="prog-card team" data-cat="team" data-reveal>
-            <span class="prog-category team">팀역량</span>
+          <div class="prog-card reveal" data-cat="team">
+            <div class="prog-cat team">팀역량</div>
             <div class="prog-title">조직문화 코칭</div>
             <div class="prog-desc">PCC 전문 코치 자격 기반. FIRO-B·Harrison Assessment를 활용한 조직 진단 및 문화 혁신 프로그램.</div>
-            <div class="prog-meta">
-              <span class="prog-tag">🔍 진단 기반</span>
-              <span class="prog-tag">조직 전체</span>
-              <span class="prog-time">⏱ 맞춤 설계</span>
-            </div>
+            <div class="prog-meta"><span class="p-tag">🔍 진단 기반</span><span class="p-tag">조직 전체</span><span class="p-time">⏱ 맞춤 설계</span></div>
           </div>
-          <div class="prog-card personal" data-cat="personal" data-reveal>
-            <span class="prog-category personal">개인역량</span>
+          <div class="prog-card reveal" data-cat="personal">
+            <div class="prog-cat personal">개인역량</div>
             <div class="prog-title">생성형AI로 업무성과 높이기</div>
-            <div class="prog-desc">적재적소에 최적화된 생성형AI를 활용해 전략 보고서, 기획업무, 문제해결의 실무 적용 능력을 향상시킵니다.</div>
-            <div class="prog-meta">
-              <span class="prog-tag">🤖 AI 활용</span>
-              <span class="prog-tag">실무자</span>
-              <span class="prog-time">⏱ 4~8시간</span>
-            </div>
+            <div class="prog-desc">적재적소 생성형AI를 활용해 전략 보고서, 기획업무, 문제해결의 실무 적용 능력을 즉시 향상시킵니다.</div>
+            <div class="prog-meta"><span class="p-tag">🤖 AI 활용</span><span class="p-tag">실무자</span><span class="p-time">⏱ 4~8H</span></div>
           </div>
-          <div class="prog-card personal" data-cat="personal" data-reveal>
-            <span class="prog-category personal">개인역량</span>
+          <div class="prog-card reveal" data-cat="personal">
+            <div class="prog-cat personal">개인역량</div>
             <div class="prog-title">결정적 순간의 대화</div>
-            <div class="prog-desc">이해관계자와 감정이 격해질 수 있는 상황에서 건강하게 대화하는 실제적인 화법과 프로세스를 학습합니다.</div>
-            <div class="prog-meta">
-              <span class="prog-tag">🗣 커뮤니케이션</span>
-              <span class="prog-tag">전 직급</span>
-              <span class="prog-time">⏱ 4시간</span>
-            </div>
+            <div class="prog-desc">감정이 격해질 수 있는 상황에서 건강하게 대화하는 실제적인 화법과 프로세스를 학습합니다.</div>
+            <div class="prog-meta"><span class="p-tag">🗣 커뮤니케이션</span><span class="p-tag">전 직급</span><span class="p-time">⏱ 4H</span></div>
           </div>
-          <div class="prog-card personal" data-cat="personal" data-reveal>
-            <span class="prog-category personal">개인역량</span>
+          <div class="prog-card reveal" data-cat="personal">
+            <div class="prog-cat personal">개인역량</div>
             <div class="prog-title">프로젝트 관리</div>
-            <div class="prog-desc">프로젝트 단위로 업무를 수행하는 구성원이 착수부터 종료까지의 실제적인 스킬과 도구를 익힙니다.</div>
-            <div class="prog-meta">
-              <span class="prog-tag">📐 PM 실무</span>
-              <span class="prog-tag">실무자</span>
-              <span class="prog-time">⏱ 6~8시간</span>
-            </div>
+            <div class="prog-desc">착수부터 종료까지 실제적인 PM 스킬과 도구 활용법. 현업 중심 프로젝트 기획·실행·마감 역량 강화.</div>
+            <div class="prog-meta"><span class="p-tag">📐 PM 실무</span><span class="p-tag">실무자</span><span class="p-time">⏱ 6~8H</span></div>
           </div>
         </div>
       </div>
     </section>
 
     <!-- CLIENTS -->
-    <section class="clients-section" id="clients" aria-label="주요 고객사">
-      <div class="container">
-        <div class="section-label" data-reveal>주요 고객사</div>
-        <h2 data-reveal>300여 기업·기관이<br>선택한 교육 파트너</h2>
-        <div class="client-stats" style="margin-top:40px;">
-          <div class="client-stat-card" data-reveal>
-            <div class="client-stat-n" data-count="50" data-suffix="+">50+</div>
-            <div class="client-stat-l">대기업</div>
-          </div>
-          <div class="client-stat-card" data-reveal>
-            <div class="client-stat-n" data-count="80" data-suffix="+">80+</div>
-            <div class="client-stat-l">공공기관·지자체</div>
-          </div>
-          <div class="client-stat-card" data-reveal>
-            <div class="client-stat-n" data-count="30" data-suffix="+">30+</div>
-            <div class="client-stat-l">대학교</div>
-          </div>
-          <div class="client-stat-card" data-reveal>
-            <div class="client-stat-n" data-count="140" data-suffix="+">140+</div>
-            <div class="client-stat-l">중견·중소기업</div>
+    <section class="clients-sec" id="clients">
+      <div class="wrap">
+        <div class="sec-label reveal">CLIENTS</div>
+        <h2 class="sec-title reveal">300여 기업·기관이<br><span class="hl">선택한 이유</span></h2>
+        <div class="client-kpi">
+          <div class="kpi-card reveal"><div class="kpi-num">50+</div><div class="kpi-lbl">대기업</div></div>
+          <div class="kpi-card reveal"><div class="kpi-num">80+</div><div class="kpi-lbl">공공기관·지자체</div></div>
+          <div class="kpi-card reveal"><div class="kpi-num">30+</div><div class="kpi-lbl">대학교</div></div>
+          <div class="kpi-card reveal"><div class="kpi-num">140+</div><div class="kpi-lbl">중견·중소기업</div></div>
+        </div>
+        <div class="client-group reveal">
+          <div class="cg-label">장기 파트너 · 대기업</div>
+          <div class="cg-chips">
+            <span class="c-chip star">MG새마을금고 (13년+)</span>
+            <span class="c-chip star">하나투어 (9년+)</span>
+            <span class="c-chip star">KAIST (14년+)</span>
+            <span class="c-chip">삼성전자</span><span class="c-chip">삼성SDS</span>
+            <span class="c-chip">SK</span><span class="c-chip">SK하이닉스</span>
+            <span class="c-chip">POSCO</span><span class="c-chip">LG U+</span>
+            <span class="c-chip">KT</span><span class="c-chip">기아자동차</span>
+            <span class="c-chip">스타벅스</span><span class="c-chip">롯데백화점</span>
+            <span class="c-chip">신한금융투자</span><span class="c-chip">DGB생명</span>
+            <span class="c-chip">제주항공</span><span class="c-chip">이스타항공</span>
           </div>
         </div>
-
-        <div style="margin-bottom:20px;" data-reveal>
-          <div class="client-logos-title">장기 파트너사 · 대기업</div>
-          <div class="client-logos-grid">
-            <span class="client-chip highlight">MG새마을금고 (13년+)</span>
-            <span class="client-chip highlight">하나투어 (9년+)</span>
-            <span class="client-chip">삼성전자</span>
-            <span class="client-chip">삼성SDS</span>
-            <span class="client-chip">SK</span>
-            <span class="client-chip">SK하이닉스</span>
-            <span class="client-chip">POSCO</span>
-            <span class="client-chip">LG U+</span>
-            <span class="client-chip">KT</span>
-            <span class="client-chip">기아자동차</span>
-            <span class="client-chip">스타벅스</span>
-            <span class="client-chip">롯데백화점</span>
-            <span class="client-chip">신한금융투자</span>
-            <span class="client-chip">BGF리테일</span>
-            <span class="client-chip">DGB생명</span>
-            <span class="client-chip">이스타항공</span>
-            <span class="client-chip">제주항공</span>
+        <div class="client-group reveal">
+          <div class="cg-label">정부·공공기관·지자체</div>
+          <div class="cg-chips">
+            <span class="c-chip">국가공무원인재개발원</span>
+            <span class="c-chip">외교부</span><span class="c-chip">행정안전부</span>
+            <span class="c-chip">국회사무처</span><span class="c-chip">한국은행</span>
+            <span class="c-chip">산업은행</span><span class="c-chip">KOICA</span>
+            <span class="c-chip">경기도인재개발원</span><span class="c-chip">세종시교육청</span>
+            <span class="c-chip">평택시</span><span class="c-chip">화성시</span><span class="c-chip">단양군</span>
+            <span class="c-chip">중소기업진흥공단</span>
           </div>
         </div>
-        <div style="margin-bottom:20px;" data-reveal>
-          <div class="client-logos-title">공공기관·정부·지자체</div>
-          <div class="client-logos-grid">
-            <span class="client-chip">국가공무원인재개발원</span>
-            <span class="client-chip">외교부</span>
-            <span class="client-chip">행정안전부</span>
-            <span class="client-chip">국회사무처</span>
-            <span class="client-chip">한국은행</span>
-            <span class="client-chip">산업은행</span>
-            <span class="client-chip">경기도인재개발원</span>
-            <span class="client-chip">세종시교육청</span>
-            <span class="client-chip">KOICA</span>
-            <span class="client-chip">평택시</span>
-            <span class="client-chip">화성시</span>
-            <span class="client-chip">단양군</span>
-            <span class="client-chip">중소기업진흥공단</span>
-          </div>
-        </div>
-        <div data-reveal>
-          <div class="client-logos-title">대학교·연구기관</div>
-          <div class="client-logos-grid">
-            <span class="client-chip highlight">KAIST (14년+)</span>
-            <span class="client-chip">서울대학교</span>
-            <span class="client-chip">연세대학교</span>
-            <span class="client-chip">한양대학교</span>
-            <span class="client-chip">한동대학교</span>
-            <span class="client-chip">아주대학교</span>
-            <span class="client-chip">인하대학교</span>
-            <span class="client-chip">FranklinCovey Korea</span>
+        <div class="client-group reveal">
+          <div class="cg-label">대학교·연구기관</div>
+          <div class="cg-chips">
+            <span class="c-chip">서울대학교</span><span class="c-chip">연세대학교</span>
+            <span class="c-chip">한양대학교</span><span class="c-chip">한동대학교</span>
+            <span class="c-chip">아주대학교</span><span class="c-chip">인하대학교</span>
+            <span class="c-chip">FranklinCovey Korea</span>
           </div>
         </div>
       </div>
     </section>
 
     <!-- TIMELINE -->
-    <section class="timeline-section" id="history" aria-label="연혁">
-      <div class="container">
-        <div class="section-label" data-reveal>주요 연혁</div>
-        <h2 data-reveal>2013년부터 이어온<br>교육의 여정</h2>
-        <p class="tl-sub" data-reveal>삼성전자에서 외교부까지, 대기업에서 공공기관까지. 22년간 함께 성장해온 파트너들의 이야기.</p>
+    <section class="tl-sec" id="history">
+      <div class="wrap">
+        <div class="sec-label reveal">HISTORY</div>
+        <h2 class="sec-title reveal">2013년부터 이어온<br><span class="hl">교육의 여정</span></h2>
         <div class="timeline">
-          <div class="tl-item" data-reveal>
-            <div class="tl-year">2023 — 2024</div>
-            <div class="tl-dot"></div>
+          <div class="tl-line"></div>
+          <div class="tl-item reveal">
+            <div class="tl-year">2023–2024</div>
+            <div class="tl-dot-wrap"><div class="tl-dot"></div></div>
             <div class="tl-content">
               <div class="tl-title">공공혁신 & 리더십 확장</div>
-              <div class="tl-desc">부산 해운대구청 구정혁신추진진단 컨설팅 · 평택시 주민자치회 참여예산사업 컨설팅 · 단양군 농촌신활력플러스사업 MOU · 국가자연과학인력개발원 선임연구원 리더십 P 개발 및 운영</div>
+              <div class="tl-desc">부산 해운대구청 구정혁신 컨설팅 · 평택시 주민자치회 참여예산사업 컨설팅 · 단양군 농촌신활력플러스사업 MOU · 국가자연과학인력개발원 선임연구원 리더십P 개발 및 운영</div>
             </div>
           </div>
-          <div class="tl-item" data-reveal>
-            <div class="tl-year">2020 — 2022</div>
-            <div class="tl-dot"></div>
+          <div class="tl-item reveal">
+            <div class="tl-year">2020–2022</div>
+            <div class="tl-dot-wrap"><div class="tl-dot"></div></div>
             <div class="tl-content">
               <div class="tl-title">국가인재·조직정체성 프로그램</div>
-              <div class="tl-desc">국가공무원인재개발원 역할인식 P · 하나투어 관리자 리더십P · MG인재개발원 조직정체성 P · 화성시·군포시·단양군 평생교육 중장기 발전계획 연구용역</div>
+              <div class="tl-desc">국가공무원인재개발원 역할인식P · 하나투어 관리자 리더십P · MG인재개발원 조직정체성P · 화성시·군포시·단양군 평생교육 중장기 발전계획 연구용역</div>
             </div>
           </div>
-          <div class="tl-item" data-reveal>
+          <div class="tl-item reveal">
             <div class="tl-year">2019</div>
-            <div class="tl-dot"></div>
+            <div class="tl-dot-wrap"><div class="tl-dot"></div></div>
             <div class="tl-content">
               <div class="tl-title">금융·공공·국방 다각화</div>
               <div class="tl-desc">외교부 2급~5급 리더십P · 한국은행·산업은행 핵심인재P · 삼성SDI 명장급 교수법 개발 · 안양시청 행정직 역량강화 연수</div>
             </div>
           </div>
-          <div class="tl-item" data-reveal>
-            <div class="tl-year">2017 — 2018</div>
-            <div class="tl-dot"></div>
+          <div class="tl-item reveal">
+            <div class="tl-year">2017–2018</div>
+            <div class="tl-dot-wrap"><div class="tl-dot"></div></div>
             <div class="tl-content">
               <div class="tl-title">대기업 리더십 전성기</div>
-              <div class="tl-desc">삼성전자 글로벌 HRD · 삼성전자 화성캠퍼스 신입사원 교육 · 세메스 전직급 리더십 · SK텔레콤 긍정심리 · 대우조선해양 명장급 사내강사양성 · 한국중앙인재개발원</div>
+              <div class="tl-desc">삼성전자 글로벌 HRD · 삼성전자 화성캠퍼스 신입사원 교육 · SK텔레콤 긍정심리 · 세메스 전직급 리더십 · 대우조선해양 명장급 사내강사양성 · 한국중앙인재개발원</div>
             </div>
           </div>
-          <div class="tl-item" data-reveal>
+          <div class="tl-item reveal">
             <div class="tl-year">2013</div>
-            <div class="tl-dot"></div>
+            <div class="tl-dot-wrap"><div class="tl-dot"></div></div>
             <div class="tl-content">
               <div class="tl-title">청람M&C 창업</div>
-              <div class="tl-desc">청람M&C 사업자등록 · 삼성 멀티캠퍼스 7H 리더십 P 계약 및 운영으로 본격 출발</div>
+              <div class="tl-desc">청람M&C 사업자등록 · 삼성 멀티캠퍼스 7H 리더십P 계약 및 운영으로 본격 출발. 22년 여정의 시작.</div>
             </div>
           </div>
         </div>
@@ -927,33 +779,33 @@
     </section>
 
     <!-- CTA -->
-    <section class="cta-section" id="contact" aria-label="문의하기">
-      <div class="container cta-inner">
-        <h2 class="animate">함께 교육을 바꿀 준비가 되셨나요?</h2>
-        <p class="animate delay-1">맞춤형 교육 설계부터 강의 운영까지, 청람이 처음부터 끝까지 함께합니다.</p>
-        <div class="cta-btns animate delay-2">
-          <a href="https://docs.google.com/forms/d/1lNj0bK7EHNDNVXuRqbG0DxMt0BaELFUmjEWpFD1VUwA" target="_blank" rel="noopener" class="btn-white">
-            📋 강의 문의 신청하기
-          </a>
-          <a href="mailto:gyjung@crmc.co.kr" class="btn-outline-white">
-            ✉️ 이메일 문의
-          </a>
+    <section class="cta-sec">
+      <div class="cta-glow"></div>
+      <div class="wrap cta-inner">
+        <div class="sec-label reveal" style="justify-content:center;">CONTACT</div>
+        <h2 class="reveal">함께 <span class="hl">교육을 바꿀</span> 준비가<br>되셨나요?</h2>
+        <p class="reveal" style="margin-top:16px;">맞춤형 교육 설계부터 강의 운영까지, 청람이 처음부터 끝까지 함께합니다.</p>
+        <div class="cta-btns reveal">
+          <a href="/cheongram_proposal_v2.html" class="btn-accent">📋 강의 문의 신청하기</a>
+          <a href="mailto:gyjung@crmc.co.kr" class="btn-ghost">✉️ 이메일 문의</a>
         </div>
-        <p style="color:rgba(255,255,255,0.45);font-size:0.82rem;margin-top:24px;">gyjung@crmc.co.kr · crmc.co.kr</p>
+        <p style="color:var(--text-3);font-size:12px;margin-top:24px;">gyjung@crmc.co.kr · crmc.co.kr</p>
       </div>
     </section>
 
   </main>
 
   <!-- FOOTER -->
-  <footer class="site-footer" aria-label="푸터">
-    <div class="container footer-inner">
+  <footer>
+    <div class="wrap foot-inner">
       <div>
-        <div class="footer-logo">CHUNGRAM · 청람M&C</div>
-        <div style="margin-top:6px;">사업자등록번호: 125-25-00428 | 서울시 광진구 능동로 19길 35, 1417호</div>
-        <div style="margin-top:4px;">© 2026 CHUNGRAM · 청람M&C · 한국지역개발경영교육원 · All rights reserved.</div>
+        <div class="foot-logo">CHUNGRAM</div>
+        <div class="foot-info">
+          사업자등록번호: 125-25-00428 | 서울시 광진구 능동로 19길 35, 1417호<br>
+          © 2026 CHUNGRAM · 청람M&C · 한국지역개발경영교육원 · All rights reserved.
+        </div>
       </div>
-      <div class="footer-links">
+      <div class="foot-links">
         <a href="/">홈</a>
         <a href="/about.html">소개</a>
         <a href="https://betweenworld.org" target="_blank" rel="noopener">블로그 BTW</a>
@@ -963,102 +815,25 @@
   </footer>
 
   <script>
-    // === Menu ===
-    function toggleMenu() {
-      var dropdown = document.getElementById('vizMenuDropdown');
-      if (dropdown) dropdown.classList.toggle('open');
-    }
-    document.addEventListener('click', function(e) {
-      if (!e.target.closest('.viz-menu')) {
-        var dropdown = document.getElementById('vizMenuDropdown');
-        if (dropdown) dropdown.classList.remove('open');
-      }
+    // Scroll reveal
+    document.querySelectorAll('[data-reveal], .reveal').forEach(function(el) {
+      el.classList.add('reveal');
     });
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') {
-        var dropdown = document.getElementById('vizMenuDropdown');
-        if (dropdown) dropdown.classList.remove('open');
-      }
-    });
-
-    // === Theme ===
-    var savedTheme = localStorage.getItem('cr-viz-theme');
-    var currentTheme = savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    function applyTheme(t) {
-      document.documentElement.className = 'theme-' + t;
-      document.getElementById('themeIcon').textContent = t === 'dark' ? '🌙' : '☀️';
-      document.getElementById('themeLabel').textContent = t === 'dark' ? '다크' : '라이트';
-      localStorage.setItem('cr-viz-theme', t);
-      currentTheme = t;
-    }
-    function cycleTheme() { applyTheme(currentTheme === 'dark' ? 'light' : 'dark'); }
-    applyTheme(currentTheme);
-
-    // === Scroll Reveal ===
-    document.querySelectorAll('[data-reveal]').forEach(function(el) { el.classList.add('reveal'); });
-    var revealObserver = new IntersectionObserver(function(entries) {
-      entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('visible'); revealObserver.unobserve(e.target); } });
+    var ro = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) { e.target.classList.add('visible'); ro.unobserve(e.target); }
+      });
     }, { threshold: 0.12 });
-    document.querySelectorAll('.reveal').forEach(function(el) { revealObserver.observe(el); });
+    document.querySelectorAll('.reveal').forEach(function(el) { ro.observe(el); });
     setTimeout(function() { document.querySelectorAll('.reveal').forEach(function(el) { el.classList.add('visible'); }); }, 600);
 
-    // === Number Counter ===
-    function animateCounters() {
-      document.querySelectorAll('[data-count]').forEach(function(el) {
-        if (el.dataset.counted) return;
-        el.dataset.counted = '1';
-        var target = parseFloat(el.dataset.count), suffix = el.dataset.suffix || '';
-        var start = performance.now(), duration = 1400;
-        (function tick(now) {
-          var p = Math.min((now - start) / duration, 1), eased = 1 - Math.pow(1 - p, 3);
-          var val = Math.round(target * eased);
-          el.textContent = (val >= 1000 ? (val/1000).toFixed(0) + 'K' : val) + suffix;
-          if (p < 1) requestAnimationFrame(tick);
-        })(start);
-      });
-    }
-    var counterEl = document.querySelector('[data-count]');
-    if (counterEl) {
-      var cObs = new IntersectionObserver(function(entries) {
-        entries.forEach(function(e) { if (e.isIntersecting) { animateCounters(); cObs.disconnect(); } });
-      }, { threshold: 0.3 });
-      cObs.observe(counterEl);
-    }
-
-    // === Program Filter ===
-    function filterPrograms(cat, btn) {
-      document.querySelectorAll('.prog-filter-btn').forEach(function(b) { b.classList.remove('active'); });
+    // Program filter
+    function filterProg(cat, btn) {
+      document.querySelectorAll('.pf-btn').forEach(function(b) { b.classList.remove('active'); });
       btn.classList.add('active');
-      document.querySelectorAll('.prog-card').forEach(function(card) {
-        if (cat === 'all' || card.dataset.cat === cat) {
-          card.style.display = '';
-        } else {
-          card.style.display = 'none';
-        }
+      document.querySelectorAll('.prog-card').forEach(function(c) {
+        c.style.display = (cat === 'all' || c.dataset.cat === cat) ? '' : 'none';
       });
-    }
-
-    // === Mobile Nav ===
-    function toggleMobileNav() {
-      var links = document.querySelector('.nav-links');
-      if (!links) return;
-      if (links.style.display === 'flex') {
-        links.style.display = '';
-      } else {
-        links.style.cssText = 'display:flex;flex-direction:column;position:fixed;top:60px;left:0;right:0;background:rgba(8,8,8,0.97);padding:16px;z-index:999;gap:4px;';
-      }
-    }
-
-    // === Download PNG ===
-    async function downloadImage() {
-      var menu = document.querySelector('.viz-menu');
-      menu.style.display = 'none';
-      try {
-        var url = await htmlToImage.toPng(document.body, { quality: 1, pixelRatio: 2 });
-        var a = document.createElement('a'); a.href = url;
-        a.download = 'crmc-about.png'; a.click();
-      } catch(e) { console.error('Download failed:', e); }
-      menu.style.display = '';
     }
   </script>
 </body>
