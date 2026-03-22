@@ -1640,6 +1640,19 @@
   <!-- chungram-shared.js: Top/Bottom 버튼 + 서브페이지 네비 통합 -->
   <script src="chungram-shared.js"></script>
 
+
+  <script>
+    /* ── 보안: 우클릭 방지 ── */
+    document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; });
+    /* ── 보안: F12 / 개발자도구 단축키 차단 ── */
+    document.addEventListener('keydown', function(e) {
+      if (
+        e.key === 'F12' ||
+        (e.ctrlKey && e.shiftKey && ['I','i','J','j','C','c'].includes(e.key)) ||
+        (e.ctrlKey && ['U','u'].includes(e.key))
+      ) { e.preventDefault(); return false; }
+    });
+  </script>
 </body>
 
 </html>
