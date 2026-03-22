@@ -1,7 +1,7 @@
 /**
  * ╔══════════════════════════════════════════════════════════╗
  * ║   CHUNGRAM M&C AI Lab — Site Security Module v1.1       ║
- * ║   © 2025 청람M&C  |  Unauthorized copy PROHIBITED       ║
+ * ║   © 2026 청람M&C  |  Unauthorized copy PROHIBITED       ║
  * ╚══════════════════════════════════════════════════════════╝
  *
  * [적용 방법] 모든 HTML 파일 <head> 최상단에 삽입:
