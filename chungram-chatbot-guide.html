@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- ═══ 보안킷 (Security Kit) ═══ -->
-  <script src="보안킷/security.js"></script>
+  <script src="security-kit/security.js"></script>
   <meta name="robots" content="index, follow">
   <meta name="googlebot" content="index, follow">
   <meta name="author" content="청람M&C 정구영 대표">
@@ -189,85 +189,6 @@
     }
 
     /* ── FILTER BAR ── */
-    /* ══════════════════════════
-   NAVIGATION
-══════════════════════════ */
-    nav {
-      position: sticky;
-      top: 0;
-      z-index: 500;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 40px;
-      height: 64px;
-      background: rgba(0, 0, 0, 0.92);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border-bottom: 1px solid var(--border-dim);
-    }
-    .nav-brand {
-      display: flex; align-items: center; gap: 10px;
-      text-decoration: none; flex-shrink: 0;
-    }
-    .nav-logo {
-      font-family: var(--fd); font-size: 26px;
-      letter-spacing: 0.18em; color: var(--accent);
-    }
-    .nav-logo-sub {
-      font-size: 10px; font-weight: 500; letter-spacing: 0.25em;
-      text-transform: uppercase; color: var(--text-dimmer);
-      border-left: 1px solid var(--border-dim);
-      padding-left: 10px; line-height: 1.3;
-    }
-    .nav-center {
-      display: flex; align-items: center; gap: 4px; margin-left: auto;
-    }
-    .nav-center a {
-      padding: 7px 13px; border-radius: 100px;
-      font-size: 13px; font-weight: 500;
-      color: var(--text-dim); text-decoration: none;
-      transition: all .2s; white-space: nowrap;
-    }
-    .nav-center a:hover { color: var(--text); background: rgba(255,255,255,0.06); }
-    .nav-center a.active { color: var(--accent); }
-    .nav-collab-btn {
-      background: var(--accent) !important; color: #000 !important;
-      font-weight: 700 !important; border-radius: 6px !important;
-      padding: 7px 14px !important; letter-spacing: -0.2px !important;
-      box-shadow: 0 0 10px rgba(212,255,94,0.35) !important;
-    }
-    .nav-collab-btn:hover {
-      background: #c8f54a !important;
-      box-shadow: 0 0 18px rgba(212,255,94,0.55) !important;
-      transform: translateY(-1px) !important; color: #000 !important;
-    }
-    .nav-toggle {
-      display: none; flex-direction: column; gap: 5px;
-      cursor: pointer; padding: 6px; background: none; border: none;
-    }
-    .nav-toggle span {
-      display: block; width: 22px; height: 2px;
-      background: var(--accent); border-radius: 2px; transition: all .3s;
-    }
-    .nav-mobile {
-      display: none; position: fixed; top: 64px; left: 0; right: 0;
-      background: rgba(0,0,0,0.97); backdrop-filter: blur(24px);
-      border-bottom: 1px solid var(--border-dim);
-      flex-direction: column; gap: 4px; padding: 16px 20px 20px; z-index: 499;
-    }
-    .nav-mobile.open { display: flex; }
-    .nav-mobile a {
-      padding: 11px 16px; border-radius: 12px; font-size: 15px;
-      font-weight: 500; color: var(--text-dim); text-decoration: none;
-      border: 1px solid transparent; transition: all .2s;
-    }
-    .nav-mobile a:hover { color: var(--accent); border-color: var(--border); background: var(--accent-dim); }
-    @media(max-width:768px) {
-      .nav-center { display: none; }
-      .nav-toggle { display: flex; }
-    }
-
     .filter-wrap {
       position: sticky;
       top: 64px;
@@ -657,7 +578,7 @@
     .admin-fab.active { background: #ff4757; color: #fff; box-shadow: 0 4px 20px rgba(255,71,87,0.45); }
     .admin-fab.active:hover { box-shadow: 0 6px 28px rgba(255,71,87,0.6); }
     .admin-badge {
-      position: fixed; top: 68px; right: 16px;
+      position: fixed; top: 16px; right: 16px;
       background: #ff4757; color: #fff;
       font-size: 10px; font-weight: 700; letter-spacing: .12em;
       padding: 4px 10px; border-radius: 100px; z-index: 900; display: none;
@@ -742,11 +663,36 @@
     .edit-save:hover { background: #c8f54a; }
     .edit-cancel { flex: 1; background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 12px; font-size: 13px; cursor: pointer; }
     .edit-cancel:hover { background: rgba(255,255,255,0.1); }
+
+    /* ══ NAV ══ */
+    nav {
+      position: sticky; top: 0; z-index: 500;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px; height: 64px;
+      background: rgba(0,0,0,0.92);
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border-dim);
+    }
+    .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
+    .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 0.18em; color: var(--accent); }
+    .nav-logo-sub { font-size: 10px; font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-dimmer); border-left: 1px solid var(--border-dim); padding-left: 10px; line-height: 1.3; }
+    .nav-center { display: flex; align-items: center; gap: 4px; margin-left: auto; }
+    .nav-center a { padding: 7px 13px; border-radius: 100px; font-size: 13px; font-weight: 500; color: var(--text-dim); text-decoration: none; transition: all .2s; white-space: nowrap; }
+    .nav-center a:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+    .nav-center a.active { color: var(--accent); }
+    .nav-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 6px; background: none; border: none; }
+    .nav-toggle span { display: block; width: 22px; height: 2px; background: var(--accent); border-radius: 2px; transition: all .3s; }
+    .nav-mobile { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(0,0,0,0.97); backdrop-filter: blur(24px); border-bottom: 1px solid var(--border-dim); flex-direction: column; gap: 4px; padding: 16px 20px 20px; z-index: 499; }
+    .nav-mobile.open { display: flex; }
+    .nav-mobile a { padding: 11px 16px; border-radius: 12px; font-size: 15px; font-weight: 500; color: var(--text-dim); text-decoration: none; border: 1px solid transparent; transition: all .2s; }
+    .nav-mobile a:hover { color: var(--accent); border-color: var(--border); background: var(--accent-dim); }
+    @media(max-width:768px) { .nav-center { display: none; } .nav-toggle { display: flex; } }
+    .nav-collab-btn { background: var(--accent) !important; color: #000 !important; font-weight: 700 !important; border-radius: 6px !important; padding: 7px 14px !important; box-shadow: 0 0 10px rgba(212,255,94,0.35) !important; transition: background 0.2s, box-shadow 0.2s, transform 0.15s !important; }
+    .nav-collab-btn:hover { background: #c8f54a !important; box-shadow: 0 0 18px rgba(212,255,94,0.55) !important; transform: translateY(-1px) !important; color: #000 !important; }
   </style>
 </head>
 
 <body>
-<script src="chungram-shared.js"></script>
 
   <!-- ── NAV ── -->
   <nav>
@@ -763,7 +709,6 @@
       <a href="index.html#ebooks">전자책</a>
       <a href="index.html#faq">FAQ</a>
       <a href="chungram-notice.html">공지사항</a>
-      <a href="about.html">소개</a>
       <a href="cheongram_proposal_v2.html" class="nav-collab-btn">🤝 협업 문의하기</a>
     </div>
     <button class="nav-toggle" id="navToggle" aria-label="메뉴 열기">
@@ -781,8 +726,9 @@
     <a href="index.html#ebooks">📖 전자책</a>
     <a href="index.html#faq">💬 FAQ</a>
     <a href="chungram-notice.html">📢 공지사항</a>
-    <a href="about.html">👤 소개</a>
+    <a href="cheongram_proposal_v2.html" style="color:var(--accent);font-weight:700;">🤝 협업 문의하기</a>
   </div>
+
 
 
 
@@ -826,67 +772,11 @@
 
   <div class="toast" id="toast">✓ 시스템 프롬프트가 복사되었습니다!</div>
 
-  <!-- ── ADMIN FAB ── -->
-  <button class="admin-fab" id="adminFab" onclick="toggleAdmin()">🔐 편집 · 추가</button>
-  <div class="admin-badge" id="adminBadge">✏️ 편집 모드 ON</div>
-
-  <!-- ── 비밀번호 모달 ── -->
-  <div class="pwd-overlay" id="pwdOverlay">
-    <div class="pwd-box">
-      <div class="pwd-icon">🔐</div>
-      <div class="pwd-title">ADMIN ACCESS</div>
-      <div class="pwd-sub">편집 모드를 사용하려면<br>관리자 비밀번호를 입력하세요</div>
-      <input type="password" class="pwd-input" id="pwdInput" placeholder="••••••" maxlength="20" autocomplete="off">
-      <div class="pwd-error" id="pwdError"></div>
-      <div class="pwd-btns">
-        <button class="pwd-confirm" onclick="checkAdminPwd()">확인</button>
-        <button class="pwd-cancel" onclick="closeAdminPwd()">취소</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── 편집 모달 ── -->
-  <div class="edit-overlay" id="editOverlay">
-    <div class="edit-box">
-      <div class="edit-header">
-        <div class="edit-modal-title" id="editModalTitle">✏️ 지침 편집</div>
-        <button class="edit-close" onclick="closeEdit()">✕</button>
-      </div>
-      <div class="edit-field">
-        <label class="edit-label">카테고리</label>
-        <select class="edit-select" id="editCat">
-          <option value="업무생산성">💼 업무·생산성</option>
-          <option value="교육학습">📚 교육·학습</option>
-          <option value="리더십조직">🎯 리더십·조직</option>
-          <option value="창작글쓰기">✍️ 창작·글쓰기</option>
-          <option value="일상라이프">🌿 일상·라이프</option>
-          <option value="개인성장">🧠 개인 성장</option>
-        </select>
-      </div>
-      <div class="edit-field">
-        <label class="edit-label">제목</label>
-        <input type="text" class="edit-input" id="editTitle" placeholder="챗봇 지침 제목">
-      </div>
-      <div class="edit-field">
-        <label class="edit-label">설명</label>
-        <input type="text" class="edit-input" id="editDesc" placeholder="한 줄 설명">
-      </div>
-      <div class="edit-field">
-        <label class="edit-label">시스템 프롬프트 내용</label>
-        <textarea class="edit-textarea" id="editPrompt" placeholder="## 페르소나&#10;당신은..."></textarea>
-      </div>
-      <div class="edit-btns">
-        <button class="edit-save" onclick="saveEdit()">저장</button>
-        <button class="edit-cancel" onclick="closeEdit()">취소</button>
-      </div>
-    </div>
-  </div>
-
   <footer>
     <strong>CHUNGRAM</strong> 챗봇 지침 라이브러리 &nbsp;|&nbsp; 청람M&amp;C · 한국지역개발경영교육원 &nbsp;|&nbsp; AI 교육 전문 &copy; 2026<br>
     <span style="font-size:11px;margin-top:6px;display:inline-block;">
-      <a href="index.html" style="color:inherit;opacity:0.7;text-decoration:none;">🏠 홈</a> &nbsp;&middot;&nbsp;
-      <a href="cheongram_proposal_v2.html" style="color:var(--accent);font-weight:700;text-decoration:none;">🤝 협업 문의하기</a>
+      <a href="../index.html" style="color:inherit;opacity:0.7;text-decoration:none;">🏠 홈</a> &nbsp;&middot;&nbsp;
+      <a href="../cheongram_proposal_v2.html" style="color:var(--accent);font-weight:700;text-decoration:none;">🤝 협업 문의하기</a>
     </span><br>
     <span style="font-size:10px; opacity:0.5;">사업자등록번호 125-25-00428 | 대표자 고숙진 | 서울시 광진구 능동로 19길 35, 1417호</span>
   </footer>
@@ -1434,69 +1324,34 @@
         .replace(/^(\d+\.)/gm, '<span class="md-num">$1</span>');
     }
 
-    // ── ADMIN 상태 관리 ──
+    var currentCat = 'all', currentSearch = '';
+
+    // ── ADMIN 변수 (render보다 먼저 선언) ──
     var ADMIN_HASH = '390ef5b772845990a25d34b6e457dd0440da58a22ebe66fd09b595dafbbd3575';
     var isAdmin = false;
     var _editingIdx = null;
-    var _customItems = [];
-    var _deletedIdxs = [];
-
-    // localStorage 저장/복원
-    (function _loadStorage() {
-      try {
-        var s = localStorage.getItem('cg_chatbot_custom');
-        if (s) { var p = JSON.parse(s); _customItems = p.custom || []; _deletedIdxs = p.deleted || []; }
-      } catch(e) {}
-    })();
-
-    function _saveStorage() {
-      try { localStorage.setItem('cg_chatbot_custom', JSON.stringify({ custom: _customItems, deleted: _deletedIdxs })); } catch(e) {}
-    }
-
-    function _getWorkingData() {
-      var base = DATA.filter(function(d, i) { return _deletedIdxs.indexOf(i) === -1; });
-      return base.concat(_customItems);
-    }
-
-    var SVG_COPY = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
-    var SVG_CHECK = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
-
-    var currentCat = 'all', currentSearch = '';
+    var _customItems = JSON.parse(localStorage.getItem('cg_chatbot_custom') || '[]');
+    var _editedIdxs  = JSON.parse(localStorage.getItem('cg_chatbot_edited') || '{}');
 
     function render() {
-      var working = _getWorkingData();
-      var filtered = working.filter(function (d) {
+      var g = document.getElementById('grid');
+      var filtered = DATA.filter(function (d) {
         var cm = currentCat === 'all' || d.cat === currentCat;
         var sm = !currentSearch || d.title.includes(currentSearch) || d.desc.includes(currentSearch) || d.cat.includes(currentSearch);
         return cm && sm;
       });
       document.getElementById('resultCount').innerHTML = '<strong>' + filtered.length + '</strong>개';
-      var g = document.getElementById('grid');
-      if (isAdmin) { g.classList.add('admin-mode'); } else { g.classList.remove('admin-mode'); }
       if (!filtered.length) {
         g.innerHTML = '<div class="empty"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><p>"' + currentSearch + '" 에 해당하는 지침을 찾을 수 없습니다.</p></div>';
-        if (isAdmin) { g.innerHTML += '<button class="card-add-btn" onclick="openAddModal()"><span style="font-size:28px">＋</span><span style="font-size:13px">새 지침 추가</span></button>'; }
         return;
       }
-      g.innerHTML = filtered.map(function (d, fi) {
-        var origIdx = working.indexOf(d);
-        var isCustom = origIdx >= DATA.length - _deletedIdxs.length || origIdx >= (DATA.length);
-        // 실제 인덱스 판별
-        var dataOrigIdx = DATA.indexOf(d);
-        var customIdx = _customItems.indexOf(d);
-        var idxKey = dataOrigIdx >= 0 ? 'b_' + dataOrigIdx : 'c_' + customIdx;
-
-        var delay = (fi % 9) * 0.045;
-        var safePrompt = d.prompt.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-        var highlighted = highlightPrompt(d.prompt);
-
-        var adminBtns = isAdmin ? (
-          '<div class="card-admin-btns">'
-          + '<button class="card-edit-btn" onclick="openEditModal(\'' + idxKey + '\')">✏️ 편집</button>'
-          + '<button class="card-del-btn" onclick="deleteItem(\'' + idxKey + '\')">🗑 삭제</button>'
-          + '</div>'
-        ) : '';
-
+      var addBtn = isAdmin ? '<button class="card-add-btn" onclick="openAddModal()"><span class="card-add-btn-icon">＋</span>새 지침 추가</button>' : '';
+      g.innerHTML = filtered.map(function (d, i) {
+        var delay = (i % 9) * 0.045;
+        var rawPrompt = d.prompt;
+        var highlighted = highlightPrompt(rawPrompt);
+        // data-prompt 속성에 직접 저장 (인라인 백틱 방식 제거 → 특수문자 안전)
+        var safePrompt = rawPrompt.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
         return '<div class="card" style="animation-delay:' + delay + 's">'
           + '<div class="card-top"><div>'
           + '<div class="card-cat">' + getCatIcon(d.cat) + ' ' + d.cat + '</div>'
@@ -1505,15 +1360,17 @@
           + '<div class="card-desc">' + d.desc + '</div>'
           + '<div class="prompt-box">' + highlighted + '</div>'
           + '<button class="copy-btn" data-prompt="' + safePrompt + '" onclick="doCopy(this)">'
-          + SVG_COPY + '프롬프트 복사'
+          + '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>'
+          + '프롬프트 복사'
           + '</button>'
-          + adminBtns
+          + '<div class="card-admin-btns">'
+          + '<button class="card-edit-btn" onclick="openEditModal(' + i + ')">✏️ 편집</button>'
+          + '<button class="card-del-btn" onclick="deletePrompt(' + i + ')">🗑 삭제</button>'
+          + '</div>'
           + '</div>';
-      }).join('');
-
-      if (isAdmin) {
-        g.innerHTML += '<button class="card-add-btn" onclick="openAddModal()"><span style="font-size:28px">＋</span><span style="font-size:13px">새 지침 추가</span></button>';
-      }
+      }).join('') + addBtn;
+      if (isAdmin) g.classList.add('admin-mode');
+      else g.classList.remove('admin-mode');
     }
 
     /* category filter */
@@ -1534,8 +1391,16 @@
 
     /* copy */
     function doCopy(btn) {
+      // ── [Guard Clause] data-prompt 유효성 검증 ──
       var text = btn.dataset.prompt;
-      if (!text) { showToast('⚠️ 복사 실패 — 페이지를 새로고침 후 다시 시도해주세요.', 'error'); return; }
+      if (!text) {
+        console.error('[doCopy] data-prompt 속성이 없거나 비어있습니다.');
+        showToast('⚠️ 복사 실패 — 페이지를 새로고침 후 다시 시도해주세요.', 'error');
+        return;
+      }
+
+      var SVG_COPY = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+      var SVG_CHECK = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
 
       var onSuccess = function () {
         btn.classList.add('copied');
@@ -1543,12 +1408,15 @@
         showToast('✓ 시스템 프롬프트가 복사되었습니다!');
         setTimeout(function () {
           btn.classList.remove('copied');
-          btn.innerHTML = SVG_COPY + '프롬프트 복사';
+          btn.innerHTML = SVG_COPY + ' 프롬프트 복사';
         }, 2500);
       };
 
+      // HTTPS: Clipboard API / HTTP: execCommand fallback
       if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(text).then(onSuccess).catch(function () { fallbackCopy(text, onSuccess); });
+        navigator.clipboard.writeText(text).then(onSuccess).catch(function () {
+          fallbackCopy(text, onSuccess);
+        });
       } else {
         fallbackCopy(text, onSuccess);
       }
@@ -1559,13 +1427,22 @@
       ta.value = text;
       ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;pointer-events:none;';
       document.body.appendChild(ta);
-      ta.focus(); ta.select();
+      ta.focus();
+      ta.select();
       try {
-        window.__trustedCopy = true;
-        if (document.execCommand('copy')) { callback(); }
-        else { showToast('⚠️ 클립보드 복사에 실패했습니다.', 'error'); }
-      } catch(e) { showToast('⚠️ 클립보드 복사에 실패했습니다.', 'error'); }
-      finally { window.__trustedCopy = false; }
+        window.__trustedCopy = true; // security.js copy 차단 일시 해제
+        if (document.execCommand('copy')) {
+          callback();
+        } else {
+          console.warn('[fallbackCopy] execCommand 반환값 false');
+          showToast('⚠️ 클립보드 복사에 실패했습니다. 직접 선택 후 복사해주세요.', 'error');
+        }
+      } catch (e) {
+        console.warn('[fallbackCopy] 예외 발생:', e);
+        showToast('⚠️ 클립보드 복사에 실패했습니다.', 'error');
+      } finally {
+        window.__trustedCopy = false; // 플래그 복원
+      }
       document.body.removeChild(ta);
     }
 
@@ -1573,17 +1450,71 @@
     function showToast(msg, type) {
       var t = document.getElementById('toast');
       t.textContent = msg || '✓ 시스템 프롬프트가 복사되었습니다!';
-      if (type === 'error') { t.classList.add('toast-error'); } else { t.classList.remove('toast-error'); }
+      if (type === 'error') {
+        t.classList.add('toast-error');
+      } else {
+        t.classList.remove('toast-error');
+      }
       t.classList.add('show');
       clearTimeout(_tt);
       _tt = setTimeout(function () { t.classList.remove('show'); }, 2500);
     }
 
-    // ── ADMIN 기능 ──
-    async function _sha256(str) {
-      var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-      return Array.from(new Uint8Array(buf)).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
+    render();
+  </script>
+
+  <!-- ── ADMIN FAB ── -->
+  <div class="admin-badge" id="adminBadge">🔐 관리자 모드 ON</div>
+  <button class="admin-fab" id="adminFab" onclick="toggleAdmin()">🔐 편집 · 추가</button>
+
+  <!-- 비밀번호 모달 -->
+  <div class="pwd-overlay" id="pwdOverlay">
+    <div class="pwd-box">
+      <div class="pwd-icon">🔐</div>
+      <div class="pwd-title">ADMIN ACCESS</div>
+      <div class="pwd-sub">관리자 비밀번호를 입력하세요</div>
+      <input type="password" class="pwd-input" id="pwdInput" placeholder="••••••" maxlength="20" autocomplete="off">
+      <div class="pwd-error" id="pwdError"></div>
+      <div class="pwd-btns">
+        <button class="pwd-confirm" onclick="checkAdminPwd()">확인</button>
+        <button class="pwd-cancel" onclick="closeAdminPwd()">취소</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 편집/추가 모달 -->
+  <div class="pwd-overlay" id="editOverlay" style="z-index:1100;">
+    <div class="pwd-box" style="max-width:500px;">
+      <div class="pwd-title" id="editModalTitle">➕ 새 지침 추가</div>
+      <div id="editGuide" style="font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:16px;line-height:1.6;">
+        💡 아래 항목을 모두 입력하고 <strong>저장하기</strong>를 누르면 라이브러리에 즉시 추가됩니다.
+      </div>
+      <select id="editCat" style="width:100%;background:#1a1a1a;border:1px solid rgba(212,255,94,0.2);border-radius:10px;padding:10px;color:#fff;font-size:13px;margin-bottom:10px;outline:none;">
+        <option>글쓰기</option><option>업무</option><option>학습</option><option>창작</option>
+        <option>코딩</option><option>분석</option><option>번역</option><option>기타</option>
+      </select>
+      <input type="text" id="editTitle" placeholder="지침 제목" style="width:100%;background:#1a1a1a;border:1px solid rgba(212,255,94,0.2);border-radius:10px;padding:10px;color:#fff;font-size:13px;margin-bottom:10px;outline:none;box-sizing:border-box;">
+      <input type="text" id="editDesc" placeholder="간단한 설명 (선택)" style="width:100%;background:#1a1a1a;border:1px solid rgba(212,255,94,0.2);border-radius:10px;padding:10px;color:#fff;font-size:13px;margin-bottom:10px;outline:none;box-sizing:border-box;">
+      <textarea id="editPrompt" placeholder="시스템 프롬프트 내용을 입력하세요..." rows="7" style="width:100%;background:#1a1a1a;border:1px solid rgba(212,255,94,0.2);border-radius:10px;padding:10px;color:#fff;font-size:13px;margin-bottom:10px;outline:none;resize:vertical;box-sizing:border-box;font-family:inherit;"></textarea>
+      <div class="pwd-btns">
+        <button class="pwd-confirm" onclick="saveEdit()">저장하기</button>
+        <button class="pwd-cancel" onclick="closeEdit()">취소</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ── 모바일 햄버거 ──
+    const navToggle = document.getElementById('navToggle');
+    const navMobile = document.getElementById('navMobile');
+    if (navToggle && navMobile) {
+      navToggle.addEventListener('click', (e) => { e.stopPropagation(); navMobile.classList.toggle('open'); });
+      navMobile.querySelectorAll('a').forEach(a => { a.addEventListener('click', () => navMobile.classList.remove('open')); });
+      document.addEventListener('click', (e) => { if (!navMobile.contains(e.target) && !navToggle.contains(e.target)) navMobile.classList.remove('open'); });
     }
+
+    // ── ADMIN ──
+
 
     function toggleAdmin() {
       if (isAdmin) {
@@ -1599,20 +1530,20 @@
         setTimeout(function() { document.getElementById('pwdInput').focus(); }, 120);
       }
     }
-
     function closeAdminPwd() { document.getElementById('pwdOverlay').classList.remove('open'); }
-
+    async function _sha256(str) {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+    }
     function checkAdminPwd() {
       var v = document.getElementById('pwdInput').value;
       _sha256(v).then(function(hash) {
         if (hash === ADMIN_HASH) {
-          isAdmin = true;
-          closeAdminPwd();
+          isAdmin = true; closeAdminPwd();
           document.getElementById('adminFab').innerHTML = '🔓 편집 종료';
           document.getElementById('adminFab').classList.add('active');
           document.getElementById('adminBadge').classList.add('visible');
-          render();
-          openAddModal();
+          render(); openAddModal();
         } else {
           document.getElementById('pwdError').textContent = '비밀번호가 올바르지 않습니다';
           document.getElementById('pwdInput').value = '';
@@ -1620,102 +1551,58 @@
         }
       });
     }
-
-    function openEditModal(idxKey) {
-      _editingIdx = idxKey;
-      var d;
-      if (idxKey.startsWith('b_')) {
-        d = DATA[parseInt(idxKey.split('_')[1])];
-      } else {
-        d = _customItems[parseInt(idxKey.split('_')[1])];
-      }
-      if (!d) return;
+    document.getElementById('pwdInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') checkAdminPwd();
+      if (e.key === 'Escape') closeAdminPwd();
+    });
+    function openEditModal(idx) {
+      _editingIdx = idx;
+      var d = DATA[idx]; if (!d) return;
       document.getElementById('editModalTitle').textContent = '✏️ 지침 편집';
       document.getElementById('editCat').value = d.cat;
       document.getElementById('editTitle').value = d.title;
       document.getElementById('editDesc').value = d.desc || '';
       document.getElementById('editPrompt').value = d.prompt;
+      document.getElementById('editGuide').style.display = 'none';
       document.getElementById('editOverlay').classList.add('open');
     }
-
     function openAddModal() {
       _editingIdx = '__new__';
       document.getElementById('editModalTitle').textContent = '➕ 새 지침 추가';
-      document.getElementById('editCat').value = '업무생산성';
+      document.getElementById('editCat').value = '글쓰기';
       document.getElementById('editTitle').value = '';
       document.getElementById('editDesc').value = '';
       document.getElementById('editPrompt').value = '';
+      document.getElementById('editGuide').style.display = 'block';
       document.getElementById('editOverlay').classList.add('open');
       setTimeout(function() { document.getElementById('editTitle').focus(); }, 120);
     }
-
     function closeEdit() { document.getElementById('editOverlay').classList.remove('open'); _editingIdx = null; }
-
     function saveEdit() {
-      var cat    = document.getElementById('editCat').value;
-      var title  = document.getElementById('editTitle').value.trim();
-      var desc   = document.getElementById('editDesc').value.trim();
+      var cat = document.getElementById('editCat').value;
+      var title = document.getElementById('editTitle').value.trim();
+      var desc = document.getElementById('editDesc').value.trim();
       var prompt = document.getElementById('editPrompt').value.trim();
       if (!title || !prompt) { alert('제목과 프롬프트 내용은 필수입니다.'); return; }
       var newData = { cat: cat, title: title, desc: desc, prompt: prompt };
-
       if (_editingIdx === '__new__') {
-        _customItems.push(newData);
-      } else if (_editingIdx.startsWith('c_')) {
-        _customItems[parseInt(_editingIdx.split('_')[1])] = newData;
+        DATA.push(newData); _customItems.push(newData);
       } else {
-        // 기본 데이터 수정 → 삭제 후 커스텀으로 추가
-        var origIdx = parseInt(_editingIdx.split('_')[1]);
-        if (_deletedIdxs.indexOf(origIdx) === -1) _deletedIdxs.push(origIdx);
-        _customItems.push(newData);
+        Object.assign(DATA[_editingIdx], newData);
+        _editedIdxs[_editingIdx] = newData;
       }
-      _saveStorage();
-      closeEdit();
-      render();
-      showToast('✅ 저장되었습니다!');
+      localStorage.setItem('cg_chatbot_custom', JSON.stringify(_customItems));
+      localStorage.setItem('cg_chatbot_edited', JSON.stringify(_editedIdxs));
+      closeEdit(); render(); showToast('✅ 저장되었습니다!');
     }
-
-    function deleteItem(idxKey) {
+    function deletePrompt(idx) {
       if (!confirm('이 지침을 삭제하시겠습니까?')) return;
-      if (idxKey.startsWith('c_')) {
-        _customItems.splice(parseInt(idxKey.split('_')[1]), 1);
-      } else {
-        var origIdx = parseInt(idxKey.split('_')[1]);
-        if (_deletedIdxs.indexOf(origIdx) === -1) _deletedIdxs.push(origIdx);
-      }
-      _saveStorage();
-      render();
-      showToast('🗑️ 삭제되었습니다');
+      DATA.splice(idx, 1);
+      localStorage.setItem('cg_chatbot_custom', JSON.stringify(_customItems));
+      render(); showToast('🗑 삭제되었습니다.');
     }
-
-    document.getElementById('pwdInput').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') checkAdminPwd();
-      if (e.key === 'Escape') closeAdminPwd();
-    });
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') { closeEdit(); closeAdminPwd(); }
-    });
-
-    // ── 모바일 NAV 토글 ──
-    var navToggle = document.getElementById('navToggle');
-    var navMobile = document.getElementById('navMobile');
-    if (navToggle && navMobile) {
-      navToggle.addEventListener('click', function(e) {
-        e.stopPropagation();
-        navMobile.classList.toggle('open');
-      });
-      navMobile.querySelectorAll('a').forEach(function(a) {
-        a.addEventListener('click', function() { navMobile.classList.remove('open'); });
-      });
-      document.addEventListener('click', function(e) {
-        if (!navToggle.contains(e.target) && !navMobile.contains(e.target)) {
-          navMobile.classList.remove('open');
-        }
-      });
-    }
-
-    render();
   </script>
+
 </body>
 
 </html>
