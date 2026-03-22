@@ -842,6 +842,92 @@
       opacity: .85;
     }
 
+
+    /* ══ 관리자 비밀번호 모달 ══ */
+    .pwd-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.82);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      backdrop-filter: blur(10px);
+    }
+    .pwd-overlay.show { display: flex; }
+
+    .pwd-box {
+      background: var(--cg-card);
+      border: 1px solid rgba(212,255,94,0.3);
+      border-radius: var(--cg-radius);
+      padding: 40px 36px;
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.8);
+      animation: modalIn .25s ease-out;
+    }
+    .pwd-lock-icon { font-size: 40px; margin-bottom: 14px; }
+    .pwd-title-hub {
+      font-family: var(--cg-font-display);
+      font-size: 22px;
+      letter-spacing: 0.12em;
+      color: var(--cg-accent);
+      margin-bottom: 6px;
+    }
+    .pwd-sub-hub {
+      font-size: 12px;
+      color: var(--cg-text-dimmer);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+    .pwd-input-hub {
+      width: 100%;
+      padding: 13px;
+      background: var(--cg-card-2);
+      border: 1px solid rgba(212,255,94,0.2);
+      border-radius: var(--cg-radius-sm);
+      font-size: 20px;
+      font-family: var(--cg-font-mono);
+      color: var(--cg-text);
+      text-align: center;
+      letter-spacing: 0.3em;
+      outline: none;
+      transition: border .2s;
+      margin-bottom: 8px;
+    }
+    .pwd-input-hub:focus { border-color: rgba(212,255,94,0.6); }
+    .pwd-err-hub { color: #ff4757; font-size: 12px; min-height: 18px; margin-bottom: 14px; }
+    .pwd-actions { display: flex; gap: 10px; }
+    .pwd-confirm-hub {
+      flex: 1;
+      padding: 12px;
+      background: var(--cg-accent);
+      color: #000;
+      border: none;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: var(--cg-font-body);
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .pwd-confirm-hub:hover { opacity: .85; }
+    .pwd-cancel-hub {
+      flex: 1;
+      padding: 12px;
+      background: var(--cg-card-2);
+      color: var(--cg-text-dimmer);
+      border: 1px solid var(--cg-border-dim);
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: var(--cg-font-body);
+      cursor: pointer;
+    }
+    .pwd-cancel-hub:hover { color: var(--cg-text); }
+
     /* ══ TOAST ══ */
     .toast {
       position: fixed;
@@ -981,7 +1067,7 @@
           </svg>
           <input type="text" id="searchInput" placeholder="도구 이름으로 검색..." autocomplete="off">
         </div>
-        <button class="btn btn-ghost" id="btnEdit" onclick="toggleEditMode()">
+        <button class="btn btn-ghost" id="btnEdit" onclick="requestEditMode()">
           <span id="editIcon">✏️</span>
           <span id="editLabel">편집 모드</span>
         </button>
@@ -1047,6 +1133,22 @@
       <div class="modal-actions">
         <button class="btn-modal btn-cancel" onclick="closeModal('addCatModal')">취소</button>
         <button class="btn-modal btn-confirm" onclick="addCategory()">추가하기</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── 관리자 비밀번호 모달 ── -->
+  <div class="pwd-overlay" id="hubPwdOverlay">
+    <div class="pwd-box">
+      <div class="pwd-lock-icon">🔐</div>
+      <div class="pwd-title-hub">ADMIN ACCESS</div>
+      <div class="pwd-sub-hub">편집 모드를 사용하려면<br>관리자 비밀번호를 입력하세요</div>
+      <input type="password" class="pwd-input-hub" id="hubPwdInput" placeholder="••••••" maxlength="20" autocomplete="off">
+      <div class="pwd-err-hub" id="hubPwdError"></div>
+      <div class="pwd-actions">
+        <button class="pwd-confirm-hub" onclick="checkHubPwd()">확인</button>
+        <button class="pwd-cancel-hub" onclick="closeHubPwd()">취소</button>
       </div>
     </div>
   </div>
@@ -1277,6 +1379,52 @@
       updateStats();
     }
 
+
+    // ══════════════════════════
+    // 관리자 비밀번호 보호 (편집 모드)
+    // ══════════════════════════
+    var HUB_ADMIN_PWD = '0zgoodman!';
+    var hubAdminAuth = false;
+
+    function requestEditMode() {
+      if (editMode) {
+        // 이미 편집 모드면 그냥 토글 (종료)
+        toggleEditMode();
+        return;
+      }
+      if (hubAdminAuth) {
+        // 이미 인증됨 → 바로 편집 모드 진입
+        toggleEditMode();
+        return;
+      }
+      // 비밀번호 모달 표시
+      document.getElementById('hubPwdError').textContent = '';
+      document.getElementById('hubPwdInput').value = '';
+      document.getElementById('hubPwdOverlay').classList.add('show');
+      setTimeout(function() { document.getElementById('hubPwdInput').focus(); }, 120);
+    }
+
+    function closeHubPwd() {
+      document.getElementById('hubPwdOverlay').classList.remove('show');
+    }
+
+    function checkHubPwd() {
+      var v = document.getElementById('hubPwdInput').value;
+      if (v === HUB_ADMIN_PWD) {
+        hubAdminAuth = true;
+        closeHubPwd();
+        showToast('🔓 인증 완료 — 편집 모드 진입');
+        setTimeout(function() { toggleEditMode(); }, 300);
+      } else {
+        document.getElementById('hubPwdError').textContent = '비밀번호가 올바르지 않습니다';
+        document.getElementById('hubPwdInput').value = '';
+        document.getElementById('hubPwdInput').focus();
+      }
+    }
+
+    // ESC / Enter 키 처리 (비밀번호 모달)
+    // (기존 keydown 이벤트에 추가)
+
     function toggleEditMode() {
       editMode = !editMode;
       var ma = document.getElementById('mainArea'),
@@ -1355,8 +1503,12 @@
       o.addEventListener('click', function (e) { if (e.target === o) o.classList.remove('show'); });
     });
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.show').forEach(function (m) { m.classList.remove('show'); });
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay.show').forEach(function (m) { m.classList.remove('show'); });
+        closeHubPwd();
+      }
       if (e.key === 'Enter') {
+        if (document.getElementById('hubPwdOverlay').classList.contains('show')) { checkHubPwd(); return; }
         if (document.getElementById('addLinkModal').classList.contains('show')) addLink();
         if (document.getElementById('addCatModal').classList.contains('show')) addCategory();
       }

@@ -902,6 +902,18 @@
     }
     .pwd-cancel:hover { background: rgba(255,255,255,0.1); }
 
+
+    /* 입력 안내 가이드 박스 */
+    .edit-guide {
+      background: rgba(212,255,94,0.06);
+      border: 1px solid rgba(212,255,94,0.2);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 12px;
+      color: var(--text-dim);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
     /* ── 편집 모달 ── */
     .edit-overlay {
       position: fixed;
@@ -1121,7 +1133,7 @@
   <div class="admin-badge" id="adminBadge">🔐 관리자 모드 ON</div>
 
   <!-- ── 편집하기 FAB ── -->
-  <button class="admin-fab" id="adminFab" onclick="toggleAdmin()">🔐 편집하기</button>
+  <button class="admin-fab" id="adminFab" onclick="toggleAdmin()">🔐 편집 · 추가</button>
 
   <!-- ── 비밀번호 모달 ── -->
   <div class="pwd-overlay" id="pwdOverlay">
@@ -1144,6 +1156,10 @@
       <div class="edit-header">
         <div class="edit-title" id="editModalTitle">프롬프트 편집</div>
         <button class="edit-close" onclick="closeEdit()">✕</button>
+      </div>
+      <div class="edit-guide" id="editGuide" style="display:none;">
+        💡 아래 항목을 모두 입력하고 <strong>저장하기</strong>를 누르면 라이브러리에 즉시 추가됩니다.<br>
+        <span style="color:var(--accent);">{변수명}</span> 형태로 쓰면 사용자가 채워 쓸 수 있는 입력 필드로 표시됩니다.
       </div>
       <div class="edit-field">
         <label class="edit-label">카테고리</label>
@@ -2774,7 +2790,7 @@ STAR 구조(상황-과제-행동-결과)로 핵심 에피소드를 구성하고,
       if (isAdmin) {
         // 관리자 모드 종료
         isAdmin = false;
-        document.getElementById('adminFab').innerHTML = '🔐 편집하기';
+        document.getElementById('adminFab').innerHTML = '🔐 편집 · 추가';
         document.getElementById('adminFab').classList.remove('active');
         document.getElementById('adminBadge').classList.remove('visible');
         render();
@@ -2799,8 +2815,9 @@ STAR 구조(상황-과제-행동-결과)로 핵심 에피소드를 구성하고,
         document.getElementById('adminFab').innerHTML = '🔓 편집 종료';
         document.getElementById('adminFab').classList.add('active');
         document.getElementById('adminBadge').classList.add('visible');
-        showToast('🔓 관리자 모드 활성화');
         render();
+        // 인증 즉시 추가 입력창 오픈
+        openAddModal();
       } else {
         document.getElementById('pwdError').textContent = '비밀번호가 올바르지 않습니다';
         document.getElementById('pwdInput').value = '';
@@ -2823,6 +2840,7 @@ STAR 구조(상황-과제-행동-결과)로 핵심 에피소드를 구성하고,
       document.getElementById('editTitle').value = p.title;
       document.getElementById('editDesc').value = p.desc || '';
       document.getElementById('editPrompt').value = p.prompt;
+      document.getElementById('editGuide').style.display = 'none';
       document.getElementById('editOverlay').classList.add('open');
     }
 
@@ -2833,6 +2851,7 @@ STAR 구조(상황-과제-행동-결과)로 핵심 에피소드를 구성하고,
       document.getElementById('editTitle').value = '';
       document.getElementById('editDesc').value = '';
       document.getElementById('editPrompt').value = '';
+      document.getElementById('editGuide').style.display = 'block';
       document.getElementById('editOverlay').classList.add('open');
       setTimeout(() => document.getElementById('editTitle').focus(), 120);
     }
