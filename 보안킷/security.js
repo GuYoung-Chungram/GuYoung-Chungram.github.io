@@ -19,6 +19,11 @@
    * 4. 개발자 도구 단축키 차단 — DOM 불필요, 즉시 등록
    * ────────────────────────────────────────── */
   document.addEventListener("keydown", function (e) {
+    const tag = document.activeElement && document.activeElement.tagName;
+    // 비밀번호/입력창 포커스 중엔 Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X 허용
+    if ((tag === "INPUT" || tag === "TEXTAREA") &&
+        e.ctrlKey && ["a","A","c","C","v","V","x","X"].includes(e.key)) return;
+
     const blocked =
       e.key === "F12" ||
       (e.ctrlKey && e.shiftKey && ["I", "J", "C"].includes(e.key)) ||
@@ -46,20 +51,27 @@
       return false;
     });
 
-    /* 2. 텍스트 드래그 선택 방지 */
+    /* 2. 텍스트 드래그 선택 방지 (input/textarea/contenteditable 예외) */
     document.addEventListener("selectstart", function (e) {
+      const tag = e.target.tagName;
+      const ce = e.target.getAttribute("contenteditable");
+      if (tag === "INPUT" || tag === "TEXTAREA" || ce === "true") return;
       e.preventDefault();
       return false;
     });
 
-    /* 3. 복사 / 잘라내기 단축키 차단 */
+    /* 3. 복사 / 잘라내기 단축키 차단 (input/textarea 예외) */
     document.addEventListener("copy", function (e) {
       if (window.__trustedCopy) return;
+      const tag = e.target.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA") return; // 비밀번호 입력창 예외
       e.preventDefault();
       showSecurityToast("🔒 저작권 보호 콘텐츠입니다. 복사가 제한됩니다.");
       return false;
     });
     document.addEventListener("cut", function (e) {
+      const tag = e.target.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA") return; // 입력창 예외
       e.preventDefault();
       return false;
     });
