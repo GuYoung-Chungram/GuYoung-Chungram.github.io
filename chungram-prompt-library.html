@@ -2999,6 +2999,48 @@ STAR 구조(상황-과제-행동-결과)로 핵심 에피소드를 구성하고,
       });
     }
   </script>
+
+  <script>
+    /* ── 보안: 우클릭 방지 ── */
+    document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; });
+    /* ── 보안: 텍스트 선택 방지 ── */
+    document.addEventListener('selectstart', function(e) {
+      var tag = e.target.tagName;
+      var ce = e.target.getAttribute('contenteditable');
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || ce === 'true') return;
+      e.preventDefault(); return false;
+    });
+    /* ── 보안: 복사/잘라내기 차단 (입력창 예외) ── */
+    document.addEventListener('copy', function(e) {
+      if (window.__trustedCopy) return;
+      var tag = e.target.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+      e.preventDefault(); return false;
+    });
+    document.addEventListener('cut', function(e) {
+      var tag = e.target.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+      e.preventDefault(); return false;
+    });
+    /* ── 보안: F12 / 개발자도구 단축키 차단 ── */
+    document.addEventListener('keydown', function(e) {
+      var tag = document.activeElement && document.activeElement.tagName;
+      if ((tag === 'INPUT' || tag === 'TEXTAREA') &&
+          e.ctrlKey && ['a','A','c','C','v','V','x','X'].includes(e.key)) return;
+      if (
+        e.key === 'F12' ||
+        (e.ctrlKey && e.shiftKey && ['I','i','J','j','C','c'].includes(e.key)) ||
+        (e.ctrlKey && ['U','u','S','s','P','p'].includes(e.key))
+      ) { e.preventDefault(); return false; }
+    });
+    /* ── 보안: CSS user-select 차단 ── */
+    (function() {
+      var s = document.createElement('style');
+      s.textContent = '* { -webkit-user-select:none!important; -moz-user-select:none!important; user-select:none!important; } img { pointer-events:none!important; -webkit-user-drag:none!important; } input,textarea,[contenteditable="true"] { -webkit-user-select:text!important; user-select:text!important; pointer-events:auto!important; } button,a,label,select,[role="button"],[onclick] { pointer-events:auto!important; cursor:pointer!important; }';
+      document.head.appendChild(s);
+    })();
+  </script>
+
 </body>
 
 </html>
