@@ -1383,7 +1383,7 @@
     // ══════════════════════════
     // 관리자 비밀번호 보호 (편집 모드)
     // ══════════════════════════
-    var HUB_ADMIN_PWD = '0zgoodman!';
+    var HUB_ADMIN_HASH = '390ef5b772845990a25d34b6e457dd0440da58a22ebe66fd09b595dafbbd3575'; // SHA-256
     var hubAdminAuth = false;
 
     function requestEditMode() {
@@ -1408,18 +1408,25 @@
       document.getElementById('hubPwdOverlay').classList.remove('show');
     }
 
+
+    async function _sha256(str) {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+    }
     function checkHubPwd() {
       var v = document.getElementById('hubPwdInput').value;
-      if (v === HUB_ADMIN_PWD) {
-        hubAdminAuth = true;
-        closeHubPwd();
-        showToast('🔓 인증 완료 — 편집 모드 진입');
-        setTimeout(function() { toggleEditMode(); }, 300);
-      } else {
-        document.getElementById('hubPwdError').textContent = '비밀번호가 올바르지 않습니다';
-        document.getElementById('hubPwdInput').value = '';
-        document.getElementById('hubPwdInput').focus();
-      }
+      _sha256(v).then(function(hash) {
+        if (hash === HUB_ADMIN_HASH) {
+          hubAdminAuth = true;
+          closeHubPwd();
+          showToast('🔓 인증 완료 — 편집 모드 진입');
+          setTimeout(function() { toggleEditMode(); }, 300);
+        } else {
+          document.getElementById('hubPwdError').textContent = '비밀번호가 올바르지 않습니다';
+          document.getElementById('hubPwdInput').value = '';
+          document.getElementById('hubPwdInput').focus();
+        }
+      });
     }
 
     // ESC / Enter 키 처리 (비밀번호 모달)

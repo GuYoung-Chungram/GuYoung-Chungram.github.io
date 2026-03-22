@@ -2787,6 +2787,7 @@ STAR 구조(상황-과제-행동-결과)로 핵심 에피소드를 구성하고,
       ta.focus();
       ta.select();
       try {
+        window.__trustedCopy = true; // security.js copy 차단 일시 해제
         if (document.execCommand('copy')) {
           callback();
         } else {
@@ -2796,6 +2797,8 @@ STAR 구조(상황-과제-행동-결과)로 핵심 에피소드를 구성하고,
       } catch (e) {
         console.warn('[fallbackCopy] 예외 발생:', e);
         showToast('⚠️ 클립보드 복사에 실패했습니다.', 'error');
+      } finally {
+        window.__trustedCopy = false; // 플래그 복원
       }
       document.body.removeChild(ta);
     }
@@ -2818,7 +2821,7 @@ STAR 구조(상황-과제-행동-결과)로 핵심 에피소드를 구성하고,
     // ══════════════════════════
     // ADMIN 기능
     // ══════════════════════════
-    var ADMIN_PWD = '0zgoodman!';
+    var ADMIN_HASH = '390ef5b772845990a25d34b6e457dd0440da58a22ebe66fd09b595dafbbd3575'; // SHA-256
     var isAdmin = false;
     var _editingPid = null; // 현재 편집 중인 프롬프트 pid
 
@@ -2843,22 +2846,28 @@ STAR 구조(상황-과제-행동-결과)로 핵심 에피소드를 구성하고,
       document.getElementById('pwdOverlay').classList.remove('open');
     }
 
+
+    async function _sha256(str) {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+    }
     function checkAdminPwd() {
       var v = document.getElementById('pwdInput').value;
-      if (v === ADMIN_PWD) {
-        isAdmin = true;
-        closeAdminPwd();
-        document.getElementById('adminFab').innerHTML = '🔓 편집 종료';
-        document.getElementById('adminFab').classList.add('active');
-        document.getElementById('adminBadge').classList.add('visible');
-        render();
-        // 인증 즉시 추가 입력창 오픈
-        openAddModal();
-      } else {
-        document.getElementById('pwdError').textContent = '비밀번호가 올바르지 않습니다';
-        document.getElementById('pwdInput').value = '';
-        document.getElementById('pwdInput').focus();
-      }
+      _sha256(v).then(function(hash) {
+        if (hash === ADMIN_HASH) {
+          isAdmin = true;
+          closeAdminPwd();
+          document.getElementById('adminFab').innerHTML = '🔓 편집 종료';
+          document.getElementById('adminFab').classList.add('active');
+          document.getElementById('adminBadge').classList.add('visible');
+          render();
+          openAddModal();
+        } else {
+          document.getElementById('pwdError').textContent = '비밀번호가 올바르지 않습니다';
+          document.getElementById('pwdInput').value = '';
+          document.getElementById('pwdInput').focus();
+        }
+      });
     }
 
     document.getElementById('pwdInput').addEventListener('keydown', function(e) {
