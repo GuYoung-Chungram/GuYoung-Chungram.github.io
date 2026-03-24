@@ -78,4 +78,4 @@ Allow: /
 # 크롤링 속도 제한
 Crawl-delay: 10
 
-Sitemap: https://www.crmc.co.kr
+Sitemap: https://www.crmc.co.kr/sitemap.xml
