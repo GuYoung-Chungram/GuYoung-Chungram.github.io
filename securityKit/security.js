@@ -76,19 +76,21 @@
       return false;
     });
 
-    /* 5. 개발자 도구 오픈 감지 (창 크기 기반) */
-    (function devToolsDetect() {
-      const threshold = 160;
-      setInterval(function () {
-        const widthDiff = window.outerWidth - window.innerWidth;
-        const heightDiff = window.outerHeight - window.innerHeight;
-        if (widthDiff > threshold || heightDiff > threshold) {
-          document.body.style.filter = "blur(8px)";
-          showSecurityToast("⚠️ 보안 정책: 개발자 도구 사용이 감지되었습니다.", 5000);
-          setTimeout(() => { document.body.style.filter = "none"; }, 3000);
-        }
-      }, 1000);
-    })();
+/* 5. 개발자 도구 오픈 감지 (데스크탑 전용 — 모바일 오탐 방지) */
+(function devToolsDetect() {
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  if (isMobile) return; // 모바일은 감지 생략
+  const threshold = 160;
+  setInterval(function () {
+    const widthDiff = window.outerWidth - window.innerWidth;
+    const heightDiff = window.outerHeight - window.innerHeight;
+    if (widthDiff > threshold || heightDiff > threshold) {
+      document.body.style.filter = "blur(8px)";
+      showSecurityToast("⚠️ 보안 정책: 개발자 도구 사용이 감지되었습니다.", 5000);
+      setTimeout(() => { document.body.style.filter = "none"; }, 3000);
+    }
+  }, 1000);
+})();
 
     /* 6. iframe 삽입 방지 */
     if (window.top !== window.self) {
