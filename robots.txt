@@ -1,6 +1,6 @@
 # ============================================================
 #  CHUNGRAM M&C AI Lab — robots.txt
-#  © 2025 청람M&C  |  Unauthorized scraping PROHIBITED
+#  © 2026 청람M&C  |  Unauthorized scraping PROHIBITED
 # ============================================================
 
 # 일반 검색엔진 — 허용 (SEO 유지)
@@ -78,4 +78,4 @@ Allow: /
 # 크롤링 속도 제한
 Crawl-delay: 10
 
-Sitemap: https://guyoung-chungram.github.io/sitemap.xml
+Sitemap: https://www.crmc.co.kr
