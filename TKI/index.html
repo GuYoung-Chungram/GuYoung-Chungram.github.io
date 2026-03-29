@@ -1,1 +1,1012 @@
+<!DOCTYPE html>
+<html lang="ko" class="theme-light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TKI 갈등관리유형 진단 — 청람M&C</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
+html.theme-light{
+  --bg:#FFFFFF;--surface:#F8FAFF;--surface-hover:#EEF3FD;
+  --border:rgba(22,82,216,0.09);
+  --text:#1A1A1A;--text-sub:#666666;
+  --accent:#1652D8;--accent2:#0F3D99;
+  --pos:#059669;--neg:#e11d48;
+  --card-border:#D0D9F5;--light-bg:#EEF3FD;
+  --shadow:0 4px 24px rgba(22,82,216,0.08);
+  --mbg:rgba(255,255,255,0.92);--mborder:rgba(22,82,216,0.12);--mtext:#1A1A1A;--mhover:rgba(22,82,216,0.06);
+}
+html.theme-dark{
+  --bg:#0F0F0F;--surface:#1A1A2E;--surface-hover:#252540;
+  --border:rgba(255,255,255,0.06);
+  --text:#EDEDED;--text-sub:#888888;
+  --accent:#4B7BF5;--accent2:#6B8FFF;
+  --pos:#10b981;--neg:#f43f5e;
+  --card-border:rgba(75,123,245,0.15);--light-bg:#1A1A2E;
+  --shadow:0 4px 24px rgba(0,0,0,0.3);
+  --mbg:rgba(15,15,15,0.92);--mborder:rgba(75,123,245,0.15);--mtext:#EDEDED;--mhover:rgba(75,123,245,0.1);
+}
+
+body{
+  font-family:'Noto Sans KR',-apple-system,BlinkMacSystemFont,sans-serif;
+  background:var(--bg);color:var(--text);
+  line-height:1.7;-webkit-font-smoothing:antialiased;
+  min-height:100vh;transition:background .3s,color .3s;
+}
+h1,h2,h3,h4{color:var(--text);letter-spacing:-.03em;line-height:1.25}
+h1{font-weight:700;font-size:clamp(1.9rem,5vw,2.8rem)}
+h2{font-weight:600;font-size:clamp(1.4rem,3vw,1.9rem)}
+h3{font-weight:600;font-size:clamp(1.15rem,2.5vw,1.45rem)}
+p{color:var(--text)}
+
+/* 메뉴 */
+.viz-menu{position:fixed;top:16px;right:16px;z-index:9999}
+.viz-menu-toggle{
+  width:44px;height:44px;border-radius:12px;
+  background:var(--mbg);border:1px solid var(--mborder);
+  color:var(--mtext);cursor:pointer;display:flex;
+  align-items:center;justify-content:center;
+  backdrop-filter:blur(12px);transition:all .2s;
+}
+.viz-menu-toggle:hover{background:var(--mbg)}
+.viz-menu-dd{
+  position:absolute;top:52px;right:0;min-width:176px;
+  background:var(--mbg);border:1px solid var(--mborder);
+  border-radius:12px;padding:8px;
+  opacity:0;visibility:hidden;transform:translateY(-8px);
+  transition:all .2s ease;backdrop-filter:blur(12px);
+}
+.viz-menu-dd.open{opacity:1;visibility:visible;transform:translateY(0)}
+.viz-menu-dd button{
+  width:100%;display:flex;align-items:center;gap:10px;
+  padding:10px 12px;border:none;background:none;
+  color:var(--mtext);cursor:pointer;border-radius:8px;
+  font-size:14px;font-family:inherit;transition:background .15s;
+}
+.viz-menu-dd button:hover{background:var(--mhover)}
+
+/* 화면 전환 */
+.screen{display:none;min-height:100vh}
+.screen.active{display:flex;flex-direction:column;animation:fadeIn .35s ease}
+
+/* 애니메이션 */
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.au{animation:fadeUp .55s ease-out both}
+.au.d1{animation-delay:.1s}.au.d2{animation-delay:.2s}.au.d3{animation-delay:.3s}.au.d4{animation-delay:.4s}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media print{.viz-menu{display:none}body{background:#fff!important;color:#000!important}}
+
+/* ── 비밀번호 화면 ── */
+#spw{align-items:center;justify-content:center;background:var(--bg);padding:24px}
+.pw-wrap{max-width:420px;width:100%}
+.pw-logo{display:flex;align-items:center;gap:12px;margin-bottom:36px;justify-content:center}
+.pw-mark{
+  width:44px;height:44px;background:var(--accent);border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:800;font-size:15px;letter-spacing:-.05em;flex-shrink:0;
+}
+.pw-brand{font-size:17px;font-weight:700;letter-spacing:-.03em}
+.pw-sub{font-size:12px;color:var(--text-sub)}
+.pw-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:36px}
+.pw-card h2{font-size:1.5rem;margin-bottom:8px}
+.pw-card p{color:var(--text-sub);font-size:.9rem;margin-bottom:24px;line-height:1.65}
+.pw-field{position:relative;margin-bottom:14px}
+.pw-input{
+  width:100%;padding:13px 46px 13px 16px;
+  border:1.5px solid var(--card-border);border-radius:10px;
+  font-size:1rem;font-family:inherit;
+  background:var(--bg);color:var(--text);
+  letter-spacing:.1em;font-weight:600;
+  outline:none;transition:border-color .2s,box-shadow .2s;
+}
+.pw-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(22,82,216,.1)}
+.pw-input.err{border-color:var(--neg);box-shadow:0 0 0 3px rgba(225,29,72,.1)}
+.pw-eye{
+  position:absolute;right:13px;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;color:var(--text-sub);
+  padding:4px;display:flex;line-height:1;
+}
+.pw-errmsg{color:var(--neg);font-size:.84rem;margin-top:6px;display:none}
+.btn-blue{
+  width:100%;padding:13px;background:var(--accent);color:#fff;
+  border:none;border-radius:10px;font-size:1rem;font-weight:600;
+  font-family:inherit;cursor:pointer;transition:background .2s,transform .1s;margin-top:4px;
+}
+.btn-blue:hover{background:var(--accent2)}.btn-blue:active{transform:scale(.98)}
+.pw-foot{text-align:center;margin-top:20px;color:var(--text-sub);font-size:.78rem}
+
+/* ── 인트로 화면 ── */
+#sintro{align-items:center;justify-content:center;padding:48px 24px;background:var(--bg)}
+.intro-inner{max-width:660px;width:100%}
+.badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--light-bg);color:var(--accent);
+  padding:6px 14px;border-radius:20px;font-size:.8rem;font-weight:600;
+  margin-bottom:22px;letter-spacing:.04em;
+}
+.badge .dot{width:6px;height:6px;background:var(--accent);border-radius:50%;flex-shrink:0}
+.intro-desc{color:var(--text-sub);font-size:.97rem;margin-bottom:32px;line-height:1.8}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
+.stat{background:var(--surface);border:1px solid var(--card-border);border-radius:12px;padding:18px;text-align:center}
+.stat .num{font-size:1.8rem;font-weight:700;color:var(--accent);letter-spacing:-.04em}
+.stat .lbl{font-size:.78rem;color:var(--text-sub);margin-top:3px}
+.notice{
+  background:var(--light-bg);border-left:3px solid var(--accent);
+  border-radius:0 10px 10px 0;padding:14px 18px;margin-bottom:26px;
+}
+.notice p{font-size:.87rem;color:var(--text-sub);line-height:1.7}
+.notice p strong{color:var(--text)}
+.btn-row{display:flex;gap:12px;flex-wrap:wrap}
+.btn-main{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--accent);color:#fff;
+  padding:14px 32px;border-radius:10px;border:none;
+  font-size:.97rem;font-weight:600;font-family:inherit;
+  cursor:pointer;transition:background .2s,transform .1s;
+}
+.btn-main:hover{background:var(--accent2)}.btn-main:active{transform:scale(.98)}
+.btn-ghost{
+  display:inline-flex;align-items:center;gap:8px;
+  background:transparent;color:var(--accent);
+  padding:12px 22px;border-radius:10px;border:1.5px solid var(--card-border);
+  font-size:.9rem;font-weight:600;font-family:inherit;cursor:pointer;transition:all .2s;
+}
+.btn-ghost:hover{background:var(--light-bg);border-color:var(--accent)}
+
+/* ── 진단 화면 ── */
+#squiz{background:var(--bg)}
+.qhdr{
+  background:var(--accent);color:#fff;
+  padding:18px 28px;position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;gap:20px;
+}
+.qhdr-logo{font-weight:800;font-size:14px;opacity:.9;white-space:nowrap}
+.qhdr-info{flex:1;min-width:0}
+.prog-lbl{font-size:12px;opacity:.75;margin-bottom:5px}
+.prog-track{height:5px;background:rgba(255,255,255,.2);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;background:#fff;border-radius:3px;transition:width .4s cubic-bezier(.4,0,.2,1);width:0%}
+.qbody{max-width:680px;margin:0 auto;padding:44px 20px 80px}
+.qnum{font-size:.73rem;font-weight:600;color:var(--accent);letter-spacing:.1em;margin-bottom:10px}
+.qtitle{font-size:1.1rem;font-weight:600;margin-bottom:28px;color:var(--text);line-height:1.5}
+.qopts{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.qopt{
+  background:var(--surface);border:2px solid var(--border);
+  border-radius:13px;padding:22px 18px;cursor:pointer;
+  transition:border-color .15s ease,background .15s ease,box-shadow .15s ease;position:relative;
+  display:flex;flex-direction:column;gap:10px;text-align:left;
+}
+.qopt:hover{border-color:var(--accent);background:var(--light-bg);transform:translateY(-2px);box-shadow:var(--shadow)}
+.qopt.sel{border-color:var(--accent);background:var(--light-bg);box-shadow:0 0 0 3px rgba(22,82,216,.1)}
+.opt-row{display:flex;align-items:flex-start;gap:11px}
+.opt-badge{
+  width:27px;height:27px;border-radius:7px;flex-shrink:0;
+  background:var(--border);font-size:.8rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;color:var(--text);
+}
+.qopt.sel .opt-badge{background:var(--accent);color:#fff}
+.opt-text{font-size:.93rem;line-height:1.6;color:var(--text)}
+.opt-check{
+  position:absolute;top:13px;right:13px;
+  width:20px;height:20px;border-radius:50%;
+  background:var(--accent);display:none;align-items:center;justify-content:center;
+}
+.qopt.sel .opt-check{display:flex}
+.qnav{display:flex;justify-content:space-between;align-items:center;margin-top:36px}
+.btn-prev{
+  background:none;border:1.5px solid var(--border);border-radius:10px;
+  padding:11px 22px;color:var(--text-sub);font-size:.88rem;
+  font-family:inherit;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s;
+}
+.btn-prev:hover{border-color:var(--accent);color:var(--accent)}
+.btn-prev:disabled{opacity:.3;cursor:not-allowed}
+@media(max-width:580px){
+  .qopts{grid-template-columns:1fr}
+  .qhdr{padding:14px 18px}
+  .qbody{padding:28px 16px 60px}
+}
+
+/* ── 결과 화면 ── */
+#sresult{background:var(--bg)}
+.rhero{
+  background:var(--accent);color:#fff;
+  padding:56px 28px 44px;text-align:center;position:relative;overflow:hidden;
+}
+.rhero::before{
+  content:'';position:absolute;inset:0;
+  background-image:radial-gradient(circle,rgba(255,255,255,.06) .5px,transparent .5px);
+  background-size:22px 22px;pointer-events:none;
+}
+.rhero-inner{position:relative;z-index:1;max-width:680px;margin:0 auto}
+.rhero .rlabel{font-size:.75rem;letter-spacing:.1em;opacity:.8;margin-bottom:10px;color:#fff}
+.rhero h2{color:#fff;font-size:clamp(1.6rem,3.5vw,2.2rem);margin-bottom:8px}
+.rhero p{opacity:.85;font-size:.93rem;line-height:1.65;color:#fff}
+.rbody{max-width:820px;margin:0 auto;padding:44px 20px 72px}
+.divider{height:1px;background:var(--border);margin:28px 0}
+.sec-title{
+  font-size:1.1rem;font-weight:700;margin-bottom:18px;
+  padding-bottom:8px;border-bottom:2px solid var(--accent);display:inline-block;
+}
+
+/* 레이더 */
+.chart-card{
+  background:var(--surface);border:1px solid var(--card-border);
+  border-radius:14px;padding:32px 24px;margin-bottom:28px;
+  display:flex;flex-direction:column;align-items:center;
+}
+.chart-card h3{margin-bottom:6px}
+.chart-card .sub{color:var(--text-sub);font-size:.85rem;margin-bottom:22px;text-align:center}
+#radarChart{max-width:340px;width:100%}
+
+/* 점수바 */
+.sbars{display:flex;flex-direction:column;gap:15px;margin-bottom:28px}
+.sbar-item{}
+.sbar-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.sbar-label{font-size:.95rem;font-weight:700}
+.sbar-right{display:flex;align-items:center;gap:9px}
+.sbar-raw{font-size:.85rem;color:var(--text-sub);font-weight:500}
+.badge-h{background:#DCFCE7;color:#15803D;padding:2px 10px;border-radius:20px;font-size:.75rem;font-weight:600}
+.badge-m{background:#FEF9C3;color:#854D0E;padding:2px 10px;border-radius:20px;font-size:.75rem;font-weight:600}
+.badge-l{background:#FEE2E2;color:#B91C1C;padding:2px 10px;border-radius:20px;font-size:.75rem;font-weight:600}
+html.theme-dark .badge-h{background:rgba(16,185,129,.18);color:#10b981}
+html.theme-dark .badge-m{background:rgba(245,158,11,.18);color:#f59e0b}
+html.theme-dark .badge-l{background:rgba(244,63,94,.18);color:#f43f5e}
+.sbar-track{height:8px;background:var(--light-bg);border-radius:4px;overflow:hidden}
+.sbar-fill{height:100%;border-radius:4px;transition:width 1.2s cubic-bezier(.4,0,.2,1);width:0}
+
+/* 유형카드 */
+.tcards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px}
+.tcard{background:var(--surface);border:1px solid var(--card-border);border-radius:12px;padding:18px}
+.tcard-icon{font-size:1.4rem;margin-bottom:8px}
+.tcard h4{font-size:.92rem;font-weight:700;margin-bottom:5px}
+.tcard p{font-size:.8rem;color:var(--text-sub);line-height:1.6}
+.tcard.top{border-color:var(--accent);border-width:2px}
+.tcard.top h4{color:var(--accent)}
+.tcard-score{font-size:.78rem;font-weight:600;color:var(--text-sub);margin-bottom:8px;letter-spacing:.02em}
+.tcard-desc{font-size:.82rem;color:var(--text-sub);line-height:1.65;margin-bottom:0}
+.tcard-note{margin-top:12px;padding:10px 12px;border-radius:8px;font-size:.8rem;line-height:1.6}
+.tcard-note-h{background:rgba(234,179,8,.08);border-left:3px solid #D97706;color:var(--text-sub)}
+.tcard-note-l{background:rgba(22,82,216,.06);border-left:3px solid var(--accent);color:var(--text-sub)}
+html.theme-dark .tcard-note-h{background:rgba(234,179,8,.12)}
+html.theme-dark .tcard-note-l{background:rgba(75,123,245,.1)}
+.tcard-note-label{display:inline-block;font-weight:700;color:var(--text);margin-right:5px;font-size:.75rem}
+@media(max-width:580px){.tcards{grid-template-columns:1fr 1fr}}
+
+/* 팁 */
+.tips{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px}
+.tip{background:var(--surface);border:1px solid var(--card-border);border-radius:12px;padding:18px;border-left:4px solid}
+.tip h4{font-size:.88rem;font-weight:700;margin-bottom:6px}
+.tip p{font-size:.8rem;color:var(--text-sub);line-height:1.6}
+@media(max-width:580px){.tips{grid-template-columns:1fr}}
+
+/* 심화 신청 */
+.deep{
+  border-radius:14px;padding:36px;color:#fff;margin-bottom:28px;
+  background:linear-gradient(135deg,var(--accent) 0%,var(--accent2) 100%);
+  position:relative;overflow:hidden;
+}
+.deep::before{
+  content:'';position:absolute;inset:0;
+  background-image:radial-gradient(circle,rgba(255,255,255,.07) .5px,transparent .5px);
+  background-size:20px 20px;pointer-events:none;
+}
+.deep-inner{position:relative;z-index:1}
+.deep h3{color:#fff;font-size:1.35rem;margin-bottom:8px}
+.deep .dsub{opacity:.9;font-size:.88rem;line-height:1.7;margin-bottom:18px;color:#fff}
+.deep-benefits{display:flex;flex-direction:column;gap:7px;margin-bottom:24px}
+.dbenefit{font-size:.85rem;opacity:.95;padding-left:22px;position:relative;line-height:1.5;color:#fff}
+.dbenefit::before{content:'✓';position:absolute;left:0;font-weight:700}
+.dform{display:flex;flex-direction:column;gap:11px}
+.dinput{
+  padding:12px 16px;border-radius:9px;
+  border:1.5px solid rgba(255,255,255,.3);
+  background:rgba(255,255,255,.1);color:#fff;
+  font-size:.9rem;font-family:inherit;outline:none;transition:border-color .2s;
+}
+.dinput::placeholder{color:rgba(255,255,255,.5)}
+textarea.dinput{color:#fff}
+.dinput:focus{border-color:rgba(255,255,255,.7);background:rgba(255,255,255,.15)}
+.dinput option{background:#1A2C6B;color:#fff}
+.dagree-row{display:flex;align-items:flex-start;gap:9px;cursor:pointer;font-size:.82rem;opacity:.95;line-height:1.55;color:#fff}
+.dagree-row input[type=checkbox]{margin-top:2px;width:15px;height:15px;flex-shrink:0;cursor:pointer;accent-color:#fff}
+.dbtn{
+  padding:13px;background:#fff;color:var(--accent);
+  border:none;border-radius:9px;font-size:.93rem;font-weight:700;
+  font-family:inherit;cursor:pointer;transition:all .2s;
+}
+.dbtn:hover{background:rgba(255,255,255,.9);transform:translateY(-1px)}
+.dbtn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.derr{font-size:.82rem;color:#fca5a5;display:none}
+.dsuccess{
+  background:rgba(255,255,255,.15);border-radius:11px;
+  padding:22px;text-align:center;display:none;
+}
+.dsuccess p{font-weight:600;font-size:.97rem;color:#fff}
+.dsuccess span{display:block;font-size:.83rem;opacity:.9;margin-top:5px;color:#fff}
+
+/* 다시하기 */
+.restart-row{text-align:center;padding-top:16px}
+.btn-restart{
+  background:none;border:1.5px solid var(--border);border-radius:10px;
+  padding:11px 26px;color:var(--text-sub);font-size:.88rem;
+  font-family:inherit;cursor:pointer;transition:all .2s;
+}
+.btn-restart:hover{border-color:var(--accent);color:var(--accent)}
+.ref-section{margin-bottom:28px}
+.ref-list{list-style:none;padding:0;margin-top:16px;display:flex;flex-direction:column;gap:10px}
+.ref-list li{
+  font-size:.83rem;color:var(--text-sub);line-height:1.7;
+  padding:12px 16px;background:var(--surface);
+  border:1px solid var(--border);border-radius:9px;
+  border-left:3px solid var(--card-border);
+}
+.ref-list li em{font-style:italic;color:var(--text)}
+.rhero *{color:#fff}.deep *:not(input):not(select):not(option){color:#fff}
+.rfooter{text-align:center;padding:20px;border-top:1px solid var(--border);color:var(--text-sub);font-size:.78rem}
+.rfooter a{color:var(--accent);text-decoration:none}
+</style>
+</head>
+<body>
+
+<div class="viz-menu">
+  <button class="viz-menu-toggle" onclick="toggleMenu()" aria-label="메뉴">
+    <svg width="19" height="19" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <line x1="3" y1="5" x2="17" y2="5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="15" x2="17" y2="15"/>
+    </svg>
+  </button>
+  <div class="viz-menu-dd" id="mdd">
+    <button onclick="cycleTheme()"><span id="ticon">☀️</span><span id="tlabel">라이트</span></button>
+    <button onclick="window.print()"><span>🖨️</span><span>인쇄 / PDF</span></button>
+  </div>
+</div>
+
+<main id="main-content">
+
+<!-- ══════════════════════════════════════════
+     화면 1 : 비밀번호
+══════════════════════════════════════════ -->
+<section id="spw" class="screen active">
+  <div class="pw-wrap au">
+    <div class="pw-logo">
+      <div class="pw-mark">청람</div>
+      <div>
+        <div class="pw-brand">청람M&amp;C</div>
+        <div class="pw-sub">Leadership &amp; AI Education</div>
+      </div>
+    </div>
+    <div class="pw-card">
+      <h2>갈등관리유형 진단</h2>
+      <p>수업 전용 진단 도구입니다.<br>강사로부터 받은 <strong>접속 비밀번호</strong>를 입력해 주세요.</p>
+      <div class="pw-field">
+        <input type="password" id="pwInput" class="pw-input"
+          placeholder="비밀번호 입력"
+          maxlength="20"
+          autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+          onkeydown="if(event.key==='Enter')checkPw()">
+        <button class="pw-eye" onclick="toggleEye()" aria-label="비밀번호 보기">
+          <svg id="eyesvg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+          </svg>
+        </button>
+      </div>
+      <div class="pw-errmsg" id="pwErr">비밀번호가 올바르지 않습니다. 다시 확인해 주세요.</div>
+      <button class="btn-blue" onclick="checkPw()" style="margin-top:14px">진단 시작하기</button>
+    </div>
+    <p class="pw-foot">© 2025 청람M&amp;C · Thomas-Kilmann Conflict Mode Instrument</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     화면 2 : 인트로
+══════════════════════════════════════════ -->
+<section id="sintro" class="screen">
+  <div class="intro-inner">
+    <div class="au">
+      <div class="badge"><span class="dot"></span>TKI · Thomas-Kilmann Instrument</div>
+      <h1>나의 갈등관리유형은<br>무엇일까요?</h1>
+      <p class="intro-desc">갈등 상황에서 당신이 보이는 행동 패턴을 파악하는 진단입니다.<br>A와 B 중 자신에게 <strong>더 가까운 반응</strong>을 솔직하게 선택해 주세요.</p>
+    </div>
+    <div class="stats au d2">
+      <div class="stat"><div class="num">30</div><div class="lbl">문항 수</div></div>
+      <div class="stat"><div class="num">5~7</div><div class="lbl">소요 시간(분)</div></div>
+      <div class="stat"><div class="num">5가지</div><div class="lbl">갈등관리 유형</div></div>
+    </div>
+    <div class="notice au d3">
+      <p><strong>정답은 없습니다.</strong> 상황에 따라 모든 유형이 유용할 수 있으며, 5가지 유형은 <strong>경쟁 · 협력 · 타협 · 회피 · 수용</strong>으로 구성됩니다.</p>
+    </div>
+    <div class="btn-row au d4">
+      <button class="btn-main" onclick="startQuiz()">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+        지금 시작하기
+      </button>
+      <button class="btn-ghost" onclick="showScreen('spw')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+        돌아가기
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     화면 3 : 진단 문항
+══════════════════════════════════════════ -->
+<section id="squiz" class="screen">
+  <header class="qhdr">
+    <div class="qhdr-logo">청람M&amp;C</div>
+    <div class="qhdr-info">
+      <div class="prog-lbl" id="progLbl">1 / 30 문항</div>
+      <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
+    </div>
+  </header>
+  <div class="qbody" id="qbody"></div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     화면 4 : 결과
+══════════════════════════════════════════ -->
+<section id="sresult" class="screen">
+  <div class="rhero">
+    <div class="rhero-inner au">
+      <div class="rlabel">TKI 갈등관리유형 진단 결과</div>
+      <h2 id="rTitle">주요 유형</h2>
+      <p id="rSub">아래에서 상세 결과를 확인하세요</p>
+    </div>
+  </div>
+  <div class="rbody">
+
+    <!-- 레이더 차트 -->
+    <div class="chart-card">
+      <h3>유형별 점수 분포</h3>
+      <p class="sub">각 유형의 원점수를 한눈에 확인하세요</p>
+      <canvas id="radarChart" role="img" aria-label="갈등관리유형 레이더 차트"></canvas>
+    </div>
+
+    <!-- 점수 바 -->
+    <div class="sbars" id="sbars"></div>
+
+    <div class="divider"></div>
+
+    <!-- 유형 설명 -->
+    <div class="sec-title">나의 유형 해석</div>
+    <div class="tcards" id="tcards" style="margin-top:16px"></div>
+
+    <div class="divider"></div>
+
+    <!-- 상황별 팁 -->
+    <div class="sec-title">상황별 갈등관리 전략</div>
+    <div class="tips" id="tips" style="margin-top:16px"></div>
+
+    <div class="divider"></div>
+
+    <!-- 심화 신청 -->
+    <div class="deep">
+      <div class="deep-inner">
+        <h3>✦ 심화 갈등관리 레포트 신청</h3>
+        <p class="dsub">이름과 이메일을 입력하시면, 일상 속 대표적인 3가지 상황에 대한<br>맞춤형 갈등관리 전략 레포트를 이메일로 보내드립니다.</p>
+        <div class="deep-benefits">
+          <div class="dbenefit">직장 내 의견 충돌 — 나에게 맞는 최적 대응 전략</div>
+          <div class="dbenefit">가족·친밀 관계 — 감정 소진 없이 갈등 해소하는 법</div>
+          <div class="dbenefit">협상·설득 상황 — 내 유형의 강점을 극대화하는 방법</div>
+        </div>
+        <div id="dform" class="dform">
+          <input type="text"  id="dname"   class="dinput" placeholder="이름을 입력하세요" autocomplete="name">
+          <input type="email" id="demail"  class="dinput" placeholder="이메일 주소를 입력하세요" autocomplete="email">
+          <select id="dtarget" class="dinput" style="cursor:pointer">
+            <option value="">주요 갈등 대상을 선택하세요</option>
+            <option value="직장동료/상사">직장동료 / 상사</option>
+            <option value="가족/배우자">가족 / 배우자</option>
+            <option value="협상/고객">협상 / 고객</option>
+            <option value="친구/지인">친구 / 지인</option>
+            <option value="기타">기타</option>
+          </select>
+          <textarea id="dsituation" class="dinput" rows="3"
+            placeholder="현재 겪고 있는 갈등 상황을 간략히 적어주세요. (선택사항)"
+            style="resize:vertical;min-height:80px;line-height:1.6;font-family:inherit;font-size:.9rem"></textarea>
+          <label class="dagree-row">
+            <input type="checkbox" id="dagree">
+            <span>수집된 정보(이름·이메일·진단점수)는 심화 레포트 발송 및 교육 연구 목적으로만 활용되며, 제3자에게 제공되지 않습니다. <strong>개인정보 수집·활용에 동의합니다.</strong></span>
+          </label>
+          <button class="dbtn" id="dbtn" onclick="submitDeep()">레포트 신청하기 →</button>
+          <div class="derr" id="derr">이름·이메일·갈등대상 선택·개인정보 동의가 모두 필요합니다.</div>
+        </div>
+        <div class="dsuccess" id="dsuccess">
+          <p id="dsuccessMsg">신청이 완료되었습니다!</p>
+          <span>입력하신 이메일로 3~5일 내 심화 레포트를 보내드립니다.<br>수업에서 함께 이야기 나눠요.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- 참고문헌 -->
+    <div class="ref-section">
+      <div class="sec-title">참고문헌</div>
+      <ul class="ref-list">
+        <li>Tomas, K.W., &amp; Kilmann, R.H. (1975). Interpersonal conflict handling behavior as reflections of Jungian personality dimensions. <em>Psychological Reports.</em></li>
+        <li>Thomas, K. W. (1976). Conflict and conflict management. In M. D. Dunnette (Ed.), <em>Handbook of Industrial and Organizational Psychology.</em></li>
+        <li>Boulding, K. E. (1966). <em>Conflict Management as a Learning Process.</em> Ciba Foundation.</li>
+        <li>송명아 (2018). 간호사의 갈등관리 유형 및 역할갈등에 따른 조직효과성. 석사학위논문.</li>
+        <li>이건협 (2007). 조직 내 커뮤니케이션 유형과 갈등관리방식의 관계에 관한 연구. 석사학위논문.</li>
+        <li>조은진 (2009). 갈등관리유형이 혁신행동에 미치는 영향에 관한 연구. 석사학위논문.</li>
+        <li>김성필 (2005). 조직 내 효율적 갈등관리에 관한 실증적 연구. 석사학위논문.</li>
+      </ul>
+    </div>
+
+    <div class="restart-row">
+      <button class="btn-restart" onclick="restartAll()">처음부터 다시하기</button>
+    </div>
+  </div>
+  <footer class="rfooter">
+    © 2025 청람M&amp;C · <a href="https://crmc.co.kr" target="_blank">crmc.co.kr</a> · Based on Thomas-Kilmann Conflict Mode Instrument (1974)
+  </footer>
+</section>
+
+</main>
+
+<script>
+/* =====================================================
+   0. 설정값
+===================================================== */
+var PW = 'MG2026';
+var GAS_URL = 'YOUR_GAS_WEBAPP_URL_HERE'; // 배포 후 교체
+
+/* =====================================================
+   1. 메뉴 / 테마
+===================================================== */
+function toggleMenu() {
+  document.getElementById('mdd').classList.toggle('open');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.viz-menu')) {
+    document.getElementById('mdd').classList.remove('open');
+  }
+});
+
+var CUR_THEME = 'light';
+function applyTheme(t) {
+  document.documentElement.classList.remove('theme-light', 'theme-dark');
+  document.documentElement.classList.add('theme-' + t);
+  CUR_THEME = t;
+  document.getElementById('ticon').textContent  = t === 'dark' ? '🌙' : '☀️';
+  document.getElementById('tlabel').textContent = t === 'dark' ? '다크' : '라이트';
+  try { localStorage.setItem('cr-theme', t); } catch(e) {}
+  if (typeof redrawChart === 'function') redrawChart();
+}
+function cycleTheme() { applyTheme(CUR_THEME === 'dark' ? 'light' : 'dark'); }
+(function() {
+  var saved;
+  try { saved = localStorage.getItem('cr-theme'); } catch(e) {}
+  applyTheme(saved === 'dark' ? 'dark' : 'light');
+})();
+
+/* =====================================================
+   2. 화면 전환
+===================================================== */
+function showScreen(id) {
+  var screens = document.querySelectorAll('.screen');
+  for (var i = 0; i < screens.length; i++) {
+    screens[i].classList.remove('active');
+  }
+  var t = document.getElementById(id);
+  if (t) { t.classList.add('active'); window.scrollTo(0, 0); }
+}
+
+/* =====================================================
+   3. 비밀번호
+===================================================== */
+function toggleEye() {
+  var el = document.getElementById('pwInput');
+  el.type = el.type === 'password' ? 'text' : 'password';
+}
+function checkPw() {
+  var el  = document.getElementById('pwInput');
+  var err = document.getElementById('pwErr');
+  var v   = el.value.trim().toUpperCase();
+  var p   = PW.trim().toUpperCase();
+  if (v === p) {
+    err.style.display = 'none';
+    el.classList.remove('err');
+    showScreen('sintro');
+  } else {
+    err.style.display = 'block';
+    el.classList.add('err');
+    el.focus(); el.select();
+  }
+}
+
+/* =====================================================
+   4. 문항 데이터
+   채점 인덱스: 0=경쟁 1=협력 2=타협 3=회피 4=수용
+===================================================== */
+var Q = [
+  {a:"가끔 나는 문제 해결의 책임을 상대방이 지도록 내버려 두곤 한다.",b:"서로가 동의하지 않는 일들에 대해 협상하기보다, 나는 서로 동의하는 일들에 대해서 강조한다.",sa:3,sb:4},
+  {a:"나는 타협적인 해결책을 모색하여 본다.",b:"나는 상대방과 나의 관심사를 모두 충족시키려고 시도한다.",sa:2,sb:1},
+  {a:"나는 대체로 내 목적을 달성하기 위해 끝까지 밀고 나간다.",b:"나는 아마 상대방의 감정을 상하지 않게 하고 서로 간의 관계를 유지하려고 노력할 것이다.",sa:0,sb:4},
+  {a:"나는 타협적인 해결책을 모색하여 본다.",b:"나는 때때로 상대방이 바라는 바를 위해서 나 자신이 바라는 바를 희생한다.",sa:2,sb:4},
+  {a:"나는 해결책을 찾아내기 위해서 끊임없이 상대방의 도움을 요청한다.",b:"나는 불필요한 긴장상태를 피하려고 한다.",sa:1,sb:3},
+  {a:"나는 나에게 불편한 자리는 회피하려고 한다.",b:"나는 내 직위를 확보하려고 애쓴다.",sa:3,sb:0},
+  {a:"나는 어떤 문제에 대해서 충분히 숙고할 시간이 있을 때까지 그것을 미루어 두려고 한다.",b:"나는 어떤 점을 얻는 대가로서 다른 점을 포기한다.",sa:3,sb:2},
+  {a:"나는 대체로 내 목적을 추구함에 있어 남에게 양보하지 않는 편이다.",b:"나는 모든 관심사와 문제들을 곧바로 터놓고 이야기하려고 시도한다.",sa:0,sb:1},
+  {a:"나는 서로 간의 견해 차이에 대해서 고민할 가치가 없다고 느낀다.",b:"나는 내 방식대로 일을 처리하기 위해서 어느 정도 노력을 한다.",sa:3,sb:0},
+  {a:"나는 대체로 내 목적을 달성하기 위해 끝까지 밀고 나간다.",b:"나는 타협적인 해결책을 모색하여 본다.",sa:0,sb:2},
+  {a:"나는 모든 관심사와 문제들을 곧바로 터놓고 이야기하려고 시도한다.",b:"나는 아마 상대방의 감정을 상하지 않게 하고 서로 간의 관계를 유지하려고 노력할 것이다.",sa:1,sb:4},
+  {a:"나는 때때로 논쟁을 야기하게 되는 입장을 취하게 되는 일을 피한다.",b:"나는 만약 상대방이 나의 입장을 어느 정도 존중해 준다면 나도 그 사람의 입장을 어느 정도 견지하도록 허용할 것이다.",sa:3,sb:2},
+  {a:"나는 중간적인 입장을 제안한다.",b:"나는 내 의견을 관철시킨다.",sa:2,sb:0},
+  {a:"나는 상대방에게도 내 생각을 말해주며 그 사람의 생각도 물어본다.",b:"나는 상대방에게 내 의견의 논리적 근거와 장점을 설명해 주려고 한다.",sa:1,sb:0},
+  {a:"나는 아마 상대방의 감정을 상하지 않게 하고 서로 간의 관계를 유지하려고 노력할 것이다.",b:"나는 불필요한 긴장 상태를 피하려고 한다.",sa:4,sb:3},
+  {a:"나는 상대방의 감정을 상하지 않게 하려고 한다.",b:"나는 상대방에게 내 입장의 장점을 설득시키려고 한다.",sa:4,sb:0},
+  {a:"나는 대체로 내 목적을 달성하기 위해 끝까지 밀고 나간다.",b:"나는 불필요한 긴장상태를 피하려고 한다.",sa:0,sb:3},
+  {a:"나는 만약 상대방이 자신의 관점을 견지하는 데서 기쁨을 느낀다면, 그렇게 하도록 할 것이다.",b:"나는 만약 상대방이 나의 입장을 어느 정도 존중해 준다면 나도 그 사람의 입장을 어느 정도 견지하도록 허용할 것이다.",sa:4,sb:2},
+  {a:"나는 모든 관심사와 문제들을 곧바로 터놓고 이야기하려고 시도한다.",b:"나는 어떤 문제에 대해서 충분히 숙고할 시간이 있을 때까지 그것을 미루어 두려고 한다.",sa:1,sb:3},
+  {a:"나는 서로 간의 차이를 해소시키려고 시도한다.",b:"나는 이해득실상 양자 모두에게 공정한 입장을 찾으려고 한다.",sa:1,sb:2},
+  {a:"나는 협상해 나가는 과정에서 상대방이 바라는 바를 배려해 주려고 한다.",b:"나는 항상 문제를 직접 놓고 토론하는 편이다.",sa:4,sb:1},
+  {a:"나는 상대방의 입장과 나의 입장 간에 중간지점을 찾으려고 한다.",b:"나는 내가 하고 싶은 바를 주장한다.",sa:2,sb:0},
+  {a:"나는 우리 모두가 바라는 바를 만족시키는 데 항상 관심을 가진다.",b:"가끔 나는 문제 해결의 책임을 상대방이 지도록 내버려 두곤 한다.",sa:1,sb:3},
+  {a:"만약 상대방의 입장이 그 사람에게 아주 중요하다고 보이면, 나는 그가 하고 싶은 바를 만족시켜 주려 할 것이다.",b:"나는 상대방이 타협안에 만족해하도록 할 것이다.",sa:4,sb:2},
+  {a:"나는 상대방에게 내 의견의 논리적 근거와 장점을 설명해 주려고 한다.",b:"나는 협상해 나가는 과정에서 상대방이 바라는 바를 배려해 주려고 한다.",sa:0,sb:4},
+  {a:"나는 중간적인 입장을 제안한다.",b:"나는 항상 우리 모두가 바라는 바를 만족시키는 데 관심을 가진다.",sa:2,sb:1},
+  {a:"나는 때때로 논쟁을 야기하게 되는 입장을 취하게 되는 일을 피한다.",b:"나는 만약 상대방이 자신의 관점을 견지하는 데서 기쁨을 느낀다면, 그렇게 하도록 할 것이다.",sa:3,sb:4},
+  {a:"나는 대체로 내 목적을 달성하기 위해 끝까지 밀고 나간다.",b:"나는 해결책을 찾아내기 위해서 항상 상대방의 도움을 요청한다.",sa:0,sb:1},
+  {a:"나는 중간적인 입장을 제안한다.",b:"나는 서로 간의 견해 차이에 대해서 고민할 가치가 없다고 느낀다.",sa:2,sb:3},
+  {a:"나는 상대방의 감정을 상하지 않게 하려고 한다.",b:"나는 어떤 문제를 항상 상대방과 의논함으로써 우리가 그 문제를 해결할 수 있도록 한다.",sa:4,sb:1}
+];
+
+/* =====================================================
+   5. 유형 정보
+===================================================== */
+var TYPES = [
+  {name:'경쟁',icon:'⚡',color:'#E8593C',
+   desc:'자신의 목표를 달성하기 위해 끝까지 밀고 나가는 유형입니다. 논리적 설득, 지위, 권한 등 가능한 모든 힘을 활용하여 자신의 입장을 관철시킵니다. 위급한 상황이나 단호한 결단이 필요한 순간에 강점을 발휘합니다.',
+   high:'주위에 예스맨이 늘어나거나 반대 의견이 줄어들 수 있습니다. 이는 당신이 받을 수 있는 정보의 폭을 제한하므로, 다양한 의견을 의도적으로 수집하는 노력이 필요합니다.',
+   low:'처한 상황에서 무력감을 느끼거나 권한 사용을 주저하면 영향력이 제한됩니다. 필요한 순간에 단호하게 자신의 입장을 내세우는 연습이 도움이 됩니다.',
+   when:'위급상황으로 신속하고 결단력 있는 행동이 필요할 때 · 많은 반대를 무릅쓰고 시행해야 할 중요한 문제일 때 · 조직의 사운이 걸린 중요한 문제에서 자신의 견해가 옳다고 확신할 때'},
+  {name:'협력',icon:'🤝',color:'#059669',
+   desc:'두 당사자 모두를 충분히 만족시키는 통합적 해결책을 찾기 위해 상대방과 함께 노력하는 유형입니다. 문제의 근본 원인을 깊이 파고들어 창의적 해결책을 모색하며, 갈등을 위협이 아닌 긍정적 도전으로 인식합니다.',
+   high:'시간과 에너지가 많이 필요합니다. 사소한 문제에까지 협력 과정을 적용하거나, 위험 부담을 줄이기 위해 결정을 지나치게 지연시키지 않도록 주의가 필요합니다.',
+   low:'의견 차이가 서로에게 이익을 줄 수 있는 기회임을 인식하지 못할 수 있습니다. 상대방의 관심사를 탐색하고 통합적 해결을 시도하는 연습이 필요합니다.',
+   when:'양측 모두에게 중요한 사안이라 통합적 해결이 필요할 때 · 상이한 관점을 가진 사람들의 의견을 결합해야 할 때 · 관계 개선과 장기적 신뢰 구축이 중요한 상황'},
+  {name:'타협',icon:'⚖️',color:'#1652D8',
+   desc:'양측이 어느 정도 수용할 수 있는 합의점을 빠르게 찾는 유형입니다. 완전한 만족보다는 실용적인 해결을 추구하며, 협상과 주고받기(give-and-take) 방식으로 신속하게 중간 지점에 이릅니다.',
+   high:'실용적 타협에 치우쳐 더 중요한 원칙, 가치관, 장기적 목표를 간과할 수 있습니다. 협상과 거래를 지나치게 강조하면 진정한 문제보다 흥정 자체가 목적이 될 수 있습니다.',
+   low:'협상 상황에서 지나치게 민감해지거나 당황하여 효과적인 타협을 이끌지 못할 수 있습니다. 적절한 양보 없이는 대립이 지속될 수 있으므로 유연성 훈련이 필요합니다.',
+   when:'힘이 동등한 두 대립자가 강력한 목표를 가질 때 · 시간이 촉박하여 임시방편이라도 합의가 필요할 때 · 협력이나 경쟁이 성공하지 못한 상황의 대안으로'},
+  {name:'회피',icon:'🌊',color:'#7C3AED',
+   desc:'갈등 상황에서 즉각적인 대응을 하지 않고 문제를 미루거나 우회하는 유형입니다. 상황이 호전되기를 기다리거나 더 많은 정보를 수집하는 전략적 선택일 수 있으며, 불필요한 긴장을 줄이는 데 효과적입니다.',
+   high:'중요한 사안에 대한 결정이 지연되거나, 갈등이 해결되지 않은 채 축적될 수 있습니다. 회피가 습관이 되면 다혈질적이라는 오해를 받거나 핵심 의사결정에서 소외될 수 있습니다.',
+   low:'불필요한 긴장을 야기하거나 남의 감정을 상하게 한다고 느낄 수 있습니다. 우선순위 판단과 문제의 경중을 구분하는 능력을 개발하면 회피를 적절히 활용할 수 있습니다.',
+   when:'당면 문제가 사소하거나 더 중요한 사안이 우선일 때 · 상황을 진정시키고 이성을 되찾을 시간이 필요할 때 · 결정 전 더 많은 정보 수집이 필요한 경우'},
+  {name:'수용',icon:'💛',color:'#D97706',
+   desc:'자신의 이해관계보다 상대방의 필요와 주장을 우선시하는 유형입니다. 관대함과 자애로운 배려를 보이며, 관계 유지와 조화를 중시합니다. 내가 틀렸다는 것을 인정하거나 상대방에게 더 중요한 문제일 때 빛을 발합니다.',
+   high:'지나친 양보로 영향력이 약화되고 위엄이 없어질 수 있습니다. 자신이 지켜야 할 원칙과 기준까지 양보하지 않도록 주의가 필요하며, 조직에서 잠재력이 과소평가될 수 있습니다.',
+   low:'타인의 욕구를 수용하기 어렵거나, 언제 포기해야 하는지 판단하는 것을 힘들어할 수 있습니다. 사소한 문제에서 양보하는 것은 호의의 제스처로 받아들여진다는 점을 인식하면 도움이 됩니다.',
+   when:'자신이 틀렸다고 깨달았을 때 · 상대방에게 더 중요한 문제이거나 상대방이 더 많은 전문성을 가질 때 · 조화와 안정이 특히 중요하고 관계 유지가 우선일 때'}
+];
+
+/* =====================================================
+   6. 백분위 테이블
+===================================================== */
+var PCT = [
+  [0,[1,1,1,1,1]],[1,[10,5,3,5,5]],[2,[25,10,8,12,12]],
+  [3,[40,18,18,22,22]],[4,[55,28,30,38,35]],[5,[68,42,45,52,50]],
+  [6,[78,56,60,65,65]],[7,[87,70,74,77,77]],[8,[93,82,84,87,87]],
+  [9,[96,90,91,93,93]],[10,[98,95,96,97,96]],[11,[99,98,98,99,98]],
+  [12,[100,100,100,100,100]]
+];
+function getPct(raw, ti) {
+  raw = Math.min(12, Math.max(0, Math.round(raw)));
+  for (var i = 0; i < PCT.length; i++) {
+    if (PCT[i][0] === raw) return PCT[i][1][ti] || 50;
+  }
+  return 50;
+}
+function getLevelCls(p) {
+  return p >= 75 ? 'badge-h' : p <= 25 ? 'badge-l' : 'badge-m';
+}
+function getLevelTxt(p) {
+  return p >= 75 ? '높은 수준' : p <= 25 ? '낮은 수준' : '중간 수준';
+}
+
+/* =====================================================
+   7. 진단 진행
+===================================================== */
+var ANS = [];
+var CUR = 0;
+
+function startQuiz() {
+  ANS = [];
+  for (var i = 0; i < 30; i++) ANS.push(null);
+  CUR = 0;
+  showScreen('squiz');
+  renderQ(0);
+}
+
+function renderQ(idx) {
+  var q = Q[idx];
+  if (!q) return;
+  document.getElementById('progLbl').textContent = (idx + 1) + ' / 30 문항';
+  document.getElementById('progFill').style.width = Math.round(idx / 30 * 100) + '%';
+
+  var selA = ANS[idx] === 'A' ? ' sel' : '';
+  var selB = ANS[idx] === 'B' ? ' sel' : '';
+  var chk  = '<div class="opt-check"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>';
+  var prev = idx === 0 ? ' disabled' : '';
+
+  var html = '<div class="au">'
+    + '<div class="qnum">Q ' + (idx + 1) + ' / 30</div>'
+    + '<div class="qtitle">갈등 상황에서 나는...</div>'
+    + '<div class="qopts">'
+    + '<div class="qopt' + selA + '" onclick="pick(' + idx + ',\'A\')">'
+    +   '<div class="opt-row"><div class="opt-badge">A</div><div class="opt-text">' + q.a + '</div></div>' + chk
+    + '</div>'
+    + '<div class="qopt' + selB + '" onclick="pick(' + idx + ',\'B\')">'
+    +   '<div class="opt-row"><div class="opt-badge">B</div><div class="opt-text">' + q.b + '</div></div>' + chk
+    + '</div>'
+    + '</div>'
+    + '<div class="qnav">'
+    +   '<button class="btn-prev"' + prev + ' onclick="goQ(' + (idx - 1) + ')">'
+    +     '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg> 이전'
+    +   '</button>'
+    + '</div>'
+    + '</div>';
+
+  document.getElementById('qbody').innerHTML = html;
+}
+
+function pick(idx, val) {
+  ANS[idx] = val;
+
+  // 클릭된 옵션만 즉시 시각 반응 (DOM 재렌더 없이 CSS만 토글)
+  var opts = document.querySelectorAll('.qopt');
+  for (var oi = 0; oi < opts.length; oi++) { opts[oi].classList.remove('sel'); }
+  var clicked = val === 'A' ? opts[0] : opts[1];
+  if (clicked) clicked.classList.add('sel');
+
+  // 160ms 후 다음 문항으로 이동 (한 번만 렌더)
+  setTimeout(function() {
+    if (idx < 29) { goQ(idx + 1); }
+    else { showResult(); }
+  }, 160);
+}
+
+function goQ(idx) {
+  if (idx < 0 || idx > 29) return;
+  CUR = idx;
+  renderQ(idx);
+}
+
+/* =====================================================
+   8. 점수 계산
+===================================================== */
+function calcScores() {
+  var s = [0, 0, 0, 0, 0];
+  for (var i = 0; i < 30; i++) {
+    if (ANS[i] === null) continue;
+    var q = Q[i];
+    if (!q) continue;
+    var ti = ANS[i] === 'A' ? q.sa : q.sb;
+    if (ti >= 0 && ti <= 4) s[ti]++;
+  }
+  return s;
+}
+
+/* =====================================================
+   9. 결과 렌더링
+===================================================== */
+var CHART_INST = null;
+
+function showResult() {
+  var unanswered = [];
+  for (var i = 0; i < 30; i++) { if (ANS[i] === null) unanswered.push(i + 1); }
+  if (unanswered.length > 0) {
+    if (!confirm(unanswered.length + '개 문항 미선택\n(' + unanswered.join(', ') + '번)\n결과를 확인하시겠습니까?')) {
+      goQ(unanswered[0] - 1); return;
+    }
+  }
+
+  var sc = calcScores();
+  showScreen('sresult');
+
+  // 최고 유형
+  var maxSc = 0;
+  var topI  = 0;
+  for (var j = 0; j < 5; j++) { if (sc[j] > maxSc) { maxSc = sc[j]; topI = j; } }
+  var top = TYPES[topI];
+  document.getElementById('rTitle').textContent = '주요 유형: ' + top.name + ' ' + top.icon;
+  document.getElementById('rSub').textContent   = top.desc;
+
+  // 점수 바
+  var bHtml = '';
+  var barColors = ['#E8593C','#059669','#1652D8','#7C3AED','#D97706'];
+  for (var k = 0; k < 5; k++) {
+    var p  = getPct(sc[k], k);
+    var tp = TYPES[k];
+    bHtml += '<div class="sbar-item">'
+      + '<div class="sbar-head">'
+      +   '<div class="sbar-label">' + tp.icon + ' ' + tp.name + '</div>'
+      +   '<div class="sbar-right">'
+      +     '<span class="sbar-raw">원점수 ' + sc[k] + '점</span>'
+      +     '<span class="' + getLevelCls(p) + '">' + getLevelTxt(p) + ' (' + p + '%)</span>'
+      +   '</div>'
+      + '</div>'
+      + '<div class="sbar-track"><div class="sbar-fill" id="bar' + k + '" style="background:' + barColors[k] + ';width:0%"></div></div>'
+      + '</div>';
+  }
+  document.getElementById('sbars').innerHTML = bHtml;
+  setTimeout(function() {
+    for (var ki = 0; ki < 5; ki++) {
+      var el = document.getElementById('bar' + ki);
+      if (el) el.style.width = getPct(sc[ki], ki) + '%';
+    }
+  }, 200);
+
+  // 유형 카드 (높은 점수 유형에 집중 해설, 낮은 점수는 간략)
+  var sortedIdx = [0,1,2,3,4].sort(function(a,b){ return sc[b]-sc[a]; });
+  var cHtml = '';
+  for (var ci = 0; ci < 5; ci++) {
+    var idx2 = sortedIdx[ci];
+    var tp2  = TYPES[idx2];
+    var pct2 = getPct(sc[idx2], idx2);
+    var isTop = idx2 === topI ? ' top' : '';
+    var isHigh = pct2 >= 75;
+    var isLow  = pct2 <= 25;
+    cHtml += '<div class="tcard' + isTop + '">';
+    cHtml += '<div class="tcard-icon">' + tp2.icon + '</div>';
+    cHtml += '<h4>' + tp2.name + (idx2 === topI ? ' ★' : '') + '</h4>';
+    cHtml += '<div class="tcard-score">' + sc[idx2] + '점 · ' + getLevelTxt(pct2) + '</div>';
+    cHtml += '<p class="tcard-desc">' + tp2.desc + '</p>';
+    if (isHigh) {
+      cHtml += '<div class="tcard-note tcard-note-h"><span class="tcard-note-label">높은 수준 주의</span>' + tp2.high + '</div>';
+    } else if (isLow) {
+      cHtml += '<div class="tcard-note tcard-note-l"><span class="tcard-note-label">개발 방향</span>' + tp2.low + '</div>';
+    }
+    cHtml += '</div>';
+  }
+  document.getElementById('tcards').innerHTML = cHtml;
+
+  // 팁
+  var tHtml = '';
+  for (var ti2 = 0; ti2 < 5; ti2++) {
+    var tp3 = TYPES[ti2];
+    tHtml += '<div class="tip" style="border-left-color:' + tp3.color + '">'
+      + '<h4>' + tp3.icon + ' ' + tp3.name + ' 유형 적합 상황</h4>'
+      + '<p>' + tp3.when + '</p>'
+      + '</div>';
+  }
+  document.getElementById('tips').innerHTML = tHtml;
+
+  // 레이더 차트
+  setTimeout(function() { drawChart(sc); }, 350);
+
+  // 로컬 저장
+  try {
+    var rec = JSON.parse(localStorage.getItem('tki-rec') || '[]');
+    rec.push({ ts: new Date().toISOString(), scores: sc });
+    localStorage.setItem('tki-rec', JSON.stringify(rec));
+  } catch(e) {}
+}
+
+function drawChart(sc) {
+  if (CHART_INST) { CHART_INST.destroy(); CHART_INST = null; }
+  var dark   = CUR_THEME === 'dark';
+  var txtC   = dark ? '#EDEDED' : '#1A1A1A';
+  var gridC  = dark ? 'rgba(255,255,255,0.08)' : 'rgba(22,82,216,0.08)';
+  var accC   = dark ? '#4B7BF5' : '#1652D8';
+  var ctx    = document.getElementById('radarChart');
+  if (!ctx) return;
+  CHART_INST = new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: ['경쟁','협력','타협','회피','수용'],
+      datasets: [{
+        data: sc,
+        backgroundColor: accC + '22',
+        borderColor: accC,
+        borderWidth: 2,
+        pointBackgroundColor: accC,
+        pointRadius: 5,
+        pointHoverRadius: 7
+      }]
+    },
+    options: {
+      animation: false,
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: { enabled: true }
+      },
+      scales: {
+        r: {
+          min: 0, max: 12,
+          ticks: { stepSize: 3, color: txtC, font: { size: 11 }, backdropColor: 'transparent' },
+          grid: { color: gridC },
+          angleLines: { color: gridC },
+          pointLabels: { color: txtC, font: { size: 13, weight: '600', family: "'Noto Sans KR',sans-serif" } }
+        }
+      }
+    }
+  });
+}
+
+function redrawChart() {
+  if (document.getElementById('sresult').classList.contains('active')) {
+    drawChart(calcScores());
+  }
+}
+
+/* =====================================================
+   10. 심화 레포트 신청 (GAS 연동)
+===================================================== */
+function submitDeep() {
+  var name   = document.getElementById('dname').value.trim();
+  var email  = document.getElementById('demail').value.trim();
+  var target = document.getElementById('dtarget').value;
+  var agree  = document.getElementById('dagree').checked;
+  var derr   = document.getElementById('derr');
+  var dbtn   = document.getElementById('dbtn');
+
+  var emailOk = email.indexOf('@') > 0 && email.indexOf('.') > email.indexOf('@');
+
+  if (!name || !emailOk || !target || !agree) {
+    derr.style.display = 'block'; return;
+  }
+  derr.style.display = 'none';
+
+  var situation = document.getElementById('dsituation') ? document.getElementById('dsituation').value.trim() : '';
+  var sc      = calcScores();
+  var payload = { name: name, email: email, target: target, situation: situation, agree: true, scores: sc };
+
+  dbtn.textContent = '전송 중...';
+  dbtn.disabled    = true;
+
+  // 로컬 백업
+  try {
+    var req = JSON.parse(localStorage.getItem('tki-req') || '[]');
+    req.push({ ts: new Date().toISOString(), data: payload });
+    localStorage.setItem('tki-req', JSON.stringify(req));
+  } catch(e) {}
+
+  // GAS 전송
+  if (!GAS_URL || GAS_URL === 'YOUR_GAS_WEBAPP_URL_HERE') {
+    finishSubmit(name); return;
+  }
+  fetch(GAS_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  }).then(function() {
+    finishSubmit(name);
+  }).catch(function() {
+    finishSubmit(name); // 오류여도 UI는 성공 처리 (no-cors라 응답 못받음)
+  });
+}
+
+function finishSubmit(name) {
+  document.getElementById('dform').style.display    = 'none';
+  document.getElementById('dsuccess').style.display = 'block';
+  document.getElementById('dsuccessMsg').textContent = name + '님, 신청이 완료되었습니다!';
+}
+
+/* =====================================================
+   11. 다시하기
+===================================================== */
+function restartAll() {
+  ANS = [];
+  CUR = 0;
+  if (CHART_INST) { CHART_INST.destroy(); CHART_INST = null; }
+  // 심화 폼 초기화
+  document.getElementById('dform').style.display    = '';
+  document.getElementById('dsuccess').style.display = 'none';
+  document.getElementById('dbtn').textContent       = '레포트 신청하기 →';
+  document.getElementById('dbtn').disabled          = false;
+  var sit = document.getElementById('dsituation'); if (sit) sit.value = '';
+  showScreen('sintro');
+}
+</script>
+</body>
+</html>
