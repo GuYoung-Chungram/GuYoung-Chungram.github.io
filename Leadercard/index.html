@@ -477,18 +477,6 @@ body {
 
     <button class="btn-primary" onclick="startLoading()">✨ 나의 질문 시작하기</button>
 
-    <button class="surprise-btn" onclick="triggerSurprise('start')">
-      <span class="sparkle">✦</span>
-      깜짝등장
-      <span class="sparkle">✦</span>
-    </button>
-
-    <div class="surprise-result" id="srStart">
-      <div class="sr-label">🎭 깜짝등장</div>
-      <div class="sr-person" id="srPersonStart"></div>
-      <div class="sr-msg"    id="srMsgStart"></div>
-      <button class="sr-close" onclick="closeResult('start')">✕</button>
-    </div>
   </div>
 
   <!-- ══ 로딩 화면 ══ -->
@@ -804,19 +792,12 @@ function triggerSurprise(where) {
   do { idx=rndIdx(SURPRISES); tries++; } while(curSurprise && SURPRISES[idx].person===curSurprise.person && tries<10);
   curSurprise = SURPRISES[idx];
 
-  if(where==='start') {
-    document.getElementById('srPersonStart').textContent = curSurprise.person;
-    document.getElementById('srMsgStart').textContent    = curSurprise.msg;
-    var el = document.getElementById('srStart');
-    el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
-  } else {
-    document.getElementById('qBannerPerson').textContent = curSurprise.person;
-    document.getElementById('qBannerMsg').textContent    = curSurprise.msg;
-    var el2 = document.getElementById('qBanner');
-    el2.classList.remove('show'); void el2.offsetWidth; el2.classList.add('show');
-  }
+  document.getElementById('qBannerPerson').textContent = curSurprise.person;
+  document.getElementById('qBannerMsg').textContent    = curSurprise.msg;
+  var el2 = document.getElementById('qBanner');
+  el2.classList.remove('show'); void el2.offsetWidth; el2.classList.add('show');
 }
-function closeResult(w){ if(w==='start') document.getElementById('srStart').classList.remove('show'); }
+function closeResult(w){ }
 function closeBanner(){ document.getElementById('qBanner').classList.remove('show'); curSurprise=null; }
 
 /* ══ 로딩 ══ */
@@ -1069,10 +1050,24 @@ function resetEmailForm() {
 
 function restartApp(){
   curSurprise = null;
-  document.getElementById('srStart').classList.remove('show');
   resetEmailForm();
   showScreen('sStart');
 }
+
+/* ══ 콘텐츠 보호 ══ */
+// 우클릭 차단
+document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+// 텍스트 드래그 선택 차단
+document.addEventListener('selectstart', function(e){ e.preventDefault(); });
+// 드래그 차단
+document.addEventListener('dragstart',   function(e){ e.preventDefault(); });
+// 개발자도구 단축키 차단 (F12, Ctrl+U, Ctrl+S, Ctrl+Shift+I/J/C)
+document.addEventListener('keydown', function(e){
+  if(e.key==='F12'){ e.preventDefault(); return false; }
+  if(e.ctrlKey && (e.key==='u'||e.key==='U')){ e.preventDefault(); return false; }
+  if(e.ctrlKey && (e.key==='s'||e.key==='S')){ e.preventDefault(); return false; }
+  if(e.ctrlKey && e.shiftKey && (e.key==='I'||e.key==='i'||e.key==='J'||e.key==='j'||e.key==='C'||e.key==='c')){ e.preventDefault(); return false; }
+});
 </script>
 </body>
 </html>
