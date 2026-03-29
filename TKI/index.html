@@ -553,7 +553,7 @@ textarea.dinput{color:#fff}
    0. 설정값
 ===================================================== */
 var PW = 'MG2026';
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbwoW0BM0N34Wk-nlAGvuOh04aEVpyjKsifUsbW4lTm7Yb0x8kcrGrlITJR0KKI4dtMatw/exec'; // 배포 후 교체
+var GAS_URL = 'YOUR_GAS_WEBAPP_URL_HERE'; // 배포 후 교체
 
 /* =====================================================
    1. 메뉴 / 테마
@@ -977,12 +977,12 @@ function submitDeep() {
   fetch(GAS_URL, {
     method: 'POST',
     mode: 'no-cors',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'text/plain' }, // GAS no-cors: text/plain 필수
     body: JSON.stringify(payload)
   }).then(function() {
     finishSubmit(name);
   }).catch(function() {
-    finishSubmit(name); // 오류여도 UI는 성공 처리 (no-cors라 응답 못받음)
+    finishSubmit(name);
   });
 }
 
