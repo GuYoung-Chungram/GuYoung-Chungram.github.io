@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="ko" class="theme-dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>리더로서 마주하는 질문 3가지</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+:root {
+  --bg:#0A0E1A;
+  --surface:#12192E;
+  --surface-hover:#1A2540;
+  --border:rgba(100,140,255,0.15);
+  --text:#EDEDED;
+  --text-secondary:#9BA8C0;
+  --accent:#4B7BF5;
+  --accent2:#7B9FFF;
+  --gold:#F5C842;
+  --purple:#A855F7;
+  --green:#10b981;
+  --card-glow:rgba(75,123,245,0.12);
+}
+
+body {
+  font-family:'Noto Sans KR',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+
+.stars {
+  position:fixed; inset:0; pointer-events:none; z-index:0;
+  background:
+    radial-gradient(1px 1px at 12% 22%, rgba(255,255,255,0.45) 0%,transparent 100%),
+    radial-gradient(1px 1px at 33% 65%, rgba(255,255,255,0.3) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 55% 38%, rgba(255,255,255,0.5) 0%,transparent 100%),
+    radial-gradient(1px 1px at 72% 82%, rgba(255,255,255,0.28) 0%,transparent 100%),
+    radial-gradient(1px 1px at 88% 28%, rgba(255,255,255,0.4) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 22% 88%, rgba(255,255,255,0.2) 0%,transparent 100%),
+    radial-gradient(1px 1px at 62% 12%, rgba(255,255,255,0.35) 0%,transparent 100%),
+    radial-gradient(1px 1px at 78% 58%, rgba(255,255,255,0.2) 0%,transparent 100%),
+    radial-gradient(1px 1px at 45% 92%, rgba(255,255,255,0.25) 0%,transparent 100%);
+}
+
+.app {
+  position:relative; z-index:1;
+  width:100%; max-width:420px;
+  min-height:100vh;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  padding:24px 18px;
+}
+
+/* 화면 전환 */
+.screen { width:100%; display:none; flex-direction:column; align-items:center; }
+.screen.active { display:flex; animation:fadeUp 0.45s cubic-bezier(0.34,1.3,0.64,1); }
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(22px) scale(0.97); }
+  to   { opacity:1; transform:translateY(0) scale(1); }
+}
+
+/* 브랜드 */
+.brand {
+  font-size:0.68rem; font-weight:600; color:var(--text-secondary);
+  letter-spacing:0.18em; text-transform:uppercase; margin-bottom:34px; opacity:0.5;
+}
+
+/* 히어로 아이콘 */
+.hero-icon {
+  width:88px; height:88px;
+  background:linear-gradient(135deg,#1652D8,#4B7BF5);
+  border-radius:28px;
+  display:flex; align-items:center; justify-content:center;
+  margin-bottom:24px;
+  box-shadow:0 20px 60px rgba(75,123,245,0.4);
+  animation:iconFloat 3.5s ease-in-out infinite;
+}
+@keyframes iconFloat {
+  0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)}
+}
+.hero-icon svg { width:42px; height:42px; }
+
+.hero-title {
+  font-size:1.65rem; font-weight:800; text-align:center;
+  line-height:1.35; letter-spacing:-0.03em; margin-bottom:10px;
+}
+.hero-sub {
+  font-size:0.88rem; color:var(--text-secondary); text-align:center;
+  line-height:1.65; margin-bottom:38px; max-width:300px;
+}
+
+/* 기본 버튼 */
+.btn-primary {
+  width:100%; padding:18px;
+  background:linear-gradient(135deg,#1652D8,#4B7BF5);
+  border:none; border-radius:16px;
+  color:white; font-size:1.05rem; font-weight:700;
+  font-family:'Noto Sans KR',sans-serif; cursor:pointer;
+  box-shadow:0 8px 32px rgba(75,123,245,0.4);
+  transition:transform 0.15s,box-shadow 0.15s;
+  letter-spacing:-0.01em;
+}
+.btn-primary:active { transform:scale(0.97); }
+
+/* ★ 깜짝등장 버튼 ★ */
+.surprise-btn {
+  width:100%; margin-top:14px; padding:16px;
+  background:linear-gradient(135deg,rgba(168,85,247,0.18),rgba(245,200,66,0.1));
+  border:1.5px solid rgba(168,85,247,0.45);
+  border-radius:16px;
+  color:#D4AAFF; font-size:0.95rem; font-weight:700;
+  font-family:'Noto Sans KR',sans-serif; cursor:pointer;
+  transition:all 0.2s;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  position:relative; overflow:hidden;
+}
+.surprise-btn::before {
+  content:'';
+  position:absolute; inset:0;
+  background:linear-gradient(90deg,transparent,rgba(168,85,247,0.08),transparent);
+  transform:translateX(-100%);
+  animation:shimmer 2.5s ease-in-out infinite;
+}
+@keyframes shimmer {
+  0%{transform:translateX(-100%)} 100%{transform:translateX(100%)}
+}
+.surprise-btn:hover { border-color:rgba(168,85,247,0.8); }
+.surprise-btn:active { transform:scale(0.97); }
+.sparkle { font-size:1.1rem; animation:sparkSpin 3s linear infinite; display:inline-block; }
+@keyframes sparkSpin { 0%{transform:rotate(0deg)scale(1)} 50%{transform:rotate(180deg)scale(1.3)} 100%{transform:rotate(360deg)scale(1)} }
+
+/* ★ 깜짝등장 결과 카드 ★ */
+.surprise-result {
+  display:none; width:100%; margin-top:14px;
+  background:linear-gradient(135deg,rgba(168,85,247,0.2),rgba(75,123,245,0.12));
+  border:1.5px solid rgba(168,85,247,0.55);
+  border-radius:18px; padding:18px 20px 16px;
+  animation:popIn 0.4s cubic-bezier(0.34,1.7,0.64,1);
+  position:relative;
+}
+.surprise-result.show { display:block; }
+@keyframes popIn {
+  from{opacity:0;transform:scale(0.8) translateY(-12px)}
+  to{opacity:1;transform:scale(1) translateY(0)}
+}
+.sr-label {
+  font-size:0.67rem; font-weight:700; color:var(--purple);
+  letter-spacing:0.14em; text-transform:uppercase; margin-bottom:8px;
+  display:flex; align-items:center; gap:8px;
+}
+.sr-label::after { content:''; flex:1; height:1px; background:rgba(168,85,247,0.3); }
+.sr-person {
+  font-size:1.08rem; font-weight:800; color:#EDD9FF;
+  margin-bottom:5px; line-height:1.4;
+}
+.sr-msg {
+  font-size:0.82rem; color:rgba(210,185,255,0.7); line-height:1.5;
+}
+.sr-close {
+  position:absolute; top:12px; right:14px;
+  background:none; border:none; color:rgba(168,85,247,0.55);
+  font-size:1rem; cursor:pointer; line-height:1;
+}
+
+/* ━━━ 로딩 화면 ━━━ */
+.loading-title {
+  font-size:1.12rem; font-weight:700; text-align:center;
+  margin-bottom:6px; letter-spacing:-0.02em;
+}
+.loading-sub {
+  font-size:0.82rem; color:var(--text-secondary);
+  text-align:center; margin-bottom:28px;
+}
+
+.hg-wrap { margin:4px 0 24px; }
+.hg-svg { width:88px; height:148px; }
+/* 모래 애니메이션은 JS로 제어 — CSS animation 없음 */
+
+.dots { display:flex; gap:8px; justify-content:center; margin-bottom:14px; }
+.dot  { width:8px; height:8px; border-radius:50%; background:var(--accent); animation:dbounce 1.4s ease-in-out infinite; }
+.dot:nth-child(2){animation-delay:0.2s} .dot:nth-child(3){animation-delay:0.4s}
+@keyframes dbounce { 0%,80%,100%{transform:scale(0.6);opacity:0.4} 40%{transform:scale(1.2);opacity:1} }
+.loading-msg { font-size:0.82rem; color:var(--text-secondary); text-align:center; min-height:22px; }
+
+/* ━━━ 질문 화면 ━━━ */
+.prog-wrap { width:100%; margin-bottom:18px; }
+.prog-meta { display:flex; justify-content:space-between;
+  font-size:0.74rem; color:var(--text-secondary); font-weight:600; margin-bottom:8px; }
+.prog-track { width:100%; height:4px; background:var(--surface-hover); border-radius:2px; overflow:hidden; }
+.prog-fill  { height:100%; background:linear-gradient(90deg,var(--accent),var(--accent2));
+  border-radius:2px; transition:width 0.6s cubic-bezier(0.4,0,0.2,1); }
+
+/* ★ 질문 화면 깜짝등장 배너 ★ */
+.q-banner {
+  display:none; width:100%; margin-bottom:14px;
+  background:linear-gradient(135deg,rgba(168,85,247,0.2),rgba(75,123,245,0.12));
+  border:1.5px solid rgba(168,85,247,0.55);
+  border-radius:14px; padding:13px 16px;
+  animation:popIn 0.4s cubic-bezier(0.34,1.7,0.64,1);
+  position:relative;
+}
+.q-banner.show { display:block; }
+.q-banner-label {
+  font-size:0.67rem; font-weight:700; color:var(--purple);
+  letter-spacing:0.12em; text-transform:uppercase; margin-bottom:5px;
+}
+.q-banner-person { font-size:1rem; font-weight:800; color:#EDD9FF; margin-bottom:3px; }
+.q-banner-msg    { font-size:0.8rem; color:rgba(210,185,255,0.7); line-height:1.45; }
+.q-banner-close  {
+  position:absolute; top:10px; right:12px;
+  background:none; border:none; color:rgba(168,85,247,0.55);
+  font-size:0.95rem; cursor:pointer;
+}
+
+/* 질문 카드 */
+.q-card {
+  width:100%;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:24px; padding:26px 22px;
+  margin-bottom:14px;
+  box-shadow:0 8px 40px var(--card-glow);
+  position:relative; overflow:hidden;
+  animation:cardPop 0.5s cubic-bezier(0.34,1.5,0.64,1);
+}
+@keyframes cardPop {
+  from{opacity:0;transform:scale(0.88) translateY(16px)}
+  to{opacity:1;transform:scale(1) translateY(0)}
+}
+.q-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  border-radius:24px 24px 0 0;
+}
+.lv-badge { position:absolute; top:20px; right:20px; display:flex; gap:4px; }
+.lv-dot   { width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,0.1); }
+.lv-dot.on{ background:var(--gold); }
+.q-num {
+  font-size:0.7rem; font-weight:700; color:var(--accent);
+  letter-spacing:0.12em; text-transform:uppercase; margin-bottom:14px;
+  display:flex; align-items:center; gap:8px;
+}
+.q-num::after { content:''; flex:1; height:1px; background:var(--border); }
+.q-main { font-size:1.28rem; font-weight:700; line-height:1.45; letter-spacing:-0.02em; margin-bottom:20px; }
+.q-subs { list-style:none; display:flex; flex-direction:column; gap:10px; }
+.q-sub  { display:flex; align-items:flex-start; gap:10px;
+  font-size:0.85rem; color:var(--text-secondary); line-height:1.55; }
+.q-sub-dot {
+  width:18px; height:18px; min-width:18px;
+  background:rgba(75,123,245,0.15); border-radius:50%;
+  display:flex; align-items:center; justify-content:center; margin-top:1px;
+}
+.q-sub-dot svg { width:8px; height:8px; }
+
+/* 액션 */
+.actions { display:flex; gap:10px; width:100%; margin-bottom:12px; }
+.btn-act {
+  flex:1; padding:14px;
+  background:var(--surface-hover); border:1px solid var(--border); border-radius:12px;
+  color:var(--text-secondary); font-size:0.83rem; font-weight:600;
+  font-family:'Noto Sans KR',sans-serif; cursor:pointer;
+  transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:6px;
+}
+.btn-act:active { transform:scale(0.97); }
+.btn-act.blue {
+  background:linear-gradient(135deg,#1652D8,#4B7BF5);
+  border-color:transparent; color:white;
+  box-shadow:0 4px 20px rgba(75,123,245,0.35);
+}
+
+/* ★ 질문 화면 깜짝등장 버튼 (소형) ★ */
+.q-surprise-btn {
+  width:100%; padding:13px;
+  background:linear-gradient(135deg,rgba(168,85,247,0.13),rgba(245,200,66,0.07));
+  border:1.5px solid rgba(168,85,247,0.42);
+  border-radius:13px;
+  color:#D4AAFF; font-size:0.88rem; font-weight:700;
+  font-family:'Noto Sans KR',sans-serif; cursor:pointer;
+  transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:7px;
+  position:relative; overflow:hidden;
+}
+.q-surprise-btn::before {
+  content:'';
+  position:absolute; inset:0;
+  background:linear-gradient(90deg,transparent,rgba(168,85,247,0.1),transparent);
+  transform:translateX(-100%);
+  animation:shimmer 2s ease-in-out infinite;
+}
+.q-surprise-btn:hover { border-color:rgba(168,85,247,0.75); }
+.q-surprise-btn:active { transform:scale(0.97); }
+
+/* ━━━ 완료 화면 ━━━ */
+.done-icon {
+  width:80px; height:80px;
+  background:linear-gradient(135deg,#059669,#10b981);
+  border-radius:24px; display:flex; align-items:center; justify-content:center;
+  margin-bottom:22px; box-shadow:0 16px 48px rgba(16,185,129,0.35);
+}
+.done-title { font-size:1.5rem; font-weight:800; text-align:center; margin-bottom:8px; letter-spacing:-0.03em; }
+.done-sub   { font-size:0.88rem; color:var(--text-secondary); text-align:center; margin-bottom:28px; line-height:1.65; }
+.sum-card {
+  width:100%; background:var(--surface); border:1px solid var(--border);
+  border-radius:16px; padding:17px 20px; margin-bottom:10px;
+}
+.sum-label { font-size:0.67rem; font-weight:700; color:var(--accent);
+  letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px; }
+.sum-text  { font-size:0.92rem; font-weight:600; line-height:1.5; }
+.btn-restart {
+  width:100%; margin-top:10px; padding:15px;
+  background:var(--surface-hover); border:1px solid var(--border); border-radius:14px;
+  color:var(--text); font-size:0.95rem; font-weight:600;
+  font-family:'Noto Sans KR',sans-serif; cursor:pointer; transition:all 0.2s;
+}
+.btn-restart:active { transform:scale(0.97); }
+
+/* ── 이메일 수신 섹션 ── */
+.email-section {
+  width:100%; margin-top:14px;
+}
+.email-open-btn {
+  width:100%; padding:15px;
+  background:linear-gradient(135deg,rgba(75,123,245,0.16),rgba(22,82,216,0.1));
+  border:1.5px solid rgba(75,123,245,0.38);
+  border-radius:16px;
+  color:#9AB8FF; font-size:0.92rem; font-weight:700;
+  font-family:'Noto Sans KR',sans-serif; cursor:pointer;
+  transition:all 0.2s;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  position:relative; overflow:hidden;
+}
+.email-open-btn::before {
+  content:'';
+  position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(75,123,245,0.08),transparent);
+  transform:translateX(-100%);
+  animation:shimmer 2.5s ease-in-out infinite;
+}
+.email-open-btn:hover { border-color:rgba(75,123,245,0.7); }
+.email-open-btn:active { transform:scale(0.97); }
+.email-open-btn .arrow { transition:transform 0.3s; display:inline-block; }
+.email-open-btn.open .arrow { transform:rotate(180deg); }
+
+/* 폼 패널 — 접힘/펼침 */
+.email-panel {
+  width:100%;
+  max-height:0; overflow:hidden;
+  opacity:0;
+  transition:max-height 0.42s cubic-bezier(0.4,0,0.2,1),
+             opacity 0.3s ease;
+}
+.email-panel.open {
+  max-height:520px;
+  opacity:1;
+}
+.email-form-box {
+  width:100%; margin-top:10px;
+  background:linear-gradient(135deg,rgba(22,82,216,0.14),rgba(75,123,245,0.07));
+  border:1.5px solid rgba(75,123,245,0.32);
+  border-radius:18px; padding:18px 18px 16px;
+  position:relative;
+}
+.email-form-box::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  border-radius:18px 18px 0 0; pointer-events:none;
+}
+.email-form-title {
+  font-size:0.93rem; font-weight:800; color:var(--text);
+  margin-bottom:4px;
+}
+.email-form-sub {
+  font-size:0.77rem; color:var(--text-secondary);
+  line-height:1.6; margin-bottom:14px;
+}
+.email-input {
+  width:100%; background:rgba(255,255,255,0.05);
+  border:1px solid var(--border); border-radius:10px;
+  padding:12px 14px; color:var(--text);
+  font-size:0.9rem; font-family:'Noto Sans KR',sans-serif;
+  margin-bottom:8px; transition:border-color 0.2s;
+  -webkit-appearance:none;
+}
+.email-input::placeholder { color:var(--text-secondary); opacity:0.55; }
+.email-input:focus { outline:none; border-color:var(--accent); }
+.email-check-row {
+  display:flex; align-items:flex-start; gap:10px;
+  margin-bottom:13px; cursor:pointer;
+}
+.email-checkbox {
+  width:18px; height:18px; min-width:18px;
+  border:1.5px solid var(--border); border-radius:5px;
+  background:transparent; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:all 0.2s; margin-top:2px; flex-shrink:0;
+}
+.email-checkbox.checked { background:var(--accent); border-color:var(--accent); }
+.email-checkbox svg { display:none; }
+.email-checkbox.checked svg { display:block; }
+.email-check-text {
+  font-size:0.76rem; color:var(--text-secondary); line-height:1.6;
+}
+.email-check-text strong { color:var(--accent2); font-weight:700; }
+.email-submit {
+  width:100%; padding:14px;
+  background:linear-gradient(135deg,#1652D8,#4B7BF5);
+  border:none; border-radius:12px;
+  color:white; font-size:0.9rem; font-weight:700;
+  font-family:'Noto Sans KR',sans-serif; cursor:pointer;
+  transition:all 0.2s;
+  box-shadow:0 4px 18px rgba(75,123,245,0.35);
+}
+.email-submit:active { transform:scale(0.97); }
+.email-submit:disabled {
+  background:var(--surface-hover); color:var(--text-secondary);
+  box-shadow:none; cursor:not-allowed;
+}
+/* 완료 상태 */
+.email-done {
+  display:none; text-align:center; padding:8px 0 4px;
+}
+.email-done-icon {
+  width:42px; height:42px;
+  background:linear-gradient(135deg,#059669,#10b981);
+  border-radius:13px; display:flex; align-items:center; justify-content:center;
+  margin:0 auto 10px;
+}
+.email-done-name { font-size:0.92rem; font-weight:700; color:var(--text); margin-bottom:4px; }
+.email-done-msg  { font-size:0.78rem; color:var(--text-secondary); line-height:1.6; margin-bottom:12px; }
+.email-done-hint { font-size:0.8rem; color:var(--accent2); font-weight:600; margin-bottom:14px; line-height:1.6; }
+/* crmc 링크 */
+.crmc-link {
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:0.73rem; color:var(--text-secondary);
+  text-decoration:none;
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:100px; padding:6px 14px;
+  transition:all 0.2s; opacity:0.55;
+}
+.crmc-link:hover { opacity:1; color:var(--accent2); border-color:rgba(75,123,245,0.35); }
+.crmc-link-dot {
+  width:5px; height:5px; border-radius:50%;
+  background:var(--accent); display:inline-block;
+  animation:tagPulse 2s ease-in-out infinite;
+}
+
+@media(max-height:680px){
+  .hero-icon{width:68px;height:68px;margin-bottom:16px}
+  .hero-title{font-size:1.35rem}
+  .hero-sub{margin-bottom:24px}
+  .brand{margin-bottom:20px}
+}
+</style>
+</head>
+<body>
+<div class="stars"></div>
+<div class="app">
+
+  <!-- ══ 시작 화면 ══ -->
+  <div class="screen active" id="sStart">
+    <div class="brand">청람M&amp;C · 리더십 워크숍</div>
+    <div class="hero-icon">
+      <svg viewBox="0 0 44 44" fill="none">
+        <circle cx="22" cy="16" r="8" stroke="white" stroke-width="2.5"/>
+        <path d="M8 38c0-7.7 6.3-14 14-14s14 6.3 14 14" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M30 8l2.5 2.5M35 8l-2.5 2.5M32.5 5.5v5" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <h1 class="hero-title">리더로서<br>마주하는 질문 3가지</h1>
+    <p class="hero-sub">오늘 당신의 리더 잠재력을 깨우는<br>질문을 지금 만나보세요</p>
+
+    <button class="btn-primary" onclick="startLoading()">✨ 나의 질문 시작하기</button>
+
+    <button class="surprise-btn" onclick="triggerSurprise('start')">
+      <span class="sparkle">✦</span>
+      깜짝등장
+      <span class="sparkle">✦</span>
+    </button>
+
+    <div class="surprise-result" id="srStart">
+      <div class="sr-label">🎭 깜짝등장</div>
+      <div class="sr-person" id="srPersonStart"></div>
+      <div class="sr-msg"    id="srMsgStart"></div>
+      <button class="sr-close" onclick="closeResult('start')">✕</button>
+    </div>
+  </div>
+
+  <!-- ══ 로딩 화면 ══ -->
+  <div class="screen" id="sLoading">
+    <div class="loading-title">당신만의 질문을<br>찾고 있습니다</div>
+    <div class="loading-sub">잠시만 기다려 주세요 ✦</div>
+    <div class="hg-wrap">
+      <!--
+        모래시계 구조:
+        - 상단 삼각형: 꼭짓점(44,65) 위로 뒤집힌 삼각형. 모래가 위→아래로 빠져나감
+          → clipPath로 삼각형 영역 고정. 내부 rect의 y를 13→65로 올려서 "모래 수면이 내려오는" 효과
+        - 하단 삼각형: 꼭짓점(44,83) 아래로 정삼각형. 모래가 아래서 위로 쌓임
+          → clipPath로 삼각형 영역 고정. 내부 polygon의 상단 y를 135→83으로 올려서 "모래가 차오르는" 효과
+        - JS requestAnimationFrame으로 단방향 제어 (역방향 없음)
+      -->
+      <svg class="hg-svg" viewBox="0 0 88 148">
+        <defs>
+          <!-- 상단: 뒤집힌 삼각형 클립 (꼭짓점 아래) -->
+          <clipPath id="hg-ct">
+            <polygon points="12,13 76,13 44,65"/>
+          </clipPath>
+          <!-- 하단: 정삼각형 클립 (꼭짓점 위) -->
+          <clipPath id="hg-cb">
+            <polygon points="44,83 12,135 76,135"/>
+          </clipPath>
+        </defs>
+
+        <!-- 외곽 테두리 -->
+        <path d="M12 13 L76 13 L44 65 Z"
+              fill="none" stroke="rgba(75,123,245,0.45)" stroke-width="1.8"/>
+        <path d="M44 83 L12 135 L76 135 Z"
+              fill="none" stroke="rgba(75,123,245,0.45)" stroke-width="1.8"/>
+
+        <!-- 목 좌우 세로선 -->
+        <line x1="41" y1="65" x2="41" y2="83" stroke="rgba(75,123,245,0.45)" stroke-width="1.8"/>
+        <line x1="47" y1="65" x2="47" y2="83" stroke="rgba(75,123,245,0.45)" stroke-width="1.8"/>
+
+        <!-- 상단바 / 하단바 -->
+        <rect x="7" y="6" width="74" height="7" rx="3.5" fill="#1652D8"/>
+        <rect x="7" y="135" width="74" height="7" rx="3.5" fill="#1652D8"/>
+
+        <!--
+          ★ 상단 모래 (JS 제어)
+          원리: rect y=13, height=52 → y가 13→65로 올라갈수록 clipPath 위로 벗어나 모래가 줄어듦
+          id="hg-sand-top"
+        -->
+        <rect id="hg-sand-top"
+              x="0" y="13" width="88" height="52"
+              fill="#4B7BF5" opacity="0.85"
+              clip-path="url(#hg-ct)"/>
+        <!-- 모래 수면 반짝임 선 -->
+        <rect id="hg-surface"
+              x="14" y="13" width="60" height="2.5" rx="1.2"
+              fill="rgba(180,210,255,0.55)"
+              clip-path="url(#hg-ct)"/>
+
+        <!-- 목 낙하 줄기 (JS로 opacity 제어) -->
+        <rect id="hg-stream"
+              x="42" y="66" width="4" height="17"
+              fill="#7B9FFF" opacity="0.9" rx="2"/>
+
+        <!-- 목 위아래 마개 -->
+        <ellipse cx="44" cy="65" rx="5" ry="2" fill="rgba(75,123,245,0.55)"/>
+        <ellipse cx="44" cy="83" rx="5" ry="2" fill="rgba(75,123,245,0.55)"/>
+
+        <!--
+          ★ 하단 모래 (JS 제어)
+          원리: polygon 상단 y를 135→83으로 올리면 삼각형이 꼭짓점에서 위로 차오름
+          id="hg-sand-bot"
+        -->
+        <polygon id="hg-sand-bot"
+                 points="44,135 12,135 76,135"
+                 fill="#4B7BF5" opacity="0.68"
+                 clip-path="url(#hg-cb)"/>
+      </svg>
+    </div>
+    <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+    <div class="loading-msg" id="loadingMsg">질문 우주를 탐색 중...</div>
+  </div>
+
+  <!-- ══ 질문 화면 ══ -->
+  <div class="screen" id="sQuestion">
+
+    <!-- 깜짝등장 배너 -->
+    <div class="q-banner" id="qBanner">
+      <div class="q-banner-label">🎭 깜짝등장 — 이분을 떠올리며</div>
+      <div class="q-banner-person" id="qBannerPerson"></div>
+      <div class="q-banner-msg"    id="qBannerMsg"></div>
+      <button class="q-banner-close" onclick="closeBanner()">✕</button>
+    </div>
+
+    <div class="prog-wrap">
+      <div class="prog-meta">
+        <span id="progLabel">질문 1 / 3</span>
+        <span id="progPct">33%</span>
+      </div>
+      <div class="prog-track">
+        <div class="prog-fill" id="progFill" style="width:33%"></div>
+      </div>
+    </div>
+
+    <div class="q-card" id="qCard">
+      <div class="lv-badge" id="lvBadge"></div>
+      <div class="q-num"  id="qNum">QUESTION 01</div>
+      <div class="q-main" id="qMain"></div>
+      <ul class="q-subs"  id="qSubs"></ul>
+    </div>
+
+    <div class="actions">
+      <button class="btn-act" onclick="reshuffleCard()">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+          <path d="M2 8A6 6 0 1114 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M11 5l3 3-3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        다른 질문
+      </button>
+      <button class="btn-act blue" onclick="nextCard()">다음 질문 →</button>
+    </div>
+
+    <button class="q-surprise-btn" onclick="triggerSurprise('q')">
+      <span style="font-size:1rem;display:inline-block;animation:sparkSpin 3s linear infinite">✦</span>
+      깜짝등장 — 이분을 떠올리며 답해보세요
+      <span style="font-size:1rem;display:inline-block;animation:sparkSpin 3s linear infinite reverse">✦</span>
+    </button>
+  </div>
+
+  <!-- ══ 완료 화면 ══ -->
+  <div class="screen" id="sDone">
+    <div class="done-icon">
+      <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
+        <path d="M7 19l7 7 17-17" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <h2 class="done-title">오늘의 질문<br>완료! 🌟</h2>
+    <p class="done-sub">세 가지 질문을 통해<br>리더로서의 자신을 마주했습니다</p>
+
+    <!-- 질문 요약 -->
+    <div id="doneSummary"></div>
+
+    <!-- ★ 이메일 수신 섹션 ★ -->
+    <div class="email-section">
+      <!-- 열기 버튼 -->
+      <button class="email-open-btn" id="emailOpenBtn" onclick="toggleEmailPanel()">
+        📬 질문과 링크를 이메일로 받기
+        <span class="arrow">▾</span>
+      </button>
+
+      <!-- 펼쳐지는 패널 -->
+      <div class="email-panel" id="emailPanel">
+        <div class="email-form-box">
+
+          <!-- 입력 폼 -->
+          <div id="emailFormInner">
+            <div class="email-form-title">언제든 꺼내 쓸 수 있어요 📌</div>
+            <div class="email-form-sub">
+              오늘 마주한 질문 3가지와 앱 링크를 보내드립니다.<br>
+              팀원 면담 전, 성찰이 필요한 순간마다 다시 꺼내보세요.
+            </div>
+            <input class="email-input" id="emailName"  type="text"  placeholder="이름" autocomplete="name"/>
+            <input class="email-input" id="emailAddr"  type="email" placeholder="이메일 주소" autocomplete="email"/>
+            <div class="email-check-row" onclick="toggleEmailCheck()">
+              <div class="email-checkbox" id="emailCheck">
+                <svg width="11" height="9" viewBox="0 0 11 9" fill="none">
+                  <path d="M1 4l3 3 6-6" stroke="white" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <span class="email-check-text">
+                개인정보 수집에 동의하며
+                <strong>청람M&amp;C 리더십 레터</strong>를 받겠습니다.
+                앱 링크와 리더십 인사이트를 정기적으로 보내드립니다.
+              </span>
+            </div>
+            <button class="email-submit" id="emailSubmit"
+                    onclick="submitEmail()" disabled>
+              ✉️ 메일로 받기
+            </button>
+          </div>
+
+          <!-- 완료 상태 -->
+          <div class="email-done" id="emailDone">
+            <div class="email-done-icon">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                <path d="M3 11l5 5 11-11" stroke="white" stroke-width="2.5"
+                      stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="email-done-name" id="emailDoneName"></div>
+            <div class="email-done-msg">
+              오늘의 질문 3가지와 앱 링크를<br>메일로 보내드렸습니다 🎉
+            </div>
+            <div class="email-done-hint">
+              팀원 면담 전, 성찰이 필요한 순간마다<br>링크 하나로 언제든 다시 시작하세요
+            </div>
+            <a class="crmc-link" href="https://crmc.co.kr" target="_blank" rel="noopener">
+              <span class="crmc-link-dot"></span>
+              리더십 교육 더 알아보기 · crmc.co.kr
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-restart" onclick="restartApp()">↩ 다시 시작하기</button>
+  </div>
+
+</div><!-- /app -->
+
+<script>
+/* ══ 질문 데이터 52장 ══ */
+var QS = [
+  {lv:1,main:"리더가 해야 할 가장 중요한 일은 무엇이라고 생각하나요?",subs:["당신은 그 일을 얼마나 잘 하고 있다고 생각하나요?","평소 생각지 못했지만 더 중요한 일이 있다면 무엇일까요?"]},
+  {lv:1,main:"리더로서 당신이 가장 열정을 느끼는 대상은 무엇인가요?",subs:["그 열정을 어떤 식으로 표출하나요?","지금까지 그런 열정이 이루어 낸 결과가 있다면 무엇인가요?"]},
+  {lv:1,main:"리더십이란 무엇인지 당신만의 정의를 내린다면?",subs:["당신이 생각하는 좋은 리더십이란 어떤 건가요?","당신에게 가장 자연스럽고 어울리는 리더십은 어떤 건가요?"]},
+  {lv:1,main:"리더에게 가장 필요한 권리는 무엇이라고 생각하나요?",subs:["그 권리에 반드시 따라야 하는 책임은 무엇인가요?","리더들이 해서는 안 되지만 자주 하게 되는 잘못이 있다면?"]},
+  {lv:1,main:"리더로서 절대 용납할 수 없는 일이 있다면 무엇인가요?",subs:["그것을 그토록 중요하게 생각하는 이유는 무엇인가요?","실제로 그런 일이 일어난다면 어떻게 할 건가요?"]},
+  {lv:1,main:"좋은 리더가 갖춰야 할 조건 3가지를 꼽는다면?",subs:["그 중에서도 가장 중요하다고 생각하는 것은? 그 이유는?","당신은 그것들 중 무엇을 갖추었나요?"]},
+  {lv:2,main:"리더의 역할을 수행하면서 가장 보람을 느꼈던 적은 언제였나요?",subs:["그 때의 느낌을 한 마디로 표현한다면?","그 경험을 통해서 새롭게 깨달은 것이 있다면?","그러한 경험을 더 자주 할 수 있는 방법이 있다면?"]},
+  {lv:2,main:"리더로서 당신이 가장 두려운 것은 무엇인가요?",subs:["그 두려움의 이면에는 무엇이 있다고 생각하나요?","그 두려움이 사라진다면 무엇이 달라질까요?","리더로서 당신이 했던 가장 용기있는 행동은?"]},
+  {lv:2,main:"리더로서 당신이 자신과 타협한 적이 있었다면 언제였나요?",subs:["타협을 받아들인 진짜 이유는 무엇인가요?","그 경험을 통해 배운 게 있다면?","다시 똑같은 상황에 놓인다면 어떻게 할 건가요?"]},
+  {lv:2,main:"리더로서의 당신을 괴롭히는 감정이 있다면 무엇인가요?",subs:["그 감정은 당신의 태도나 행동에 어떤 영향을 미치고 있나요?","그 감정을 완전히 해소하려면 무엇이 필요할까요?"]},
+  {lv:2,main:"지금 당신이 리더의 역할을 맡아야만 하는 이유가 있다면?",subs:["당신이 유능한 리더라면 그 이유는 무엇일까요?","조직 내에서 리더 외에 당신에게 더 잘 어울리는 역할이 있다면?"]},
+  {lv:2,main:"리더로서 당신 자신에게 지금 해주고 싶은 말이 있다면?",subs:["그 말을 듣고 나니 어떤 느낌 또는 생각이 드나요?","조직원들에게 듣고 싶은 말이 있다면 무엇인가요?"]},
+  {lv:2,main:"조직을 통해 이루고자 하는 꿈이 있다면 무엇인가요?",subs:["그 꿈은 결국 무엇을 위한 것인가요?","그 꿈이 이루어진 것을 생각하면 어떤 느낌이 드나요?","조직원들은 당신의 꿈에 대해 어떤 말을 할 것 같나요?"]},
+  {lv:2,main:"리더로서의 당신을 동물에 비유한다면? 그 이유는?",subs:["당신은 어떤 리더인지 한 문장으로 표현한다면?","당신은 어떤 리더가 되고 싶은가요?","실제 조직원들은 당신을 어떤 리더로 생각하고 있을까요?"]},
+  {lv:2,main:"일과 사람, 둘 중 하나를 선택해야 할 때 주로 어떻게 하나요?",subs:["실제 그렇게 했던 예를 들어 본다면?","그렇게 선택한 후 어떤 느낌이나 생각이 드나요?","평소와는 반대의 선택을 했던 경우가 있다면? 그랬던 이유는?"]},
+  {lv:2,main:"지금까지 리더로서 당신이 가장 잘한 일은 무엇인가요?",subs:["그렇게 평가하는 이유는 무엇인가요?","그 일은 조직에 어떤 영향을 미쳤나요?","무엇이 당신으로 하여금 그 일을 하도록 만들었나요?"]},
+  {lv:3,main:"지금까지 리더로서 당신이 했던 가장 큰 실수는?",subs:["당신이 그것을 실수라고 생각하는 이유는 무엇인가요?","그 실수를 통해 배운 것이 있다면?","같은 상황이 또 온다면 어떻게 할 건가요?"]},
+  {lv:3,main:"훌륭한 리더라고 생각하는 인물이 있다면?",subs:["그 사람의 어떤 점 때문에 그렇게 생각하나요?","그 사람을 평가한 기준으로 당신 자신에게 점수를 준다면? 그 이유는?"]},
+  {lv:3,main:"리더의 역할을 잘 수행하기 위해 특별히 하고 있는 노력이 있다면?",subs:["그 노력이 어떤 결실을 맺길 바라나요?","실제 그 노력이 어떤 효과를 보이고 있나요?","더 나은 리더가 되기 위해 자신의 노력 외에 필요한 것이 있다면?"]},
+  {lv:3,main:"리더를 위한 교육 프로그램을 만든다면 꼭 넣고 싶은 내용은?",subs:["그 내용을 알면 무엇이 달라지나요?","그 내용을 가르치기에 적합한 사람이 있다면 누구인가요?","한 가지 내용을 더 꼽아 본다면?"]},
+  {lv:3,main:"당신이 생각하는 리더의 카리스마란 어떤 건가요?",subs:["그런 카리스마를 지닌 사람으로 떠오르는 이가 있다면?","그 관점에서 당신은 얼마나 카리스마 있는 리더인가요?","당신의 리더십의 원천은 무엇인가요?"]},
+  {lv:3,main:"리더로서 당신이 가진 강점 3가지는 무엇인가요?",subs:["그 강점이 주로 발휘되는 순간은 언제인가요?","그 강점을 더욱 살릴 수 있는 방법이 있다면?","반대로 약점 3가지는?"]},
+  {lv:3,main:"리더로서 당신에게 가장 어려운 문제는 어떤 것들인가요?",subs:["그런 문제를 지금까지 어떤 식으로 처리해 왔나요?","더 좋지만 쓰지 않고 있는 방법이 있다면?","그런 문제와 관련해 도움을 받고 싶은 사람이 있다면 누구인가요?"]},
+  {lv:3,main:"당신이 리더이기 때문에 누리고 있는 특권이 있다면?",subs:["그 특권을 누리는 것이 정당하다고 생각하나요? 그 이유는?","그 특권을 내려놓으면 당신이 잃을 수 있는 것은 무엇일까요?","그 특권을 내려놓으면 당신이 얻을 수 있는 것은 무엇일까요?"]},
+  {lv:3,main:"당신은 언행이 일치하는 리더인가요? 점수를 준다면?",subs:["그 점수가 의미하는 바는 구체적으로 무엇인가요?","리더로서 말과 행동이 불일치한 적이 있었다면 언제였나요?"]},
+  {lv:3,main:"리더로서의 당신에 대해 들었던 말 중 가장 기억에 남는 것은?",subs:["그 말을 들었을 때 어떤 생각이 들었나요?","자주 듣지만 크게 신경쓰지 않고 있는 말이 있다면?"]},
+  {lv:4,main:"당신은 조직원들을 얼마나 신뢰하나요?",subs:["반대로 조직원들은 당신을 얼마나 신뢰한다고 생각하나요?","신뢰를 기준으로 당신의 조직을 스스로 평가해 본다면?"]},
+  {lv:4,main:"조직원들에게 하고 싶지만 못하고 있는 말이 있다면 무엇인가요?",subs:["말하지 못하고 있는 가장 큰 이유는 무엇인가요?","그 말을 조직원들이 들으면 어떤 반응을 보일까요?","그 말을 가장 효과적으로 전할 수 있는 방법을 떠올려 본다면?"]},
+  {lv:4,main:"조직원들이 당신 뜻대로 따라주지 않을 때 어떻게 하나요?",subs:["그런 상황이 발생하는 근본적인 이유가 무엇이라고 생각하나요?","그런 상황을 잘 해결하는 리더들은 주로 어떻게 하나요?"]},
+  {lv:4,main:"조직원들이 항상 기억해주길 바라는 하나의 메세지가 있다면?",subs:["그들이 그 메세지에 얼마나 공감할 거라고 생각하나요?","그 메세지는 결국 무엇을 위한 것인가요?"]},
+  {lv:4,main:"조직원들에 대한 당신의 마음을 3개의 단어로 표현한다면?",subs:["실제 조직원들을 대하는 당신의 태도를 3개의 단어로 표현한다면?","당신에 대한 조직원들의 마음을 3개의 단어로 예상해 본다면?"]},
+  {lv:4,main:"당신의 생각은 조직원들에게 어떤 식으로 전해지나요?",subs:["그 방법은 얼마나 효과적인가요?","반대로 조직원들의 생각은 당신에게 어떤 식으로 전해지나요?"]},
+  {lv:4,main:"리더가 조직원들의 마음을 얻는 가장 좋은 방법은 무엇일까요?",subs:["당신은 그 방법을 얼마나 잘 활용하고 있나요?","조직원들의 마음을 얻을 수 있다면 무엇이 가장 크게 달라질까요?"]},
+  {lv:4,main:"조직원들이 리더로서의 당신을 평가한다면 몇 점을 줄까요?",subs:["그 점수가 의미하는 바는 무엇이라고 생각하나요?","조직원들이 당신에게 가장 바라는 건 무엇일까요?"]},
+  {lv:4,main:"당신이 좋아하는 조직원은 어떤 사람들인가요?",subs:["당신이 좋아하지 않는 조직원은 어떤 사람들인가요?","좋아하고 싫어함을 어떤 식으로 표현하나요?"]},
+  {lv:4,main:"당신의 조직에서 가장 유능하다고 생각되는 사람은 누구인가요?",subs:["당신은 그 사람을 어떻게 대하고 있나요?","리더로서 그 사람에게 한 마디 해준다면?"]},
+  {lv:4,main:"당신의 조직이 존재해야 하는 이유는 무엇이라고 생각하나요?",subs:["조직원들은 당신의 생각에 대해 어떻게 생각할까요?","조직원들과 이런 내용을 공유하기 위해 특별히 하는 것이 있다면?"]},
+  {lv:4,main:"당신의 조직이 사람들에게 어떻게 기억되기를 바라나요?",subs:["그렇게 되기 위해 당신이 해야 하는 일은 무엇인가요?","당신이 할 수는 없지만 반드시 필요한 것은 무엇인가요?"]},
+  {lv:4,main:"현재 당신의 조직이 가장 먼저 달성하려는 목표는 무엇인가요?",subs:["그 목표를 달성하기 위해 조직원들은 무엇을 하고 있나요?","그 목표를 달성하기 위해 당신은 무엇을 하고 있나요?","그 목표를 달성하는 것은 조직에 어떤 의미가 있나요?"]},
+  {lv:4,main:"당신의 조직은 얼마나 잘 굴러가고 있나요?",subs:["그렇게 생각하는 가장 큰 이유는 무엇인가요?","더 잘 굴러가도록 하기 위해 당신은 무엇을 할 생각인가요?"]},
+  {lv:4,main:"조직의 목표는 무엇을 기준으로 우선순위를 정하나요?",subs:["그 기준을 엄격하게 적용하기 어려운 때는 언제인가요?","당신의 생각과 조직원들의 생각이 다를 때는 어떻게 하나요?"]},
+  {lv:4,main:"조직에 예상치 못했던 큰 문제가 발생한 적이 있었다면 언제였나요?",subs:["그 때 당신이 가장 먼저 했던 일은 무엇이었나요?","지금 똑같은 일이 다시 발생한다면 어떻게 할 건가요?"]},
+  {lv:4,main:"당신이 내일 바로 조직을 떠난다면 어떤 상황이 펼쳐질까요?",subs:["당신의 예상과 상관없이 당신이 바라는 상황은 어떤 모습인가요?","당신의 역할을 다른 사람에게 맡긴다면 누가 가장 적합하다고 생각하나요?"]},
+  {lv:4,main:"조직에서 제 역할을 수행하지 못하는 사람이 있으면 어떻게 하나요?",subs:["그 방식에 대해 당신은 얼마나 만족하나요?","지금까지 써 본 적이 없는 다른 방법이 있다면 무엇일까요?"]},
+  {lv:4,main:"당신의 조직이 가진 가장 큰 문제점은 무엇인가요?",subs:["당신이 생각하는 그 문제의 핵심 원인은 무엇인가요?","그 문제에 대해 조직원들은 어떻게 인식하고 있을까요?","그 문제를 언제 해결할 생각인가요?"]},
+  {lv:4,main:"조직의 규칙이나 제도 중에서 고치고 싶은 것이 있다면?",subs:["고치고 싶지만 그렇게 하지 않고 있는 이유는?","그것을 고치면 무엇이 어떻게 달라지나요?"]},
+  {lv:4,main:"당신의 조직이 가진 최대 강점은 무엇인가요?",subs:["그 강점의 원천은 무엇인가요?","그 강점을 얼마나 잘 활용하고 있나요?","반대로 약점은 무엇인가요?"]},
+  {lv:4,main:"지금까지 당신의 조직이 이룬 가장 큰 성취는 무엇인가요?",subs:["그런 일을 할 수 있었던 가장 큰 힘은 무엇이었나요?","그 일을 통해 새롭게 알게 된 것이 있다면 무엇인가요?"]}
+];
+
+/* ══ 깜짝등장 10종 ══ */
+var SURPRISES = [
+  {person:"😤 나를 가장 힘들게 하는 팀원",    msg:"지금 그 팀원 얼굴을 떠올리며 답해보세요"},
+  {person:"💛 내가 가장 아끼는 팀원",          msg:"당신이 가장 아끼는 그 사람을 생각하며"},
+  {person:"🔮 20년 후의 나",                   msg:"은퇴 전날의 내가 이 질문을 듣는다면?"},
+  {person:"🏆 내 생애 최고의 상사",            msg:"당신 인생 최고의 보스가 이걸 보고 있다면?"},
+  {person:"🚪 최근 조직을 떠난 그 사람",       msg:"최근 퇴사한 그 직원이 옆에 앉아 있다면?"},
+  {person:"🌱 나의 자녀 또는 후배",            msg:"내 아이(또는 후배)가 이 답을 듣는다면?"},
+  {person:"🎯 나를 리더로 발탁한 사람",        msg:"당신을 리더로 발탁한 그 사람이 지금 보고 있다면?"},
+  {person:"📅 10년 전의 나",                   msg:"처음 팀장 달았던 그 날의 내가 이 질문을 받는다면?"},
+  {person:"🪞 나를 가장 잘 아는 사람",         msg:"당신의 민낯을 가장 잘 아는 그 사람이라면 뭐라고 할까요?"},
+  {person:"🎤 조직의 가장 솔직한 막내",        msg:"팀에서 제일 입 바른 막내가 이 답을 평가한다면?"}
+];
+
+/* ══ 상태 ══ */
+var selectedQs = [];
+var currentIdx = 0;
+var curSurprise = null;
+var MSGS = ["질문 우주를 탐색 중...","리더의 내면을 들여다보는 중...","딱 맞는 질문을 고르는 중...","당신을 위한 질문이 완성됐습니다!"];
+
+/* ══ 유틸 ══ */
+function showScreen(id) {
+  var ss = document.querySelectorAll('.screen');
+  for(var i=0;i<ss.length;i++) ss[i].classList.remove('active');
+  document.getElementById(id).classList.add('active');
+}
+function pickRandom(arr,n) {
+  var c=arr.slice(), r=[];
+  for(var i=0;i<n&&c.length;i++) r.push(c.splice(Math.floor(Math.random()*c.length),1)[0]);
+  return r;
+}
+function rndIdx(arr){ return Math.floor(Math.random()*arr.length); }
+
+/* ══ 깜짝등장 ══ */
+function triggerSurprise(where) {
+  // 이전과 다른 인물 뽑기
+  var idx, tries=0;
+  do { idx=rndIdx(SURPRISES); tries++; } while(curSurprise && SURPRISES[idx].person===curSurprise.person && tries<10);
+  curSurprise = SURPRISES[idx];
+
+  if(where==='start') {
+    document.getElementById('srPersonStart').textContent = curSurprise.person;
+    document.getElementById('srMsgStart').textContent    = curSurprise.msg;
+    var el = document.getElementById('srStart');
+    el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
+  } else {
+    document.getElementById('qBannerPerson').textContent = curSurprise.person;
+    document.getElementById('qBannerMsg').textContent    = curSurprise.msg;
+    var el2 = document.getElementById('qBanner');
+    el2.classList.remove('show'); void el2.offsetWidth; el2.classList.add('show');
+  }
+}
+function closeResult(w){ if(w==='start') document.getElementById('srStart').classList.remove('show'); }
+function closeBanner(){ document.getElementById('qBanner').classList.remove('show'); curSurprise=null; }
+
+/* ══ 로딩 ══ */
+/* ══ 모래시계 JS 애니메이션 ══
+   상단: rect y값을 13→65로 증가 → clipPath 위로 빠져나가며 모래 줄어듦
+   하단: polygon 꼭짓점 y값을 135→83으로 감소 → 아래서 위로 모래 차오름
+   단방향(위→아래)만, 역방향 없음, forwards로 멈춤
+*/
+function runHourglass() {
+  var topEl     = document.getElementById('hg-sand-top');
+  var surfaceEl = document.getElementById('hg-surface');
+  var botEl     = document.getElementById('hg-sand-bot');
+  var streamEl  = document.getElementById('hg-stream');
+  if (!topEl || !botEl) return;
+
+  var DURATION  = 2800;   // 전체 애니메이션 시간(ms) — 로딩과 맞춤
+  var startTime = null;
+
+  // 상단: y=13(가득)→y=65(빔), height는 고정 52
+  var TOP_START = 13, TOP_END = 65;
+  // 하단 꼭짓점: y=135(빔)→y=83(가득)
+  var BOT_START = 135, BOT_END = 83;
+
+  function easeIn(t) { return t * t; }  // 중력 가속 느낌
+
+  function step(ts) {
+    if (!startTime) startTime = ts;
+    var elapsed = ts - startTime;
+    var progress = Math.min(elapsed / DURATION, 1);
+    var e = easeIn(progress);
+
+    // ── 상단 모래: y만 올라감 (height 고정, clipPath가 넘치는 부분 잘라냄)
+    var topY = TOP_START + (TOP_END - TOP_START) * e;
+    topEl.setAttribute('y', topY);
+    topEl.setAttribute('height', 52);  // 항상 고정
+    if (surfaceEl) surfaceEl.setAttribute('y', topY);
+
+    // ── 하단 모래: polygon 꼭짓점 y값 내림 (135→83)
+    var botApexY = BOT_START + (BOT_END - BOT_START) * e;
+    botEl.setAttribute('points',
+      '44,' + botApexY + ' 12,135 76,135');
+
+    // ── 줄기: 진행 중 표시, 끝나면 사라짐
+    if (streamEl) {
+      streamEl.setAttribute('opacity', progress < 0.9 ? 0.9 : (1 - progress) * 9);
+    }
+
+    if (progress < 1) {
+      requestAnimationFrame(step);
+    } else {
+      // 완료: 상단 완전히 비움, 하단 완전히 채움
+      topEl.setAttribute('y', TOP_END);
+      botEl.setAttribute('points', '44,83 12,135 76,135');
+      if (streamEl) streamEl.setAttribute('opacity', 0);
+    }
+  }
+
+  requestAnimationFrame(step);
+}
+
+function startLoading() {
+  showScreen('sLoading');
+
+  // 모래시계 초기화 후 애니메이션 시작
+  var topEl = document.getElementById('hg-sand-top');
+  var surfEl = document.getElementById('hg-surface');
+  var botEl = document.getElementById('hg-sand-bot');
+  var stEl  = document.getElementById('hg-stream');
+  if (topEl) { topEl.setAttribute('y', '13'); topEl.setAttribute('height', '52'); }
+  if (surfEl){ surfEl.setAttribute('y', '13'); }
+  if (botEl) { botEl.setAttribute('points', '44,135 12,135 76,135'); }
+  if (stEl)  { stEl.setAttribute('opacity', '0.9'); }
+
+  // 한 프레임 뒤에 시작 (DOM 갱신 보장)
+  requestAnimationFrame(function(){ requestAnimationFrame(runHourglass); });
+
+  var msgEl=document.getElementById('loadingMsg'), mi=0;
+  var t=setInterval(function(){ mi++; if(mi<MSGS.length) msgEl.textContent=MSGS[mi]; },700);
+  selectedQs=pickRandom(QS,3); currentIdx=0;
+  setTimeout(function(){ clearInterval(t); showScreen('sQuestion'); renderCard(); },2900);
+}
+
+/* ══ 카드 렌더 ══ */
+function renderCard() {
+  var q=selectedQs[currentIdx], n=currentIdx+1, pct=Math.round(n/3*100);
+  document.getElementById('progLabel').textContent='질문 '+n+' / 3';
+  document.getElementById('progPct').textContent=pct+'%';
+  document.getElementById('progFill').style.width=pct+'%';
+  document.getElementById('qNum').textContent='QUESTION 0'+n;
+
+  var lvEl=document.getElementById('lvBadge'); lvEl.innerHTML='';
+  for(var i=1;i<=4;i++){
+    var d=document.createElement('div');
+    d.className='lv-dot'+(i<=q.lv?' on':'');
+    lvEl.appendChild(d);
+  }
+  document.getElementById('qMain').textContent=q.main;
+  var sEl=document.getElementById('qSubs'); sEl.innerHTML='';
+  for(var j=0;j<q.subs.length;j++){
+    var li=document.createElement('li'); li.className='q-sub';
+    li.innerHTML='<div class="q-sub-dot"><svg viewBox="0 0 8 8" fill="none"><circle cx="4" cy="4" r="2.5" fill="#4B7BF5"/></svg></div><span>'+q.subs[j]+'</span>';
+    sEl.appendChild(li);
+  }
+  // 깜짝등장 배너 유지
+  if(curSurprise){
+    document.getElementById('qBannerPerson').textContent=curSurprise.person;
+    document.getElementById('qBannerMsg').textContent=curSurprise.msg;
+    document.getElementById('qBanner').classList.add('show');
+  }
+  // 카드 애니메이션 재실행
+  var card=document.getElementById('qCard');
+  card.style.animation='none'; void card.offsetWidth;
+  card.style.animation='cardPop 0.5s cubic-bezier(0.34,1.5,0.64,1)';
+}
+
+/* ══ 다음 / 셔플 ══ */
+function nextCard(){
+  if(currentIdx>=2){ showDone(); return; }
+  currentIdx++; renderCard();
+}
+function reshuffleCard(){
+  var used=selectedQs.map(function(q){return q.main;});
+  var pool=QS.filter(function(q){return used.indexOf(q.main)===-1;});
+  if(!pool.length) pool=QS;
+  selectedQs[currentIdx]=pool[rndIdx(pool)];
+  renderCard();
+}
+
+/* ══ 완료 ══ */
+function showDone(){
+  var el=document.getElementById('doneSummary'); el.innerHTML='';
+  for(var i=0;i<selectedQs.length;i++){
+    var d=document.createElement('div'); d.className='sum-card';
+    d.innerHTML='<div class="sum-label">질문 '+(i+1)+'</div><div class="sum-text">'+selectedQs[i].main+'</div>';
+    el.appendChild(d);
+  }
+  showScreen('sDone');
+}
+/* ══ 이메일 수신 폼 JS ══ */
+var emailChecked = false;
+
+function toggleEmailPanel() {
+  var panel  = document.getElementById('emailPanel');
+  var btn    = document.getElementById('emailOpenBtn');
+  var isOpen = panel.classList.contains('open');
+  if (isOpen) {
+    panel.classList.remove('open');
+    btn.classList.remove('open');
+  } else {
+    panel.classList.add('open');
+    btn.classList.add('open');
+    setTimeout(function(){
+      panel.scrollIntoView({ behavior:'smooth', block:'nearest' });
+    }, 320);
+  }
+}
+
+function toggleEmailCheck() {
+  emailChecked = !emailChecked;
+  var cb = document.getElementById('emailCheck');
+  if (emailChecked) cb.classList.add('checked');
+  else              cb.classList.remove('checked');
+  validateEmail();
+}
+
+function validateEmail() {
+  var name  = document.getElementById('emailName').value.trim();
+  var addr  = document.getElementById('emailAddr').value.trim();
+  var btn   = document.getElementById('emailSubmit');
+  var ok    = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(addr);
+  btn.disabled = !(name && ok && emailChecked);
+}
+
+// input 이벤트 바인딩
+document.addEventListener('input', function(e) {
+  if (e.target.id === 'emailName' || e.target.id === 'emailAddr') validateEmail();
+});
+
+function submitEmail() {
+  var name  = document.getElementById('emailName').value.trim();
+  var addr  = document.getElementById('emailAddr').value.trim();
+  var appUrl = 'https://crmc.co.kr/Leadercard/index.html';
+
+  // GAS 웹앱 URL — 배포 후 여기에 입력
+  var GAS_URL = 'YOUR_GAS_WEBAPP_URL_HERE';
+
+  var btn = document.getElementById('emailSubmit');
+  btn.textContent = '전송 중...';
+  btn.disabled = true;
+
+  var payload = {
+    name:      name,
+    email:     addr,
+    agreed:    'Y',
+    agreedAt:  new Date().toISOString(),
+    appUrl:    appUrl,
+    q1: selectedQs[0] ? selectedQs[0].main : '',
+    q2: selectedQs[1] ? selectedQs[1].main : '',
+    q3: selectedQs[2] ? selectedQs[2].main : '',
+    timestamp: new Date().toISOString()
+  };
+
+  function showEmailDone() {
+    document.getElementById('emailFormInner').style.display = 'none';
+    var done = document.getElementById('emailDone');
+    done.style.display = 'block';
+    document.getElementById('emailDoneName').textContent =
+      name + '님께 메일을 보냈습니다! 🎉';
+  }
+
+  if (GAS_URL === 'YOUR_GAS_WEBAPP_URL_HERE') {
+    // 테스트 모드
+    console.log('[리더카드 구독 테스트]', JSON.stringify(payload));
+    showEmailDone();
+    return;
+  }
+
+  fetch(GAS_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(function() { showEmailDone(); })
+  .catch(function() { showEmailDone(); });
+}
+
+function resetEmailForm() {
+  emailChecked = false;
+  var panel = document.getElementById('emailPanel');
+  var btn   = document.getElementById('emailOpenBtn');
+  if (panel) panel.classList.remove('open');
+  if (btn)   btn.classList.remove('open');
+
+  var inner = document.getElementById('emailFormInner');
+  var done  = document.getElementById('emailDone');
+  if (inner) inner.style.display = '';
+  if (done)  done.style.display  = 'none';
+
+  var ni = document.getElementById('emailName');
+  var ai = document.getElementById('emailAddr');
+  if (ni) ni.value = '';
+  if (ai) ai.value = '';
+
+  var cb  = document.getElementById('emailCheck');
+  var sub = document.getElementById('emailSubmit');
+  if (cb)  cb.classList.remove('checked');
+  if (sub) { sub.disabled = true; sub.textContent = '✉️ 메일로 받기'; }
+}
+
+function restartApp(){
+  curSurprise = null;
+  document.getElementById('srStart').classList.remove('show');
+  resetEmailForm();
+  showScreen('sStart');
+}
+</script>
+</body>
+</html>
