@@ -1056,7 +1056,6 @@
     </div>
   </footer>
 
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
   <script>
     /* ── 스크롤 애니메이션 ── */
     var observer = new IntersectionObserver(function (entries) {
@@ -1080,12 +1079,15 @@
     /* ★ GAS 웹앱 배포 후 아래 URL 교체 */
     var GAS_URL = 'https://script.google.com/macros/s/AKfycbxqVRzZXPWOltB27IwBYKcPFsfcTLM73hN-4ipnIRFix7ybUjxKKyw0qE2B_zrCMPvi/exec';
 
-    document.addEventListener('DOMContentLoaded', function () {
+    /* ── 폼 전체 로직 (즉시 실행 — 스코프 통일) ── */
+    (function () {
       var btn     = document.getElementById('btn-submit');
       var chk     = document.getElementById('chk-agree');
       var inpName = document.getElementById('inp-name');
       var inpOrg  = document.getElementById('inp-org');
       var inpMail = document.getElementById('inp-contact');
+      var formWrap  = document.getElementById('formWrap');
+      var successMsg = document.getElementById('successMsg');
 
       /* ── 버튼 활성화 조건 체크 ── */
       function checkReady() {
@@ -1093,72 +1095,102 @@
                && inpOrg.value.trim() !== ''
                && inpMail.value.trim() !== ''
                && chk.checked;
-        if (ok) {
-          btn.classList.add('ready');
-          btn.textContent = '📬 무료 전자책 신청하기';
-        } else {
-          btn.classList.remove('ready');
-          btn.textContent = '📬 무료 전자책 신청하기';
-        }
+        btn.classList.toggle('ready', ok);
       }
 
-      [inpName, inpOrg, inpMail].forEach(function(el){
+      [inpName, inpOrg, inpMail].forEach(function(el) {
         el.addEventListener('input', checkReady);
       });
       chk.addEventListener('change', checkReady);
 
-      btn.addEventListener('click', submitForm);
-    });
+      /* ── 폼 제출 ── */
+      btn.addEventListener('click', function () {
+        if (!btn.classList.contains('ready')) return;
 
-    function submitForm() {
-      var btn   = document.getElementById('btn-submit');
-      if (!btn.classList.contains('ready')) return;
+        var name  = inpName.value.trim();
+        var org   = inpOrg.value.trim();
+        var email = inpMail.value.trim();
 
-      var name  = document.getElementById('inp-name').value.trim();
-      var org   = document.getElementById('inp-org').value.trim();
-      var email = document.getElementById('inp-contact').value.trim();
+        var emailReg = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailReg.test(email)) {
+          alert('올바른 이메일 주소를 입력해 주세요.\n예) example@korea.go.kr');
+          return;
+        }
 
-      var emailReg = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailReg.test(email)) {
-        alert('올바른 이메일 주소를 입력해 주세요.\n예) example@korea.go.kr');
-        return;
-      }
+        /* 전송 중 상태 */
+        btn.classList.remove('ready');
+        btn.textContent = '⏳ 전송 중...';
+        btn.disabled = true;
 
-      /* 전송 중 상태 */
-      btn.classList.remove('ready');
-      btn.textContent = '⏳ 전송 중...';
-      btn.disabled = true;
-
-      /* ★ no-cors: CORS 우회 — 응답 읽기 불가하나 요청은 GAS에 도달 */
-      fetch(GAS_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({
+        /* GAS POST — iframe 우회 방식 (CORS 완전 회피) */
+        var payload = JSON.stringify({
           name: name, org: org, email: email,
           agreed: true,
           ts: new Date().toISOString()
-        })
-      })
-      .then(function () {
-        /* no-cors는 항상 opaque → 성공으로 처리 */
-        document.getElementById('formWrap').style.display = 'none';
-        var msg = document.getElementById('successMsg');
-        msg.style.display = 'block';
-        /* 성공 메시지 박스 배경 변경 */
-        var card = msg.closest('.form-card');
-        if (card) {
-          card.style.background = 'rgba(5,150,105,0.18)';
-          card.style.borderColor = 'rgba(52,211,153,0.4)';
-        }
-      })
-      .catch(function () {
-        alert('전송 중 오류가 발생했습니다.\n잠시 후 다시 시도해 주세요.\n(문의: crmc.co.kr)');
-        btn.classList.add('ready');
-        btn.textContent = '📬 무료 전자책 신청하기';
-        btn.disabled = false;
+        });
+
+        /* 숨김 iframe으로 응답 받아서 브라우저 리다이렉트 차단 우회 */
+        var iframeId = 'gas-iframe-' + Date.now();
+        var iframe = document.createElement('iframe');
+        iframe.name = iframeId;
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
+
+        var form = document.createElement('form');
+        form.method = 'POST';
+        form.action = GAS_URL;
+        form.target = iframeId;
+        form.style.display = 'none';
+
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'payload';
+        input.value = payload;
+        form.appendChild(input);
+        document.body.appendChild(form);
+
+        /* iframe 로드 완료 = GAS 수신 완료 */
+        iframe.onload = function () {
+          formWrap.style.display = 'none';
+          successMsg.style.display = 'block';
+          var card = successMsg.closest('.form-card');
+          if (card) {
+            card.style.background = 'rgba(5,150,105,0.18)';
+            card.style.borderColor = 'rgba(52,211,153,0.4)';
+          }
+          document.body.removeChild(form);
+          document.body.removeChild(iframe);
+        };
+
+        /* 타임아웃 5초 — iframe.onload 미발화 대비 */
+        setTimeout(function () {
+          if (formWrap.style.display !== 'none') {
+            formWrap.style.display = 'none';
+            successMsg.style.display = 'block';
+            var card = successMsg.closest('.form-card');
+            if (card) {
+              card.style.background = 'rgba(5,150,105,0.18)';
+              card.style.borderColor = 'rgba(52,211,153,0.4)';
+            }
+          }
+        }, 5000);
+
+        form.submit();
       });
-    }
+
+    })();
 
     /* ── 앵커 부드러운 스크롤 ── */
-    document.querySelect
+    document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+      a.addEventListener('click', function(e) {
+        var target = document.querySelector(a.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+
+  </script>
+</body>
+</html>
