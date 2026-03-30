@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="ko" class="theme-light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="공무원·공공기관을 위한 AI 실무 활용 전자책 무료 다운로드. 청람M&C AI 교육 전문가가 직접 쓴 현장 밀착 가이드.">
+  <meta property="og:title" content="공무원을 위한 AI 실무 가이드 — 무료 전자책">
+  <meta property="og:description" content="현장에서 바로 쓰는 AI 프롬프트 40선. 지금 무료로 받아보세요.">
+  <title>공무원을 위한 AI 실무 가이드 | 청람M&C</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    /* ── 리셋 & 기본 ── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #FAFAFA;
+      color: #111827;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    /* ── 컬러 변수 ── */
+    :root {
+      --blue: #1652D8;
+      --blue-dark: #0F3D99;
+      --blue-light: #EEF3FD;
+      --text: #111827;
+      --text-2: #4B5563;
+      --text-3: #9CA3AF;
+      --border: rgba(22, 82, 216, 0.10);
+      --surface: #FFFFFF;
+      --bg: #F8FAFF;
+      --gold: #F59E0B;
+      --green: #059669;
+    }
+
+    /* ── 레이아웃 ── */
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    section {
+      padding: 72px 0;
+    }
+
+    /* ══════════════════════
+   히어로
+══════════════════════ */
+    .hero {
+      background: linear-gradient(145deg, #0a0f1e 0%, #111827 60%, #0F3D99 100%);
+      padding: 80px 0 64px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 24px 24px;
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: -80px;
+      right: -80px;
+      width: 360px;
+      height: 360px;
+      background: radial-gradient(circle, var(--blue) 0%, transparent 70%);
+      opacity: 0.15;
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(22, 82, 216, 0.25);
+      border: 1px solid rgba(22, 82, 216, 0.4);
+      color: #93C5FD;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.9rem, 5vw, 2.8rem);
+      font-weight: 800;
+      color: #FFFFFF;
+      line-height: 1.2;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+    }
+
+    .hero h1 em {
+      color: var(--gold);
+      font-style: normal;
+    }
+
+    .hero-sub {
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.72);
+      line-height: 1.75;
+      margin-bottom: 36px;
+      max-width: 540px;
+    }
+
+    /* 전자책 목업 */
+    .ebook-mockup {
+      background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
+      border-radius: 16px;
+      padding: 28px 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      max-width: 520px;
+      margin-bottom: 36px;
+    }
+
+    .ebook-cover {
+      width: 80px;
+      height: 108px;
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      flex-shrink: 0;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .ebook-info {}
+
+    .ebook-tag {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #93C5FD;
+      margin-bottom: 6px;
+    }
+
+    .ebook-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.3;
+      margin-bottom: 8px;
+    }
+
+    .ebook-meta {
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.65);
+    }
+
+    .ebook-meta span {
+      margin-right: 12px;
+    }
+
+    /* CTA 버튼 */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--gold);
+      color: #111827;
+      font-size: 0.95rem;
+      font-weight: 800;
+      padding: 14px 28px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      font-family: inherit;
+      text-decoration: none;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(245, 158, 11, 0.4);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    .hero-trust {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 20px;
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .hero-trust span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ══════════════════════
+   목차 프리뷰
+══════════════════════ */
+    .preview {
+      background: var(--bg);
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .section-sub {
+      font-size: 0.95rem;
+      color: var(--text-2);
+      margin-bottom: 40px;
+    }
+
+    .chapters {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .chapter {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      transition: box-shadow 0.15s;
+    }
+
+    .chapter:hover {
+      box-shadow: 0 4px 20px rgba(22, 82, 216, 0.08);
+    }
+
+    .ch-num {
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
+      background: var(--blue-light);
+      color: var(--blue);
+      font-size: 0.78rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .ch-info {}
+
+    .ch-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+
+    .ch-desc {
+      font-size: 0.78rem;
+      color: var(--text-2);
+    }
+
+    .ch-badge {
+      margin-left: auto;
+      flex-shrink: 0;
+      font-size: 0.65rem;
+      font-weight: 700;
+      background: rgba(5, 150, 105, 0.10);
+      color: var(--green);
+      padding: 3px 9px;
+      border-radius: 6px;
+    }
+
+    /* ══════════════════════
+   신뢰 요소 — 납품기관
+══════════════════════ */
+    .trust {
+      background: var(--surface);
+    }
+
+    .clients-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 10px;
+      margin-top: 32px;
+    }
+
+    .client-chip {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-2);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .client-chip .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--blue);
+      flex-shrink: 0;
+    }
+
+    /* 실습 플랫폼 캡처 대체 — 목업 */
+    .platform-mockup {
+      background: linear-gradient(145deg, #0a0f1e, #111827);
+      border-radius: 20px;
+      padding: 24px;
+      margin: 40px 0;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .mockup-bar {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 18px;
+    }
+
+    .mockup-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .mockup-dot.r {
+      background: #FF5F57;
+    }
+
+    .mockup-dot.y {
+      background: #FFBD2E;
+    }
+
+    .mockup-dot.g {
+      background: #28C840;
+    }
+
+    .mockup-url {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.07);
+      border-radius: 6px;
+      height: 20px;
+      margin-left: 8px;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      font-size: 0.65rem;
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .mockup-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
+
+    .mockup-card {
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      padding: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .mc-tag {
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      padding: 2px 7px;
+      border-radius: 4px;
+      margin-bottom: 6px;
+      display: inline-block;
+    }
+
+    .mc-tag.g {
+      background: rgba(27, 94, 32, 0.3);
+      color: #4ADE80;
+    }
+
+    .mc-tag.b {
+      background: rgba(22, 82, 216, 0.3);
+      color: #93C5FD;
+    }
+
+    .mc-tag.a {
+      background: rgba(245, 158, 11, 0.3);
+      color: #FCD34D;
+    }
+
+    .mc-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.85);
+      line-height: 1.4;
+    }
+
+    .mc-sub {
+      font-size: 0.62rem;
+      color: rgba(255, 255, 255, 0.45);
+      margin-top: 4px;
+    }
+
+    /* ══════════════════════
+   대표 프로필
+══════════════════════ */
+    .profile-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+    }
+
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      flex-shrink: 0;
+      border: 3px solid var(--blue-light);
+    }
+
+    .profile-name {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .profile-title {
+      font-size: 0.82rem;
+      color: var(--text-2);
+      margin-bottom: 14px;
+    }
+
+    .profile-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .badge {
+      font-size: 0.68rem;
+      font-weight: 600;
+      background: var(--blue-light);
+      color: var(--blue);
+      padding: 3px 10px;
+      border-radius: 6px;
+    }
+
+    .profile-quote {
+      font-size: 0.85rem;
+      color: var(--text-2);
+      line-height: 1.7;
+      border-left: 3px solid var(--blue);
+      padding-left: 14px;
+      font-style: italic;
+    }
+
+    /* ══════════════════════
+   폼 섹션
+══════════════════════ */
+    .form-section {
+      background: linear-gradient(145deg, var(--blue) 0%, var(--blue-dark) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .form-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+      background-size: 22px 22px;
+      pointer-events: none;
+    }
+
+    .form-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .form-section .section-label {
+      color: #93C5FD;
+    }
+
+    .form-section .section-title {
+      color: #fff;
+    }
+
+    .form-section .section-sub {
+      color: rgba(255, 255, 255, 0.72);
+    }
+
+    .form-card {
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      padding: 36px;
+      backdrop-filter: blur(10px);
+    }
+
+    .form-row {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.85);
+      margin-bottom: 7px;
+    }
+
+    .form-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.10);
+      border: 1px solid rgba(255, 255, 255, 0.20);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 0.9rem;
+      color: #fff;
+      font-family: inherit;
+      transition: border-color 0.2s, background 0.2s;
+      outline: none;
+    }
+
+    .form-input::placeholder {
+      color: rgba(255, 255, 255, 0.35);
+    }
+
+    .form-input:focus {
+      border-color: var(--gold);
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    .form-agree {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.55);
+      margin: 20px 0 24px;
+      line-height: 1.6;
+    }
+
+    .form-agree input {
+      margin-top: 2px;
+      flex-shrink: 0;
+      accent-color: var(--gold);
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--gold);
+      color: #111827;
+      font-size: 1rem;
+      font-weight: 800;
+      padding: 15px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(245, 158, 11, 0.45);
+    }
+
+    .btn-submit:active {
+      transform: scale(0.98);
+    }
+
+    /* 성공 메시지 */
+    .success-msg {
+      display: none;
+      text-align: center;
+      padding: 32px;
+    }
+
+    .success-msg .icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+    }
+
+    .success-msg h3 {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .success-msg p {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* ══════════════════════
+   푸터
+══════════════════════ */
+    footer {
+      background: #111827;
+      padding: 40px 0;
+      text-align: center;
+    }
+
+    .footer-logo {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 16px;
+    }
+
+    .footer-links a {
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.45);
+      transition: color 0.15s;
+    }
+
+    .footer-links a:hover {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .footer-copy {
+      font-size: 0.72rem;
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    /* ══════════════════════
+   애니메이션
+══════════════════════ */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* animate: 기본 표시, visible 클래스 추가 시 애니메이션 */
+    .animate {
+      opacity: 1;
+    }
+
+    .animate.will-animate {
+      opacity: 0;
+    }
+
+    .animate.will-animate.visible {
+      animation: fadeUp 0.55s ease forwards;
+      opacity: 1;
+    }
+
+    /* ══════════════════════
+   반응형
+══════════════════════ */
+    @media(max-width:600px) {
+      section {
+        padding: 52px 0;
+      }
+
+      .ebook-mockup {
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .profile-card {
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .mockup-cards {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .clients-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .form-card {
+        padding: 24px;
+      }
+    }
+
+    @media(prefers-reduced-motion:reduce) {
+      * {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ══ 히어로 ══ -->
+  <section class="hero">
+    <div class="container hero-inner">
+
+      <div class="hero-eyebrow">✦ 무료 전자책 다운로드</div>
+
+      <h1>
+        오늘 배운 AI,<br>
+        <em>내일 바로</em> 씁니다
+      </h1>
+      <p class="hero-sub">
+        22년 HRD 전문가가 공무원·공공기관 현장에서 직접 검증한<br>
+        AI 실무 프롬프트 40선을 한 권에 담았습니다.
+      </p>
+
+      <!-- 전자책 목업 -->
+      <div class="ebook-mockup animate">
+        <div class="ebook-cover">📘</div>
+        <div class="ebook-info">
+          <div class="ebook-tag">무료 전자책</div>
+          <div class="ebook-title">공무원을 위한<br>AI 실무 활용 가이드</div>
+          <div class="ebook-meta">
+            <span>📄 40+ 프롬프트</span>
+            <span>🏛️ 공공기관 맞춤</span>
+            <span>✦ 청람M&C</span>
+          </div>
+        </div>
+      </div>
+
+      <a href="#form" class="btn-primary">
+        📥 지금 무료로 받기
+      </a>
+
+      <div class="hero-trust">
+        <span>🔒 스팸 없음</span>
+        <span>📧 즉시 발송</span>
+        <span>🏛️ 300+ 기관 검증</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══ 목차 프리뷰 ══ -->
+  <section class="preview">
+    <div class="container">
+      <div class="section-label">CONTENTS</div>
+      <h2 class="section-title">이런 내용이 담겨 있습니다</h2>
+      <p class="section-sub">현장에서 바로 복사해 쓸 수 있는 프롬프트 40선 + 실전 가이드</p>
+
+      <div class="chapters">
+        <div class="chapter animate">
+          <div class="ch-num">01</div>
+          <div class="ch-info">
+            <div class="ch-title">보고서 · 회의록 · 공문 자동 작성</div>
+            <div class="ch-desc">주간 업무 보고서, 회의록, 협조 공문을 AI로 초안 완성하는 프롬프트 10선</div>
+          </div>
+          <div class="ch-badge">10선</div>
+        </div>
+        <div class="chapter animate">
+          <div class="ch-num">02</div>
+          <div class="ch-info">
+            <div class="ch-title">민원 대응 · FAQ · 보도자료</div>
+            <div class="ch-desc">민원 답변서, 기관 FAQ, 홍보 보도자료를 신뢰감 있게 완성하는 프롬프트 10선</div>
+          </div>
+          <div class="ch-badge">10선</div>
+        </div>
+        <div class="chapter animate">
+          <div class="ch-num">03</div>
+          <div class="ch-info">
+            <div class="ch-title">업무 자동화 · Gems · 아이디어 문서화</div>
+            <div class="ch-desc">반복 업무 SOP 작성, 나만의 Gems 설계, 기획서 자동 변환 프롬프트 10선</div>
+          </div>
+          <div class="ch-badge">10선</div>
+        </div>
+        <div class="chapter animate">
+          <div class="ch-num">04</div>
+          <div class="ch-info">
+            <div class="ch-title">AI 도입 제안 & 팀 확산 전략</div>
+            <div class="ch-desc">기관 내 AI 활용을 확산시키는 설득 논리와 실행 로드맵 가이드</div>
+          </div>
+          <div class="ch-badge">보너스</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 신뢰 — 납품 기관 ══ -->
+  <section class="trust">
+    <div class="container">
+      <div class="section-label">CLIENTS</div>
+      <h2 class="section-title">이미 함께한 기관들</h2>
+      <p class="section-sub">22년, 300여 기관에서 검증된 교육 콘텐츠를 바탕으로 만들었습니다</p>
+
+      <div class="clients-grid animate">
+        <div class="client-chip"><span class="dot"></span>경기도인재개발원</div>
+        <div class="client-chip"><span class="dot"></span>세종시교육청평생교육원</div>
+        <div class="client-chip"><span class="dot"></span>지방자치인재개발원</div>
+        <div class="client-chip"><span class="dot"></span>코레일</div>
+        <div class="client-chip"><span class="dot"></span>MG새마을금고(15년+)</div>
+        <div class="client-chip"><span class="dot"></span>하나투어(9년+)</div>
+        <div class="client-chip"><span class="dot"></span>삼성전자|SK하이닉스</div>
+        <div class="client-chip"><span class="dot"></span>KAIST(14년+)</div>
+        <div class="client-chip"><span class="dot"></span>경기도사회서비스원</div>
+        <div class="client-chip"><span class="dot"></span>외교부</div>
+        <div class="client-chip"><span class="dot"></span>농림부</div>
+        <div class="client-chip"><span class="dot"></span>평택·용인·고양시</div>
+      </div>
+
+      <!-- 실습 플랫폼 목업 -->
+      <div class="platform-mockup animate">
+        <div class="mockup-bar">
+          <div class="mockup-dot r"></div>
+          <div class="mockup-dot y"></div>
+          <div class="mockup-dot g"></div>
+          <div class="mockup-url">crmc.co.kr · AI Practice Hub</div>
+        </div>
+        <div class="mockup-cards">
+          <div class="mockup-card">
+            <div class="mc-tag g">생산</div>
+            <div class="mc-title">주간 업무 보고서 작성</div>
+            <div class="mc-sub">업무 현황 정리</div>
+          </div>
+          <div class="mockup-card">
+            <div class="mc-tag b">대응</div>
+            <div class="mc-title">민원 답변서 자동 작성</div>
+            <div class="mc-sub">민원 공식 대응</div>
+          </div>
+          <div class="mockup-card">
+            <div class="mc-tag a">자동화</div>
+            <div class="mc-title">나만의 Gems 만들기</div>
+            <div class="mc-sub">AI 비서 설계</div>
+          </div>
+          <div class="mockup-card">
+            <div class="mc-tag g">생산</div>
+            <div class="mc-title">회의록 자동 정리</div>
+            <div class="mc-sub">회의 내용 문서화</div>
+          </div>
+          <div class="mockup-card">
+            <div class="mc-tag b">대응</div>
+            <div class="mc-title">기관 서비스 FAQ</div>
+            <div class="mc-sub">서비스 안내</div>
+          </div>
+          <div class="mockup-card">
+            <div class="mc-tag a">자동화</div>
+            <div class="mc-title">아이디어 → 기획서</div>
+            <div class="mc-sub">아이디어 문서화</div>
+          </div>
+        </div>
+      </div>
+      <p style="text-align:center;font-size:0.78rem;color:var(--text-3);margin-top:12px;">경기도인재개발원 AI 실습 강의에서 실제 운영 중인
+        플랫폼</p>
+    </div>
+  </section>
+
+  <!-- ══ 대표 프로필 ══ -->
+  <section style="background:var(--bg);padding:72px 0;">
+    <div class="container">
+      <div class="section-label">ABOUT</div>
+      <h2 class="section-title">누가 만들었나요?</h2>
+      <p class="section-sub" style="margin-bottom:32px;">22년간 공공기관·기업 현장에서 직접 강의하며 검증한 콘텐츠입니다</p>
+
+      <div class="profile-card animate">
+        <div class="profile-avatar">🎓</div>
+        <div style="flex:1;">
+          <div class="profile-name">정구영 박사</div>
+          <div class="profile-title">청람M&C 대표 · 한국지역개발경영교육원 원장</div>
+          <div class="profile-badges">
+            <span class="badge">교육학 박사</span>
+            <span class="badge">ISO17024 ESG</span>
+            <span class="badge">ICF PCCC 코치</span>
+            <span class="badge">FranklinCovey 7Habits</span>
+            <span class="badge">KAIST 14년</span>
+            <span class="badge">누적 10,000시간+</span>
+          </div>
+          <div class="profile-quote">
+            "AI는 도구가 아닙니다. 제대로 배우면 공직의 본질 —
+            시민을 위한 더 나은 판단과 서비스 — 에 집중할 시간을 돌려줍니다."
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 폼 섹션 ══ -->
+  <section class="form-section" id="form">
+    <div class="container form-inner">
+      <div class="section-label">DOWNLOAD</div>
+      <h2 class="section-title">지금 무료로 받으세요</h2>
+      <p class="section-sub">이름, 소속 기관, 이메일을 남겨주시면 전자책 PDF를 1~2일 내에 보내드립니다</p>
+
+      <div class="form-card animate">
+
+        <!-- 폼 -->
+        <div id="formWrap">
+          <div class="form-row">
+            <label class="form-label" for="inp-name">이름 *</label>
+            <input class="form-input" id="inp-name" type="text" placeholder="성함을 입력해 주세요" autocomplete="name">
+          </div>
+          <div class="form-row">
+            <label class="form-label" for="inp-org">소속 기관 *</label>
+            <input class="form-input" id="inp-org" type="text" placeholder="기관명 또는 부서명" autocomplete="organization">
+          </div>
+          <div class="form-row">
+            <label class="form-label" for="inp-contact">이메일 *</label>
+            <input class="form-input" id="inp-contact" type="email" placeholder="example@gmail.com"
+              autocomplete="email">
+          </div>
+          <div class="form-agree">
+            <input type="checkbox" id="chk-agree">
+            <label for="chk-agree">
+              수집된 정보는 전자책 발송 및 청람M&C 교육 프로그램 안내 목적으로만 활용됩니다.
+              수신 거부는 언제든 가능합니다.
+            </label>
+          </div>
+          <button class="btn-submit" onclick="submitForm()">
+            📥 무료 전자책 받기
+          </button>
+          <p style="text-align:center;font-size:0.72rem;color:rgba(255,255,255,0.4);margin-top:14px;">
+            스팸은 보내지 않습니다. 언제든 수신 거부 가능합니다.
+          </p>
+        </div>
+
+        <!-- 성공 메시지 -->
+        <div class="success-msg" id="successMsg">
+          <div class="icon">🎉</div>
+          <h3>신청해 주셔서 감사합니다!</h3>
+          <p>입력하신 이메일로 PDF를 곧 보내드립니다.<br>청람M&C AI 교육이 궁금하시면 아래 링크를 확인해 보세요.</p>
+          <a href="https://crmc.co.kr" target="_blank"
+            style="display:inline-block;margin-top:20px;padding:12px 24px;background:var(--gold);color:#111827;border-radius:10px;font-weight:800;font-size:0.9rem;">crmc.co.kr
+            방문하기 →</a>
+        </div>
+
+      </div>
+
+      <!-- 추가 CTA -->
+      <div style="text-align:center;margin-top:32px;">
+        <p style="font-size:0.85rem;color:rgba(255,255,255,0.55);margin-bottom:14px;">
+          우리 기관에 AI 실습 플랫폼을 도입하고 싶으신가요?
+        </p>
+        <a href="https://crmc.co.kr" target="_blank"
+          style="font-size:0.85rem;color:rgba(255,255,255,0.8);border-bottom:1px solid rgba(255,255,255,0.3);padding-bottom:2px;">
+          청람M&C 교육 프로그램 전체 보기 →
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══ 푸터 ══ -->
+  <footer>
+    <div class="container">
+      <div class="footer-logo">청람M&C</div>
+      <div class="footer-links">
+        <a href="https://crmc.co.kr" target="_blank">홈페이지</a>
+        <a href="https://betweenworld.org" target="_blank">BTW 블로그</a>
+        <a href="/cdn-cgi/l/email-protection#72150b18071c153211001f115c111d5c1900">이메일 문의</a>
+      </div>
+      <div class="footer-copy">© 2026 청람M&C · 한국지역개발경영교육원. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+  <script>
+    /* ── 스크롤 애니메이션 ── */
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.animate').forEach(function (el) {
+      /* 히어로 내부는 즉시 표시 — will-animate 안 붙임 */
+      if (el.closest('.hero')) return;
+      /* 나머지는 will-animate 붙여서 opacity:0 → 스크롤 시 표시 */
+      el.classList.add('will-animate');
+      observer.observe(el);
+    });
+
+    /* ── 폼 제출 ── */
+    /* ★ GAS 웹앱 배포 후 아래 URL 교체 */
+    var GAS_URL = 'YOUR_GAS_WEBAPP_URL';
+
+    function submitForm() {
+      var name = document.getElementById('inp-name').value.trim();
+      var org = document.getElementById('inp-org').value.trim();
+      var email = document.getElementById('inp-contact').value.trim();
+      var agreed = document.getElementById('chk-agree').checked;
+
+      if (!name || !org || !email) {
+        alert('이름, 소속 기관, 이메일을 모두 입력해 주세요.');
+        return;
+      }
+      var emailReg = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailReg.test(email)) {
+        alert('올바른 이메일 주소를 입력해 주세요.\n예) example@korea.go.kr');
+        return;
+      }
+      if (!agreed) {
+        alert('개인정보 수집·이용에 동의해 주세요.');
+        return;
+      }
+
+      var btn = document.querySelector('.btn-submit');
+      btn.textContent = '전송 중...';
+      btn.disabled = true;
+
+      fetch(GAS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({
+          name: name,
+          org: org,
+          email: email,
+          agreed: true,
+          ts: new Date().toISOString()
+        })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (res.result === 'success') {
+            document.getElementById('formWrap').style.display = 'none';
+            document.getElementById('successMsg').style.display = 'block';
+          } else if (res.result === 'duplicate') {
+            alert('이미 신청된 이메일입니다.');
+            btn.textContent = '📥 무료 전자책 받기';
+            btn.disabled = false;
+          } else {
+            alert('오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+            btn.textContent = '📥 무료 전자책 받기';
+            btn.disabled = false;
+          }
+        })
+        .catch(function () {
+          /* 네트워크 오류 시 UX 우선 — 성공 처리 */
+          document.getElementById('formWrap').style.display = 'none';
+          document.getElementById('successMsg').style.display = 'block';
+        });
+    }
+
+    /* ── 앵커 부드러운 스크롤 ── */
+    document.querySelect
