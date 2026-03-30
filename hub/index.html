@@ -1073,61 +1073,51 @@
     });
 
     function submitForm() {
-      var name = document.getElementById('inp-name').value.trim();
-      var org = document.getElementById('inp-org').value.trim();
-      var email = document.getElementById('inp-contact').value.trim();
-      var agreed = document.getElementById('chk-agree').checked;
+  var name   = document.getElementById('inp-name').value.trim();
+  var org    = document.getElementById('inp-org').value.trim();
+  var email  = document.getElementById('inp-contact').value.trim();
+  var agreed = document.getElementById('chk-agree').checked;
 
-      if (!name || !org || !email) {
-        alert('이름, 소속 기관, 이메일을 모두 입력해 주세요.');
-        return;
-      }
-      var emailReg = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailReg.test(email)) {
-        alert('올바른 이메일 주소를 입력해 주세요.\n예) example@korea.go.kr');
-        return;
-      }
-      if (!agreed) {
-        alert('개인정보 수집·이용에 동의해 주세요.');
-        return;
-      }
+  if (!name || !org || !email) {
+    alert('이름, 소속 기관, 이메일을 모두 입력해 주세요.');
+    return;
+  }
+  var emailReg = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailReg.test(email)) {
+    alert('올바른 이메일 주소를 입력해 주세요.\n예) example@korea.go.kr');
+    return;
+  }
+  if (!agreed) {
+    alert('개인정보 수집·이용에 동의해 주세요.');
+    return;
+  }
 
-      var btn = document.querySelector('.btn-submit');
-      btn.textContent = '전송 중...';
-      btn.disabled = true;
+  var btn = document.querySelector('.btn-submit');
+  btn.textContent = '전송 중...';
+  btn.disabled = true;
 
-      fetch(GAS_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({
-          name: name,
-          org: org,
-          email: email,
-          agreed: true,
-          ts: new Date().toISOString()
-        })
-      })
-        .then(function (r) { return r.json(); })
-        .then(function (res) {
-          if (res.result === 'success') {
-            document.getElementById('formWrap').style.display = 'none';
-            document.getElementById('successMsg').style.display = 'block';
-          } else if (res.result === 'duplicate') {
-            alert('이미 신청된 이메일입니다.');
-            btn.textContent = '📬 무료 전자책 신청하기';
-            btn.disabled = false;
-          } else {
-            alert('오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
-            btn.textContent = '📬 무료 전자책 신청하기';
-            btn.disabled = false;
-          }
-        })
-        .catch(function (err) {
-          alert('전송 중 오류가 발생했습니다.\n잠시 후 다시 시도해 주세요.\n(문의: crmc.co.kr)');
-          btn.textContent = '📬 무료 전자책 신청하기';
-          btn.disabled = false;
-        });
-    }
-
+  // ★ no-cors 모드: 응답을 읽을 수 없지만 요청은 전달됨
+  fetch(GAS_URL, {
+    method: 'POST',
+    mode: 'no-cors',                          // ← 핵심 변경
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({
+      name: name, org: org, email: email,
+      agreed: true,
+      ts: new Date().toISOString()
+    })
+  })
+  .then(function() {
+    // no-cors는 항상 opaque response → 무조건 성공 처리
+    document.getElementById('formWrap').style.display = 'none';
+    document.getElementById('successMsg').style.display = 'block';
+  })
+  .catch(function() {
+    // 네트워크 완전 실패 시만 여기 도달
+    alert('전송 중 오류가 발생했습니다.\n잠시 후 다시 시도해 주세요.\n(문의: crmc.co.kr)');
+    btn.textContent = '📬 무료 전자책 신청하기';
+    btn.disabled = false;
+  });
+}
     /* ── 앵커 부드러운 스크롤 ── */
     document.querySelect
