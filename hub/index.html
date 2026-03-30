@@ -620,25 +620,40 @@
 
     .btn-submit {
       width: 100%;
-      background: var(--gold);
-      color: #111827;
+      background: rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.35);
       font-size: 1rem;
       font-weight: 800;
       padding: 15px;
       border-radius: 12px;
-      border: none;
-      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.2);
+      cursor: not-allowed;
       font-family: inherit;
-      transition: transform 0.15s, box-shadow 0.15s;
+      transition: all 0.2s ease;
+      pointer-events: none;
     }
 
-    .btn-submit:hover {
+    .btn-submit.ready {
+      background: var(--gold);
+      color: #111827;
+      border: none;
+      cursor: pointer;
+      pointer-events: auto;
+    }
+
+    .btn-submit.ready:hover {
       transform: translateY(-2px);
       box-shadow: 0 8px 28px rgba(245, 158, 11, 0.45);
     }
 
-    .btn-submit:active {
+    .btn-submit.ready:active {
       transform: scale(0.98);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      pointer-events: none;
     }
 
     /* 성공 메시지 */
@@ -1035,7 +1050,7 @@
       <div class="footer-links">
         <a href="https://crmc.co.kr" target="_blank">홈페이지</a>
         <a href="https://betweenworld.org" target="_blank">BTW 블로그</a>
-        <a href="/cdn-cgi/l/email-protection#72150b18071c153211001f115c111d5c1900">이메일 문의</a>
+        <a href="https://www.crmc.co.kr/cheongram_proposal_v2.html" target="_blank">협업 문의</a>
       </div>
       <div class="footer-copy">© 2026 청람M&C · 한국지역개발경영교육원. All rights reserved.</div>
     </div>
@@ -1066,58 +1081,84 @@
     var GAS_URL = 'https://script.google.com/macros/s/AKfycbxqVRzZXPWOltB27IwBYKcPFsfcTLM73hN-4ipnIRFix7ybUjxKKyw0qE2B_zrCMPvi/exec';
 
     document.addEventListener('DOMContentLoaded', function () {
-      var submitBtn = document.getElementById('btn-submit');
-      if (submitBtn) {
-        submitBtn.addEventListener('click', submitForm);
+      var btn     = document.getElementById('btn-submit');
+      var chk     = document.getElementById('chk-agree');
+      var inpName = document.getElementById('inp-name');
+      var inpOrg  = document.getElementById('inp-org');
+      var inpMail = document.getElementById('inp-contact');
+
+      /* ── 버튼 활성화 조건 체크 ── */
+      function checkReady() {
+        var ok = inpName.value.trim() !== ''
+               && inpOrg.value.trim() !== ''
+               && inpMail.value.trim() !== ''
+               && chk.checked;
+        if (ok) {
+          btn.classList.add('ready');
+          btn.textContent = '📬 무료 전자책 신청하기';
+        } else {
+          btn.classList.remove('ready');
+          btn.textContent = '📬 무료 전자책 신청하기';
+        }
       }
+
+      [inpName, inpOrg, inpMail].forEach(function(el){
+        el.addEventListener('input', checkReady);
+      });
+      chk.addEventListener('change', checkReady);
+
+      btn.addEventListener('click', submitForm);
     });
 
     function submitForm() {
-  var name   = document.getElementById('inp-name').value.trim();
-  var org    = document.getElementById('inp-org').value.trim();
-  var email  = document.getElementById('inp-contact').value.trim();
-  var agreed = document.getElementById('chk-agree').checked;
+      var btn   = document.getElementById('btn-submit');
+      if (!btn.classList.contains('ready')) return;
 
-  if (!name || !org || !email) {
-    alert('이름, 소속 기관, 이메일을 모두 입력해 주세요.');
-    return;
-  }
-  var emailReg = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailReg.test(email)) {
-    alert('올바른 이메일 주소를 입력해 주세요.\n예) example@korea.go.kr');
-    return;
-  }
-  if (!agreed) {
-    alert('개인정보 수집·이용에 동의해 주세요.');
-    return;
-  }
+      var name  = document.getElementById('inp-name').value.trim();
+      var org   = document.getElementById('inp-org').value.trim();
+      var email = document.getElementById('inp-contact').value.trim();
 
-  var btn = document.querySelector('.btn-submit');
-  btn.textContent = '전송 중...';
-  btn.disabled = true;
+      var emailReg = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailReg.test(email)) {
+        alert('올바른 이메일 주소를 입력해 주세요.\n예) example@korea.go.kr');
+        return;
+      }
 
-  // ★ no-cors 모드: 응답을 읽을 수 없지만 요청은 전달됨
-  fetch(GAS_URL, {
-    method: 'POST',
-    mode: 'no-cors',                          // ← 핵심 변경
-    headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify({
-      name: name, org: org, email: email,
-      agreed: true,
-      ts: new Date().toISOString()
-    })
-  })
-  .then(function() {
-    // no-cors는 항상 opaque response → 무조건 성공 처리
-    document.getElementById('formWrap').style.display = 'none';
-    document.getElementById('successMsg').style.display = 'block';
-  })
-  .catch(function() {
-    // 네트워크 완전 실패 시만 여기 도달
-    alert('전송 중 오류가 발생했습니다.\n잠시 후 다시 시도해 주세요.\n(문의: crmc.co.kr)');
-    btn.textContent = '📬 무료 전자책 신청하기';
-    btn.disabled = false;
-  });
-}
+      /* 전송 중 상태 */
+      btn.classList.remove('ready');
+      btn.textContent = '⏳ 전송 중...';
+      btn.disabled = true;
+
+      /* ★ no-cors: CORS 우회 — 응답 읽기 불가하나 요청은 GAS에 도달 */
+      fetch(GAS_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({
+          name: name, org: org, email: email,
+          agreed: true,
+          ts: new Date().toISOString()
+        })
+      })
+      .then(function () {
+        /* no-cors는 항상 opaque → 성공으로 처리 */
+        document.getElementById('formWrap').style.display = 'none';
+        var msg = document.getElementById('successMsg');
+        msg.style.display = 'block';
+        /* 성공 메시지 박스 배경 변경 */
+        var card = msg.closest('.form-card');
+        if (card) {
+          card.style.background = 'rgba(5,150,105,0.18)';
+          card.style.borderColor = 'rgba(52,211,153,0.4)';
+        }
+      })
+      .catch(function () {
+        alert('전송 중 오류가 발생했습니다.\n잠시 후 다시 시도해 주세요.\n(문의: crmc.co.kr)');
+        btn.classList.add('ready');
+        btn.textContent = '📬 무료 전자책 신청하기';
+        btn.disabled = false;
+      });
+    }
+
     /* ── 앵커 부드러운 스크롤 ── */
     document.querySelect
