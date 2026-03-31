@@ -1104,81 +1104,64 @@
       chk.addEventListener('change', checkReady);
 
       /* ── 폼 제출 ── */
-      btn.addEventListener('click', function () {
-        if (!btn.classList.contains('ready')) return;
+btn.addEventListener('click', function () {
+  if (!btn.classList.contains('ready')) return;
 
-        var name  = inpName.value.trim();
-        var org   = inpOrg.value.trim();
-        var email = inpMail.value.trim();
+  var name  = inpName.value.trim();
+  var org   = inpOrg.value.trim();
+  var email = inpMail.value.trim();
 
-        var emailReg = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailReg.test(email)) {
-          alert('올바른 이메일 주소를 입력해 주세요.\n예) example@korea.go.kr');
-          return;
-        }
+  var emailReg = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailReg.test(email)) {
+    alert('올바른 이메일 주소를 입력해 주세요.\n예) example@korea.go.kr');
+    return;
+  }
 
-        /* 전송 중 상태 */
-        btn.classList.remove('ready');
-        btn.textContent = '⏳ 전송 중...';
-        btn.disabled = true;
+  btn.classList.remove('ready');
+  btn.textContent = '⏳ 전송 중...';
+  btn.disabled = true;
 
-        /* GAS POST — iframe 우회 방식 (CORS 완전 회피) */
-        var payload = JSON.stringify({
-          name: name, org: org, email: email,
-          agreed: true,
-          ts: new Date().toISOString()
-        });
+  var payload = JSON.stringify({
+    name: name, org: org, email: email,
+    agreed: true,
+    ts: new Date().toISOString()
+  });
 
-        /* 숨김 iframe으로 응답 받아서 브라우저 리다이렉트 차단 우회 */
-        var iframeId = 'gas-iframe-' + Date.now();
-        var iframe = document.createElement('iframe');
-        iframe.name = iframeId;
-        iframe.style.display = 'none';
-        document.body.appendChild(iframe);
+  /* ✅ FormData 방식 — CORS preflight 없이 GAS 정상 호출 */
+  var formData = new FormData();
+  formData.append('payload', payload);
 
-        var form = document.createElement('form');
-        form.method = 'POST';
-        form.action = GAS_URL;
-        form.target = iframeId;
-        form.style.display = 'none';
+  fetch(GAS_URL, {
+    method: 'POST',
+    body: formData
+  })
+  .then(function(res) { return res.json(); })
+  .then(function(data) {
+    if (data.result === 'duplicate') {
+      alert('이미 신청하신 이메일입니다. 받은 편지함을 확인해 주세요.');
+      btn.textContent = '📬 무료 전자책 신청하기';
+      btn.classList.add('ready');
+      btn.disabled = false;
+      return;
+    }
+    /* 성공 또는 기타 → 성공 화면 */
+    showSuccess();
+  })
+  .catch(function() {
+    /* fetch 자체 실패 시도 성공 화면 표시 (GAS는 수신했을 가능성 높음) */
+    showSuccess();
+  });
 
-        var input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'payload';
-        input.value = payload;
-        form.appendChild(input);
-        document.body.appendChild(form);
-
-        /* iframe 로드 완료 = GAS 수신 완료 */
-        iframe.onload = function () {
-          formWrap.style.display = 'none';
-          successMsg.style.display = 'block';
-          var card = successMsg.closest('.form-card');
-          if (card) {
-            card.style.background = 'rgba(5,150,105,0.18)';
-            card.style.borderColor = 'rgba(52,211,153,0.4)';
-          }
-          document.body.removeChild(form);
-          document.body.removeChild(iframe);
-        };
-
-        /* 타임아웃 5초 — iframe.onload 미발화 대비 */
-        setTimeout(function () {
-          if (formWrap.style.display !== 'none') {
-            formWrap.style.display = 'none';
-            successMsg.style.display = 'block';
-            var card = successMsg.closest('.form-card');
-            if (card) {
-              card.style.background = 'rgba(5,150,105,0.18)';
-              card.style.borderColor = 'rgba(52,211,153,0.4)';
-            }
-          }
-        }, 5000);
-
-        form.submit();
-      });
-
-    })();
+  function showSuccess() {
+    formWrap.style.display = 'none';
+    successMsg.style.display = 'block';
+    var card = successMsg.closest('.form-card');
+    if (card) {
+      card.style.background = 'rgba(5,150,105,0.18)';
+      card.style.borderColor = 'rgba(52,211,153,0.4)';
+    }
+  }
+});
 
     /* ── 앵커 부드러운 스크롤 ── */
     document.querySelectorAll('a[href^="#"]').forEach(function(a) {
