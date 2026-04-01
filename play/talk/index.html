@@ -97,7 +97,7 @@ header {
 /* ─ MAIN ─ */
 main {
   width: 100%; max-width: 480px;
-  padding: 20px 15px 52px;
+  padding: 20px 15px 72px;
   display: flex; flex-direction: column; align-items: center; gap: 20px;
 }
 
@@ -238,35 +238,77 @@ main {
 .ind-btn:active { transform: scale(.92); }
 .ind-btn.blue { background: rgba(22,82,216,.09); color: var(--blue-dice); border: 1.5px solid rgba(22,82,216,.2); }
 .ind-btn.green { background: rgba(30,128,80,.09); color: var(--green-dice); border: 1.5px solid rgba(30,128,80,.2); }
-.action-row { display: flex; gap: 8px; width: 100%; max-width: 310px; }
-.action-btn {
-  flex: 1; padding: 10px 5px;
-  background: var(--surface); border: 1.5px solid var(--border); border-radius: 11px;
-  font-family: 'Noto Sans KR',sans-serif; font-size: .76rem; font-weight: 600; color: var(--text-sec);
-  cursor: pointer; transition: all .16s;
-  display: flex; align-items: center; justify-content: center; gap: 4px;
-}
-.action-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--tag-bg); }
-.action-btn:active { transform: scale(.93); }
+
 
 /* ─ QUESTION CARD ─ */
 .question-card {
   width: 100%; border-radius: 18px; overflow: hidden;
   box-shadow: var(--shadow); display: none;
 }
-.question-card.show { display: block; animation: qReveal .42s cubic-bezier(.34,1.56,.64,1); }
-@keyframes qReveal { from { opacity:0; transform:translateY(20px) scale(.95); } to { opacity:1; transform:none; } }
-.q-hdr {
-  background: var(--q-bg); color: #fff; padding: 15px 18px 13px;
-  display: flex; align-items: center; justify-content: space-between;
+.question-card.show { display: block; animation: qReveal .55s cubic-bezier(.34,1.56,.64,1); }
+@keyframes qReveal {
+  0%   { opacity:0; transform:translateY(32px) scale(.88) rotate(-1.5deg); }
+  55%  { opacity:1; transform:scale(1.045) rotate(.5deg); }
+  75%  { transform:scale(.97) rotate(-.3deg); }
+  100% { opacity:1; transform:scale(1) rotate(0deg); }
 }
-.q-hdr-title { font-size: .72rem; font-weight: 600; opacity: .8; letter-spacing: .05em; margin-bottom: 4px; }
+
+/* 짜짠 — 화면 플래시 오버레이 */
+.tada-flash {
+  position: fixed; inset: 0; z-index: 9000;
+  background: radial-gradient(ellipse at center, rgba(22,82,216,.22) 0%, rgba(22,82,216,0) 70%);
+  pointer-events: none; opacity: 0;
+  animation: flashPop .55s ease-out forwards;
+}
+@keyframes flashPop {
+  0%   { opacity: 0; transform: scale(.8); }
+  30%  { opacity: 1; transform: scale(1.05); }
+  100% { opacity: 0; transform: scale(1.2); }
+}
+
+/* 짜짠 — 파티클 캔버스 */
+#confettiCanvas {
+  position: fixed; inset: 0; z-index: 8999;
+  pointer-events: none; width: 100%; height: 100%;
+}
+
+/* 짜짠 — q-icon 팡팡 */
+.q-icon { font-size: 2rem; display: inline-block; }
+.q-icon.tada { animation: iconBounce .6s cubic-bezier(.34,1.56,.64,1); }
+@keyframes iconBounce {
+  0%   { transform: scale(0) rotate(-20deg); }
+  60%  { transform: scale(1.45) rotate(10deg); }
+  80%  { transform: scale(.88) rotate(-5deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+/* 짜짠 — q-text 글자 등장 */
+.q-text { font-size: 1.12rem; font-weight: 700; color: var(--text); line-height: 1.65; letter-spacing: -.02em; word-break: keep-all; }
+.q-text.text-in { animation: textSlide .45s .18s cubic-bezier(.34,1.4,.64,1) both; }
+@keyframes textSlide {
+  from { opacity:0; transform: translateX(-12px); }
+  to   { opacity:1; transform: none; }
+}
+
+/* 짜짠 — 카드 광택 스윕 */
+.question-card.show .q-hdr::after {
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,.28) 50%, transparent 70%);
+  animation: shimmerSweep .7s .1s ease-out forwards;
+  border-radius: 0;
+}
+.q-hdr { position: relative; background: var(--q-bg); color: #fff; padding: 15px 18px 13px;
+  display: flex; align-items: center; justify-content: space-between; overflow: hidden; }
+@keyframes shimmerSweep {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(200%); }
+}
+
+.q-hdr-title { font-size: .88rem; font-weight: 700; opacity: .92; letter-spacing: -.01em; }
 .q-coord { display: flex; align-items: center; gap: 7px; font-size: 1rem; font-weight: 700; }
 .q-coord .cb { padding: 3px 10px; border-radius: 20px; font-size: .8rem; font-weight: 700; background: rgba(255,255,255,.22); }
-.q-icon { font-size: 2rem; }
 .q-body { background: var(--q-card); padding: 20px 18px 18px; }
 .q-mark { font-size: 1.7rem; color: var(--accent); line-height: 1; margin-bottom: 7px; }
-.q-text { font-size: 1.12rem; font-weight: 700; color: var(--text); line-height: 1.65; letter-spacing: -.02em; word-break: keep-all; }
 .q-hint { margin-top: 12px; padding: 8px 12px; background: var(--tag-bg); border-left: 3px solid var(--accent); border-radius: 0 7px 7px 0; font-size: .78rem; color: var(--text-sec); line-height: 1.6; }
 
 .reset-btn {
@@ -378,7 +420,7 @@ main {
 
 /* ─ TOAST ─ */
 .toast {
-  position: fixed; bottom: 28px; left: 50%;
+  position: fixed; bottom: 52px; left: 50%;
   transform: translateX(-50%) translateY(80px);
   background: #1A1A2E; color: #fff;
   padding: 10px 22px; border-radius: 30px;
@@ -388,6 +430,36 @@ main {
   opacity: 0; pointer-events: none;
 }
 .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+/* ─ FOOTER ─ */
+.site-footer {
+  width: 100%;
+  position: fixed; bottom: 0; left: 0;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  z-index: 200;
+  display: flex; align-items: center; justify-content: center;
+  padding: 6px 12px;
+  box-shadow: 0 -2px 10px rgba(22,82,216,.07);
+}
+.site-footer a {
+  font-size: .62rem; color: var(--text-sec);
+  text-decoration: none; letter-spacing: .01em;
+  display: flex; align-items: center; gap: 5px;
+  transition: color .16s;
+  opacity: .72;
+}
+.site-footer a:hover { color: var(--accent); opacity: 1; }
+.site-footer .footer-logo {
+  font-weight: 700; color: var(--accent); opacity: 1;
+  font-size: .64rem; letter-spacing: -.01em;
+}
+.site-footer .footer-sep {
+  color: var(--border); font-size: .55rem; margin: 0 4px;
+}
+html.theme-dark .site-footer {
+  background: var(--surface);
+}
 
 /* ─ ANI ─ */
 .ani { opacity: 0; transform: translateY(18px); }
@@ -417,7 +489,7 @@ main {
   <div class="guide-box ani">
     <div class="er">🎲✕🎲</div>
     <h2>함께 나누는 이야기</h2>
-    <p>🔵 파란 주사위 → <strong>가로(열)</strong> &nbsp;|&nbsp; 🟢 초록 주사위 → <strong>세로(행)</strong><br>주사위를 굴려 나온 질문에 솔직하게 답해보세요!</p>
+    <p>주사위를 굴려 나온 질문에 솔직하게 답해보세요!</p>
   </div>
 
   <div class="dice-section ani">
@@ -474,21 +546,12 @@ main {
       <button class="ind-btn green" onclick="rollSingle('green')">🟢 초록만</button>
     </div>
 
-    <div class="action-row">
-      <button class="action-btn" onclick="openTable()">📋 질문판 전체보기</button>
-      <button class="action-btn" onclick="openEdit()">✏️ 질문 편집</button>
-    </div>
   </div>
 
   <div class="question-card" id="questionCard">
     <div class="q-hdr">
       <div>
-        <div class="q-hdr-title">🎯 오늘의 질문</div>
-        <div class="q-coord">
-          <span class="cb" id="coordBlue">열 ?</span>
-          <span style="opacity:.55">×</span>
-          <span class="cb" id="coordGreen">행 ?</span>
-        </div>
+        <div class="q-hdr-title">🎯 두근두근 이번 주인공을 위한 질문은?</div>
       </div>
       <div class="q-icon">💬</div>
     </div>
@@ -540,58 +603,70 @@ main {
   </div>
 </div>
 
+<!-- ━ FOOTER ━ -->
+<canvas id="confettiCanvas"></canvas>
+<footer class="site-footer">
+  <a href="https://www.crmc.co.kr" target="_blank" rel="noopener">
+    <span class="footer-logo">청람M&amp;C</span>
+    <span class="footer-sep">|</span>
+    <span>기업교육 &amp; AI 컨설팅</span>
+    <span class="footer-sep">·</span>
+    <span>www.crmc.co.kr</span>
+  </a>
+</footer>
+
 <div class="toast" id="toast"></div>
 
 <script>
 /* ━━━ 질문 데이터 questions[행-1][열-1] ━━━ */
 var DEFAULT_Q = [
   [
-    "당장 여행하고 싶은 곳? 이유는?",
-    "인생에서 중요하게 생각하는 가치는?",
-    "일상생활에서 여유를 찾는 나만의 방법은?",
-    "오늘 자신의 마음을 표현하는 단어는?",
-    "올해 기뻤던 일 2가지는?",
-    "자신의 성격을 한마디로 말하면?"
+    "지금 당장 짐 싸서 떠나고 싶은 곳은? 왜 거기인가요?",
+    "내 삶의 1순위 가치를 딱 하나만 꼽는다면?",
+    "바쁜 일상에서 나만의 리셋 버튼, 뭔가요?",
+    "오늘 내 마음 상태를 날씨로 표현하면?",
+    "올해 '이건 진짜 좋았다!' 싶었던 일 2가지는?",
+    "친구들이 나를 한마디로 소개한다면 뭐라고 할 것 같나요?"
   ],
   [
-    "인생에서 부모님 외 감사한 사람 2명은?",
-    "스스로 멋지게 보일 때는?",
-    "아직 시도하지 않았지만 반드시 이루고 싶은 꿈은?",
-    "슬럼프를 극복하는 자신만의 방법은?",
-    "요즘 주된 관심사는?",
-    "자신이 근사하게 보일 때는?"
+    "부모님 말고, 살면서 가장 고마웠던 사람 2명은?",
+    "'오늘 나 좀 멋있는데?' 싶은 순간이 있다면?",
+    "버킷리스트 중 아직 못 했지만 꼭 하고 싶은 것 하나는?",
+    "슬럼프가 왔을 때 나만의 탈출 방법은?",
+    "요즘 가장 빠져있는 것은? 주변이 걱정할 정도로!",
+    "거울 보면서 '이 부분만큼은 마음에 든다' 싶은 게 있다면?"
   ],
   [
-    "심심하고 무료할 때 하는 것은?",
-    "지난 일주일간 자신이 한 착한 일 2가지는?",
-    "요즘 날 기분 좋게 하는 사람은?",
-    "만날 수 있다면 간절히 만나고 싶은 사람은?",
-    "시간과 돈이 허락한다면 하고 싶은 것은?",
-    "살면서 잘 했다고 생각되는 것은?"
+    "아무것도 하기 싫을 때 결국엔 뭘 하고 있나요?",
+    "지난 한 주, 소소하게라도 누군가에게 도움이 됐던 일 있나요?",
+    "요즘 보기만 해도 기분 좋아지는 사람이 있나요?",
+    "살아있다면 꼭 한 번 만나보고 싶은 사람은?",
+    "시간도 돈도 걱정 없다면, 딱 하나만 고른다면?",
+    "돌아보면 '그때 그 선택, 잘했다!' 싶은 게 있나요?"
   ],
   [
-    "살면서 가장 행복했던 순간은?",
-    "가장 살아보고 싶은 나라/지역? 이유는?",
-    "지금의 자신에게 선물을 준다면?",
-    "자신에게 스스로 해주고 싶은 값진 2가지는?",
-    "주변 사람들에게 듣고 싶은 말은?",
-    "인생의 특정 시점으로 갈 수 있다면 어디로 가고 싶나요?"
+    "평생 기억에 남을 것 같은 가장 행복했던 순간은?",
+    "한 달 살기 한다면 어느 나라·도시? 왜 거기인가요?",
+    "오늘의 나에게 선물을 준다면 뭘 주고 싶나요?",
+    "나 자신에게 꼭 해주고 싶은 것 2가지는?",
+    "주변에서 이런 말 들으면 하루가 행복해지는 말이 있나요?",
+    "타임머신이 있다면 내 인생 어느 시점으로 가고 싶나요?"
   ],
   [
-    "내가 바라는 80대의 모습은?",
-    "인생에 큰 전환을 준 사건은?",
-    "가장 기분 좋아지는 유행어(말)은?",
-    "시간·돈·건강에 구애받지 않는다면 꼭 해보고 싶은 것은?",
-    "마지막으로 눈물을 흘리며 울었던 때는?",
-    "마지막으로 고개 숙여 고마워했던 때는 언제인가요?"
+    "80살의 내가 지금 나를 본다면 뭐라고 할 것 같나요?",
+    "내 인생의 방향을 바꾼 결정적 사건이나 만남이 있다면?",
+    "요즘 나도 모르게 입에서 나오는 말이나 유행어가 있나요?",
+    "제약이 전혀 없다면, 딱 하나만, 무조건 해보고 싶은 것은?",
+    "마지막으로 '나도 몰래' 눈물이 났던 때는 언제인가요?",
+    "살면서 진심으로 고맙다고 표현했던 기억, 언제인가요?"
   ],
   [
-    "지금의 자신이 있는 것은 (   ) 덕분이다.",
-    "나를 대표하는 컬러는? 이유는?",
-    "다른 사람들이 나를 인정하는 부분은?",
-    "인생에서 성공했다고 생각될 때는 언제인가요?",
-    "내가 다른 사람들의 마음을 알아차리는 비결은?",
-    "최근에 경험한 가장 큰 성공이 있다면?"
+    "지금의 내가 있기까지 가장 큰 힘이 된 것은?",
+    "나를 색으로 표현하면? 그 색을 고른 이유가 있나요?",
+    "주변에서 '이건 네가 최고야!'라고 인정해주는 부분은?",
+    "'아, 나 잘 살고 있구나' 싶은 순간이 있다면?",
+    "사람 마음을 잘 읽는 편인가요? 비결이 있다면?",
+    "최근 '이건 내가 해낸 것 중 꽤 뿌듯한데!' 싶은 일은?"
   ]
 ];
 
@@ -622,19 +697,112 @@ function setNum(id, val) {
   if (val) el.classList.add("pop");
 }
 
+/* ━━━ 짜짠! 파티클 엔진 ━━━ */
+(function(){
+  var canvas = document.getElementById("confettiCanvas");
+  var ctx = canvas.getContext("2d");
+  var particles = [];
+  var raf = null;
+
+  var COLORS = ["#1652D8","#4B7BF5","#FFD700","#FF6B6B","#2EC4B6","#A78BFA","#F472B6","#34D399"];
+
+  function resize(){ canvas.width=window.innerWidth; canvas.height=window.innerHeight; }
+  window.addEventListener("resize", resize); resize();
+
+  function Particle(x, y) {
+    this.x = x; this.y = y;
+    this.vx = (Math.random() - .5) * 9;
+    this.vy = -(Math.random() * 7 + 3);
+    this.gravity = .32;
+    this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+    this.w = Math.random() * 9 + 4;
+    this.h = Math.random() * 5 + 3;
+    this.rot = Math.random() * Math.PI * 2;
+    this.rotV = (Math.random() - .5) * .28;
+    this.alpha = 1;
+    this.life = Math.random() * 40 + 50;
+    this.age = 0;
+    this.shape = Math.random() < .5 ? "rect" : "circle";
+  }
+
+  function burst(x, y, count) {
+    for (var i = 0; i < count; i++) particles.push(new Particle(x, y));
+    if (!raf) loop();
+  }
+
+  function loop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (var i = particles.length - 1; i >= 0; i--) {
+      var p = particles[i];
+      p.x += p.vx; p.y += p.vy; p.vy += p.gravity;
+      p.vx *= .98; p.rot += p.rotV; p.age++;
+      p.alpha = Math.max(0, 1 - p.age / p.life);
+      ctx.save();
+      ctx.globalAlpha = p.alpha;
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillStyle = p.color;
+      if (p.shape === "circle") {
+        ctx.beginPath(); ctx.arc(0, 0, p.w / 2, 0, Math.PI * 2); ctx.fill();
+      } else {
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      }
+      ctx.restore();
+      if (p.age >= p.life) particles.splice(i, 1);
+    }
+    raf = particles.length ? requestAnimationFrame(loop) : null;
+  }
+
+  window.tadaBurst = function() {
+    /* 카드 위치 기준으로 터짐 */
+    var card = document.getElementById("questionCard");
+    var rect = card ? card.getBoundingClientRect() : null;
+    var cx = rect ? rect.left + rect.width / 2 : window.innerWidth / 2;
+    var cy = rect ? rect.top + 30 : window.innerHeight * .35;
+    /* 3연발 — 약간씩 위치와 타이밍 다르게 */
+    burst(cx, cy, 38);
+    setTimeout(function(){ burst(cx - 60, cy + 10, 22); }, 90);
+    setTimeout(function(){ burst(cx + 60, cy + 10, 22); }, 150);
+  };
+})();
+
+/* ━━━ 짜짠! 플래시 ━━━ */
+function tadaFlash() {
+  var el = document.createElement("div");
+  el.className = "tada-flash";
+  document.body.appendChild(el);
+  setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, 600);
+}
+
 function showQ() {
   if (!blueVal || !greenVal) return;
   var q = questions[greenVal - 1][blueVal - 1];
   document.getElementById("questionText").textContent = q;
-  document.getElementById("coordBlue").textContent = "열 " + blueVal;
-  document.getElementById("coordGreen").textContent = "행 " + greenVal;
   var card = document.getElementById("questionCard");
   card.classList.remove("show");
   void card.offsetWidth;
   card.classList.add("show");
   document.getElementById("resetBtn").classList.add("show");
+
+  /* ✨ 짜짠 연출 ✨ */
+  tadaFlash();
+  setTimeout(function(){ window.tadaBurst && window.tadaBurst(); }, 80);
+
+  /* 아이콘 바운스 리셋 후 재실행 */
+  var icon = document.querySelector(".q-icon");
+  if (icon) {
+    icon.classList.remove("tada");
+    void icon.offsetWidth;
+    icon.classList.add("tada");
+  }
+  /* 텍스트 슬라이드인 리셋 후 재실행 */
+  var qt = document.getElementById("questionText");
+  qt.classList.remove("text-in");
+  void qt.offsetWidth;
+  qt.classList.add("text-in");
+
   setTimeout(function() { card.scrollIntoView({ behavior: "smooth", block: "nearest" }); }, 60);
-  if (navigator.vibrate) navigator.vibrate([50, 25, 80]);
+  if (navigator.vibrate) navigator.vibrate([30, 20, 60, 20, 100]);
 }
 
 /* ━━━ 점 배치 정의 (true=점, false=빈칸) ━━━
