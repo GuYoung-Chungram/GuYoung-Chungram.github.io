@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="ko" class="theme-light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🎲 주사위 토크 — 만나서 반갑습니다</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html.theme-light {
+  --bg: #EEF3FD;
+  --surface: #FFFFFF;
+  --surface2: #F4F7FF;
+  --text: #1A1A1A;
+  --text-sec: #5A6480;
+  --border: rgba(22,82,216,0.13);
+  --accent: #1652D8;
+  --accent2: #0F3D99;
+  --blue-dice: #1652D8;
+  --blue-light: #4B7BF5;
+  --blue-dark: #0F3D99;
+  --green-dice: #1E8050;
+  --green-light: #2EA86A;
+  --green-dark: #155E3A;
+  --shine: rgba(255,255,255,0.40);
+  --q-bg: linear-gradient(135deg, #1652D8 0%, #0F3D99 100%);
+  --q-card: #FFFFFF;
+  --shadow: 0 8px 36px rgba(22,82,216,0.13);
+  --shadow-sm: 0 2px 12px rgba(22,82,216,0.08);
+  --modal-bg: rgba(8,16,50,0.58);
+  --tag-bg: rgba(22,82,216,0.08);
+  --edit-bg: #F0F5FF;
+  --tbl-head: #1652D8;
+  --tbl-odd: #F4F7FF;
+  --tbl-even: #FFFFFF;
+  --tbl-border: rgba(22,82,216,0.14);
+}
+html.theme-dark {
+  --bg: #080D1C;
+  --surface: #101726;
+  --surface2: #161E30;
+  --text: #E8ECF8;
+  --text-sec: #8A9BBB;
+  --border: rgba(255,255,255,0.08);
+  --accent: #4B7BF5;
+  --accent2: #6B8FFF;
+  --blue-dice: #3B6EF0;
+  --blue-light: #7AA3FF;
+  --blue-dark: #2952C8;
+  --green-dice: #2A9E63;
+  --green-light: #3EC87A;
+  --green-dark: #1A6040;
+  --shine: rgba(255,255,255,0.16);
+  --q-bg: linear-gradient(135deg, #1A2E6E 0%, #0A1230 100%);
+  --q-card: #131E38;
+  --shadow: 0 8px 36px rgba(0,0,0,0.48);
+  --shadow-sm: 0 2px 12px rgba(0,0,0,0.3);
+  --modal-bg: rgba(0,0,0,0.75);
+  --tag-bg: rgba(75,123,245,0.12);
+  --edit-bg: #151E35;
+  --tbl-head: #1A2E6E;
+  --tbl-odd: #131A2C;
+  --tbl-even: #0F1524;
+  --tbl-border: rgba(255,255,255,0.07);
+}
+
+body {
+  font-family: 'Noto Sans KR', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100dvh;
+  display: flex; flex-direction: column; align-items: center;
+  overflow-x: hidden;
+  transition: background .3s, color .3s;
+}
+
+/* ─ HEADER ─ */
+header {
+  width: 100%; background: var(--accent); color: #fff;
+  padding: 12px 16px 10px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 300;
+  box-shadow: 0 2px 18px rgba(22,82,216,.32);
+}
+.hdr-left h1 { font-size: 1.05rem; font-weight: 700; letter-spacing: -.02em; }
+.hdr-left .sub { font-size: .68rem; opacity: .78; }
+.hdr-btns { display: flex; gap: 6px; }
+.hdr-btn {
+  background: rgba(255,255,255,.18); border: none; color: #fff;
+  width: 34px; height: 34px; border-radius: 50%; font-size: .95rem;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background .18s; flex-shrink: 0;
+}
+.hdr-btn:hover { background: rgba(255,255,255,.32); }
+
+/* ─ MAIN ─ */
+main {
+  width: 100%; max-width: 480px;
+  padding: 20px 15px 52px;
+  display: flex; flex-direction: column; align-items: center; gap: 20px;
+}
+
+/* ─ GUIDE ─ */
+.guide-box {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; padding: 15px 18px;
+  width: 100%; text-align: center; box-shadow: var(--shadow-sm);
+}
+.guide-box .er { font-size: 1.7rem; margin-bottom: 5px; }
+.guide-box h2 { font-size: 1rem; font-weight: 700; color: var(--accent); margin-bottom: 3px; }
+.guide-box p { font-size: .8rem; color: var(--text-sec); line-height: 1.7; }
+
+/* ─ DICE ─ */
+.dice-section { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.dice-pair { display: flex; align-items: center; justify-content: center; gap: 22px; }
+.dice-wrapper { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.dice-label { font-size: .76rem; font-weight: 700; letter-spacing: .04em; display: flex; align-items: center; gap: 4px; }
+.dice-label.blue { color: var(--blue-dice); }
+.dice-label.green { color: var(--green-dice); }
+.axis-badge { font-size: .66rem; padding: 2px 7px; border-radius: 20px; font-weight: 700; }
+.dice-label.blue .axis-badge { background: rgba(22,82,216,.1); color: var(--blue-dice); }
+.dice-label.green .axis-badge { background: rgba(30,128,80,.12); color: var(--green-dice); }
+
+/* ── dice-scene: 스피너 / 결과 겹침 컨테이너 ── */
+.dice-scene {
+  width: 96px; height: 96px;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+  user-select: none; position: relative;
+}
+
+/* ── 3D 스피너 (굴리는 중만 보임) ── */
+.dice-spinner {
+  width: 96px; height: 96px;
+  position: absolute; inset: 0;
+  transform-style: preserve-3d;
+  perspective: 420px;
+  opacity: 0; pointer-events: none;
+  transition: opacity .12s;
+}
+.dice-spinner.spinning { opacity: 1; animation: spinRoll .85s cubic-bezier(.4,0,.2,1) infinite; }
+@keyframes spinRoll {
+  0%   { transform: rotateX(0deg)   rotateY(0deg); }
+  33%  { transform: rotateX(120deg) rotateY(80deg); }
+  66%  { transform: rotateX(240deg) rotateY(200deg); }
+  100% { transform: rotateX(360deg) rotateY(360deg); }
+}
+.sp-face {
+  position: absolute; width: 96px; height: 96px; border-radius: 14px;
+  backface-visibility: hidden;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.35), inset 0 -2px 0 rgba(0,0,0,.22);
+}
+.blue-dice  .sp-face { background: var(--blue-dice); }
+.green-dice .sp-face { background: var(--green-dice); }
+.blue-dice  .sp-front  { background: linear-gradient(145deg,var(--blue-light),var(--blue-dice)); }
+.green-dice .sp-front  { background: linear-gradient(145deg,var(--green-light),var(--green-dice)); }
+.sp-front  { transform: translateZ(48px); }
+.sp-back   { transform: rotateY(180deg) translateZ(48px); }
+.sp-right  { transform: rotateY(90deg)  translateZ(48px); }
+.sp-left   { transform: rotateY(-90deg) translateZ(48px); }
+.sp-top    { transform: rotateX(90deg)  translateZ(48px); }
+.sp-bottom { transform: rotateX(-90deg) translateZ(48px); }
+
+/* ── 결과 주사위 (2D 정면, 점만 표시) ── */
+.dice-result {
+  width: 96px; height: 96px; border-radius: 14px;
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 1; transition: opacity .15s;
+  box-shadow: 0 4px 20px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.3);
+}
+.dice-result.hidden { opacity: 0; }
+.blue-result  { background: linear-gradient(145deg,var(--blue-light),var(--blue-dice)); }
+.green-result { background: linear-gradient(145deg,var(--green-light),var(--green-dice)); }
+
+/* ── 점 그리드 (JS로 동적 생성) ── */
+.dot-grid {
+  display: grid; gap: 7px; padding: 12px;
+  width: 100%; height: 100%;
+  align-items: center; justify-items: center;
+}
+/* 숫자별 그리드 레이아웃 */
+.dot-grid.n1 { grid-template: 1fr / 1fr; }
+.dot-grid.n2 { grid-template: 1fr 1fr / 1fr; }
+.dot-grid.n3 { grid-template: repeat(3,1fr) / 1fr; }
+.dot-grid.n4 { grid-template: 1fr 1fr / 1fr 1fr; }
+.dot-grid.n5 { grid-template: repeat(3,1fr) / 1fr 1fr 1fr; }
+.dot-grid.n6 { grid-template: repeat(3,1fr) / 1fr 1fr; }
+.dot-grid .dot {
+  width: 13px; height: 13px;
+  background: rgba(255,255,255,.95);
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(0,0,0,.3);
+}
+.dot-grid .dot.h { opacity: 0; }
+/* 초기(굴리기 전) 물음표 */
+.dot-grid.empty {
+  grid-template: 1fr / 1fr;
+  align-items: center; justify-items: center;
+}
+.dot-grid.empty::after {
+  content: "?";
+  font-size: 2rem; font-weight: 800;
+  color: rgba(255,255,255,.7);
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+.dice-num {
+  font-size: 1.65rem; font-weight: 800;
+  min-width: 50px; height: 50px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  letter-spacing: -.03em; transition: color .2s;
+}
+.dice-num.blue { background: rgba(22,82,216,.08); color: var(--blue-dice); border: 2px solid rgba(22,82,216,.2); }
+.dice-num.green { background: rgba(30,128,80,.08); color: var(--green-dice); border: 2px solid rgba(30,128,80,.2); }
+@keyframes numPop { from { transform: scale(.6); opacity: .3; } to { transform: scale(1); opacity: 1; } }
+.pop { animation: numPop .28s cubic-bezier(.34,1.56,.64,1); }
+
+/* ─ BUTTONS ─ */
+.roll-btn {
+  width: 100%; max-width: 310px; padding: 14px 20px;
+  background: linear-gradient(135deg,var(--accent) 0%,var(--accent2) 100%);
+  color: #fff; border: none; border-radius: 14px;
+  font-family: 'Noto Sans KR',sans-serif;
+  font-size: .98rem; font-weight: 700; cursor: pointer;
+  box-shadow: 0 5px 20px rgba(22,82,216,.3);
+  transition: transform .12s, box-shadow .12s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.roll-btn:active { transform: scale(.95); box-shadow: 0 2px 8px rgba(22,82,216,.18); }
+.ind-btns { display: flex; gap: 8px; width: 100%; max-width: 310px; }
+.ind-btn {
+  flex: 1; padding: 9px 5px; border: none; border-radius: 11px;
+  font-family: 'Noto Sans KR',sans-serif; font-size: .78rem; font-weight: 600;
+  cursor: pointer; transition: transform .12s;
+  display: flex; align-items: center; justify-content: center; gap: 4px;
+}
+.ind-btn:active { transform: scale(.92); }
+.ind-btn.blue { background: rgba(22,82,216,.09); color: var(--blue-dice); border: 1.5px solid rgba(22,82,216,.2); }
+.ind-btn.green { background: rgba(30,128,80,.09); color: var(--green-dice); border: 1.5px solid rgba(30,128,80,.2); }
+.action-row { display: flex; gap: 8px; width: 100%; max-width: 310px; }
+.action-btn {
+  flex: 1; padding: 10px 5px;
+  background: var(--surface); border: 1.5px solid var(--border); border-radius: 11px;
+  font-family: 'Noto Sans KR',sans-serif; font-size: .76rem; font-weight: 600; color: var(--text-sec);
+  cursor: pointer; transition: all .16s;
+  display: flex; align-items: center; justify-content: center; gap: 4px;
+}
+.action-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--tag-bg); }
+.action-btn:active { transform: scale(.93); }
+
+/* ─ QUESTION CARD ─ */
+.question-card {
+  width: 100%; border-radius: 18px; overflow: hidden;
+  box-shadow: var(--shadow); display: none;
+}
+.question-card.show { display: block; animation: qReveal .42s cubic-bezier(.34,1.56,.64,1); }
+@keyframes qReveal { from { opacity:0; transform:translateY(20px) scale(.95); } to { opacity:1; transform:none; } }
+.q-hdr {
+  background: var(--q-bg); color: #fff; padding: 15px 18px 13px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.q-hdr-title { font-size: .72rem; font-weight: 600; opacity: .8; letter-spacing: .05em; margin-bottom: 4px; }
+.q-coord { display: flex; align-items: center; gap: 7px; font-size: 1rem; font-weight: 700; }
+.q-coord .cb { padding: 3px 10px; border-radius: 20px; font-size: .8rem; font-weight: 700; background: rgba(255,255,255,.22); }
+.q-icon { font-size: 2rem; }
+.q-body { background: var(--q-card); padding: 20px 18px 18px; }
+.q-mark { font-size: 1.7rem; color: var(--accent); line-height: 1; margin-bottom: 7px; }
+.q-text { font-size: 1.12rem; font-weight: 700; color: var(--text); line-height: 1.65; letter-spacing: -.02em; word-break: keep-all; }
+.q-hint { margin-top: 12px; padding: 8px 12px; background: var(--tag-bg); border-left: 3px solid var(--accent); border-radius: 0 7px 7px 0; font-size: .78rem; color: var(--text-sec); line-height: 1.6; }
+
+.reset-btn {
+  width: 100%; max-width: 310px; padding: 11px;
+  background: transparent; border: 1.5px solid var(--border); border-radius: 12px;
+  font-family: 'Noto Sans KR',sans-serif; font-size: .86rem; font-weight: 600; color: var(--text-sec);
+  cursor: pointer; transition: all .16s; display: none;
+}
+.reset-btn.show { display: block; }
+.reset-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--tag-bg); }
+
+/* ─ MODAL ─ */
+.modal-overlay {
+  position: fixed; inset: 0; background: var(--modal-bg);
+  z-index: 500; display: none; align-items: flex-end; justify-content: center;
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.show { display: flex; }
+.modal-sheet {
+  background: var(--surface); width: 100%; max-width: 520px;
+  max-height: 92dvh; border-radius: 22px 22px 0 0;
+  overflow: hidden; display: flex; flex-direction: column;
+  animation: slideUp .3s cubic-bezier(.34,1.3,.64,1);
+}
+@keyframes slideUp { from { transform: translateY(100%); opacity: .5; } to { transform: translateY(0); opacity: 1; } }
+.modal-hdr {
+  padding: 15px 16px 13px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+}
+.modal-hdr h3 { font-size: .98rem; font-weight: 700; }
+.modal-close {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--surface2); border: none;
+  font-size: 1rem; cursor: pointer; color: var(--text-sec);
+  display: flex; align-items: center; justify-content: center; transition: background .16s;
+}
+.modal-close:hover { background: var(--border); }
+.modal-body { overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch; }
+
+/* ─ TABLE MODAL ─ */
+.tbl-info {
+  padding: 10px 15px; background: var(--tag-bg);
+  font-size: .77rem; color: var(--text-sec); line-height: 1.6;
+  border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+.tbl-info strong { color: var(--accent); }
+.tbl-scroll { overflow-x: auto; padding-bottom: 16px; }
+.q-table { border-collapse: collapse; min-width: 560px; width: 100%; font-size: .71rem; }
+.q-table th, .q-table td { border: 1px solid var(--tbl-border); padding: 7px 8px; text-align: center; vertical-align: middle; line-height: 1.5; word-break: keep-all; }
+.q-table thead th { background: var(--tbl-head); color: #fff; font-weight: 700; font-size: .74rem; }
+.q-table thead th:first-child { width: 36px; }
+.q-table .row-head { background: var(--tbl-head); color: #fff; font-weight: 700; width: 36px; }
+.q-table tbody tr:nth-child(odd) td:not(.row-head) { background: var(--tbl-odd); }
+.q-table tbody tr:nth-child(even) td:not(.row-head) { background: var(--tbl-even); }
+.q-table td.hl { background: rgba(22,82,216,.18) !important; font-weight: 700; color: var(--accent); border: 2px solid var(--accent); }
+
+/* ─ EDIT MODAL ─ */
+.edit-tabs {
+  display: flex; border-bottom: 1px solid var(--border); flex-shrink: 0;
+  overflow-x: auto; scrollbar-width: none;
+}
+.edit-tabs::-webkit-scrollbar { display: none; }
+.edit-tab {
+  padding: 10px 13px; font-size: .77rem; font-weight: 600; color: var(--text-sec);
+  background: none; border: none; cursor: pointer; white-space: nowrap;
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+  font-family: 'Noto Sans KR',sans-serif;
+  transition: color .16s, border-color .16s;
+}
+.edit-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.edit-intro {
+  padding: 10px 15px 0; font-size: .77rem; color: var(--text-sec); line-height: 1.6;
+}
+.edit-intro strong { color: var(--accent); }
+.edit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 12px 14px 16px; }
+.edit-cell { display: flex; flex-direction: column; gap: 4px; }
+.edit-cell label { font-size: .67rem; font-weight: 700; color: var(--text-sec); letter-spacing: .04em; display: flex; align-items: center; gap: 4px; }
+.col-badge { display: inline-block; width: 16px; height: 16px; border-radius: 4px; font-size: .6rem; font-weight: 800; color: #fff; text-align: center; line-height: 16px; }
+.col-badge.b { background: var(--blue-dice); }
+.col-badge.g { background: var(--green-dice); }
+.edit-cell textarea {
+  width: 100%; padding: 7px 9px;
+  background: var(--edit-bg); color: var(--text);
+  border: 1.5px solid var(--border); border-radius: 9px;
+  font-family: 'Noto Sans KR',sans-serif; font-size: .77rem; line-height: 1.55;
+  resize: vertical; min-height: 70px;
+  transition: border-color .16s;
+}
+.edit-cell textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(22,82,216,.1); }
+.edit-footer {
+  padding: 10px 14px 18px; border-top: 1px solid var(--border);
+  display: flex; gap: 8px; flex-shrink: 0;
+}
+.btn-save {
+  flex: 1; padding: 12px;
+  background: linear-gradient(135deg,var(--accent),var(--accent2));
+  color: #fff; border: none; border-radius: 11px;
+  font-family: 'Noto Sans KR',sans-serif; font-size: .9rem; font-weight: 700;
+  cursor: pointer; transition: opacity .16s;
+}
+.btn-save:hover { opacity: .88; }
+.btn-restore {
+  padding: 12px 14px;
+  background: var(--surface2); border: 1.5px solid var(--border); border-radius: 11px;
+  font-family: 'Noto Sans KR',sans-serif; font-size: .8rem; font-weight: 600; color: var(--text-sec);
+  cursor: pointer; transition: all .16s; white-space: nowrap;
+}
+.btn-restore:hover { color: #e11d48; border-color: #e11d48; background: rgba(225,29,72,.05); }
+
+/* ─ TOAST ─ */
+.toast {
+  position: fixed; bottom: 28px; left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: #1A1A2E; color: #fff;
+  padding: 10px 22px; border-radius: 30px;
+  font-size: .82rem; font-weight: 600;
+  box-shadow: 0 4px 20px rgba(0,0,0,.3);
+  z-index: 999; transition: transform .3s cubic-bezier(.34,1.56,.64,1), opacity .3s;
+  opacity: 0; pointer-events: none;
+}
+.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+/* ─ ANI ─ */
+.ani { opacity: 0; transform: translateY(18px); }
+@media (prefers-reduced-motion: no-preference) {
+  .ani { transition: opacity .45s ease, transform .45s ease; }
+  .ani.in { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) { .ani { opacity: 1; transform: none; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr-left">
+    <h1>🎲 주사위 토크</h1>
+    <div class="sub">만나서 반갑습니다</div>
+  </div>
+  <div class="hdr-btns">
+    <button class="hdr-btn" onclick="openTable()" title="질문판 전체보기">📋</button>
+    <button class="hdr-btn" onclick="openEdit()" title="질문 편집">✏️</button>
+    <button class="hdr-btn" id="themeBtn" onclick="toggleTheme()" title="테마 전환">🌙</button>
+  </div>
+</header>
+
+<main>
+
+  <div class="guide-box ani">
+    <div class="er">🎲✕🎲</div>
+    <h2>함께 나누는 이야기</h2>
+    <p>🔵 파란 주사위 → <strong>가로(열)</strong> &nbsp;|&nbsp; 🟢 초록 주사위 → <strong>세로(행)</strong><br>주사위를 굴려 나온 질문에 솔직하게 답해보세요!</p>
+  </div>
+
+  <div class="dice-section ani">
+    <div class="dice-pair">
+
+      <div class="dice-wrapper">
+        <div class="dice-label blue">파랑 <span class="axis-badge">가로 열</span></div>
+        <div class="dice-scene" onclick="rollSingle('blue')" title="탭해서 굴리기">
+          <!-- 굴리는 중 보이는 3D 스피너 -->
+          <div class="dice-spinner blue-dice" id="blueSpinner">
+            <div class="sp-face sp-front"></div>
+            <div class="sp-face sp-back"></div>
+            <div class="sp-face sp-right"></div>
+            <div class="sp-face sp-left"></div>
+            <div class="sp-face sp-top"></div>
+            <div class="sp-face sp-bottom"></div>
+          </div>
+          <!-- 결과 표시용 2D 주사위 (항상 정면, 점만 업데이트) -->
+          <div class="dice-result blue-result" id="blueResult">
+            <div class="dot-grid" id="blueDots"></div>
+          </div>
+        </div>
+        <div class="dice-num blue" id="blueNum">?</div>
+      </div>
+
+      <div style="font-size:1.6rem;color:var(--text-sec);font-weight:200;margin-top:20px;">✕</div>
+
+      <div class="dice-wrapper">
+        <div class="dice-label green">초록 <span class="axis-badge">세로 행</span></div>
+        <div class="dice-scene" onclick="rollSingle('green')" title="탭해서 굴리기">
+          <div class="dice-spinner green-dice" id="greenSpinner">
+            <div class="sp-face sp-front"></div>
+            <div class="sp-face sp-back"></div>
+            <div class="sp-face sp-right"></div>
+            <div class="sp-face sp-left"></div>
+            <div class="sp-face sp-top"></div>
+            <div class="sp-face sp-bottom"></div>
+          </div>
+          <div class="dice-result green-result" id="greenResult">
+            <div class="dot-grid" id="greenDots"></div>
+          </div>
+        </div>
+        <div class="dice-num green" id="greenNum">?</div>
+      </div>
+
+    </div>
+
+    <button class="roll-btn" onclick="rollBoth()">
+      <span style="font-size:1.2rem">🎲</span> 두 주사위 모두 굴리기
+    </button>
+
+    <div class="ind-btns">
+      <button class="ind-btn blue" onclick="rollSingle('blue')">🔵 파랑만</button>
+      <button class="ind-btn green" onclick="rollSingle('green')">🟢 초록만</button>
+    </div>
+
+    <div class="action-row">
+      <button class="action-btn" onclick="openTable()">📋 질문판 전체보기</button>
+      <button class="action-btn" onclick="openEdit()">✏️ 질문 편집</button>
+    </div>
+  </div>
+
+  <div class="question-card" id="questionCard">
+    <div class="q-hdr">
+      <div>
+        <div class="q-hdr-title">🎯 오늘의 질문</div>
+        <div class="q-coord">
+          <span class="cb" id="coordBlue">열 ?</span>
+          <span style="opacity:.55">×</span>
+          <span class="cb" id="coordGreen">행 ?</span>
+        </div>
+      </div>
+      <div class="q-icon">💬</div>
+    </div>
+    <div class="q-body">
+      <div class="q-mark">Q.</div>
+      <div class="q-text" id="questionText"></div>
+      <div class="q-hint">💡 조원들과 돌아가며 솔직하게 나눠보세요. 정답은 없습니다!</div>
+    </div>
+  </div>
+
+  <button class="reset-btn" id="resetBtn" onclick="resetAll()">🔄 다시 굴리기</button>
+
+</main>
+
+<!-- ━ 질문판 모달 ━ -->
+<div class="modal-overlay" id="tableModal" onclick="overlayClose('tableModal',event)">
+  <div class="modal-sheet">
+    <div class="modal-hdr">
+      <h3>📋 질문판 전체보기</h3>
+      <button class="modal-close" onclick="closeModal('tableModal')">✕</button>
+    </div>
+    <div class="tbl-info" id="tblInfo">
+      🔵 파랑 = <strong>열(가로)</strong> &nbsp;|&nbsp; 🟢 초록 = <strong>행(세로)</strong>
+    </div>
+    <div class="modal-body">
+      <div class="tbl-scroll">
+        <table class="q-table" id="qTable"></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ━ 편집 모달 ━ -->
+<div class="modal-overlay" id="editModal" onclick="overlayClose('editModal',event)">
+  <div class="modal-sheet">
+    <div class="modal-hdr">
+      <h3>✏️ 질문 편집</h3>
+      <button class="modal-close" onclick="closeModal('editModal')">✕</button>
+    </div>
+    <div class="edit-tabs" id="editTabs"></div>
+    <div class="modal-body">
+      <div class="edit-intro" id="editIntro"></div>
+      <div class="edit-grid" id="editGrid"></div>
+    </div>
+    <div class="edit-footer">
+      <button class="btn-restore" onclick="restoreDefault()">↺ 원본 복원</button>
+      <button class="btn-save" onclick="saveEdit()">✅ 편집 완료</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ━━━ 질문 데이터 questions[행-1][열-1] ━━━ */
+var DEFAULT_Q = [
+  [
+    "당장 여행하고 싶은 곳? 이유는?",
+    "인생에서 중요하게 생각하는 가치는?",
+    "일상생활에서 여유를 찾는 나만의 방법은?",
+    "오늘 자신의 마음을 표현하는 단어는?",
+    "올해 기뻤던 일 2가지는?",
+    "자신의 성격을 한마디로 말하면?"
+  ],
+  [
+    "인생에서 부모님 외 감사한 사람 2명은?",
+    "스스로 멋지게 보일 때는?",
+    "아직 시도하지 않았지만 반드시 이루고 싶은 꿈은?",
+    "슬럼프를 극복하는 자신만의 방법은?",
+    "요즘 주된 관심사는?",
+    "자신이 근사하게 보일 때는?"
+  ],
+  [
+    "심심하고 무료할 때 하는 것은?",
+    "지난 일주일간 자신이 한 착한 일 2가지는?",
+    "요즘 날 기분 좋게 하는 사람은?",
+    "만날 수 있다면 간절히 만나고 싶은 사람은?",
+    "시간과 돈이 허락한다면 하고 싶은 것은?",
+    "살면서 잘 했다고 생각되는 것은?"
+  ],
+  [
+    "살면서 가장 행복했던 순간은?",
+    "가장 살아보고 싶은 나라/지역? 이유는?",
+    "지금의 자신에게 선물을 준다면?",
+    "자신에게 스스로 해주고 싶은 값진 2가지는?",
+    "주변 사람들에게 듣고 싶은 말은?",
+    "인생의 특정 시점으로 갈 수 있다면 어디로 가고 싶나요?"
+  ],
+  [
+    "내가 바라는 80대의 모습은?",
+    "인생에 큰 전환을 준 사건은?",
+    "가장 기분 좋아지는 유행어(말)은?",
+    "시간·돈·건강에 구애받지 않는다면 꼭 해보고 싶은 것은?",
+    "마지막으로 눈물을 흘리며 울었던 때는?",
+    "마지막으로 고개 숙여 고마워했던 때는 언제인가요?"
+  ],
+  [
+    "지금의 자신이 있는 것은 (   ) 덕분이다.",
+    "나를 대표하는 컬러는? 이유는?",
+    "다른 사람들이 나를 인정하는 부분은?",
+    "인생에서 성공했다고 생각될 때는 언제인가요?",
+    "내가 다른 사람들의 마음을 알아차리는 비결은?",
+    "최근에 경험한 가장 큰 성공이 있다면?"
+  ]
+];
+
+var questions = loadQ();
+function loadQ() {
+  try { var s=localStorage.getItem("dq"); if(s){var p=JSON.parse(s);if(p.length===6&&p[0].length===6)return p;} } catch(e){}
+  return copyQ(DEFAULT_Q);
+}
+function saveQ() { try{localStorage.setItem("dq",JSON.stringify(questions));}catch(e){} }
+function copyQ(a){ return JSON.parse(JSON.stringify(a)); }
+
+/* ━━━ 진짜 랜덤 (crypto.getRandomValues) ━━━ */
+function rand6() {
+  if(window.crypto&&window.crypto.getRandomValues){
+    var buf=new Uint32Array(1), v, limit=Math.floor(0xFFFFFFFF/6)*6;
+    do{ window.crypto.getRandomValues(buf); v=buf[0]; } while(v>=limit);
+    return (v%6)+1;
+  }
+  return Math.floor(Math.random()*6)+1;
+}
+
+/* ━━━ 숫자 표시 & 질문 카드 ━━━ */
+function setNum(id, val) {
+  var el = document.getElementById(id);
+  el.textContent = val ? val : "?";
+  el.classList.remove("pop");
+  void el.offsetWidth;
+  if (val) el.classList.add("pop");
+}
+
+function showQ() {
+  if (!blueVal || !greenVal) return;
+  var q = questions[greenVal - 1][blueVal - 1];
+  document.getElementById("questionText").textContent = q;
+  document.getElementById("coordBlue").textContent = "열 " + blueVal;
+  document.getElementById("coordGreen").textContent = "행 " + greenVal;
+  var card = document.getElementById("questionCard");
+  card.classList.remove("show");
+  void card.offsetWidth;
+  card.classList.add("show");
+  document.getElementById("resetBtn").classList.add("show");
+  setTimeout(function() { card.scrollIntoView({ behavior: "smooth", block: "nearest" }); }, 60);
+  if (navigator.vibrate) navigator.vibrate([50, 25, 80]);
+}
+
+/* ━━━ 점 배치 정의 (true=점, false=빈칸) ━━━
+   각 숫자별로 그리드 셀에 점이 있는지 배열로 정의
+   n1: 1x1(1셀), n2: 1x2(2셀), n3: 1x3(3셀),
+   n4: 2x2(4셀), n5: 3x2(6셀), n6: 3x2(6셀)
+*/
+var DOT_LAYOUT = {
+  1: [true],
+  2: [true, true],
+  3: [true, true, true],
+  4: [true, true, true, true],
+  /* 3x3 그리드(9칸): ●○● / ○●○ / ●○● */
+  5: [true, false, true,
+      false, true, false,
+      true, false, true],
+  6: [true, true, true, true, true, true]
+};
+
+/* 결과 주사위에 점 렌더링 */
+function renderDots(dotGridId, n) {
+  var grid = document.getElementById(dotGridId);
+  grid.className = "dot-grid n" + n;
+  var layout = DOT_LAYOUT[n];
+  var html = "";
+  for (var i = 0; i < layout.length; i++) {
+    html += "<div class='dot" + (layout[i] ? "" : " h") + "'></div>";
+  }
+  grid.innerHTML = html;
+}
+
+/* 결과 주사위 초기화 (물음표) */
+function clearDots(dotGridId) {
+  var grid = document.getElementById(dotGridId);
+  grid.className = "dot-grid empty";
+  grid.innerHTML = "";
+}
+
+/* ━━━ 굴리기 로직 ━━━ */
+var rolling = { blue: false, green: false };
+var blueVal = 0, greenVal = 0;
+
+/* 스피너 ON/OFF + 결과 주사위 ON/OFF */
+function showSpinner(color) {
+  document.getElementById(color + "Spinner").classList.add("spinning");
+  document.getElementById(color + "Result").classList.add("hidden");
+}
+function showResult(color, n) {
+  document.getElementById(color + "Spinner").classList.remove("spinning");
+  var result = document.getElementById(color + "Result");
+  result.classList.remove("hidden");
+  /* 점 렌더링 */
+  renderDots(color + "Dots", n);
+  /* 착지 애니메이션 */
+  result.style.transform = "scale(.85)";
+  result.style.transition = "transform 0s";
+  requestAnimationFrame(function() {
+    result.style.transition = "transform .35s cubic-bezier(.34,1.56,.64,1)";
+    result.style.transform = "scale(1)";
+  });
+}
+
+function rollBoth() {
+  if (rolling.blue || rolling.green) return;
+  rolling.blue = true; rolling.green = true;
+  blueVal = 0; greenVal = 0;
+  setNum("blueNum", 0); setNum("greenNum", 0);
+  document.getElementById("questionCard").classList.remove("show");
+  document.getElementById("resetBtn").classList.remove("show");
+
+  var b = rand6(), g = rand6();
+  var dur = 820 + rand6() * 60;
+
+  showSpinner("blue");
+  showSpinner("green");
+
+  /* 파랑 */
+  setTimeout(function() {
+    showResult("blue", b);
+    blueVal = b;
+    setNum("blueNum", b);
+    rolling.blue = false;
+    if (!rolling.green) showQ();
+  }, dur);
+
+  /* 초록 — 살짝 다른 타이밍 */
+  setTimeout(function() {
+    showResult("green", g);
+    greenVal = g;
+    setNum("greenNum", g);
+    rolling.green = false;
+    if (!rolling.blue) showQ();
+  }, dur + rand6() * 80);
+}
+
+function rollSingle(color) {
+  if (rolling[color]) return;
+  rolling[color] = true;
+  if (color === "blue") blueVal = 0; else greenVal = 0;
+  setNum(color === "blue" ? "blueNum" : "greenNum", 0);
+  document.getElementById("questionCard").classList.remove("show");
+  document.getElementById("resetBtn").classList.remove("show");
+
+  var val = rand6();
+  var dur = 820 + rand6() * 60;
+
+  showSpinner(color);
+
+  setTimeout(function() {
+    showResult(color, val);
+    if (color === "blue") blueVal = val; else greenVal = val;
+    setNum(color === "blue" ? "blueNum" : "greenNum", val);
+    rolling[color] = false;
+    if (blueVal && greenVal) showQ();
+  }, dur);
+}
+
+function resetAll() {
+  blueVal = 0; greenVal = 0;
+  setNum("blueNum", 0); setNum("greenNum", 0);
+  ["blue","green"].forEach(function(c) {
+    document.getElementById(c + "Spinner").classList.remove("spinning");
+    document.getElementById(c + "Result").classList.remove("hidden");
+    document.getElementById(c + "Result").style.transform = "";
+    clearDots(c + "Dots");
+  });
+  document.getElementById("questionCard").classList.remove("show");
+  document.getElementById("resetBtn").classList.remove("show");
+}
+
+/* ━━━ 질문판 모달 ━━━ */
+function buildTable(){
+  var h="<thead><tr><th></th>";
+  for(var c=1;c<=6;c++)h+="<th>🔵"+c+"</th>";
+  h+="</tr></thead><tbody>";
+  for(var r=1;r<=6;r++){
+    h+="<tr><td class='row-head'>🟢"+r+"</td>";
+    for(var col=1;col<=6;col++){
+      var cls=(blueVal===col&&greenVal===r)?" hl":"";
+      h+="<td class='"+cls+"'>"+esc(questions[r-1][col-1])+"</td>";
+    }
+    h+="</tr>";
+  }
+  h+="</tbody>";
+  document.getElementById("qTable").innerHTML=h;
+  var info=document.getElementById("tblInfo");
+  if(blueVal&&greenVal){
+    info.innerHTML="🔵 파랑=<strong>열(가로)</strong> | 🟢 초록=<strong>행(세로)</strong>&nbsp; 현재: <strong style='color:var(--accent)'>열"+blueVal+" × 행"+greenVal+"</strong> 강조됨";
+  } else {
+    info.innerHTML="🔵 파랑=<strong>열(가로)</strong> &nbsp;|&nbsp; 🟢 초록=<strong>행(세로)</strong>";
+  }
+}
+function openTable(){ buildTable(); document.getElementById("tableModal").classList.add("show"); document.body.style.overflow="hidden"; }
+
+/* ━━━ 편집 모달 ━━━ */
+var editRow=1;
+
+function buildEditTabs(){
+  var h="";
+  for(var r=1;r<=6;r++) h+="<button class='edit-tab"+(r===editRow?" active":"")+"' onclick='switchRow("+r+")'>🟢 행"+r+"</button>";
+  document.getElementById("editTabs").innerHTML=h;
+}
+function buildEditGrid(){
+  var r=editRow-1;
+  var intro="<p style='padding:10px 15px 0;font-size:.77rem;color:var(--text-sec);line-height:1.6'><strong style='color:var(--green-dice)'>🟢 행 "+editRow+"</strong> 의 질문 6개 (🔵 열 1~6) 를 수정하세요.</p>";
+  document.getElementById("editIntro").innerHTML=intro;
+  var h="";
+  for(var c=0;c<6;c++){
+    h+="<div class='edit-cell'>";
+    h+="<label><span class='col-badge b'>"+(c+1)+"</span> 열 "+(c+1)+"</label>";
+    h+="<textarea id='ec_"+r+"_"+c+"'>"+esc(questions[r][c])+"</textarea>";
+    h+="</div>";
+  }
+  document.getElementById("editGrid").innerHTML=h;
+}
+function switchRow(r){ editRow=r; buildEditTabs(); buildEditGrid(); }
+function openEdit(){ editRow=1; buildEditTabs(); buildEditGrid(); document.getElementById("editModal").classList.add("show"); document.body.style.overflow="hidden"; }
+
+function saveEdit(){
+  /* 현재 탭만 저장 (다른 탭은 이미 저장됨) */
+  for(var r=0;r<6;r++){
+    for(var c=0;c<6;c++){
+      var el=document.getElementById("ec_"+r+"_"+c);
+      if(el){ var v=el.value.trim(); if(v)questions[r][c]=v; }
+    }
+  }
+  saveQ();
+  /* 현재 표시된 질문 갱신 */
+  if(blueVal&&greenVal) document.getElementById("questionText").textContent=questions[greenVal-1][blueVal-1];
+  closeModal("editModal");
+  showToast("✅ 편집 완료! 질문이 저장되었습니다.");
+}
+
+function restoreDefault(){
+  if(!confirm("모든 질문을 원본으로 복원할까요?"))return;
+  questions=copyQ(DEFAULT_Q); saveQ(); buildEditGrid();
+  showToast("↺ 원본 질문으로 복원했습니다.");
+}
+
+/* ━━━ 모달 공통 ━━━ */
+function closeModal(id){ document.getElementById(id).classList.remove("show"); document.body.style.overflow=""; }
+function overlayClose(id,e){ if(e.target===document.getElementById(id))closeModal(id); }
+
+/* ━━━ 테마 ━━━ */
+function toggleTheme(){
+  var html=document.documentElement, dark=html.classList.contains("theme-dark");
+  html.classList.toggle("theme-dark",!dark); html.classList.toggle("theme-light",dark);
+  document.getElementById("themeBtn").textContent=dark?"🌙":"☀️";
+  try{localStorage.setItem("diceTheme",dark?"light":"dark");}catch(e){}
+}
+
+/* ━━━ 유틸 ━━━ */
+function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+var toastTimer=null;
+function showToast(msg){
+  var el=document.getElementById("toast");
+  el.textContent=msg; el.classList.add("show");
+  if(toastTimer)clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){el.classList.remove("show");},2600);
+}
+
+/* ━━━ 초기화 ━━━ */
+(function(){
+  try{
+    var t=localStorage.getItem("diceTheme");
+    if(t==="dark"){ document.documentElement.classList.replace("theme-light","theme-dark"); document.getElementById("themeBtn").textContent="☀️"; }
+  }catch(e){}
+  /* 초기 주사위: 결과면 표시, 물음표 상태 */
+  clearDots("blueDots");
+  clearDots("greenDots");
+  document.querySelectorAll(".ani").forEach(function(el,i){ setTimeout(function(){el.classList.add("in");},80+i*110); });
+  document.addEventListener("keydown",function(e){
+    if(e.key==="Escape"){ closeModal("tableModal"); closeModal("editModal"); }
+  });
+})();
+</script>
+</body>
+</html>
