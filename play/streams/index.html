@@ -8,19 +8,7 @@
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
-<script>
-  var firebaseConfig = {
-      apiKey: "AIzaSyB_-pZHh5RN9ksAKqi6VOWgnW0kKIwfBAw",
-      authDomain: "blueblock-cdff7.firebaseapp.com",
-      databaseURL: "https://blueblock-cdff7-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "blueblock-cdff7",
-      storageBucket: "blueblock-cdff7.firebasestorage.app",
-      messagingSenderId: "273215826494",
-      appId: "1:273215826494:web:179e1fd7b5dbaaa2a5bf6f",
-    };
-firebase.initializeApp(firebaseConfig);
-</script>
-  <style>
+<style>
 html.theme-light {
   --bg:#FFFFFF; --surface:#F8FAFF; --surface-hover:#EEF3FD;
   --border:rgba(22,82,216,0.10); --text:#1A1A1A; --text-secondary:#666666;
@@ -451,7 +439,16 @@ body{font-family:'Noto Sans KR',-apple-system,sans-serif;background:var(--bg);co
 /* ═══════════════════════════════════
    Firebase 설정
 ═══════════════════════════════════ */
-// Firebase 설정은 config.js에서 로드
+var firebaseConfig = {
+  apiKey:            "AIzaSyBlueBlockDummyKeyReplaceMe",
+  authDomain:        "blueblock-cdff7.firebaseapp.com",
+  databaseURL:       "https://blueblock-cdff7-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:         "blueblock-cdff7",
+  storageBucket:     "blueblock-cdff7.appspot.com",
+  messagingSenderId: "000000000000",
+  appId:             "1:000000000000:web:000000000000000000000000"
+};
+firebase.initializeApp(firebaseConfig);
 var db = firebase.database();
 var SESSION = db.ref('streams/session');
 
@@ -1084,8 +1081,22 @@ function calcPScore(){
       } else {
         var prev = pTiles[i-1];
         var curr = pTiles[i];
-        var ok = (prev === '☆' || curr === '☆') ||
-                 (typeof prev === 'number' && typeof curr === 'number' && curr >= prev);
+        var prev = pTiles[i-1];
+        var curr = pTiles[i];
+        var ok;
+        if(curr === '☆'){
+          ok = true; // 조커 자체는 항상 연속
+        } else if(prev === '☆'){
+          // 조커 앞의 실제 숫자 찾기 (조커 연속 대비)
+          var baseNum = null;
+          for(var k2=i-2; k2>=0; k2--){
+            if(pTiles[k2] !== '☆'){ baseNum = pTiles[k2]; break; }
+          }
+          // 조커 앞 실제숫자 기준으로 curr이 오름차순인지
+          ok = (baseNum === null) || (typeof baseNum === 'number' && typeof curr === 'number' && curr >= baseNum);
+        } else {
+          ok = (typeof prev === 'number' && typeof curr === 'number' && curr >= prev);
+        }
         if(ok){ curLen++; }
         else { flushSeg(curLen); curLen = 1; }
       }
@@ -1117,7 +1128,16 @@ function calcScore(){
   for(var j=0;j<PLAYER_SLOTS;j++){
     if(pTiles[j]==='JOKER') pTiles[j]='☆';
     if(pTiles[j]===null){if(curLen2>0){flush2(curLen2);curLen2=0;}}
-    else{if(curLen2===0){curLen2=1;}else{var p2=pTiles[j-1];var c2=pTiles[j];var ok2=(p2==='☆'||c2==='☆')||(typeof p2==='number'&&typeof c2==='number'&&c2>=p2);if(ok2){curLen2++;}else{flush2(curLen2);curLen2=1;}}}
+    else{if(curLen2===0){curLen2=1;}else{
+      var p2=pTiles[j-1]; var c2=pTiles[j]; var ok2;
+      if(c2==='☆'){ ok2=true; }
+      else if(p2==='☆'){
+        var base2=null;
+        for(var m=j-2;m>=0;m--){if(pTiles[m]!=='☆'){base2=pTiles[m];break;}}
+        ok2=(base2===null)||(typeof base2==='number'&&typeof c2==='number'&&c2>=base2);
+      } else { ok2=(typeof p2==='number'&&typeof c2==='number'&&c2>=p2); }
+      if(ok2){curLen2++;}else{flush2(curLen2);curLen2=1;}
+    }}
   }
   if(curLen2>0) flush2(curLen2);
 
