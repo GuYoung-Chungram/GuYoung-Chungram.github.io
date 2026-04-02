@@ -1,0 +1,1567 @@
+<!DOCTYPE html>
+<html lang="ko" class="theme-light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BlueBlock 디브리핑 가이드 — 청람M&C</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      interpolate-size: allow-keywords;
+    }
+
+    html.theme-light {
+      --bg: #FFFFFF;
+      --surface: #F8FAFF;
+      --surface-hover: #EEF3FD;
+      --border: rgba(22, 82, 216, 0.08);
+      --text: #1A1A1A;
+      --text-secondary: #666666;
+      --accent: #1652D8;
+      --accent-secondary: #0F3D99;
+      --positive: #059669;
+      --negative: #e11d48;
+      --warning: #d97706;
+      --cr-header-bar: #1652D8;
+      --cr-light-bg: #EEF3FD;
+      --cr-card-border: #D0D9F5;
+      --cr-dark-section: #0F0F0F;
+      --menu-bg: rgba(255, 255, 255, 0.9);
+      --menu-bg-hover: rgba(255, 255, 255, 0.98);
+      --menu-border: rgba(22, 82, 216, 0.12);
+      --menu-text: #1A1A1A;
+      --menu-item-hover: rgba(22, 82, 216, 0.06);
+      --a-color: #7C3AED;
+      --b-color: #1652D8;
+      --c-color: #059669;
+      --defect-bg: rgba(225, 29, 72, 0.06);
+      --defect-border: rgba(225, 29, 72, 0.2);
+    }
+
+    html.theme-dark {
+      --bg: #0F0F0F;
+      --surface: #1A1A2E;
+      --surface-hover: #252540;
+      --border: rgba(255, 255, 255, 0.06);
+      --text: #EDEDED;
+      --text-secondary: #888888;
+      --accent: #4B7BF5;
+      --accent-secondary: #6B8FFF;
+      --positive: #10b981;
+      --negative: #f43f5e;
+      --warning: #f59e0b;
+      --cr-header-bar: #4B7BF5;
+      --cr-light-bg: #1A1A2E;
+      --cr-card-border: rgba(75, 123, 245, 0.15);
+      --cr-dark-section: #0A0A0A;
+      --menu-bg: rgba(15, 15, 15, 0.9);
+      --menu-bg-hover: rgba(15, 15, 15, 0.98);
+      --menu-border: rgba(75, 123, 245, 0.15);
+      --menu-text: #EDEDED;
+      --menu-item-hover: rgba(75, 123, 245, 0.1);
+      --a-color: #A78BFA;
+      --b-color: #4B7BF5;
+      --c-color: #10b981;
+      --defect-bg: rgba(244, 63, 94, 0.08);
+      --defect-border: rgba(244, 63, 94, 0.2);
+    }
+
+    body {
+      font-family: 'Noto Sans KR', 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      letter-spacing: -0.01em;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      color: var(--text);
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      text-wrap: balance;
+    }
+
+    h1 {
+      font-weight: 700;
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+    }
+
+    h2 {
+      font-weight: 600;
+      font-size: clamp(1.8rem, 3.5vw, 2.2rem);
+      letter-spacing: -0.02em;
+    }
+
+    h3 {
+      font-weight: 600;
+      font-size: clamp(1.3rem, 2.5vw, 1.6rem);
+      letter-spacing: -0.02em;
+    }
+
+    h4 {
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    /* ── 메뉴 ── */
+    .viz-menu {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 9999;
+    }
+
+    .viz-menu-toggle {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--menu-bg);
+      border: 1px solid var(--menu-border);
+      color: var(--menu-text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(12px);
+      transition: all 0.2s;
+    }
+
+    .viz-menu-toggle:hover {
+      background: var(--menu-bg-hover);
+    }
+
+    .viz-menu-dropdown {
+      position: absolute;
+      top: 52px;
+      right: 0;
+      min-width: 180px;
+      background: var(--menu-bg);
+      border: 1px solid var(--menu-border);
+      border-radius: 12px;
+      padding: 8px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px);
+      transition: all 0.2s;
+      backdrop-filter: blur(12px);
+    }
+
+    .viz-menu-dropdown.open {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .viz-menu-dropdown button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border: none;
+      background: transparent;
+      color: var(--menu-text);
+      cursor: pointer;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      transition: background 0.15s;
+    }
+
+    .viz-menu-dropdown button:hover {
+      background: var(--menu-item-hover);
+    }
+
+    /* ── 레이아웃 ── */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    section {
+      padding: 64px 0;
+    }
+
+    section+section {
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── 헤더 ── */
+    .hero {
+      background: var(--cr-header-bar);
+      color: #fff;
+      padding: 72px 24px 56px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0.5px, transparent 0.5px);
+      background-size: 28px 28px;
+    }
+
+    .hero-inner {
+      position: relative;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.18);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      color: #fff;
+      font-size: clamp(2.2rem, 5vw, 3.2rem);
+      margin-bottom: 12px;
+    }
+
+    .hero p {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 1.1rem;
+      max-width: 600px;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 32px;
+      margin-top: 36px;
+      flex-wrap: wrap;
+    }
+
+    .hero-stat {
+      text-align: center;
+    }
+
+    .hero-stat .val {
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1;
+    }
+
+    .hero-stat .lbl {
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.7);
+      margin-top: 4px;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── 카드 ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+      transition: box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 0 0 1px var(--border), 0 8px 24px rgba(0, 0, 0, 0.07);
+    }
+
+    .card-accent {
+      border-top: 3px solid var(--accent);
+    }
+
+    /* ── 섹션 타이틀 ── */
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      margin-bottom: 8px;
+    }
+
+    .section-desc {
+      color: var(--text-secondary);
+      margin-bottom: 40px;
+      font-size: 1rem;
+    }
+
+    /* ── 통계 그리드 ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .stat-card .num {
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stat-card .num.positive {
+      color: var(--positive);
+    }
+
+    .stat-card .num.negative {
+      color: var(--negative);
+    }
+
+    .stat-card .lbl {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+
+    /* ── 세트 테이블 ── */
+    .set-table-wrap {
+      overflow-x: auto;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .set-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    .set-table thead tr {
+      background: var(--cr-header-bar);
+    }
+
+    .set-table thead th {
+      color: #fff;
+      font-weight: 600;
+      padding: 14px 20px;
+      text-align: left;
+      letter-spacing: 0.04em;
+    }
+
+    .set-table tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+
+    .set-table tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    .set-table tbody tr:hover {
+      background: var(--surface-hover);
+    }
+
+    .set-table tbody td {
+      padding: 12px 20px;
+    }
+
+    .set-num {
+      font-weight: 700;
+      color: var(--text-secondary);
+      font-size: 0.82rem;
+      width: 60px;
+    }
+
+    .block-a {
+      font-weight: 700;
+      color: var(--a-color);
+      font-family: 'Inter', monospace;
+      letter-spacing: 0.05em;
+    }
+
+    .block-b {
+      font-weight: 700;
+      color: var(--b-color);
+      font-family: 'Inter', monospace;
+      letter-spacing: 0.05em;
+    }
+
+    .block-c {
+      font-weight: 700;
+      color: var(--c-color);
+      font-family: 'Inter', monospace;
+      letter-spacing: 0.05em;
+    }
+
+    .arrow {
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      padding: 0 4px;
+    }
+
+    .set-valid {
+      color: var(--positive);
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    /* ── 불량블록 ── */
+    .defect-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 8px;
+    }
+
+    .defect-chip {
+      background: var(--defect-bg);
+      border: 1px solid var(--defect-border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      text-align: center;
+    }
+
+    .defect-chip .code {
+      font-family: 'Inter', monospace;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--negative);
+      letter-spacing: 0.05em;
+    }
+
+    .defect-chip .reason {
+      font-size: 0.68rem;
+      color: var(--text-secondary);
+      margin-top: 3px;
+    }
+
+    /* ── 생각 질문 ── */
+    .questions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .question-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: 0 12px 12px 0;
+      padding: 24px;
+      transition: box-shadow 0.2s;
+    }
+
+    .question-card:hover {
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    }
+
+    .q-num {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .q-text {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .q-hint {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .q-category {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+    }
+
+    .cat-team {
+      background: rgba(22, 82, 216, 0.1);
+      color: var(--accent);
+    }
+
+    .cat-lead {
+      background: rgba(5, 150, 105, 0.1);
+      color: var(--positive);
+    }
+
+    .cat-reflect {
+      background: rgba(124, 58, 237, 0.1);
+      color: var(--a-color);
+    }
+
+    .cat-transfer {
+      background: rgba(217, 119, 6, 0.1);
+      color: var(--warning);
+    }
+
+    /* ── 교훈 ── */
+    .lesson-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .lesson-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+      transition: box-shadow 0.2s;
+    }
+
+    .lesson-card:hover {
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
+    }
+
+    .lesson-icon {
+      font-size: 2rem;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .lesson-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    .lesson-desc {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    .lesson-keyword {
+      display: inline-block;
+      margin-top: 14px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 2px;
+    }
+
+    /* ── 다크 CTA 섹션 ── */
+    .dark-section {
+      background: var(--cr-dark-section);
+      color: #fff;
+      padding: 64px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dark-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(255, 255, 255, 0.04) 0.5px, transparent 0.5px);
+      background-size: 24px 24px;
+    }
+
+    .dark-section-inner {
+      position: relative;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .dark-section h2 {
+      color: #fff;
+      margin-bottom: 16px;
+    }
+
+    .dark-section p {
+      color: rgba(255, 255, 255, 0.7);
+      max-width: 680px;
+      font-size: 1rem;
+    }
+
+    /* ── 핵심 메시지 박스 ── */
+    .core-message {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-secondary) 100%);
+      color: #fff;
+      border-radius: 16px;
+      padding: 40px;
+      text-align: center;
+      margin-top: 48px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .core-message::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(255, 255, 255, 0.06) 0.5px, transparent 0.5px);
+      background-size: 20px 20px;
+    }
+
+    .core-message-inner {
+      position: relative;
+    }
+
+    .core-message .quote {
+      font-size: 1.5rem;
+      font-weight: 700;
+      line-height: 1.4;
+      margin-bottom: 12px;
+    }
+
+    .core-message .source {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    /* ── 인포 배너 ── */
+    .info-banner {
+      background: var(--cr-light-bg);
+      border: 1px solid var(--cr-card-border);
+      border-left: 4px solid var(--accent);
+      border-radius: 0 12px 12px 0;
+      padding: 20px 24px;
+      margin-bottom: 32px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .info-banner .icon {
+      font-size: 1.3rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .info-banner p {
+      font-size: 0.9rem;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .info-banner strong {
+      color: var(--accent);
+    }
+
+    /* ── 푸터 ── */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 32px 24px;
+      text-align: center;
+    }
+
+    footer p {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+
+    /* ── 애니메이션 ── */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate {
+      animation: fadeInUp 0.6s ease-out both;
+    }
+
+    .animate.delay-1 {
+      animation-delay: 0.1s;
+    }
+
+    .animate.delay-2 {
+      animation-delay: 0.2s;
+    }
+
+    .animate.delay-3 {
+      animation-delay: 0.3s;
+    }
+
+    .animate.delay-4 {
+      animation-delay: 0.4s;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    @media print {
+      body {
+        background: white !important;
+        color: black !important;
+      }
+
+      .viz-menu {
+        display: none;
+      }
+
+      .reveal {
+        opacity: 1 !important;
+        transform: none !important;
+      }
+
+      .card {
+        break-inside: avoid;
+      }
+
+      * {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+    }
+
+    @page {
+      margin: 0.8in;
+    }
+
+    @media (max-width: 640px) {
+      section {
+        padding: 48px 0;
+      }
+
+      .hero {
+        padding: 48px 24px 40px;
+      }
+
+      .hero-stats {
+        gap: 20px;
+      }
+
+      .questions-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .lesson-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* skip link */
+    .skip-link {
+      position: absolute;
+      left: -9999px;
+      top: auto;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+
+    .skip-link:focus {
+      position: fixed;
+      left: 16px;
+      top: 16px;
+      z-index: 10000;
+      padding: 8px 16px;
+      background: var(--accent);
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      width: auto;
+      height: auto;
+      overflow: visible;
+    }
+  </style>
+</head>
+
+<body>
+  <a href="#main-content" class="skip-link">본문으로 건너뛰기</a>
+
+  <!-- 메뉴 -->
+  <div class="viz-menu">
+    <button class="viz-menu-toggle" onclick="toggleMenu()" aria-label="메뉴">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round">
+        <line x1="3" y1="5" x2="17" y2="5" />
+        <line x1="3" y1="10" x2="17" y2="10" />
+        <line x1="3" y1="15" x2="17" y2="15" />
+      </svg>
+    </button>
+    <div class="viz-menu-dropdown" id="vizMenuDropdown">
+      <button onclick="cycleTheme()"><span id="themeIcon">☀️</span><span id="themeLabel">라이트</span></button>
+      <button onclick="downloadImage()"><span>📥</span><span>PNG 다운로드</span></button>
+      <button onclick="window.print()"><span>🖨️</span><span>인쇄 / PDF</span></button>
+    </div>
+  </div>
+
+  <main id="main-content" role="main">
+
+    <!-- ① 히어로 -->
+    <header class="hero">
+      <div class="hero-inner">
+        <div class="hero-badge animate">강사용 디브리핑 가이드</div>
+        <h1 class="animate delay-1">BlueBlock<br>정답 세트 & 학습 가이드</h1>
+        <p class="animate delay-2">120개 블록으로 만드는 팀 역량 체험 — 정답 확인부터 생각 질문까지</p>
+        <div class="hero-stats animate delay-3">
+          <div class="hero-stat">
+            <div class="val" data-count="120">0</div>
+            <div class="lbl">전체 블록</div>
+          </div>
+          <div class="hero-stat">
+            <div class="val" data-count="93">0</div>
+            <div class="lbl">양호 블록</div>
+          </div>
+          <div class="hero-stat">
+            <div class="val" data-count="27">0</div>
+            <div class="lbl">불량 블록</div>
+          </div>
+          <div class="hero-stat">
+            <div class="val" data-count="28">0</div>
+            <div class="lbl">최대 세트</div>
+          </div>
+          <div class="hero-stat">
+            <div class="val">23</div>
+            <div class="lbl">목표 세트</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ② 게임 개요 -->
+    <section>
+      <div class="container">
+        <div class="info-banner reveal" data-reveal>
+          <div class="icon">💡</div>
+          <p><strong>게임 핵심 규칙:</strong> 양호 블록(93개)만 사용 · A숫자 &lt; B숫자 &lt; C숫자 (가로 오름차순) · A/B/C 각 라인도 오름차순 (세로) · 불량①:
+            중간 00 연속(X00X) · 불량②: 숫자 합 10·20·30 · 제한시간 14분 · 목표 23세트</p>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card reveal" data-reveal>
+            <div class="num">28</div>
+            <div class="lbl">이론상 최대 세트</div>
+          </div>
+          <div class="stat-card reveal" data-reveal>
+            <div class="num">23</div>
+            <div class="lbl">목표 세트 (달성 가능)</div>
+          </div>
+          <div class="stat-card reveal" data-reveal>
+            <div class="num positive">93</div>
+            <div class="lbl">양호 블록 (A:31 B:30 C:32)</div>
+          </div>
+          <div class="stat-card reveal" data-reveal>
+            <div class="num negative">27</div>
+            <div class="lbl">불량 블록 (함정)</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ③ 정답 세트 -->
+    <section>
+      <div class="container">
+        <div class="section-label">Answer Key</div>
+        <h2 class="section-title cr-accent-underline">최대 완성 세트 28개</h2>
+        <p class="section-desc">아래는 탐욕적 알고리즘으로 도출한 최적 조합입니다. 같은 블록으로 다른 조합도 가능하므로, 팀마다 다른 정답이 나올 수 있습니다.</p>
+
+        <div class="set-table-wrap reveal" data-reveal>
+          <table class="set-table">
+            <thead>
+              <tr>
+                <th style="width:60px">#</th>
+                <th>A 블록</th>
+                <th></th>
+                <th>B 블록</th>
+                <th></th>
+                <th>C 블록</th>
+                <th>상태</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="set-num">1</td>
+                <td class="block-a">A0003</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-b">B0005</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-c">C0008</td>
+                <td class="set-valid">✓ 유효</td>
+              </tr>
+              <tr>
+                <td class="set-num">2</td>
+                <td class="block-a">A0029</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-b">B0056</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-c">C0092</td>
+                <td class="set-valid">✓ 유효</td>
+              </tr>
+              <tr>
+                <td class="set-num">3</td>
+                <td class="block-a">A0128</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-b">B0256</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-c">C0382</td>
+                <td class="set-valid">✓ 유효</td>
+              </tr>
+              <tr>
+                <td class="set-num">4</td>
+                <td class="block-a">A0559</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-b">B0658</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-c">C0928</td>
+                <td class="set-valid">✓ 유효</td>
+              </tr>
+              <tr>
+                <td class="set-num">5</td>
+                <td class="block-a">A1256</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-b">B1309</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-c">C2159</td>
+                <td class="set-valid">✓ 유효</td>
+              </tr>
+              <tr>
+                <td class="set-num">6</td>
+                <td class="block-a">A1608</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-b">B1904</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-c">C2959</td>
+                <td class="set-valid">✓ 유효</td>
+              </tr>
+              <tr>
+                <td class="set-num">7</td>
+                <td class="block-a">A2406</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-b">B2728</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-c">C3123</td>
+                <td class="set-valid">✓ 유효</td>
+              </tr>
+              <tr>
+                <td class="set-num">8</td>
+                <td class="block-a">A2878</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-b">B3325</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-c">C3387</td>
+                <td class="set-valid">✓ 유효</td>
+              </tr>
+              <tr>
+                <td class="set-num">9</td>
+                <td class="block-a">A3012</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-b">B3802</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-c">C3934</td>
+                <td class="set-valid">✓ 유효</td>
+              </tr>
+              <tr>
+                <td class="set-num">10</td>
+                <td class="block-a">A3301</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-b">B4401</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-c">C4530</td>
+                <td class="set-valid">✓ 유효</td>
+              </tr>
+              <tr>
+                <td class="set-num">11</td>
+                <td class="block-a">A3459</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-b">B4749</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-c">C4803</td>
+                <td class="set-valid">✓ 유효</td>
+              </tr>
+              <tr>
+                <td class="set-num">12</td>
+                <td class="block-a">A4101</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-b">B5111</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-c">C5134</td>
+                <td class="set-valid">✓ 유효</td>
+              </tr>
+              <tr>
+                <td class="set-num">13</td>
+                <td class="block-a">A4388</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-b">B5299</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-c">C5301</td>
+                <td class="set-valid">✓ 유효</td>
+              </tr>
+              <tr>
+                <td class="set-num">14</td>
+                <td class="block-a">A4904</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-b">B5400</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-c">C5592</td>
+                <td class="set-valid">✓ 유효</td>
+              </tr>
+              <tr>
+                <td class="set-num">15</td>
+                <td class="block-a">A5259</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-b">B5419</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-c">C5921</td>
+                <td class="set-valid">✓ 유효</td>
+              </tr>
+              <tr>
+                <td class="set-num">16</td>
+                <td class="block-a">A5394</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-b">B5731</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-c">C6298</td>
+                <td class="set-valid">✓ 유효</td>
+              </tr>
+              <tr>
+                <td class="set-num">17</td>
+                <td class="block-a">A6101</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-b">B6134</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-c">C6521</td>
+                <td class="set-valid">✓ 유효</td>
+              </tr>
+              <tr>
+                <td class="set-num">18</td>
+                <td class="block-a">A6330</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-b">B6403</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-c">C6580</td>
+                <td class="set-valid">✓ 유효</td>
+              </tr>
+              <tr>
+                <td class="set-num">19</td>
+                <td class="block-a">A6539</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-b">B6560</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-c">C6781</td>
+                <td class="set-valid">✓ 유효</td>
+              </tr>
+              <tr>
+                <td class="set-num">20</td>
+                <td class="block-a">A6999</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-b">B7269</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-c">C7305</td>
+                <td class="set-valid">✓ 유효</td>
+              </tr>
+              <tr>
+                <td class="set-num">21</td>
+                <td class="block-a">A7123</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-b">B7518</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-c">C7883</td>
+                <td class="set-valid">✓ 유효</td>
+              </tr>
+              <tr>
+                <td class="set-num">22</td>
+                <td class="block-a">A7492</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-b">B8159</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-c">C8432</td>
+                <td class="set-valid">✓ 유효</td>
+              </tr>
+              <tr>
+                <td class="set-num">23</td>
+                <td class="block-a">A8012</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-b">B8498</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-c">C8701</td>
+                <td class="set-valid">✓ 유효</td>
+              </tr>
+              <tr>
+                <td class="set-num">24</td>
+                <td class="block-a">A8621</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-b">B8638</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-c">C9123</td>
+                <td class="set-valid">✓ 유효</td>
+              </tr>
+              <tr>
+                <td class="set-num">25</td>
+                <td class="block-a">A8800</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-b">B9698</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-c">C9701</td>
+                <td class="set-valid">✓ 유효</td>
+              </tr>
+              <tr>
+                <td class="set-num">26</td>
+                <td class="block-a">A9300</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-b">B9859</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-c">C9872</td>
+                <td class="set-valid">✓ 유효</td>
+              </tr>
+              <tr>
+                <td class="set-num">27</td>
+                <td class="block-a">A9413</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-b">B9892</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-c">C9900</td>
+                <td class="set-valid">✓ 유효</td>
+              </tr>
+              <tr>
+                <td class="set-num">28</td>
+                <td class="block-a">A9738</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-b">B9968</td>
+                <td class="arrow">&lt;</td>
+                <td class="block-c">C9999</td>
+                <td class="set-valid">✓ 유효</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ④ 불량 블록 -->
+    <section>
+      <div class="container">
+        <div class="section-label">Defect Blocks</div>
+        <h2 class="section-title cr-accent-underline">불량 블록 27개</h2>
+        <p class="section-desc">아래 블록은 규칙①(X00X 패턴) 또는 규칙②(숫자 합 10·20·30)에 해당하여 세트 구성에 사용할 수 없습니다.</p>
+        <div class="defect-grid reveal" data-reveal>
+          <div class="defect-chip">
+            <div class="code">A0064</div>
+            <div class="reason">합=10</div>
+          </div>
+          <div class="defect-chip">
+            <div class="code">A1003</div>
+            <div class="reason">X00X</div>
+          </div>
+          <div class="defect-chip">
+            <div class="code">A2001</div>
+            <div class="reason">X00X</div>
+          </div>
+          <div class="defect-chip">
+            <div class="code">A2198</div>
+            <div class="reason">합=20</div>
+          </div>
+          <div class="defect-chip">
+            <div class="code">A3002</div>
+            <div class="reason">X00X</div>
+          </div>
+          <div class="defect-chip">
+            <div class="code">A4001</div>
+            <div class="reason">X00X</div>
+          </div>
+          <div class="defect-chip">
+            <div class="code">A4628</div>
+            <div class="reason">합=20</div>
+          </div>
+          <div class="defect-chip">
+            <div class="code">A5008</div>
+            <div class="reason">X00X</div>
+          </div>
+          <div class="defect-chip">
+            <div class="code">A5609</div>
+            <div class="reason">합=20</div>
+          </div>
+          <div class="defect-chip">
+            <div class="code">A6003</div>
+            <div class="reason">X00X</div>
+          </div>
+          <div class="defect-chip">
+            <div class="code">A8444</div>
+            <div class="reason">합=20</div>
+          </div>
+          <div class="defect-chip">
+            <div class="code">B1007</div>
+            <div class="reason">X00X</div>
+          </div>
+          <div class="defect-chip">
+            <div class="code">B2936</div>
+            <div class="reason">합=20</div>
+          </div>
+          <div class="defect-chip">
+            <div class="code">B3004</div>
+            <div class="reason">X00X</div>
+          </div>
+          <div class="defect-chip">
+            <div class="code">B3098</div>
+            <div class="reason">합=20</div>
+          </div>
+          <div class="defect-chip">
+            <div class="code">B4007</div>
+            <div class="reason">X00X</div>
+          </div>
+          <div class="defect-chip">
+            <div class="code">B4123</div>
+            <div class="reason">합=10</div>
+          </div>
+          <div class="defect-chip">
+            <div class="code">B7008</div>
+            <div class="reason">X00X</div>
+          </div>
+          <div class="defect-chip">
+            <div class="code">B7012</div>
+            <div class="reason">합=10</div>
+          </div>
+          <div class="defect-chip">
+            <div class="code">C1009</div>
+            <div class="reason">X00X</div>
+          </div>
+          <div class="defect-chip">
+            <div class="code">C1469</div>
+            <div class="reason">합=20</div>
+          </div>
+          <div class="defect-chip">
+            <div class="code">C2341</div>
+            <div class="reason">합=10</div>
+          </div>
+          <div class="defect-chip">
+            <div class="code">C3005</div>
+            <div class="reason">X00X</div>
+          </div>
+          <div class="defect-chip">
+            <div class="code">C4009</div>
+            <div class="reason">X00X</div>
+          </div>
+          <div class="defect-chip">
+            <div class="code">C6001</div>
+            <div class="reason">X00X</div>
+          </div>
+          <div class="defect-chip">
+            <div class="code">C8507</div>
+            <div class="reason">합=20</div>
+          </div>
+          <div class="defect-chip">
+            <div class="code">C9004</div>
+            <div class="reason">X00X</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ⑤ 생각 질문 -->
+    <section>
+      <div class="container">
+        <div class="section-label">Reflection Questions</div>
+        <h2 class="section-title cr-accent-underline">핵심 생각 질문</h2>
+        <p class="section-desc">게임 후 팀과 함께 나눌 질문들입니다. 게임 경험을 실제 업무 현장으로 연결하는 브리지 역할을 합니다.</p>
+
+        <div class="questions-grid">
+          <div class="question-card reveal" data-reveal>
+            <div class="q-category cat-team">팀 협업</div>
+            <div class="q-text">우리 팀은 처음에 어떻게 역할을 나눴나요?<br>자연스럽게 리더가 생겼나요?</div>
+            <div class="q-hint">팀 내 자발적 역할 분배와 리더십 발현 과정을 탐색합니다. 누가 먼저 방향을 제시했는지, 그 과정이 어땠는지 이야기합니다.</div>
+          </div>
+          <div class="question-card reveal" data-reveal>
+            <div class="q-category cat-team">소통</div>
+            <div class="q-text">게임 중 팀원과 어떻게 소통했나요?<br>막힐 때 어떤 말을 주고받았나요?</div>
+            <div class="q-hint">소통의 질과 양을 돌아봅니다. 혼자 조용히 했는지, 활발하게 공유했는지 — 그 차이가 결과에 어떤 영향을 미쳤는지 연결합니다.</div>
+          </div>
+          <div class="question-card reveal" data-reveal>
+            <div class="q-category cat-lead">리더십</div>
+            <div class="q-text">성과가 좋았던 팀의 비결은 무엇이었나요?<br>그 팀에서 배울 점은?</div>
+            <div class="q-hint">최고 성과팀의 전략과 접근법을 공유합니다. 단순한 "잘했다"가 아니라 구체적인 행동과 의사결정 방식에 주목합니다.</div>
+          </div>
+          <div class="question-card reveal" data-reveal>
+            <div class="q-category cat-reflect">성찰</div>
+            <div class="q-text">다시 한다면 무엇을 다르게 하고 싶나요?<br>처음부터 알았더라면 어땠을까요?</div>
+            <div class="q-hint">경험 학습의 핵심 — 시행착오를 통해 무엇을 깨달았는지 언어화합니다. 이 질문이 가장 깊은 인사이트를 끌어냅니다.</div>
+          </div>
+          <div class="question-card reveal" data-reveal>
+            <div class="q-category cat-reflect">성취감</div>
+            <div class="q-text">세트가 완성됐을 때 어떤 기분이었나요?<br>그 성취는 누구 덕분이었나요?</div>
+            <div class="q-hint">팀 성과의 귀인(attribution) — 성공의 원인을 "나"로 보는지 "팀"으로 보는지 탐색합니다. 팀 역량 강조의 핵심 포인트입니다.</div>
+          </div>
+          <div class="question-card reveal" data-reveal>
+            <div class="q-category cat-transfer">현업 연결</div>
+            <div class="q-text">이 게임과 우리 팀의 실제 업무가 닮은 점은?<br>불량 블록은 현업에서 무엇에 해당할까요?</div>
+            <div class="q-hint">학습 전이(transfer)의 핵심 질문입니다. 블록=업무, 불량=장애요소, 세트=프로젝트 완성으로 연결하면 깊은 통찰이 나옵니다.</div>
+          </div>
+          <div class="question-card reveal" data-reveal>
+            <div class="q-category cat-transfer">조직 역량</div>
+            <div class="q-text">우리 팀이 잘하고 있는 것은 무엇이고,<br>개선이 필요한 부분은 무엇인가요?</div>
+            <div class="q-hint">게임 경험을 팀 진단 도구로 활용합니다. 참여, 협력, 신속함, 정확성 — 각 요소를 실제 팀 문화와 연결합니다.</div>
+          </div>
+          <div class="question-card reveal" data-reveal>
+            <div class="q-category cat-lead">팀 역량</div>
+            <div class="q-text">"혼자"와 "팀"의 차이를 이번 게임에서<br>어떻게 느꼈나요?</div>
+            <div class="q-hint">개인 역량 vs. 팀 역량의 시너지를 체감하게 합니다. 혼자라면 몇 세트나 만들 수 있었을지 상상해보게 하는 것도 좋습니다.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ⑥ 교훈 -->
+    <section>
+      <div class="container">
+        <div class="section-label">Key Lessons</div>
+        <h2 class="section-title cr-accent-underline">BlueBlock이 담은 6가지 교훈</h2>
+        <p class="section-desc">이 게임은 단순한 퍼즐이 아닙니다. 조직과 팀이 함께 일하는 방식의 축소판입니다.</p>
+
+        <div class="lesson-grid">
+          <div class="lesson-card reveal" data-reveal>
+            <span class="lesson-icon">🤝</span>
+            <div class="lesson-title">참여와 협력</div>
+            <div class="lesson-desc">혼자 모든 블록을 처리할 수 없습니다. 팀원 각자의 참여와 협력이 없으면 목표 달성은 불가능합니다. 기여하지 않는 팀원 한 명이 전체 속도를
+              늦춥니다.</div>
+            <div class="lesson-keyword">Participation & Collaboration</div>
+          </div>
+          <div class="lesson-card reveal" data-reveal>
+            <span class="lesson-icon">⚡</span>
+            <div class="lesson-title">신속과 정확</div>
+            <div class="lesson-desc">빠르게 많이 넣는 것보다 정확하게 넣는 것이 중요합니다. 불량 블록 하나가 세트 전체를 무너뜨립니다. 속도와 정확도의 균형이 핵심입니다.</div>
+            <div class="lesson-keyword">Speed & Accuracy</div>
+          </div>
+          <div class="lesson-card reveal" data-reveal>
+            <span class="lesson-icon">💬</span>
+            <div class="lesson-title">대화와 실행</div>
+            <div class="lesson-desc">대화 없이 각자 움직이면 중복과 충돌이 생깁니다. 그렇다고 대화만 하면 시간이 부족합니다. 짧고 정확한 소통 후 바로 실행하는 팀이 이깁니다.
+            </div>
+            <div class="lesson-keyword">Communication & Action</div>
+          </div>
+          <div class="lesson-card reveal" data-reveal>
+            <span class="lesson-icon">🔄</span>
+            <div class="lesson-title">시행착오와 학습</div>
+            <div class="lesson-desc">처음엔 룰을 몰라도 괜찮습니다. 해보면서 이해하고, 실패하면서 배웁니다. 이 경험이 바로 조직 학습의 본질입니다.</div>
+            <div class="lesson-keyword">Trial & Learning</div>
+          </div>
+          <div class="lesson-card reveal" data-reveal>
+            <span class="lesson-icon">🎯</span>
+            <div class="lesson-title">목표와 전략</div>
+            <div class="lesson-desc">23세트라는 명확한 목표가 있습니다. 무작정 넣는 팀과 전략적으로 접근하는 팀의 결과는 다릅니다. 목표를 아는 것과 모르는 것의 차이입니다.
+            </div>
+            <div class="lesson-keyword">Goal & Strategy</div>
+          </div>
+          <div class="lesson-card reveal" data-reveal>
+            <span class="lesson-icon">🏆</span>
+            <div class="lesson-title">팀 역량의 힘</div>
+            <div class="lesson-desc">성취는 혼자 만들어지지 않습니다. 세트가 완성되는 순간의 기쁨은 팀이 함께 만든 것입니다. 그 힘을 실제 업무에서도 만들어낼 수 있습니다.</div>
+            <div class="lesson-keyword">Team Capability</div>
+          </div>
+        </div>
+
+        <div class="core-message reveal" data-reveal>
+          <div class="core-message-inner">
+            <div class="quote">"성공했을 때의 기쁨은 나의 것인가, 팀의 것인가?<br>그 답 안에 진짜 팀 역량이 있습니다."</div>
+            <div class="source">— BlueBlock 핵심 메시지 · 청람M&C</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ⑦ 진행 가이드 -->
+    <div class="dark-section">
+      <div class="dark-section-inner">
+        <div class="section-label" style="color:rgba(255,255,255,0.6)">Facilitation Guide</div>
+        <h2>강사 진행 가이드</h2>
+        <p style="margin-bottom:36px">결과 공개 후 디브리핑 순서를 참고하세요.</p>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:20px;">
+          <div
+            style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:24px;">
+            <div style="font-size:1.5rem; font-weight:700; color:#4B7BF5; margin-bottom:8px;">STEP 1</div>
+            <div style="font-weight:600; color:#fff; margin-bottom:8px;">결과 확인 (5분)</div>
+            <div style="font-size:0.85rem; color:rgba(255,255,255,0.65); line-height:1.7;">조별 세트 수 공개 → 박수와 축하 → 최고 성과팀
+              소개 → 불량 블록이 어디서 발생했는지 확인</div>
+          </div>
+          <div
+            style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:24px;">
+            <div style="font-size:1.5rem; font-weight:700; color:#10b981; margin-bottom:8px;">STEP 2</div>
+            <div style="font-weight:600; color:#fff; margin-bottom:8px;">경험 나누기 (10분)</div>
+            <div style="font-size:0.85rem; color:rgba(255,255,255,0.65); line-height:1.7;">생각 질문 2~3개 선택 → 팀 내 공유 → 전체
+              공유 → 최고팀의 비결 인터뷰</div>
+          </div>
+          <div
+            style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:24px;">
+            <div style="font-size:1.5rem; font-weight:700; color:#f59e0b; margin-bottom:8px;">STEP 3</div>
+            <div style="font-weight:600; color:#fff; margin-bottom:8px;">현업 연결 (10분)</div>
+            <div style="font-size:0.85rem; color:rgba(255,255,255,0.65); line-height:1.7;">블록 = 업무, 불량 = 장애요소, 세트 =
+              프로젝트로 연결 → 우리 팀의 강점과 개선점 도출</div>
+          </div>
+          <div
+            style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:24px;">
+            <div style="font-size:1.5rem; font-weight:700; color:#f43f5e; margin-bottom:8px;">STEP 4</div>
+            <div style="font-weight:600; color:#fff; margin-bottom:8px;">실천 약속 (5분)</div>
+            <div style="font-size:0.85rem; color:rgba(255,255,255,0.65); line-height:1.7;">개인/팀 차원의 1가지 행동 변화 도출 → 서로에게
+              공유 → 핵심 메시지로 마무리</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <p>© 2026 청람M&C · BlueBlock 강사용 디브리핑 가이드 · 대표컨설턴트 정구영</p>
+    <p style="margin-top:6px">본 자료는 청람M&C 저작권 보호 콘텐츠입니다. 무단 복제 및 배포를 금합니다.</p>
+  </footer>
+
+  <script>
+    // 메뉴
+    function toggleMenu() {
+      var d = document.getElementById('vizMenuDropdown');
+      if (d) d.classList.toggle('open');
+    }
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('.viz-menu')) {
+        var d = document.getElementById('vizMenuDropdown');
+        if (d) d.classList.remove('open');
+      }
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        var d = document.getElementById('vizMenuDropdown');
+        if (d) d.classList.remove('open');
+      }
+    });
+
+    // 테마
+    var savedTheme = localStorage.getItem('cr-viz-theme');
+    var currentTheme = savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    function applyTheme(t) {
+      document.documentElement.className = 'theme-' + t;
+      document.getElementById('themeIcon').textContent = t === 'dark' ? '🌙' : '☀️';
+      document.getElementById('themeLabel').textContent = t === 'dark' ? '다크' : '라이트';
+      localStorage.setItem('cr-viz-theme', t);
+      currentTheme = t;
+    }
+    function cycleTheme() { applyTheme(currentTheme === 'dark' ? 'light' : 'dark'); }
+    applyTheme(currentTheme);
+
+    // 스크롤 reveal
+    document.querySelectorAll('[data-reveal]').forEach(function (el) { el.classList.add('reveal'); });
+    var revealObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(function (el) { revealObs.observe(el); });
+    setTimeout(function () {
+      document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('visible'); });
+    }, 600);
+
+    // 숫자 카운터
+    function animateCounters() {
+      document.querySelectorAll('[data-count]').forEach(function (el) {
+        if (el.dataset.counted) return;
+        el.dataset.counted = '1';
+        var target = parseFloat(el.dataset.count);
+        var start = performance.now(), duration = 1400;
+        (function tick(now) {
+          var p = Math.min((now - start) / duration, 1);
+          var eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = Math.round(target * eased).toLocaleString();
+          if (p < 1) requestAnimationFrame(tick);
+        })(start);
+      });
+    }
+    var firstCounter = document.querySelector('[data-count]');
+    if (firstCounter) {
+      var cObs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { animateCounters(); cObs.disconnect(); }
+        });
+      }, { threshold: 0.3 });
+      cObs.observe(firstCounter);
+    }
+
+    // PNG 다운로드
+    async function downloadImage() {
+      var menu = document.querySelector('.viz-menu');
+      menu.style.display = 'none';
+      try {
+        var url = await htmlToImage.toPng(document.body, {
+          quality: 1, pixelRatio: 2,
+          filter: function (n) { return !n.classList || !n.classList.contains('viz-menu'); }
+        });
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'blueblock-debrief.png';
+        a.click();
+      } catch (e) { console.error('Download failed:', e); }
+      menu.style.display = '';
+    }
+  </script>
+</body>
+
+</html>

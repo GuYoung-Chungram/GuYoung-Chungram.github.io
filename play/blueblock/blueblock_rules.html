@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="ko" class="theme-light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>BlueBlock — 게임 규칙</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: #08080F;
+      color: #F8F8FF;
+      min-height: 100dvh;
+      padding: 0 0 60px 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ── 헤더 ── */
+    .top-bar {
+      background: linear-gradient(135deg, #08080F 0%, #0F0F1A 60%, #1A0A2E 100%);
+      border-bottom: 1px solid rgba(168,85,247,0.3);
+      padding: 24px 20px 20px;
+      text-align: center;
+    }
+    .logo {
+      font-size: 1.4rem; font-weight: 300;
+      letter-spacing: 0.25em; text-transform: uppercase;
+      color: #F8F8FF;
+    }
+    .logo-line {
+      width: 28px; height: 2px;
+      background: #A855F7;
+      margin: 8px auto 0;
+      border-radius: 1px;
+    }
+    .page-title {
+      font-size: 0.75rem; font-weight: 300;
+      color: rgba(248,248,255,0.45);
+      margin-top: 8px; letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ── 컨테이너 ── */
+    .wrap {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 28px 20px;
+    }
+
+    /* ── 섹션 타이틀 ── */
+    .section-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.7rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: #A855F7; margin-bottom: 14px;
+    }
+    .section-tag::before {
+      content: '';
+      display: block; width: 16px; height: 2px;
+      background: #A855F7; border-radius: 1px;
+    }
+
+    /* ── 인트로 카드 ── */
+    .intro-card {
+      background: linear-gradient(135deg, rgba(168,85,247,0.12), rgba(232,121,249,0.06));
+      border: 1px solid rgba(168,85,247,0.25);
+      border-radius: 16px; padding: 24px;
+      margin-bottom: 28px;
+      text-align: center;
+    }
+    .intro-emoji { font-size: 2.8rem; margin-bottom: 12px; display: block; }
+    .intro-title {
+      font-size: 1.15rem; font-weight: 700;
+      color: #F8F8FF; margin-bottom: 8px; line-height: 1.4;
+    }
+    .intro-desc {
+      font-size: 0.88rem; font-weight: 300;
+      color: rgba(248,248,255,0.65); line-height: 1.7;
+    }
+
+    /* ── 블록 설명 ── */
+    .block-explain {
+      background: rgba(15,15,26,0.8);
+      border: 1px solid rgba(168,85,247,0.15);
+      border-radius: 14px; padding: 22px;
+      margin-bottom: 20px;
+    }
+    .block-sample {
+      display: flex; align-items: center; gap: 8px;
+      margin: 14px 0;
+      flex-wrap: wrap;
+    }
+    .block-chip {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 76px; height: 40px;
+      border-radius: 8px;
+      font-family: monospace; font-size: 1rem; font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+    .chip-a { background: rgba(168,85,247,0.15); border: 1.5px solid rgba(168,85,247,0.4); color: #C084FC; }
+    .chip-b { background: rgba(59,130,246,0.15); border: 1.5px solid rgba(59,130,246,0.4); color: #60A5FA; }
+    .chip-c { background: rgba(52,211,153,0.15); border: 1.5px solid rgba(52,211,153,0.4); color: #34D399; }
+    .chip-bad { background: rgba(248,113,113,0.1); border: 1.5px solid rgba(248,113,113,0.35); color: #F87171; }
+    .block-label {
+      font-size: 0.72rem; font-weight: 300;
+      color: rgba(248,248,255,0.45);
+    }
+    .block-desc {
+      font-size: 0.85rem; font-weight: 300;
+      color: rgba(248,248,255,0.7); line-height: 1.7;
+      margin-top: 4px;
+    }
+
+    /* ── 스텝 카드 ── */
+    .step-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 28px; }
+    .step-card {
+      background: rgba(15,15,26,0.8);
+      border: 1px solid rgba(168,85,247,0.12);
+      border-radius: 14px; padding: 20px;
+      display: flex; gap: 16px; align-items: flex-start;
+    }
+    .step-num {
+      width: 36px; height: 36px; flex-shrink: 0;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #7C3AED, #A855F7);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem; font-weight: 700; color: #fff;
+    }
+    .step-body {}
+    .step-title {
+      font-size: 0.95rem; font-weight: 600;
+      color: #F8F8FF; margin-bottom: 6px;
+    }
+    .step-desc {
+      font-size: 0.82rem; font-weight: 300;
+      color: rgba(248,248,255,0.6); line-height: 1.7;
+    }
+
+    /* ── 세트 예시 ── */
+    .set-example {
+      background: rgba(15,15,26,0.8);
+      border: 1px solid rgba(52,211,153,0.2);
+      border-radius: 14px; padding: 20px;
+      margin-bottom: 20px;
+    }
+    .set-row {
+      display: flex; align-items: center;
+      gap: 8px; margin: 10px 0;
+      flex-wrap: wrap;
+    }
+    .set-arrow {
+      font-size: 0.8rem;
+      color: rgba(248,248,255,0.35);
+    }
+    .set-ok {
+      font-size: 0.75rem; font-weight: 600;
+      color: #34D399; margin-left: auto;
+      background: rgba(52,211,153,0.1);
+      padding: 3px 10px; border-radius: 6px;
+    }
+    .set-fail {
+      font-size: 0.75rem; font-weight: 600;
+      color: #F87171; margin-left: auto;
+      background: rgba(248,113,113,0.1);
+      padding: 3px 10px; border-radius: 6px;
+    }
+    .set-reason {
+      font-size: 0.72rem; color: rgba(248,248,255,0.4);
+      width: 100%; padding-left: 4px; margin-top: -4px;
+    }
+
+    /* ── 불량 규칙 ── */
+    .defect-cards { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+    .defect-card {
+      background: rgba(248,113,113,0.06);
+      border: 1px solid rgba(248,113,113,0.2);
+      border-radius: 14px; padding: 20px;
+    }
+    .defect-badge {
+      display: inline-block;
+      font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: #F87171; background: rgba(248,113,113,0.1);
+      padding: 3px 10px; border-radius: 6px;
+      margin-bottom: 10px;
+    }
+    .defect-title {
+      font-size: 0.95rem; font-weight: 600;
+      color: #F8F8FF; margin-bottom: 8px;
+    }
+    .defect-desc {
+      font-size: 0.82rem; font-weight: 300;
+      color: rgba(248,248,255,0.6); line-height: 1.7;
+      margin-bottom: 12px;
+    }
+    .defect-examples { display: flex; gap: 8px; flex-wrap: wrap; }
+    .ex-item {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+    }
+    .ex-label {
+      font-size: 0.65rem; color: rgba(248,248,255,0.4);
+    }
+    .good-chip {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 6px 12px; border-radius: 8px;
+      font-family: monospace; font-size: 0.85rem; font-weight: 700;
+      background: rgba(52,211,153,0.1);
+      border: 1.5px solid rgba(52,211,153,0.3);
+      color: #34D399;
+    }
+    .bad-chip-ex {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 6px 12px; border-radius: 8px;
+      font-family: monospace; font-size: 0.85rem; font-weight: 700;
+      background: rgba(248,113,113,0.1);
+      border: 1.5px solid rgba(248,113,113,0.3);
+      color: #F87171;
+    }
+
+    /* ── 목표 배너 ── */
+    .goal-banner {
+      background: linear-gradient(135deg, #7C3AED, #A855F7);
+      border-radius: 16px; padding: 24px;
+      text-align: center; margin-bottom: 28px;
+      position: relative; overflow: hidden;
+    }
+    .goal-banner::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.1), transparent 60%);
+    }
+    .goal-inner { position: relative; }
+    .goal-num {
+      font-size: 3.5rem; font-weight: 700; color: #fff;
+      line-height: 1; margin-bottom: 6px;
+    }
+    .goal-unit { font-size: 1rem; font-weight: 300; color: rgba(255,255,255,0.8); }
+    .goal-time {
+      display: inline-block; margin-top: 12px;
+      background: rgba(255,255,255,0.15);
+      padding: 6px 16px; border-radius: 20px;
+      font-size: 0.85rem; font-weight: 600; color: #fff;
+    }
+
+    /* ── 팁 ── */
+    .tip-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+    .tip-item {
+      display: flex; gap: 12px; align-items: flex-start;
+      background: rgba(15,15,26,0.8);
+      border: 1px solid rgba(168,85,247,0.1);
+      border-radius: 12px; padding: 16px;
+    }
+    .tip-icon { font-size: 1.2rem; flex-shrink: 0; }
+    .tip-text {
+      font-size: 0.85rem; font-weight: 300;
+      color: rgba(248,248,255,0.7); line-height: 1.65;
+    }
+    .tip-text strong { color: #F8F8FF; font-weight: 600; }
+
+    /* ── 준비 버튼 ── */
+    .ready-btn {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(135deg, #7C3AED, #A855F7);
+      color: #fff; border: none; border-radius: 14px;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 1rem; font-weight: 600;
+      letter-spacing: 0.06em; cursor: pointer;
+      box-shadow: 0 4px 24px rgba(124,58,237,0.45);
+      transition: all 0.25s cubic-bezier(.4,0,.2,1);
+      margin-bottom: 12px;
+    }
+    .ready-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(124,58,237,0.6); }
+    .ready-note {
+      text-align: center; font-size: 0.75rem;
+      color: rgba(248,248,255,0.35); font-weight: 300;
+    }
+
+    /* ── 구분선 ── */
+    .divider {
+      height: 1px; background: rgba(168,85,247,0.1);
+      margin: 28px 0;
+    }
+
+    /* ── 하이라이트 텍스트 ── */
+    .hl { color: #C084FC; font-weight: 600; }
+    .hl-g { color: #34D399; font-weight: 600; }
+    .hl-r { color: #F87171; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="logo">BLUEBLOCK</div>
+  <div class="logo-line"></div>
+  <div class="page-title">게임 규칙 안내</div>
+</div>
+
+<div class="wrap">
+
+  <!-- 인트로 -->
+  <div class="intro-card">
+    <span class="intro-emoji">🧩</span>
+    <div class="intro-title">블록을 맞춰서<br>최대한 많은 세트를 완성하세요!</div>
+    <div class="intro-desc">120개의 블록 카드 중에서 규칙에 맞는 블록을 골라<br>A · B · C 세 줄을 순서대로 완성하는 팀 게임입니다.</div>
+  </div>
+
+  <!-- 블록이란? -->
+  <div class="section-tag">블록이란?</div>
+  <div class="block-explain">
+    <div class="block-desc">모든 블록은 <span class="hl">알파벳 1글자 + 숫자 4자리</span>로 이루어져 있어요.</div>
+    <div class="block-sample">
+      <div class="ex-item">
+        <div class="block-chip chip-a">A3459</div>
+        <div class="block-label">A 블록</div>
+      </div>
+      <div class="ex-item">
+        <div class="block-chip chip-b">B5731</div>
+        <div class="block-label">B 블록</div>
+      </div>
+      <div class="ex-item">
+        <div class="block-chip chip-c">C7883</div>
+        <div class="block-label">C 블록</div>
+      </div>
+    </div>
+    <div class="block-desc" style="margin-top:8px">알파벳은 <span class="hl">A, B, C</span> 세 종류만 있어요. 블록 코드를 직접 입력해서 게임에 참여합니다.</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 세트 만들기 -->
+  <div class="section-tag">세트 만드는 법</div>
+  <div class="block-explain" style="margin-bottom:16px">
+    <div class="block-desc"><span class="hl">1세트 = A블록 1개 + B블록 1개 + C블록 1개</span></div>
+    <div class="block-desc" style="margin-top:8px">단, 아래 두 가지 조건을 모두 만족해야 해요!</div>
+
+    <div style="margin-top:18px; padding:14px; background:rgba(168,85,247,0.07); border-radius:10px; border:1px solid rgba(168,85,247,0.15);">
+      <div style="font-size:0.82rem; font-weight:600; color:#C084FC; margin-bottom:10px;">조건 ① 가로 — A 숫자 &lt; B 숫자 &lt; C 숫자</div>
+      <div style="font-size:0.78rem; font-weight:300; color:rgba(248,248,255,0.55); line-height:1.6;">같은 세트 안에서, A의 숫자보다 B의 숫자가 더 커야 하고, B의 숫자보다 C의 숫자가 더 커야 해요.</div>
+    </div>
+
+    <div style="margin-top:10px; padding:14px; background:rgba(168,85,247,0.07); border-radius:10px; border:1px solid rgba(168,85,247,0.15);">
+      <div style="font-size:0.82rem; font-weight:600; color:#C084FC; margin-bottom:10px;">조건 ② 세로 — A끼리, B끼리, C끼리도 오름차순</div>
+      <div style="font-size:0.78rem; font-weight:300; color:rgba(248,248,255,0.55); line-height:1.6;">1번 세트의 A보다 2번 세트의 A 숫자가 더 커야 해요. B와 C도 마찬가지예요. 즉, 위에서 아래로 숫자가 점점 커져야 합니다.</div>
+    </div>
+  </div>
+
+  <!-- 세트 예시 -->
+  <div class="section-tag">세트 예시</div>
+  <div class="set-example">
+    <div style="font-size:0.78rem; color:rgba(248,248,255,0.4); margin-bottom:6px; font-weight:300;">✅ 완성된 세트 예시</div>
+
+    <div class="set-row">
+      <div class="block-chip chip-a" style="width:68px;height:34px;font-size:0.85rem;">A0003</div>
+      <span class="set-arrow">&lt;</span>
+      <div class="block-chip chip-b" style="width:68px;height:34px;font-size:0.85rem;">B0005</div>
+      <span class="set-arrow">&lt;</span>
+      <div class="block-chip chip-c" style="width:68px;height:34px;font-size:0.85rem;">C0008</div>
+      <span class="set-ok">세트 1</span>
+    </div>
+    <div class="set-row">
+      <div class="block-chip chip-a" style="width:68px;height:34px;font-size:0.85rem;">A0128</div>
+      <span class="set-arrow">&lt;</span>
+      <div class="block-chip chip-b" style="width:68px;height:34px;font-size:0.85rem;">B0256</div>
+      <span class="set-arrow">&lt;</span>
+      <div class="block-chip chip-c" style="width:68px;height:34px;font-size:0.85rem;">C0382</div>
+      <span class="set-ok">세트 2</span>
+    </div>
+    <div style="font-size:0.72rem; color:rgba(248,248,255,0.35); margin-top:6px; font-weight:300; padding-left:2px;">
+      ↑ 세로로도 A0003 → A0128 순서로 숫자가 커져요 ✓
+    </div>
+
+    <div style="height:1px; background:rgba(248,113,113,0.15); margin:16px 0;"></div>
+    <div style="font-size:0.78rem; color:rgba(248,248,255,0.4); margin-bottom:6px; font-weight:300;">❌ 실패하는 세트 예시</div>
+
+    <div class="set-row">
+      <div class="block-chip chip-bad" style="width:68px;height:34px;font-size:0.85rem;">A5000</div>
+      <span class="set-arrow">&lt;</span>
+      <div class="block-chip chip-b" style="width:68px;height:34px;font-size:0.85rem;">B3456</div>
+      <span class="set-arrow">?</span>
+      <div class="block-chip chip-c" style="width:68px;height:34px;font-size:0.85rem;">C9000</div>
+      <span class="set-fail">실패</span>
+    </div>
+    <div class="set-reason">→ A(5000) &gt; B(3456) — A가 B보다 크면 안 돼요!</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 불량 블록 -->
+  <div class="section-tag">불량 블록 제거</div>
+  <div style="font-size:0.85rem; font-weight:300; color:rgba(248,248,255,0.6); line-height:1.7; margin-bottom:16px;">
+    120개 블록 중 일부는 <span class="hl-r">불량 블록</span>이에요. 불량 블록은 세트에 사용할 수 없어요!<br>아래 두 가지 규칙 중 하나라도 해당되면 불량이에요.
+  </div>
+
+  <div class="defect-cards">
+    <!-- 불량① -->
+    <div class="defect-card">
+      <div class="defect-badge">불량 규칙 ①</div>
+      <div class="defect-title">숫자 중간에 '00'이 연속으로 있으면 불량!</div>
+      <div class="defect-desc">
+        숫자 4자리의 <span class="hl-r">가운데 두 자리가 00</span>이면 불량이에요.<br>
+        단, <span class="hl-g">맨 앞이나 맨 뒤가 00인 건 괜찮아요!</span>
+      </div>
+      <div class="defect-examples">
+        <div class="ex-item">
+          <div class="bad-chip-ex">A3002</div>
+          <div class="ex-label">3·00·2 → 불량❌</div>
+        </div>
+        <div class="ex-item">
+          <div class="bad-chip-ex">B1003</div>
+          <div class="ex-label">1·00·3 → 불량❌</div>
+        </div>
+        <div class="ex-item">
+          <div class="good-chip">A0038</div>
+          <div class="ex-label">앞00 → 양호✅</div>
+        </div>
+        <div class="ex-item">
+          <div class="good-chip">C9000</div>
+          <div class="ex-label">뒤00 → 양호✅</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 불량② -->
+    <div class="defect-card">
+      <div class="defect-badge">불량 규칙 ②</div>
+      <div class="defect-title">숫자 4개를 더했을 때 10, 20, 30이 되면 불량!</div>
+      <div class="defect-desc">
+        블록 코드의 <span class="hl-r">숫자 4자리를 모두 더해서 10, 20, 30</span>이 되면 불량이에요.
+      </div>
+      <div class="defect-examples">
+        <div class="ex-item">
+          <div class="bad-chip-ex">A1234</div>
+          <div class="ex-label">1+2+3+4=10 ❌</div>
+        </div>
+        <div class="ex-item">
+          <div class="bad-chip-ex">B3854</div>
+          <div class="ex-label">3+8+5+4=20 ❌</div>
+        </div>
+        <div class="ex-item">
+          <div class="good-chip">A1235</div>
+          <div class="ex-label">1+2+3+5=11 ✅</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 목표 -->
+  <div class="section-tag">우리의 목표</div>
+  <div class="goal-banner">
+    <div class="goal-inner">
+      <div class="goal-num">23</div>
+      <div class="goal-unit">세트 완성</div>
+      <div class="goal-time">⏱ 제한시간 14분</div>
+    </div>
+  </div>
+
+  <!-- 팁 -->
+  <div class="section-tag">이렇게 하면 잘 할 수 있어요!</div>
+  <div class="tip-list">
+    <div class="tip-item">
+      <div class="tip-icon">💬</div>
+      <div class="tip-text"><strong>팀원과 대화하세요!</strong><br>혼자 다 하려고 하지 말고, 누가 어떤 블록을 담당할지 미리 얘기해요.</div>
+    </div>
+    <div class="tip-item">
+      <div class="tip-icon">🚫</div>
+      <div class="tip-text"><strong>불량 블록을 먼저 골라내세요!</strong><br>중간에 00이 있거나, 합이 10·20·30인 블록은 처음부터 제외하는 게 빨라요.</div>
+    </div>
+    <div class="tip-item">
+      <div class="tip-icon">🔢</div>
+      <div class="tip-text"><strong>숫자 순서를 맞춰요!</strong><br>A → B → C 순서로, 숫자가 점점 커지게 맞춰야 세트가 완성돼요.</div>
+    </div>
+    <div class="tip-item">
+      <div class="tip-icon">⚡</div>
+      <div class="tip-text"><strong>빠르게, 그리고 정확하게!</strong><br>실수로 잘못 입력하면 삭제 버튼으로 지울 수 있어요. 당황하지 마세요!</div>
+    </div>
+    <div class="tip-item">
+      <div class="tip-icon">🏆</div>
+      <div class="tip-text"><strong>마지막엔 꼭 제출 버튼!</strong><br>다 완성됐다고 생각되면 팀원과 확인 후 <strong>최종 제출</strong>을 눌러야 점수가 인정돼요.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 준비 완료 -->
+  <div style="text-align:center; margin-bottom:20px;">
+    <div style="font-size:1.05rem; font-weight:600; color:#F8F8FF; margin-bottom:6px;">규칙을 다 이해했나요? 🎯</div>
+    <div style="font-size:0.82rem; font-weight:300; color:rgba(248,248,255,0.45); line-height:1.6;"> 진행자가 게임 시작 신호를 주면<br>입장 코드를 입력해서 게임에 참여하세요!</div>
+  </div>
+
+  <button class="ready-btn" onclick="window.history.back()">
+    입장 화면으로 돌아가기
+  </button>
+  <div class="ready-note">© 청람M&C — 저작권 보호 콘텐츠</div>
+
+</div>
+</body>
+</html>
