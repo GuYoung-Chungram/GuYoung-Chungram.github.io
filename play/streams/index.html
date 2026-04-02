@@ -1828,12 +1828,14 @@
       }
     }
 
-    function clearPlayer() {
-      var btn = document.getElementById('clearPlayerBtn');
-      if (btn && btn.disabled) { showToast('⛔ 게임 진행 중에는 초기화 불가합니다. 강사 초기화 후 가능합니다.'); return; }
-      for (var i = 0; i < PLAYER_SLOTS; i++) { pTiles[i] = null; pLocked[i] = false; }
-      pPending = null; buildCurrentLayout(); updatePScore();
-    }
+function clearPlayer(){
+  document.getElementById('clearPlayerModal').classList.add('open');
+}
+function confirmClearPlayer(){
+  closeModal('clearPlayerModal');
+  for(var i=0;i<PLAYER_SLOTS;i++){pTiles[i]=null;pLocked[i]=false;}
+  pPending=null;buildCurrentLayout();updatePScore();
+}
 
     /* ═══════════════════════════════════
        점수표
