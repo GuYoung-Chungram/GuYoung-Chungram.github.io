@@ -8,6 +8,7 @@
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="config.js"></script>
 <style>
 html.theme-light {
   --bg:#FFFFFF; --surface:#F8FAFF; --surface-hover:#EEF3FD;
@@ -439,16 +440,7 @@ body{font-family:'Noto Sans KR',-apple-system,sans-serif;background:var(--bg);co
 /* ═══════════════════════════════════
    Firebase 설정
 ═══════════════════════════════════ */
-var firebaseConfig = {
-  apiKey:            "AIzaSyBlueBlockDummyKeyReplaceMe",
-  authDomain:        "blueblock-cdff7.firebaseapp.com",
-  databaseURL:       "https://blueblock-cdff7-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId:         "blueblock-cdff7",
-  storageBucket:     "blueblock-cdff7.appspot.com",
-  messagingSenderId: "000000000000",
-  appId:             "1:000000000000:web:000000000000000000000000"
-};
-firebase.initializeApp(firebaseConfig);
+// Firebase 설정은 config.js에서 로드
 var db = firebase.database();
 var SESSION = db.ref('streams/session');
 
