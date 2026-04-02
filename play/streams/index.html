@@ -1128,6 +1128,18 @@
   <canvas id="confettiCanvas"
     style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;display:none;"></canvas>
 
+  <!-- 학습자 타일 초기화 확인 모달 -->
+<div class="modal-ov" id="clearPlayerModal">
+  <div class="modal-box">
+    <div class="m-title">🗑️ 내 타일 초기화</div>
+    <div class="m-body">지금까지 배치한 타일이 모두 사라집니다.<br>정말 초기화할까요?</div>
+    <div class="m-actions">
+      <button class="btn btn-s" onclick="closeModal('clearPlayerModal')">취소</button>
+      <button class="btn btn-d" onclick="confirmClearPlayer()">초기화</button>
+    </div>
+  </div>
+</div>
+  
   <!-- 초기화 모달 -->
   <div class="modal-ov" id="resetModal">
     <div class="modal-box">
