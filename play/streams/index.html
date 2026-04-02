@@ -1,1 +1,2193 @@
+<!DOCTYPE html>
+<html lang="ko" class="theme-light">
 
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>스트림즈 게임 v3 | 청람M&C</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+  <style>
+    html.theme-light {
+      --bg: #FFFFFF;
+      --surface: #F8FAFF;
+      --surface-hover: #EEF3FD;
+      --border: rgba(22, 82, 216, 0.10);
+      --text: #1A1A1A;
+      --text-secondary: #666666;
+      --accent: #1652D8;
+      --accent-secondary: #0F3D99;
+      --positive: #059669;
+      --negative: #e11d48;
+      --warning: #d97706;
+      --cr-header: #1652D8;
+      --cr-light: #EEF3FD;
+      --tile-bg: #F8B400;
+      --tile-border: #D97706;
+      --tile-text: #1A1A1A;
+      --tile-revealed: #1652D8;
+      --tile-revealed-text: #fff;
+      --pe: #E5E9F5;
+      --peb: #B8C4E8;
+      --pp: #1652D8;
+      --ppt: #fff;
+      --ph: #D0D9F5;
+      --tok: #059669;
+      --twarn: #d97706;
+      --tdanger: #e11d48;
+    }
+
+    html.theme-dark {
+      --bg: #0F0F0F;
+      --surface: #1A1A2E;
+      --surface-hover: #252540;
+      --border: rgba(255, 255, 255, 0.06);
+      --text: #EDEDED;
+      --text-secondary: #888;
+      --accent: #4B7BF5;
+      --accent-secondary: #6B8FFF;
+      --positive: #10b981;
+      --negative: #f43f5e;
+      --warning: #f59e0b;
+      --cr-header: #4B7BF5;
+      --cr-light: #252540;
+      --tile-bg: #D97706;
+      --tile-border: #F8B400;
+      --tile-text: #fff;
+      --tile-revealed: #4B7BF5;
+      --tile-revealed-text: #fff;
+      --pe: #1E2240;
+      --peb: #3A4A80;
+      --pp: #4B7BF5;
+      --ppt: #fff;
+      --ph: #252A50;
+      --tok: #10b981;
+      --twarn: #f59e0b;
+      --tdanger: #f43f5e;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Noto Sans KR', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.7;
+      transition: background .3s, color .3s;
+    }
+
+    /* 헤더 */
+    .hdr {
+      background: var(--cr-header);
+      color: #fff;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      box-shadow: 0 2px 12px rgba(22, 82, 216, .3);
+    }
+
+    .hdr-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -.02em;
+    }
+
+    .hdr-sub {
+      font-size: .72rem;
+      opacity: .8;
+      margin-top: 1px;
+    }
+
+    .hdr-btns {
+      display: flex;
+      gap: 6px;
+    }
+
+    .ibtn {
+      background: rgba(255, 255, 255, .15);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, .25);
+      border-radius: 6px;
+      padding: 5px 11px;
+      font-size: .78rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    .ibtn:hover {
+      background: rgba(255, 255, 255, .28);
+    }
+
+    /* 탭 */
+    .tabs {
+      display: flex;
+      background: var(--surface);
+      border-bottom: 2px solid var(--border);
+      padding: 0 20px;
+      gap: 2px;
+    }
+
+    .tab-btn {
+      padding: 11px 20px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: .9rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: all .2s;
+    }
+
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    /* 버튼 */
+    .btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: none;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: .85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .18s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .btn-p {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-p:hover {
+      background: var(--accent-secondary);
+    }
+
+    .btn-s {
+      background: var(--surface-hover);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-d {
+      background: var(--negative);
+      color: #fff;
+    }
+
+    /* 섹션 타이틀 */
+    .stitle {
+      font-size: .95rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .stitle::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 16px;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+
+    /* 카드 */
+    .card {
+      background: var(--surface);
+      border-radius: 14px;
+      padding: 18px;
+      border: 1px solid var(--border);
+    }
+
+    /* ── 강사 패널 ── */
+    #panel-instructor {
+      padding: 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .inst-layout {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .col-labels {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 5px;
+      margin-bottom: 4px;
+    }
+
+    .col-lbl {
+      text-align: center;
+      font-size: .68rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      letter-spacing: .05em;
+    }
+
+    .tile-row {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 5px;
+      margin-bottom: 5px;
+    }
+
+    .g-tile {
+      aspect-ratio: 1;
+      border-radius: 7px;
+      background: var(--tile-bg);
+      border: 2px solid var(--tile-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .72rem;
+      font-weight: 700;
+      color: var(--tile-text);
+      cursor: pointer;
+      transition: all .18s;
+      min-height: 50px;
+      user-select: none;
+    }
+
+    .g-tile:hover:not(.revealed) {
+      transform: scale(1.07);
+      box-shadow: 0 3px 10px rgba(22, 82, 216, .3);
+      border-color: var(--accent);
+    }
+
+    .g-tile.revealed {
+      background: var(--tile-revealed);
+      border-color: var(--tile-revealed);
+      color: var(--tile-revealed-text);
+      cursor: default;
+      animation: flip .4s ease;
+    }
+
+    @keyframes flip {
+      0% {
+        transform: rotateY(90deg) scale(.8)
+      }
+
+      100% {
+        transform: rotateY(0) scale(1)
+      }
+    }
+
+    .g-tile .tlbl {
+      font-size: .62rem;
+      opacity: .85;
+    }
+
+    .g-tile .tnum {
+      font-size: 1.05rem;
+      font-weight: 800;
+    }
+
+    .cur-box {
+      background: var(--accent);
+      border-radius: 12px;
+      height: 90px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      margin-bottom: 14px;
+    }
+
+    .cur-lbl {
+      font-size: .72rem;
+      font-weight: 600;
+      opacity: .85;
+      letter-spacing: .04em;
+    }
+
+    .cur-val {
+      font-size: 2.8rem;
+      font-weight: 800;
+      animation: popIn .35s ease;
+    }
+
+    @keyframes popIn {
+      0% {
+        transform: scale(.5);
+        opacity: 0
+      }
+
+      70% {
+        transform: scale(1.15)
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 1
+      }
+    }
+
+    .stat-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .stat-item {
+      background: var(--cr-light);
+      border-radius: 8px;
+      padding: 9px;
+      text-align: center;
+    }
+
+    .stat-lbl {
+      font-size: .68rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .stat-val {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .pool {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3px;
+      margin-top: 10px;
+    }
+
+    .chip {
+      padding: 2px 7px;
+      border-radius: 20px;
+      font-size: .7rem;
+      font-weight: 600;
+      background: var(--surface-hover);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+
+    .chip.used {
+      opacity: .28;
+      text-decoration: line-through;
+    }
+
+    .score-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 3px;
+      margin-top: 10px;
+    }
+
+    .sc {
+      padding: 6px 8px;
+      font-size: .78rem;
+      font-weight: 500;
+      background: var(--cr-light);
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    .sc.hd {
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      font-size: .72rem;
+    }
+
+    .sc.hi {
+      background: #FEF3C7;
+      color: #92400E;
+      font-weight: 700;
+    }
+
+    /* ── 학습자 패널 ── */
+    #panel-player {
+      padding: 20px;
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+
+    .player-layout {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 20px;
+      align-items: start;
+    }
+
+    /* ── 레이아웃 선택 버튼 ── */
+    .layout-selector {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .lbtn {
+      padding: 0;
+      border: 2px solid var(--border);
+      background: var(--surface);
+      color: var(--text-secondary);
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: .8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 120px;
+    }
+
+    .lbtn:hover:not(.active) {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .lbtn.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--cr-light);
+    }
+
+    /* 레이아웃 미리보기 SVG 영역 */
+    .lbtn-preview {
+      width: 100%;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px;
+    }
+
+    .lbtn-label {
+      padding: 5px 8px 7px;
+      font-size: .78rem;
+      font-weight: 700;
+      border-top: 1px solid var(--border);
+      width: 100%;
+      text-align: center;
+    }
+
+    /* ── 방향 안내 배지 ── */
+    .dir-guide {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      padding: 8px 12px;
+      background: var(--cr-light);
+      border-radius: 8px;
+      font-size: .8rem;
+      color: var(--text-secondary);
+    }
+
+    .dir-badge {
+      background: var(--accent);
+      color: #fff;
+      border-radius: 5px;
+      padding: 2px 8px;
+      font-size: .72rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    /* ── 공통 플레이어 타일 ── */
+    .ptile {
+      border-radius: 10px;
+      background: var(--pe);
+      border: 2px dashed var(--peb);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s;
+      user-select: none;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .ptile:hover:not(.placed):not(.locked) {
+      background: var(--ph);
+      border-color: var(--accent);
+      transform: scale(1.06);
+    }
+
+    .ptile.placed {
+      background: var(--pp);
+      border: 2px solid var(--pp);
+      color: var(--ppt);
+      cursor: pointer;
+    }
+
+    .ptile.placed:hover {
+      opacity: .82;
+      transform: scale(1.05);
+    }
+
+    .ptile.locked {
+      background: var(--pp);
+      border: 2px solid var(--pp);
+      color: var(--ppt);
+      cursor: default;
+    }
+
+    .ptile .snum {
+      font-size: 1.05rem;
+    }
+
+    .ptile .sidx {
+      font-size: .62rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+      position: absolute;
+      bottom: 4px;
+      right: 6px;
+    }
+
+    .ptile.locked .sidx {
+      color: rgba(255, 255, 255, .5);
+    }
+
+    .ptile.placed .sidx {
+      color: rgba(255, 255, 255, .5);
+    }
+
+    /* ── 레이아웃 A: 가로 일자 (7×3) ── */
+    .layoutA {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .layoutA-row {
+      display: flex;
+      gap: 7px;
+    }
+
+    .layoutA .ptile {
+      width: 64px;
+      height: 56px;
+    }
+
+    /* ── 레이아웃 B: ㄱ자 (이미지 원본 형태) ── */
+    /* 상단 가로 4칸 → 오른쪽 끝에서 아래 10칸 → 하단 가로 4칸 왼쪽으로 → 총 4+9+4=17, +4=21 */
+    /* 실제 구현: 위4 + 세로10(위 1칸 포함) + 하4(아래 1칸 포함) - 겹침2 = 16 */
+    /* 21칸: 위5 + 세로12(위 포함) + 하5 - 겹침2 = 20 → 위6+세로10+하6-겹2=20 */
+    /* 최종: 위→세로→아래 구조, 7+7+7=21칸 3세그 */
+    /* seg1: 위 가로 7칸(순서1~7), seg2: 오른쪽 끝에서 세로 아래 7칸(8~14, 위1칸 제외), seg3: 아래 가로 왼쪽으로 7칸(15~21, 아래1칸 제외) */
+    /* grid 7열 × 9행 */
+    .layoutB {
+      position: relative;
+      width: fit-content;
+    }
+
+    .layoutB-grid {
+      display: grid;
+      gap: 7px;
+    }
+
+    /* ── 레이아웃 C: ㄷ자 (위→아래→위 U턴) ── */
+    /* 왼쪽 열 아래로, 오른쪽 열 위로 → ㄷ형태 */
+    .layoutC {
+      width: fit-content;
+    }
+
+    .layoutC-grid {
+      display: grid;
+      gap: 7px;
+    }
+
+    /* ── 레이아웃 D: 원본 이미지 형태 ── */
+    /* 이미지: 좌상단 4칸 가로 + 4번열에서 세로 7칸 + 하단 4칸 가로 = 4+6+4=14? */
+    /* 이미지 정확히: col0~3 row0(4칸) + col3 row1~7(7칸) + col3~6 row7(4칸) - 겹침2 = 4+7+4-2=13 */
+    /* 21칸으로: col0~5 row0(6) + col5 row1~8(8칸) + col5~8 row8(4칸) - 겹침2 = 6+8+4-2=16 */
+    /* 또는: col0~6 row0(7) + col6 row1~7(7칸) + col6~12 row7(7칸) - 겹침2 = 7+7+7-2=19 */
+    /* 21칸: 위7 + 세로8(위 포함) + 하7(아래 포함) - 겹침2 = 20 → 위7+세로8+하7-1=21 */
+    /* 최종 D: 위7(1~7) + 맨오른쪽 아래 7칸(8~14) + 아래 왼쪽 7칸(15~21, 맨아래 첫칸 포함) */
+    .layoutD {
+      width: fit-content;
+    }
+
+    .layoutD-grid {
+      display: grid;
+      gap: 7px;
+    }
+
+    /* 방향 화살표 오버레이 */
+    .arrow-overlay {
+      position: absolute;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* 학습자 오른쪽 */
+    .wait-box {
+      border-radius: 12px;
+      height: 100px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+      transition: background .3s;
+    }
+
+    .wait-box.idle {
+      background: var(--surface-hover);
+    }
+
+    .wait-box.active {
+      background: var(--warning);
+    }
+
+    .wait-lbl {
+      font-size: .72rem;
+      font-weight: 600;
+      opacity: .85;
+    }
+
+    .wait-val {
+      font-size: 2.8rem;
+      font-weight: 800;
+    }
+
+    .wait-box.idle .wait-lbl,
+    .wait-box.idle .wait-val {
+      color: var(--text-secondary);
+      opacity: 1;
+    }
+
+    .wait-box.active .wait-lbl,
+    .wait-box.active .wait-val {
+      color: #fff;
+    }
+
+    /* 타이머 */
+    .timer-wrap {
+      margin-bottom: 14px;
+    }
+
+    .tbar-bg {
+      height: 10px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .tbar {
+      height: 100%;
+      border-radius: 99px;
+      transition: width .1s linear, background .5s;
+    }
+
+    .tcnt {
+      font-size: 1.4rem;
+      font-weight: 800;
+      transition: color .3s;
+    }
+
+    /* 점수 */
+    .score-mini {
+      background: var(--cr-light);
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .sm-lbl {
+      font-size: .75rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .sm-val {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    /* 토스트 */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(16px);
+      background: #1A1A2E;
+      color: #fff;
+      padding: 9px 20px;
+      border-radius: 99px;
+      font-size: .82rem;
+      font-weight: 600;
+      opacity: 0;
+      transition: all .28s;
+      z-index: 999;
+      pointer-events: none;
+      white-space: nowrap;
+      max-width: 90vw;
+      text-align: center;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* 모달 */
+    .modal-ov {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .55);
+      z-index: 500;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-ov.open {
+      display: flex;
+    }
+
+    .modal-box {
+      background: var(--bg);
+      border-radius: 18px;
+      padding: 28px;
+      max-width: 420px;
+      width: 92%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, .25);
+      animation: mIn .3s ease;
+    }
+
+    @keyframes mIn {
+      from {
+        transform: scale(.85);
+        opacity: 0
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1
+      }
+    }
+
+    .m-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .m-body {
+      font-size: .9rem;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+      line-height: 1.8;
+    }
+
+    .m-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .result-score {
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--accent);
+      text-align: center;
+      margin: 14px 0;
+    }
+
+    /* 게임오버 배너 */
+    .go-banner {
+      display: none;
+      background: linear-gradient(135deg, var(--positive), #047857);
+      color: #fff;
+      text-align: center;
+      padding: 12px 20px;
+      font-weight: 700;
+      font-size: .95rem;
+    }
+
+    .go-banner.show {
+      display: block;
+    }
+
+    @media(max-width:768px) {
+
+      .inst-layout,
+      .player-layout {
+        grid-template-columns: 1fr;
+      }
+
+      #panel-instructor,
+      #panel-player {
+        padding: 12px;
+      }
+
+      .g-tile {
+        min-height: 38px;
+        font-size: .6rem;
+      }
+
+      .lbtn {
+        width: 80px;
+      }
+
+      .lbtn-preview {
+        height: 44px;
+      }
+    }
+
+    @media print {
+
+      .hdr .hdr-btns,
+      .tabs,
+      .btn {
+        display: none !important;
+      }
+    }
+
+    @media(prefers-reduced-motion:reduce) {
+      * {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="toast" id="toast"></div>
+  <div class="go-banner" id="goBanner">🎉 21개 타일 공개 완료! 학습자들은 점수를 계산해주세요!</div>
+
+  <!-- ════════════ 모드 선택 화면 ════════════ -->
+  <div id="modeSelectOverlay"
+    style="position:fixed;inset:0;background:#0F0F1A;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:32px;">
+    <div style="text-align:center;">
+      <div style="font-size:2.2rem;font-weight:800;color:#fff;letter-spacing:-.02em;">🌊 스트림즈 게임</div>
+      <div style="font-size:1rem;color:#888;margin-top:8px;">모드를 선택하세요</div>
+    </div>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center;">
+      <button onclick="openPwModal()"
+        style="background:#1652D8;color:#fff;border:none;border-radius:16px;padding:28px 44px;font-size:1.2rem;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;box-shadow:0 4px 24px rgba(22,82,216,.5);transition:transform .15s;"
+        onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+        📺 강사 모드<br><span style="font-size:.8rem;font-weight:400;opacity:.8;margin-top:6px;display:block;">타일 공개 · 게임
+          진행</span>
+      </button>
+      <button onclick="selectMode('player')"
+        style="background:#059669;color:#fff;border:none;border-radius:16px;padding:28px 44px;font-size:1.2rem;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;box-shadow:0 4px 24px rgba(5,150,105,.5);transition:transform .15s;"
+        onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+        📱 학습자 모드<br><span style="font-size:.8rem;font-weight:400;opacity:.8;margin-top:6px;display:block;">타일 배치 · 점수
+          계산</span>
+      </button>
+    </div>
+    <a href="https://crmc.co.kr" target="_blank"
+      style="text-decoration:none;display:flex;align-items:center;gap:8px;margin-top:8px;opacity:.6;transition:opacity .2s;"
+      onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='.6'">
+      <span style="font-size:.72rem;color:#888;font-weight:600;letter-spacing:.06em;">청람M&amp;C</span>
+      <span style="width:1px;height:12px;background:#444;display:inline-block;"></span>
+      <span style="font-size:.72rem;color:#666;letter-spacing:.03em;">AI 기반 기업교육 컨설팅</span>
+    </a>
+  </div>
+
+  <!-- ════════════ 강사 비밀번호 모달 ════════════ -->
+  <div id="pwModal"
+    style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:999999;align-items:center;justify-content:center;">
+    <div
+      style="background:#1A1A2E;border:1px solid #2a2a4a;border-radius:18px;padding:36px 40px;width:320px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.6);">
+      <div style="font-size:1.5rem;margin-bottom:6px;">🔐</div>
+      <div style="font-size:1rem;font-weight:700;color:#fff;margin-bottom:4px;">강사 인증</div>
+      <div style="font-size:.78rem;color:#666;margin-bottom:22px;">비밀번호를 입력하세요</div>
+      <input id="pwInput" type="password" placeholder="비밀번호"
+        style="width:100%;padding:11px 14px;border-radius:10px;border:1px solid #2a2a4a;background:#0F0F1A;color:#fff;font-size:.95rem;font-family:'Noto Sans KR',sans-serif;outline:none;text-align:center;letter-spacing:.1em;margin-bottom:8px;"
+        onkeydown="if(event.key==='Enter') checkPw()"
+        oninput="document.getElementById('pwError').style.display='none'" />
+      <div id="pwError" style="display:none;font-size:.75rem;color:#f43f5e;margin-bottom:10px;">⛔ 비밀번호가 올바르지 않습니다</div>
+      <button onclick="checkPw()"
+        style="width:100%;padding:11px;background:#1652D8;color:#fff;border:none;border-radius:10px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-bottom:10px;">확인</button>
+      <button onclick="closePwModal()"
+        style="width:100%;padding:9px;background:transparent;color:#555;border:1px solid #2a2a4a;border-radius:10px;font-size:.85rem;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">취소</button>
+    </div>
+  </div>
+
+  <header class="hdr">
+    <div>
+      <div class="hdr-title">🌊 스트림즈 게임</div>
+      <div class="hdr-sub">청람M&C 교육 게임 도구 v3</div>
+    </div>
+    <div class="hdr-btns">
+      <button class="ibtn" onclick="resetGame()">🔄 초기화</button>
+      <button class="ibtn" onclick="toggleTheme()">🌙 테마</button>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab-btn active" onclick="switchTab('instructor',this)">🎓 강사 화면</button>
+    <button class="tab-btn" onclick="switchTab('player',this)">👤 학습자 화면</button>
+    <button class="tab-btn" onclick="switchTab('rules',this)">📋 규칙</button>
+  </nav>
+
+  <!-- ════════════ 강사 패널 ════════════ -->
+  <div class="tab-panel active" id="panel-instructor">
+    <div style="padding:20px;max-width:1100px;margin:0 auto;">
+      <div class="inst-layout">
+        <div>
+          <div class="stitle">타일 선택 — 클릭하면 숫자가 공개됩니다</div>
+          <div class="card">
+            <div class="col-labels" id="colLabels"></div>
+            <div id="instGrid"></div>
+          </div>
+          <div class="card" style="margin-top:16px;">
+            <div class="stitle">점수표</div>
+            <div class="score-grid" id="sgInst"></div>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <div class="stitle">공개된 숫자</div>
+            <div class="cur-box" id="curBox">
+              <span class="cur-lbl">타일을 클릭하세요</span>
+              <span class="cur-val" id="curVal">—</span>
+            </div>
+            <div class="stat-bar">
+              <div class="stat-item">
+                <div class="stat-lbl">공개됨</div>
+                <div class="stat-val" id="revCnt">0</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-lbl">남은 타일</div>
+                <div class="stat-val" id="remCnt">21</div>
+              </div>
+            </div>
+            <div class="stitle" style="font-size:.8rem;margin-bottom:6px;">숫자 풀 현황</div>
+            <div class="pool" id="pool"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════ 학습자 패널 ════════════ -->
+  <div class="tab-panel" id="panel-player">
+    <div style="padding:20px;max-width:1060px;margin:0 auto;">
+      <div class="player-layout">
+
+        <!-- 왼쪽: 타일판 -->
+        <div>
+          <div class="stitle">타일판 모양 선택</div>
+
+          <!-- 레이아웃 선택 버튼 (미리보기 포함) -->
+          <div class="layout-selector" id="layoutSelector"></div>
+
+          <!-- 방향 안내 -->
+          <div class="dir-guide" id="dirGuide">
+            <span class="dir-badge" id="dirBadge">→ 행 순서</span>
+            <span id="dirText">1행(1~7) → 2행(8~14) → 3행(15~21) 순으로 오름차순 체크</span>
+          </div>
+
+          <div class="card" style="overflow-x:auto;" id="playerBoardCard">
+            <div id="playerBoard"></div>
+          </div>
+
+          <div
+            style="margin-top:10px;padding:9px 12px;background:var(--surface);border-radius:8px;font-size:.8rem;color:var(--text-secondary);">
+            💡 <b>취소:</b> 배치한 숫자를 다시 클릭하면 취소 후 재배치 가능 (제한시간 내)
+          </div>
+        </div>
+
+        <!-- 오른쪽 -->
+        <div>
+          <div class="card">
+            <div class="stitle">배치할 숫자</div>
+            <div class="wait-box idle" id="waitBox">
+              <span class="wait-lbl">강사가 타일을 클릭하면 나타납니다</span>
+              <span class="wait-val" id="waitVal">?</span>
+            </div>
+
+            <div id="timerWrap" style="display:none;margin-bottom:14px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+                <span style="font-size:.78rem;font-weight:600;color:var(--text-secondary);">⏱ 제한시간</span>
+                <span class="tcnt" id="tcnt" style="color:var(--tok);">7</span>
+              </div>
+              <div class="tbar-bg">
+                <div class="tbar" id="tbar" style="width:100%;background:var(--tok);"></div>
+              </div>
+              <div style="margin-top:4px;font-size:.7rem;color:var(--text-secondary);text-align:right;">7초 후 자동 배치</div>
+            </div>
+
+            <div class="score-mini">
+              <div class="sm-lbl">현재 점수 (연속 구간)</div>
+              <div class="sm-val" id="pScore">0점</div>
+            </div>
+
+            <button class="btn btn-p" style="width:100%;margin-bottom:8px;" onclick="calcScore()">📊 점수 계산</button>
+            <button class="btn btn-s" id="clearPlayerBtn" style="width:100%;font-size:.78rem;"
+              onclick="clearPlayer()">🗑️ 내 타일 초기화</button>
+
+            <div style="margin-top:14px;">
+              <div class="stitle" style="font-size:.78rem;margin-bottom:6px;">점수표</div>
+              <div class="score-grid" id="sgMini"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════ 규칙 패널 ════════════ -->
+  <div class="tab-panel" id="panel-rules">
+    <div style="max-width:680px;margin:28px auto;padding:0 20px;">
+      <div class="card">
+        <h2 style="font-size:1.5rem;font-weight:700;margin-bottom:20px;color:var(--accent);">🌊 스트림즈 게임 규칙</h2>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div style="padding:14px;background:var(--cr-light);border-radius:10px;border-left:4px solid var(--accent);">
+            <h3 style="font-weight:700;margin-bottom:6px;">1. 번호 구성 (총 30개)</h3>
+            <p style="color:var(--text-secondary);font-size:.92rem;">조커(☆) 1개 / 1~7 각 1개 / 8~14 각 2개 / 15~22 각 1개</p>
+          </div>
+          <div style="padding:14px;background:var(--cr-light);border-radius:10px;border-left:4px solid var(--warning);">
+            <h3 style="font-weight:700;margin-bottom:6px;">2. 진행</h3>
+            <ul style="color:var(--text-secondary);font-size:.92rem;padding-left:16px;line-height:2.1;">
+              <li>강사가 A-1~J-3 중 하나 클릭 → 숫자 공개</li>
+              <li>학습자 7초 내 자신의 타일판에 배치</li>
+              <li>7초 초과 시 랜덤 빈칸 자동 배치</li>
+              <li>배치 후 재클릭 → 취소 후 재배치 (제한시간 내)</li>
+            </ul>
+          </div>
+          <div
+            style="padding:14px;background:var(--cr-light);border-radius:10px;border-left:4px solid var(--positive);">
+            <h3 style="font-weight:700;margin-bottom:6px;">3. 점수 계산</h3>
+            <ul style="color:var(--text-secondary);font-size:.92rem;padding-left:16px;line-height:2.1;">
+              <li>타일판 순서(1번→21번) 기준 오름차순 연속 구간</li>
+              <li>☆ 조커 = 앞·뒤 연결 와일드카드</li>
+              <li>가장 긴 연속 구간 점수가 최종 점수</li>
+            </ul>
+          </div>
+          <div
+            style="padding:14px;background:var(--cr-light);border-radius:10px;border-left:4px solid var(--negative);">
+            <h3 style="font-weight:700;margin-bottom:8px;">4. 점수표</h3>
+            <div class="score-grid" id="sgRules"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 결과 모달 -->
+  <div class="modal-ov" id="resultModal">
+    <div class="modal-box">
+      <div class="m-title">🎊 점수 계산 결과</div>
+      <div class="result-score" id="resultScore">0점</div>
+      <div style="font-size:.85rem;color:var(--text-secondary);text-align:center;margin-bottom:12px;" id="resultDetail">
+      </div>
+      <div
+        style="padding:10px;background:var(--surface);border-radius:8px;font-size:.8rem;color:var(--text-secondary);margin-bottom:16px;word-break:break-all;line-height:1.8;"
+        id="resultBreak"></div>
+      <div class="m-actions"><button class="btn btn-p" onclick="closeModal('resultModal')">확인</button></div>
+    </div>
+  </div>
+
+  <!-- 폭죽 캔버스 -->
+  <canvas id="confettiCanvas"
+    style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;display:none;"></canvas>
+
+  <!-- 초기화 모달 -->
+  <div class="modal-ov" id="resetModal">
+    <div class="modal-box">
+      <div class="m-title">⚠️ 게임 초기화</div>
+      <div class="m-body">모든 타일과 학습자 배치를 초기화합니다.</div>
+      <div class="m-actions">
+        <button class="btn btn-s" onclick="closeModal('resetModal')">취소</button>
+        <button class="btn btn-d" onclick="confirmReset()">초기화</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ═══════════════════════════════════
+       Firebase 설정
+    ═══════════════════════════════════ */
+    var firebaseConfig = {
+      apiKey: "AIzaSyB_-pZHh5RN9ksAKqi6VOWgnW0kKIwfBAw",
+      authDomain: "blueblock-cdff7.firebaseapp.com",
+      databaseURL: "https://blueblock-cdff7-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "blueblock-cdff7",
+      storageBucket: "blueblock-cdff7.firebasestorage.app",
+      messagingSenderId: "273215826494",
+      appId: "1:273215826494:web:179e1fd7b5dbaaa2a5bf6f",
+    };
+    firebase.initializeApp(firebaseConfig);
+    var db = firebase.database();
+    var SESSION = db.ref('streams/session');
+
+    /* URL 파라미터로 모드 결정
+       강사: ?mode=instructor
+       학습자: ?mode=player (기본값)
+       파라미터 없으면 → 시작 화면에서 선택
+    */
+    var MODE = new URLSearchParams(location.search).get('mode') || 'select';
+    var fbListenerActive = false; // 리스너 중복 방지
+
+    /* ═══════════════════════════════════
+       데이터
+    ═══════════════════════════════════ */
+    var SCORE_TABLE = [
+      { k: 1, s: 0 }, { k: 2, s: 1 }, { k: 3, s: 3 }, { k: 4, s: 5 }, { k: 5, s: 8 }, { k: 6, s: 11 }, { k: 7, s: 15 },
+      { k: 8, s: 20 }, { k: 9, s: 25 }, { k: 10, s: 30 }, { k: 11, s: 40 }, { k: 12, s: 50 }, { k: 13, s: 60 }, { k: 14, s: 100 }
+    ];
+    var COLS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+    var ROWS = [1, 2, 3];
+    var TOTAL_TILES = 30;
+    var PLAYER_SLOTS = 21;
+
+    var BASE_POOL = [];
+    BASE_POOL.push('☆');
+    for (var _i = 1; _i <= 7; _i++) BASE_POOL.push(_i);
+    for (var _i = 8; _i <= 14; _i++) { BASE_POOL.push(_i); BASE_POOL.push(_i); }
+    for (var _i = 15; _i <= 22; _i++) BASE_POOL.push(_i);
+
+    function shuffle(arr) {
+      var a = arr.slice();
+      for (var i = a.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var t = a[i]; a[i] = a[j]; a[j] = t;
+      }
+      return a;
+    }
+
+    /* ═══════════════════════════════════
+       게임 상태
+    ═══════════════════════════════════ */
+    var tileNums = {}, tileRevd = {}, revCount = 0, curNum = null;
+    var pTiles = [], pLocked = [], pPending = null;
+    var curLayout = 'A';
+    var timerInterval = null, timerLeft = 7;
+
+    /* ═══════════════════════════════════
+       레이아웃 정의
+       각 레이아웃은 slot 0~20을 그리드 셀에 배치하는 방식을 정의
+       순서(order): 학습자가 타일을 놓는 논리적 순서 1~21
+    ═══════════════════════════════════ */
+
+    /*
+      레이아웃 A: 가로 일자 3행×7열
+      순서: 왼→오, 행 순서 (1행1~7, 2행8~14, 3행15~21)
+    
+      [1][2][3][4][5][6][7]
+      [8][9][10]...[14]
+      [15]...[21]
+    */
+    function buildLayoutA() {
+      var wrap = document.getElementById('playerBoard');
+      wrap.innerHTML = '';
+      var div = document.createElement('div');
+      div.className = 'layoutA';
+      for (var r = 0; r < 3; r++) {
+        var row = document.createElement('div');
+        row.className = 'layoutA-row';
+        for (var c = 0; c < 7; c++) {
+          var idx = r * 7 + c; // 0~20
+          row.appendChild(makePTile(idx));
+        }
+        div.appendChild(row);
+      }
+      wrap.appendChild(div);
+      setDirGuide('→ 행 순서', '1행(1~7칸) → 2행(8~14칸) → 3행(15~21칸) 순으로 오름차순 체크');
+    }
+
+    /*
+      레이아웃 B: ㄱ자형
+      이미지 원본과 동일: 상단 가로 → 오른쪽 끝에서 세로 아래 → 하단 가로 왼쪽으로
+    
+      슬롯 배치 (7열×9행 grid):
+      seg1 row0, col0~6: 순서 1~7   (가로 →)
+      seg2 col6, row1~7: 순서 8~14  (세로 ↓)
+      seg3 row8, col6~0: 순서 15~21 (가로 ←)
+    
+      시각:
+      [1][2][3][4][5][6][7]
+                       [8]
+                       [9]
+                      [10]
+                      [11]
+                      [12]
+                      [13]
+                      [14]
+      [21][20][19][18][17][16][15]
+    */
+    function buildLayoutB() {
+      var wrap = document.getElementById('playerBoard');
+      wrap.innerHTML = '';
+      var COLS_B = 7, ROWS_B = 9;
+      var posMap = {};
+      var idx = 0;
+      for (var c = 0; c < 7; c++) posMap['0,' + c] = idx++;       // row0, col0~6: 순서0~6
+      for (var r = 1; r <= 7; r++) posMap[r + ',6'] = idx++;       // col6, row1~7: 순서7~13
+      for (var c = 5; c >= 0; c--) posMap['8,' + c] = idx++;       // row8, col5~0: 순서14~19
+      // 21칸: 7+7+7=21, 마지막 row8,col6는 seg2 마지막 = 14번째 → 실제 row8,col6는 seg2 row7,col6의 다음
+      // seg2: col6, row1~7 = 7칸(idx7~13), seg3: row8 col6~0 = 7칸(idx14~20)
+      // 수정: seg3은 row8 col6~0 (7칸)
+      posMap = {}; idx = 0;
+      for (var c = 0; c <= 6; c++) posMap['0,' + c] = idx++;  // 7칸
+      for (var r = 1; r <= 7; r++) posMap[r + ',6'] = idx++;  // 7칸
+      for (var c = 6; c >= 1; c--) posMap['8,' + c] = idx++;  // col6~1 = 6칸 → 총20, +1 필요
+      posMap['8,0'] = idx++;                          // +1 = 21칸
+
+      var grid = document.createElement('div');
+      grid.style.cssText = 'display:grid;grid-template-columns:repeat(7,64px);grid-template-rows:repeat(9,56px);gap:7px;width:fit-content;';
+      for (var r = 0; r < 9; r++) {
+        for (var c = 0; c < 7; c++) {
+          var key = r + ',' + c;
+          if (posMap[key] !== undefined) {
+            grid.appendChild(makePTile(posMap[key]));
+          } else {
+            var g = document.createElement('div');
+            g.style.cssText = 'width:64px;height:56px;visibility:hidden;';
+            grid.appendChild(g);
+          }
+        }
+      }
+      wrap.appendChild(grid);
+      setDirGuide('ㄱ자 순서', '위→ 오른쪽 끝 ↓내려가서 ← 왼쪽 방향으로 오름차순 체크');
+    }
+
+    /*
+      레이아웃 C: ㄷ자형
+      왼쪽 열 위→아래, 오른쪽 열 아래→위, 연결
+    
+      seg1: col0, row0~6: 순서 1~7  (세로 ↓)
+      seg2: row6, col1~5: 순서 8~12 (가로 →, 이미 col0있으니 col1부터)
+      seg3: col5, row5~0: 순서 13~18(세로 ↑)
+      seg4: row0, col4~1: 순서 19~22 → 21칸 맞추기
+    
+      재설계: 2열 구조
+      왼열(col0): row0~10 → 11칸 (1~11)
+      하단(row10): col1~4 → 4칸 (12~15)
+      오른열(col4): row9~0 → 10칸 (16~25) → 너무 많음
+    
+      최종: 3칸 넓이 ㄷ자
+      col0 위→아래 7칸(1~7)
+      row6 가로→ 7칸(8~14, col0포함이므로 col1~7)
+      col7 아래→위 7칸(15~21, row6포함이므로 row5~0)
+      총: 7+6+6=19→  col0 row0~6(7), row6 col1~6(6), col6 row5~0(6) = 19
+      → 더 넓게: col0~6 row0(7), col0 row1~7(7), row7 col1~7(7) = 7+7+7-겹침2=19
+      → ㄷ자 21칸: col0 row0~6(7) + row6 col1~7(7,col0제외) + col7 row5~0(6) = 7+7+6=20
+      → col0 row0~6(7) + row6 col1~7(7) + col7 row5~0(7) - 겹침2 = 19
+      → 결국 완전한 21칸 ㄷ:
+         왼세로: 7칸, 하가로: 7칸(왼칸 제외하면 6), 오른세로: 7칸(하칸 제외하면 6)
+         = 7+6+6=19 → 부족
+    
+      ← 단순하게 그냥 좌↓우↑ 두 열로:
+      col0 row0~9(10칸, 순서1~10) + col1 row9~0(11칸, 순서11~21)
+      = 2열 11행 grid, col0 내려가고 col1 올라가는 ㄷ자
+    */
+    function buildLayoutC() {
+      var wrap = document.getElementById('playerBoard');
+      wrap.innerHTML = '';
+      // col0: row0~9 (10칸, idx 0~9)
+      // col1: row9~3 (7칸, idx 10~16) — 아래에서 위로
+      // col2: row3~0 (4칸, idx 17~20) — 3번째 열 추가
+      // 총 10+7+4=21칸
+      // 더 명확한 ㄷ자:
+      // 3열 8행 grid
+      // col0 row0~6 (7칸, 순서1~7, 아래로)
+      // row6 col1~2 (2칸, 순서8~9, 오른쪽으로)
+      // col2 row5~0 (6칸, 순서10~15, 위로)
+      // 총: 7+2+6=15 → 부족
+      // → 4열로 확장:
+      // col0 row0~6 (7칸↓), row6 col1~3 (3칸→), col3 row5~0 (6칸↑) = 7+3+6=16
+      // → 5열: col0(7↓) + row6 col1~4(4→) + col4 row5~0(6↑) = 17
+      // → col0(8↓) + row7 col1~4(4→) + col4 row6~0(7↑) = 8+4+7-겹침2=17
+      // 가장 직관적인 ㄷ자 = 크게 그냥 양쪽 세로 + 하단 가로
+      // 왼세로 col0 row0~9 = 10칸 (1~10 ↓)
+      // 하가로 row9 col1~4 = 4칸 (11~14 →)
+      // 오른세로 col4 row8~0 = 9칸 (15~23 ↑) → 너무 많음
+      // ← 대칭 ㄷ자 7+7+7칸: 총21, 겹침0:
+      // 왼열 col0 row0~6 = 7칸 (1~7 ↓)
+      // 아래열 row6 col1~13 불가
+      // ← 실용적으로: 3×7 그리드, 왼열↓ + 오른열↑
+      // col0 row0~10 (11칸 ↓, 1~11)
+      // col1 row10~0 (11칸 ↑, 12~22) → 22칸 너무 많
+      // col0 row0~9 (10칸) + col1 row9~0 (10칸) + 1칸 연결 = 21
+      // col0 row0~9 (10), col1 row10(1 연결), col2 row10~1(10→col1 포함하면9) 어려움
+
+      // ✅ 최종 ㄷ자: 간결하게 3칸×7행 + 양옆
+      // 구조: 7행, col 배치
+      // 순서 흐름:  col0↓(1~7) → col1↓(8~14) → col2↑(15~21) 이건 S자
+      // 진짜 ㄷ: col0↓ + 하단가로 + 우측열↑
+      // 7+3+7=17, 7+4+7=18, 7+5+7=19, 7+6+7=20, 7+7+7=21 (겹침 포함 안함)
+      // col0 row0~6(7) + row6 col1~7(7,이미col0있으니 6추가)+col7 row5~0(6)+겹침없이=7+6+6=19
+      // ← 겹침없이 21칸:
+      // col0 row0~6 = 7 (↓)
+      // row6 col1~7 = 7 (→) [col0 row6는 이미 위에서 카운트]
+      // col7 row0~5 = 6 (↑) [row6 col7은 이미 위에서 카운트]
+      // 합계 = 7+7+6 = 20 → 1칸 부족
+      // row0 col1~6 연결하면 맞지만 그건 ㅁ자
+      // ← 결론: 22칸에서 1 제거: col0(7↓)+row6(7→)+col7(7↑) - col0row6, col7row6 겹침2 = 19
+      // 21칸 정확한 ㄷ자: col0(0~6)+row6(1~7)+col7(5~0) = 7+7+6=20 or
+      // col0(0~7=8칸)+row7(1~6=6칸)+col6(6~0=7칸) - row7col6겹침 - col0row7겹침 = 8+6+7-2=19
+      // 어떻게 해도 19~20... 21 맞추려면 비대칭으로:
+      // col0(8↓)+row7(7→)+col7(6↑) = 8+7+6=21 겹침없이!
+      // 8행 8열 grid (row0~7, col0~7)
+      // col0: row0~7 = 8칸 (idx 0~7)
+      // row7: col1~7 = 7칸 (idx 8~14)
+      // col7: row6~0 = 7칸 → row6,col7은 없었으니 ok, row0col7 추가 = 7칸 (idx 15~21, row6~0)
+      // 총 8+7+7=22 → 1칸 오버
+      // col0(7)+row6(7)+col6(7)=21, 겹침: row0col0(있음),row6col0(있음),row6col6(있음)
+      // 겹침없이 순수: col0 row0~5(6) + row6 col0~6(7) + col6 row0~5(6) = 6+7+6=19
+      // 포함:  col0 row0~6(7) + row6 col1~6(6) + col6 row0~5(6) = 7+6+6=19
+      // ← 포기하고 깔끔하게 비대칭으로: col0(9↓)+row8(6→)+col6(6↑) = 9+6+6=21!
+      // 9행 7열 grid
+
+      // col0 row0~8: 9칸 (순서 0~8, ↓)
+      // row8 col1~6: 6칸 (순서 9~14, →)
+      // col6 row7~0: 7칸 (순서 15~21, ↑) row8col6는 이미 있으니 row7부터
+      // 총 9+6+7=22 → 1칸 오버
+      // col6 row7~1: 7칸 대신 row7~2: 6칸 → 9+6+6=21 ✅
+
+      // ㄷ자 21칸: 왼쪽↓(8칸) + 하단→(7칸) + 오른쪽↑(6칸) = 21칸, 겹침없음
+      // col0 row0~7: 8칸 (idx 0~7, ↓)
+      // row7 col1~7: 7칸 (idx 8~14, →)
+      // col7 row6~1: 6칸 (idx 15~20, ↑)
+      var posMap = {};
+      var idx = 0;
+      for (var r = 0; r <= 7; r++) posMap[r + ',0'] = idx++;    // 왼쪽 col0 row0~7: 8칸
+      for (var c = 1; c <= 7; c++) posMap['7,' + c] = idx++;    // 하단 row7 col1~7: 7칸
+      for (var r = 6; r >= 1; r--) posMap[r + ',7'] = idx++;    // 오른쪽 col7 row6~1: 6칸
+      // 총 8+7+6=21칸
+
+      var grid = document.createElement('div');
+      grid.style.cssText = 'display:grid;grid-template-columns:repeat(8,64px);grid-template-rows:repeat(8,56px);gap:7px;width:fit-content;';
+      for (var r = 0; r < 8; r++) {
+        for (var c = 0; c < 8; c++) {
+          var key = r + ',' + c;
+          if (posMap[key] !== undefined) {
+            grid.appendChild(makePTile(posMap[key]));
+          } else {
+            var g = document.createElement('div');
+            g.style.cssText = 'width:64px;height:56px;visibility:hidden;';
+            grid.appendChild(g);
+          }
+        }
+      }
+      wrap.appendChild(grid);
+      setDirGuide('ㄷ자 순서', '왼쪽 ↓내려가서 → 가로로, 오른쪽 ↑올라가는 순으로 오름차순 체크');
+    }
+
+    /*
+      레이아웃 D: 첨부 이미지 원본 형태
+      이미지 분석: 위 4칸 가로(좌측) + 4번째 칸에서 세로 7칸 + 마지막에서 오른쪽 4칸
+    
+      정확한 이미지 재현:
+      상단 가로: col0~3, row0 (4칸)
+      세로: col3, row1~6 (6칸, row0은 이미 있음)
+      하단 가로: col3~6, row7 (4칸, col3 row7은 새 칸)
+      총: 4+6+4 = 14칸 → 이미지 기준 정확히 14칸
+    
+      21칸으로 확장:
+      상단: col0~6, row0 (7칸, 1~7)
+      세로: col6, row1~7 (7칸, 8~14)
+      하단: col6~0, row8 → col5~0 (6칸, 15~20) + row8,col6(이미있음)
+      → 7+7+7-겹침2 = 19 → 여전히 19
+    
+      이미지와 정확히 같은 비율로 21칸:
+      상4+세로10+하7 = 21, 겹침없이:
+      상단 col0~3 row0 (4칸, 1~4)
+      세로 col3 row1~10 (10칸, 5~14)
+      하단 col4~10 row10 (7칸, 15~21)
+      11행 11열 grid → 너무 큼
+    
+      ✅ 이미지 형태 비율 유지하며 21칸:
+      상단 col0~3 row0: 4칸
+      세로 col3 row1~9: 9칸
+      하단 col4~9 row9: 6칸 (col3는 세로 마지막)
+      → 4+9+6=19 → col3~9 하단 7칸 + 겹침1 = 4+9+7-겹침1 = 19+0 = 19... col3row9는 세로에 포함
+      → 하단 col4~10: 7칸 = 4+9+7=20 + col3row0이 상단 첫칸이자 세로 출발 아니라 별개 = ok
+      → 4+9+7=20, 아직 1 부족
+      → 상단 5칸으로: col0~4 row0(5) + col4 row1~9(9) + col5~9 row9(5) = 5+9+5=19
+      → col0~4 row0(5) + col4 row1~10(10) + col5~9 row10(5) = 5+10+5=20
+      → col0~4 row0(5) + col4 row1~11(11) + col5~8 row11(4) = 5+11+4=20
+      → col0~5 row0(6) + col5 row1~10(10) + col6~9 row10(4) = 6+10+4=20
+      → col0~5 row0(6) + col5 row1~10(10) + col6~10 row10(5) = 6+10+5=21! ✅
+    
+      6+10+5=21: grid 11열×11행 → 너무 큼
+      → 작게: col0~4 row0(5) + col4 row1~10(10) + col5~9 row10(5) = 5+10+5=20... 1부족
+      → col0~4 row0(5) + col4 row1~11(11) + col5~8 row11(4) = 5+11+4=20
+      → col0~3 row0(4) + col3 row1~11(11) + col4~9 row11(6) = 4+11+6=21! ✅
+        grid: 10열×12행
+    
+      비율이 이미지와 가장 비슷: 좁은 L자 위에 짧은 가로
+    
+      이미지랑 정확히: 위4칸 + 아래 많이 + 오른쪽4칸
+      col0~3 row0: 4칸 (1~4)
+      col3 row1~11: 11칸 (5~15)
+      col4~9 row11: 6칸 (16~21)
+      총 4+11+6=21 ✅
+    */
+    function buildLayoutD() {
+      var wrap = document.getElementById('playerBoard');
+      wrap.innerHTML = '';
+
+      var posMap = {};
+      var idx = 0;
+      // 상단 가로: col0~3, row0 (4칸)
+      for (var c = 0; c <= 3; c++) posMap['0,' + c] = idx++;
+      // 세로: col3, row1~11 (11칸)
+      for (var r = 1; r <= 11; r++) posMap[r + ',3'] = idx++;
+      // 하단 가로: col4~9, row11 (6칸)
+      for (var c = 4; c <= 9; c++) posMap['11,' + c] = idx++;
+
+      var grid = document.createElement('div');
+      grid.style.cssText = 'display:grid;grid-template-columns:repeat(10,64px);grid-template-rows:repeat(12,48px);gap:6px;width:fit-content;';
+      for (var r = 0; r < 12; r++) {
+        for (var c = 0; c < 10; c++) {
+          var key = r + ',' + c;
+          if (posMap[key] !== undefined) {
+            grid.appendChild(makePTile(posMap[key]));
+          } else {
+            var g = document.createElement('div');
+            g.style.cssText = 'width:64px;height:48px;visibility:hidden;';
+            grid.appendChild(g);
+          }
+        }
+      }
+      wrap.appendChild(grid);
+      setDirGuide('원본 형태', '상단 가로→ 오른쪽 끝에서 세로 ↓ 내려가서 → 하단 가로 오른쪽으로');
+    }
+
+    /* ───── 공통 타일 생성 ───── */
+    function makePTile(idx) {
+      var tile = document.createElement('div');
+      tile.className = 'ptile';
+      tile.id = 'pt-' + idx;
+      tile.style.cssText = 'width:64px;height:56px;';
+      if (pTiles[idx] !== null) {
+        tile.classList.add(pLocked[idx] ? 'locked' : 'placed');
+        tile.innerHTML = '<span class="snum">' + pTiles[idx] + '</span><span class="sidx">' + (idx + 1) + '</span>';
+      } else {
+        tile.innerHTML = '<span class="sidx">' + (idx + 1) + '</span>';
+      }
+      tile.onclick = (function (i) { return function () { onPClick(i); }; })(idx);
+      return tile;
+    }
+
+    // 레이아웃 D는 타일 높이가 48px
+    function makePTileD(idx) {
+      var tile = makePTile(idx);
+      tile.style.cssText = 'width:64px;height:48px;';
+      return tile;
+    }
+
+    function refreshPTile(idx) {
+      var tile = document.getElementById('pt-' + idx);
+      if (!tile) return;
+      var wasD = (tile.style.height === '48px');
+      tile.className = 'ptile';
+      if (wasD) tile.style.cssText = 'width:64px;height:48px;';
+      else tile.style.cssText = 'width:64px;height:56px;';
+      if (pTiles[idx] !== null) {
+        tile.classList.add(pLocked[idx] ? 'locked' : 'placed');
+        tile.innerHTML = '<span class="snum">' + pTiles[idx] + '</span><span class="sidx">' + (idx + 1) + '</span>';
+      } else {
+        tile.innerHTML = '<span class="sidx">' + (idx + 1) + '</span>';
+      }
+    }
+
+    /* ───── 방향 안내 ───── */
+    function setDirGuide(badge, text) {
+      document.getElementById('dirBadge').textContent = badge;
+      document.getElementById('dirText').textContent = text;
+    }
+
+    /* ───── 레이아웃 선택 ───── */
+    var LAYOUTS = [
+      {
+        id: 'A', label: '가로 일자 3행',
+        desc: '단순 가로 흐름',
+        svg: '<svg width="88" height="44" viewBox="0 0 88 44" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="24" height="12" rx="2" fill="currentColor" opacity=".6"/><rect x="30" y="2" width="24" height="12" rx="2" fill="currentColor" opacity=".6"/><rect x="58" y="2" width="24" height="12" rx="2" fill="currentColor" opacity=".6"/><rect x="2" y="16" width="24" height="12" rx="2" fill="currentColor" opacity=".4"/><rect x="30" y="16" width="24" height="12" rx="2" fill="currentColor" opacity=".4"/><rect x="58" y="16" width="24" height="12" rx="2" fill="currentColor" opacity=".4"/><rect x="2" y="30" width="24" height="12" rx="2" fill="currentColor" opacity=".25"/><rect x="30" y="30" width="24" height="12" rx="2" fill="currentColor" opacity=".25"/><rect x="58" y="30" width="24" height="12" rx="2" fill="currentColor" opacity=".25"/><path d="M8 8 L76 8" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 2" opacity=".5"/><path d="M76 8 L76 22 M8 22 L76 22" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 2" opacity=".3"/></svg>'
+      },
+      {
+        id: 'B', label: 'ㄱ자형',
+        desc: '위→아래→왼쪽',
+        svg: '<svg width="88" height="44" viewBox="0 0 88 44" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="12" height="8" rx="2" fill="currentColor" opacity=".6"/><rect x="16" y="2" width="12" height="8" rx="2" fill="currentColor" opacity=".6"/><rect x="30" y="2" width="12" height="8" rx="2" fill="currentColor" opacity=".6"/><rect x="44" y="2" width="12" height="8" rx="2" fill="currentColor" opacity=".6"/><rect x="58" y="2" width="12" height="8" rx="2" fill="currentColor" opacity=".6"/><rect x="72" y="2" width="12" height="8" rx="2" fill="currentColor" opacity=".6"/><rect x="72" y="12" width="12" height="8" rx="2" fill="currentColor" opacity=".5"/><rect x="72" y="22" width="12" height="8" rx="2" fill="currentColor" opacity=".4"/><rect x="72" y="34" width="12" height="8" rx="2" fill="currentColor" opacity=".3"/><rect x="58" y="34" width="12" height="8" rx="2" fill="currentColor" opacity=".3"/><rect x="44" y="34" width="12" height="8" rx="2" fill="currentColor" opacity=".3"/><path d="M8 6 L78 6 L78 38 L50 38" stroke="currentColor" stroke-width="1.5" fill="none" opacity=".5"/><polygon points="46,35 50,38 46,41" fill="currentColor" opacity=".5"/></svg>'
+      },
+      {
+        id: 'C', label: 'ㄷ자형',
+        desc: '왼쪽↓ 오른쪽↑',
+        svg: '<svg width="88" height="44" viewBox="0 0 88 44" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="12" height="8" rx="2" fill="currentColor" opacity=".6"/><rect x="2" y="12" width="12" height="8" rx="2" fill="currentColor" opacity=".55"/><rect x="2" y="22" width="12" height="8" rx="2" fill="currentColor" opacity=".5"/><rect x="2" y="34" width="12" height="8" rx="2" fill="currentColor" opacity=".4"/><rect x="16" y="34" width="12" height="8" rx="2" fill="currentColor" opacity=".35"/><rect x="30" y="34" width="12" height="8" rx="2" fill="currentColor" opacity=".3"/><rect x="44" y="34" width="12" height="8" rx="2" fill="currentColor" opacity=".3"/><rect x="74" y="2" width="12" height="8" rx="2" fill="currentColor" opacity=".6"/><rect x="74" y="12" width="12" height="8" rx="2" fill="currentColor" opacity=".5"/><rect x="74" y="22" width="12" height="8" rx="2" fill="currentColor" opacity=".4"/><rect x="74" y="34" width="12" height="8" rx="2" fill="currentColor" opacity=".3"/><path d="M8 6 L8 38 L80 38 L80 6" stroke="currentColor" stroke-width="1.5" fill="none" opacity=".5"/><polygon points="77,9 80,6 83,9" fill="currentColor" opacity=".5"/></svg>'
+      },
+      {
+        id: 'D', label: '원본 형태',
+        desc: '이미지 원본 구조',
+        svg: '<svg width="88" height="44" viewBox="0 0 88 44" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="14" height="8" rx="2" fill="currentColor" opacity=".6"/><rect x="18" y="2" width="14" height="8" rx="2" fill="currentColor" opacity=".6"/><rect x="34" y="2" width="14" height="8" rx="2" fill="currentColor" opacity=".6"/><rect x="50" y="2" width="14" height="8" rx="2" fill="currentColor" opacity=".6"/><rect x="50" y="12" width="14" height="8" rx="2" fill="currentColor" opacity=".5"/><rect x="50" y="22" width="14" height="8" rx="2" fill="currentColor" opacity=".4"/><rect x="50" y="34" width="14" height="8" rx="2" fill="currentColor" opacity=".3"/><rect x="66" y="34" width="14" height="8" rx="2" fill="currentColor" opacity=".3"/><path d="M9 6 L57 6 L57 38 L74 38" stroke="currentColor" stroke-width="1.5" fill="none" opacity=".5"/><polygon points="71,35 74,38 71,41" fill="currentColor" opacity=".5"/></svg>'
+      }
+    ];
+
+    function buildLayoutSelector() {
+      var sel = document.getElementById('layoutSelector');
+      sel.innerHTML = '';
+      LAYOUTS.forEach(function (lay) {
+        var btn = document.createElement('button');
+        btn.className = 'lbtn' + (lay.id === curLayout ? ' active' : '');
+        btn.innerHTML = '<div class="lbtn-preview" style="color:var(--accent);">' + lay.svg + '</div><div class="lbtn-label">' + lay.label + '</div>';
+        btn.onclick = (function (l, b) { return function () { setLayout(l, b); }; })(lay.id, btn);
+        sel.appendChild(btn);
+      });
+    }
+
+    function setLayout(name, btn) {
+      curLayout = name;
+      document.querySelectorAll('.lbtn').forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      buildCurrentLayout();
+    }
+
+    function buildCurrentLayout() {
+      if (curLayout === 'A') buildLayoutA();
+      else if (curLayout === 'B') buildLayoutB();
+      else if (curLayout === 'C') buildLayoutC();
+      else if (curLayout === 'D') buildLayoutD();
+    }
+
+    /* ═══════════════════════════════════
+       플레이어 타일 클릭
+    ═══════════════════════════════════ */
+    function onPClick(idx) {
+      if (pLocked[idx]) { showToast('⛔ 확정된 칸입니다. 수정 불가합니다.'); return; }
+      // 타이머가 없는 상태 = 이미 배치 완료된 라운드 → 클릭 차단
+      if (timerInterval === null && curNum !== null) {
+        // 현재 라운드가 이미 autoPlace로 끝났거나 배치 확정된 경우
+        var alreadyPlaced = false;
+        for (var i = 0; i < PLAYER_SLOTS; i++) {
+          if (pLocked[i] && pTiles[i] === curNum) { alreadyPlaced = true; break; }
+        }
+        if (alreadyPlaced) { showToast('⛔ 이미 확정된 숫자입니다. 다음 숫자를 기다리세요.'); return; }
+      }
+      if (curNum === null) { showToast('⚠️ 강사가 타일을 클릭해 숫자를 공개해야 합니다!'); return; }
+      if (pTiles[idx] !== null) {
+        if (pPending === idx) {
+          // 재클릭 → 취소
+          pTiles[idx] = null; pPending = null;
+          refreshPTile(idx);
+          showToast('↩️ 배치 취소! 다른 칸을 선택하세요.');
+          updatePScore(); return;
+        } else {
+          showToast('⚠️ 다른 칸에 이미 배치했습니다. 그 숫자를 재클릭해 취소 후 선택하세요.'); return;
+        }
+      }
+      if (pPending !== null && pTiles[pPending] !== null) {
+        showToast('⚠️ 이미 배치한 숫자가 있습니다. 재클릭해 취소 후 다시 선택하세요.'); return;
+      }
+      // 배치
+      pTiles[idx] = curNum; pPending = idx;
+      refreshPTile(idx);
+      updatePScore();
+      showToast('✅ ' + (idx + 1) + '번 칸에 ' + curNum + ' 배치 완료! 재클릭으로 취소 가능');
+    }
+
+    /* ═══════════════════════════════════
+       타이머
+    ═══════════════════════════════════ */
+    function startTimer() {
+      clearTimerFn();
+      timerLeft = 7;
+      document.getElementById('timerWrap').style.display = 'block';
+      updateTimerUI(7);
+      timerInterval = setInterval(function () {
+        timerLeft -= 0.1;
+        updateTimerUI(timerLeft);
+        if (timerLeft <= 0) { clearTimerFn(); autoPlace(); }
+      }, 100);
+    }
+    function clearTimerFn() {
+      if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+    }
+    function updateTimerUI(t) {
+      var pct = Math.max(0, (t / 7) * 100);
+      var bar = document.getElementById('tbar'), cnt = document.getElementById('tcnt');
+      var sec = Math.ceil(Math.max(0, t));
+      cnt.textContent = sec;
+      bar.style.width = pct + '%';
+      var color = t > 4 ? 'var(--tok)' : t > 2 ? 'var(--twarn)' : 'var(--tdanger)';
+      bar.style.background = color; cnt.style.color = color;
+    }
+    function autoPlace() {
+      // ① 이미 배치한 칸이 있으면 → 그 칸 그대로 확정 (추가 배치 없음)
+      if (pPending !== null && pTiles[pPending] !== null) {
+        pLocked[pPending] = true;
+        refreshPTile(pPending);
+        showToast('⏰ 시간 초과! ' + (pPending + 1) + '번 칸 확정됩니다.');
+        pPending = null;
+        document.getElementById('timerWrap').style.display = 'none';
+        updatePScore();
+        return;
+      }
+      // ② 배치 안 했으면 → 빈칸 중 랜덤 자동 배치
+      if (curNum !== null) {
+        var empty = [];
+        for (var i = 0; i < PLAYER_SLOTS; i++) { if (pTiles[i] === null) empty.push(i); }
+        if (empty.length > 0) {
+          var rIdx = empty[Math.floor(Math.random() * empty.length)];
+          pTiles[rIdx] = curNum;
+          pLocked[rIdx] = true;
+          refreshPTile(rIdx);
+          showToast('⏰ 시간 초과! ' + (rIdx + 1) + '번 칸에 자동 배치됩니다.');
+        }
+      }
+      pPending = null;
+      document.getElementById('timerWrap').style.display = 'none';
+      updatePScore();
+    }
+
+    /* ═══════════════════════════════════
+       강사 타일 공개
+    ═══════════════════════════════════ */
+    function revealTile(id) {
+      if (tileRevd[id]) return;
+      // 이전 라운드 마무리: 배치됐으면 lock, 취소 상태면 그냥 버림
+      clearTimerFn();
+      if (pPending !== null && pTiles[pPending] !== null) {
+        pLocked[pPending] = true;
+        refreshPTile(pPending);
+      }
+      pPending = null;
+      tileRevd[id] = true; revCount++; curNum = tileNums[id];
+      var el = document.getElementById('it-' + id);
+      el.classList.add('revealed');
+      el.innerHTML = '<span class="tnum">' + curNum + '</span>';
+      el.onclick = null;
+      updateCurBox(curNum); updateCounts(); buildPool();
+      updateWaitBox(curNum); startTimer();
+      setClearBtnState(false);
+      if (revCount >= PLAYER_SLOTS) document.getElementById('goBanner').classList.add('show');
+      // ★ Firebase: 현재 숫자 학습자에게 전송
+      SESSION.update({
+        curNum: curNum === '☆' ? 'JOKER' : curNum,
+        revealedId: id,
+        revCount: revCount,
+        ts: firebase.database.ServerValue.TIMESTAMP
+      });
+    }
+    function updateCurBox(num) {
+      var box = document.getElementById('curBox'), val = document.getElementById('curVal');
+      val.textContent = (num === null) ? '—' : num;
+      box.style.background = (num === null) ? 'var(--accent)' : (num === '☆' ? '#7C3AED' : 'var(--accent)');
+    }
+    function updateCounts() {
+      var shown = Math.min(revCount, PLAYER_SLOTS);
+      var remain = Math.max(0, PLAYER_SLOTS - revCount);
+      document.getElementById('revCnt').textContent = shown;
+      document.getElementById('remCnt').textContent = remain;
+    }
+    function updateWaitBox(num) {
+      var box = document.getElementById('waitBox'), val = document.getElementById('waitVal');
+      val.textContent = (num === null) ? '?' : num;
+      if (num === null) { box.className = 'wait-box idle'; }
+      else if (num === '☆') { box.className = 'wait-box active'; box.style.background = '#7C3AED'; }
+      else { box.className = 'wait-box active'; box.style.background = ''; }
+    }
+    function buildPool() {
+      var wrap = document.getElementById('pool'); wrap.innerHTML = '';
+      BASE_POOL.slice().sort(function (a, b) { if (a === '☆') return -1; if (b === '☆') return 1; return a - b; }).forEach(function (n) {
+        var key = String(n);
+        var usedCount = 0;
+        for (var id in tileRevd) { if (tileRevd[id] && String(tileNums[id]) === key) usedCount++; }
+        var total = BASE_POOL.filter(function (x) { return String(x) === key; }).length;
+        var chip = document.createElement('div'); chip.className = 'chip'; chip.textContent = n;
+        if (usedCount >= total) chip.classList.add('used');
+        wrap.appendChild(chip);
+      });
+    }
+
+    /* ═══════════════════════════════════
+       점수 계산
+    ═══════════════════════════════════ */
+    function calcPScore() {
+      // 21칸 전체를 순서대로 스캔
+      // 규칙: ① 빈칸이 끼면 연속 끊김
+      //       ② 인접한 두 칸 모두 채워져 있고, 오름차순(같은 숫자 포함)이어야 연속
+      //       ③ 조커(☆)는 앞·뒤를 이어주는 와일드카드
+      //       ④ 모든 연속 구간의 점수를 합산 (가장 긴 구간 1개만 아님)
+      var totalScore = 0;
+      var curLen = 0;
+      var segments = []; // 디버그용
+
+      for (var i = 0; i < PLAYER_SLOTS; i++) {
+        if (pTiles[i] === null) {
+          // 빈칸 → 연속 끊김
+          if (curLen > 0) {
+            segments.push(curLen);
+            totalScore += getScore(curLen);
+            curLen = 0;
+          }
+        } else {
+          if (curLen === 0) {
+            // 연속 시작
+            curLen = 1;
+          } else {
+            // 이전 칸도 채워져 있음 → 오름차순(동일 포함) or 조커 체크
+            var prev = pTiles[i - 1];
+            var curr = pTiles[i];
+            // 같은 숫자(동일 카드), 조커, 또는 오름차순(curr >= prev) 모두 연속 인정
+            var ok = (prev === '☆' || curr === '☆') ||
+              (typeof prev === 'number' && typeof curr === 'number' && curr >= prev);
+            if (ok) {
+              curLen++;
+            } else {
+              // 오름차순 아님 → 구간 끝, 점수 누적 후 새 구간 시작
+              segments.push(curLen);
+              totalScore += getScore(curLen);
+              curLen = 1;
+            }
+          }
+        }
+      }
+      // 마지막 구간 처리
+      if (curLen > 0) {
+        segments.push(curLen);
+        totalScore += getScore(curLen);
+      }
+      return totalScore;
+    }
+    function getScore(k) {
+      for (var i = SCORE_TABLE.length - 1; i >= 0; i--) { if (k >= SCORE_TABLE[i].k) return SCORE_TABLE[i].s; }
+      return 0;
+    }
+    function updatePScore() {
+      document.getElementById('pScore').textContent = calcPScore() + '점';
+    }
+    function calcScore() {
+      var s = calcPScore();
+      var filled = pTiles.filter(function (t) { return t !== null; }).length;
+      document.getElementById('resultScore').textContent = s + '점';
+      // 구간별 상세 계산
+      var segDetail = []; var curLen2 = 0; var totalCheck = 0;
+      for (var j = 0; j < PLAYER_SLOTS; j++) {
+        if (pTiles[j] === null) { if (curLen2 > 0) { var sc0 = getScore(curLen2); segDetail.push(curLen2 + '칸(' + sc0 + '점)'); totalCheck += sc0; curLen2 = 0; } }
+        else { if (curLen2 === 0) { curLen2 = 1; } else { var p2 = pTiles[j - 1]; var c2 = pTiles[j]; var ok2 = (p2 === '☆' || c2 === '☆') || (typeof p2 === 'number' && typeof c2 === 'number' && c2 >= p2); if (ok2) { curLen2++; } else { var sc1 = getScore(curLen2); segDetail.push(curLen2 + '칸(' + sc1 + '점)'); totalCheck += sc1; curLen2 = 1; } } }
+      }
+      if (curLen2 > 0) { var sc2 = getScore(curLen2); segDetail.push(curLen2 + '칸(' + sc2 + '점)'); totalCheck += sc2; }
+      var detailStr = segDetail.length > 0 ? '구간: ' + segDetail.join(' + ') : '연속 구간 없음';
+      document.getElementById('resultDetail').textContent = '배치: ' + filled + '/21칸 | ' + detailStr + ' = ' + s + '점';
+      var line = pTiles.map(function (t, i) { return t !== null ? String(t) : '□'; }).join(' → ');
+      document.getElementById('resultBreak').innerHTML = '<b>배치 순서(1→21칸):</b><br>' + line;
+      document.getElementById('resultModal').classList.add('open');
+      if (s >= 100) launchConfetti(true);
+      else launchConfetti(false);
+    }
+    function setClearBtnState(enabled) {
+      var btn = document.getElementById('clearPlayerBtn');
+      if (!btn) return;
+      if (enabled) {
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        btn.style.cursor = 'pointer';
+        btn.title = '';
+      } else {
+        btn.disabled = true;
+        btn.style.opacity = '0.38';
+        btn.style.cursor = 'not-allowed';
+        btn.title = '게임 진행 중에는 초기화할 수 없습니다. 강사가 초기화하면 활성화됩니다.';
+      }
+    }
+
+    function clearPlayer() {
+      var btn = document.getElementById('clearPlayerBtn');
+      if (btn && btn.disabled) { showToast('⛔ 게임 진행 중에는 초기화 불가합니다. 강사 초기화 후 가능합니다.'); return; }
+      for (var i = 0; i < PLAYER_SLOTS; i++) { pTiles[i] = null; pLocked[i] = false; }
+      pPending = null; buildCurrentLayout(); updatePScore();
+    }
+
+    /* ═══════════════════════════════════
+       점수표
+    ═══════════════════════════════════ */
+    function buildScoreTable(id) {
+      var wrap = document.getElementById(id); if (!wrap) return;
+      wrap.innerHTML = '';
+      ['칸수', '점수', '칸수', '점수'].forEach(function (h) {
+        var el = document.createElement('div'); el.className = 'sc hd'; el.textContent = h; wrap.appendChild(el);
+      });
+      var half = Math.ceil(SCORE_TABLE.length / 2);
+      for (var i = 0; i < half; i++) {
+        var L = SCORE_TABLE[i], R = SCORE_TABLE[i + half];
+        [L, R].forEach(function (item) {
+          if (!item) return;
+          var c1 = document.createElement('div'), c2 = document.createElement('div');
+          c1.className = 'sc' + (item.s >= 50 ? ' hi' : ''); c1.textContent = item.k + '칸';
+          c2.className = 'sc' + (item.s >= 50 ? ' hi' : ''); c2.textContent = item.s + '점';
+          wrap.appendChild(c1); wrap.appendChild(c2);
+        });
+      }
+    }
+
+    /* ═══════════════════════════════════
+       강사 그리드
+    ═══════════════════════════════════ */
+    function buildInstGrid() {
+      var cw = document.getElementById('colLabels'); cw.innerHTML = '';
+      COLS.forEach(function (c) { var el = document.createElement('div'); el.className = 'col-lbl'; el.textContent = c; cw.appendChild(el); });
+      var wrap = document.getElementById('instGrid'); wrap.innerHTML = '';
+      ROWS.forEach(function (r) {
+        var row = document.createElement('div'); row.className = 'tile-row';
+        COLS.forEach(function (c) {
+          var id = c + '-' + r;
+          var tile = document.createElement('div'); tile.className = 'g-tile'; tile.id = 'it-' + id;
+          if (tileRevd[id]) { tile.classList.add('revealed'); tile.innerHTML = '<span class="tnum">' + tileNums[id] + '</span>'; }
+          else { tile.innerHTML = '<span class="tlbl">' + id + '</span>'; tile.onclick = (function (tid) { return function () { revealTile(tid); }; })(id); }
+          row.appendChild(tile);
+        });
+        wrap.appendChild(row);
+      });
+    }
+
+    /* ═══════════════════════════════════
+       🎊 폭죽 (100점 이상)
+    ═══════════════════════════════════ */
+    function launchConfetti(big) {
+      var canvas = document.getElementById('confettiCanvas');
+      var ctx = canvas.getContext('2d');
+      canvas.style.display = 'block';
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      var COLORS = ['#1652D8', '#F8B400', '#e11d48', '#059669', '#7C3AED', '#f59e0b', '#06b6d4', '#ff6b6b', '#51cf66', '#ffd43b'];
+      var particles = [];
+
+      if (big) {
+        // 100점↑: 3발사 지점, 220개, 3.8초
+        var TOTAL = 220, duration = 3800;
+        var origins = [0.2, 0.5, 0.8];
+        origins.forEach(function (ox) {
+          for (var i = 0; i < TOTAL / origins.length; i++) {
+            particles.push({
+              x: canvas.width * ox + (Math.random() - 0.5) * 80,
+              y: canvas.height * 0.45,
+              vx: (Math.random() - 0.5) * 14,
+              vy: -(Math.random() * 18 + 8),
+              color: COLORS[Math.floor(Math.random() * COLORS.length)],
+              size: Math.random() * 8 + 4,
+              shape: Math.random() < 0.5 ? 'rect' : 'circle',
+              rot: Math.random() * 360,
+              rotV: (Math.random() - 0.5) * 12,
+              alpha: 1,
+              gravity: 0.45 + Math.random() * 0.2
+            });
+          }
+        });
+      } else {
+        // 일반: 중앙 1발사, 60개, 1.8초
+        var TOTAL = 60, duration = 1800;
+        for (var i = 0; i < TOTAL; i++) {
+          particles.push({
+            x: canvas.width * 0.5 + (Math.random() - 0.5) * 60,
+            y: canvas.height * 0.5,
+            vx: (Math.random() - 0.5) * 8,
+            vy: -(Math.random() * 10 + 4),
+            color: COLORS[Math.floor(Math.random() * COLORS.length)],
+            size: Math.random() * 5 + 3,
+            shape: Math.random() < 0.5 ? 'rect' : 'circle',
+            rot: Math.random() * 360,
+            rotV: (Math.random() - 0.5) * 10,
+            alpha: 1,
+            gravity: 0.35 + Math.random() * 0.15
+          });
+        }
+      }
+
+      var startTime = Date.now();
+      var rafId;
+      function draw() {
+        var elapsed = Date.now() - startTime;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        var alive = false;
+        particles.forEach(function (p) {
+          if (p.alpha <= 0) return;
+          alive = true;
+          p.x += p.vx; p.y += p.vy; p.vy += p.gravity; p.vx *= 0.99; p.rot += p.rotV;
+          p.alpha = Math.max(0, 1 - (elapsed / duration) * 1.2);
+          ctx.save();
+          ctx.globalAlpha = p.alpha;
+          ctx.fillStyle = p.color;
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rot * Math.PI / 180);
+          if (p.shape === 'rect') { ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2); }
+          else { ctx.beginPath(); ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2); ctx.fill(); }
+          ctx.restore();
+        });
+        if (elapsed < duration && alive) { rafId = requestAnimationFrame(draw); }
+        else { ctx.clearRect(0, 0, canvas.width, canvas.height); canvas.style.display = 'none'; }
+      }
+      if (rafId) cancelAnimationFrame(rafId);
+      draw();
+    }
+
+    /* ═══════════════════════════════════
+       전체 초기화
+    ═══════════════════════════════════ */
+    function init() {
+      var shuffled = shuffle(BASE_POOL); var idx = 0;
+      ROWS.forEach(function (r) { COLS.forEach(function (c) { var id = c + '-' + r; tileNums[id] = shuffled[idx++]; tileRevd[id] = false; }); });
+      revCount = 0; curNum = null;
+      pTiles = []; pLocked = [];
+      for (var i = 0; i < PLAYER_SLOTS; i++) { pTiles.push(null); pLocked.push(false); }
+      pPending = null; clearTimerFn();
+      buildInstGrid();
+      buildLayoutSelector();
+      buildCurrentLayout();
+      buildScoreTable('sgInst'); buildScoreTable('sgMini'); buildScoreTable('sgRules');
+      buildPool();
+      updateCurBox(null); updateCounts(); updateWaitBox(null);
+      document.getElementById('timerWrap').style.display = 'none';
+      document.getElementById('goBanner').classList.remove('show');
+      document.getElementById('pScore').textContent = '0점';
+      setClearBtnState(true);
+
+      // ★ Firebase: 강사 모드일 때 새 게임 상태 write
+      if (MODE === 'instructor') {
+        SESSION.set({
+          tileNums: tileNums,
+          curNum: null,
+          revealedId: null,
+          revCount: 0,
+          gameState: 'playing',
+          ts: firebase.database.ServerValue.TIMESTAMP
+        });
+      }
+    }
+
+    /* ═══════════════════════════════════
+       Firebase 학습자 리스너
+    ═══════════════════════════════════ */
+    function startPlayerListener() {
+      if (fbListenerActive) return;
+      fbListenerActive = true;
+      var lastTs = 0;
+
+      SESSION.on('value', function (snap) {
+        var data = snap.val();
+        if (!data) return;
+
+        // 게임 초기화 감지 (revCount=0, gameState=playing)
+        if (data.gameState === 'playing' && data.revCount === 0 && data.tileNums) {
+          tileNums = data.tileNums;
+          revCount = 0; curNum = null;
+          pTiles = []; pLocked = [];
+          for (var i = 0; i < PLAYER_SLOTS; i++) { pTiles.push(null); pLocked.push(false); }
+          pPending = null; clearTimerFn();
+          buildCurrentLayout();
+          updateCurBox(null); updateCounts(); updateWaitBox(null);
+          document.getElementById('timerWrap').style.display = 'none';
+          document.getElementById('goBanner').classList.remove('show');
+          document.getElementById('pScore').textContent = '0점';
+          setClearBtnState(true);
+          lastTs = data.ts || 0;
+          showToast('🎮 새 게임 시작!');
+          return;
+        }
+
+        // 새 숫자 공개 감지 (ts가 갱신됐을 때만)
+        var newTs = data.ts || 0;
+        if (newTs <= lastTs) return;
+        lastTs = newTs;
+
+        var rawNum = data.curNum;
+        if (rawNum === null || rawNum === undefined) return;
+
+        // 'JOKER' 문자열 → '☆' 변환
+        var newNum = (rawNum === 'JOKER') ? '☆' : rawNum;
+        if (newNum === curNum) return;
+
+        // 이전 라운드 마무리
+        clearTimerFn();
+        if (pPending !== null && pTiles[pPending] !== null) {
+          pLocked[pPending] = true;
+          refreshPTile(pPending);
+        }
+        pPending = null;
+        curNum = newNum;
+        revCount = data.revCount || 0;
+
+        updateCurBox(curNum);
+        updateCounts();
+        updateWaitBox(curNum);
+        startTimer();
+        setClearBtnState(false);
+        if (revCount >= PLAYER_SLOTS) {
+          document.getElementById('goBanner').classList.add('show');
+        }
+      });
+    }
+
+    /* ═══════════════════════════════════
+       유틸
+    ═══════════════════════════════════ */
+    function showToast(msg) {
+      var t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
+      setTimeout(function () { t.classList.remove('show'); }, 2800);
+    }
+    function switchTab(name, btn) {
+      document.querySelectorAll('.tab-panel').forEach(function (p) { p.classList.remove('active'); });
+      document.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
+      document.getElementById('panel-' + name).classList.add('active'); btn.classList.add('active');
+    }
+    function toggleTheme() {
+      var h = document.documentElement;
+      if (h.classList.contains('theme-light')) { h.classList.replace('theme-light', 'theme-dark'); localStorage.setItem('str-t', 'dark'); }
+      else { h.classList.replace('theme-dark', 'theme-light'); localStorage.setItem('str-t', 'light'); }
+    }
+    function resetGame() { document.getElementById('resetModal').classList.add('open'); }
+    function confirmReset() { closeModal('resetModal'); tileNums = {}; tileRevd = {}; init(); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+    /* ═══════════════════════════════════
+       모드 선택 + 시작
+    ═══════════════════════════════════ */
+    // SHA-256 해시 (비밀번호 평문 미저장)
+    var PW_HASH = '390ef5b772845990a25d34b6e457dd0440da58a22ebe66fd09b595dafbbd3575';
+
+    async function sha256(str) {
+      var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buf)).map(function (b) { return b.toString(16).padStart(2, '0'); }).join('');
+    }
+
+    function openPwModal() {
+      document.getElementById('pwInput').value = '';
+      document.getElementById('pwError').style.display = 'none';
+      document.getElementById('pwModal').style.display = 'flex';
+      setTimeout(function () { document.getElementById('pwInput').focus(); }, 100);
+    }
+
+    function closePwModal() {
+      document.getElementById('pwModal').style.display = 'none';
+    }
+
+    async function checkPw() {
+      var input = document.getElementById('pwInput').value;
+      var hash = await sha256(input);
+      if (hash === PW_HASH) {
+        closePwModal();
+        selectMode('instructor');
+      } else {
+        document.getElementById('pwError').style.display = 'block';
+        document.getElementById('pwInput').value = '';
+        document.getElementById('pwInput').focus();
+      }
+    }
+
+    function selectMode(mode) {
+      MODE = mode;
+      document.getElementById('modeSelectOverlay').style.display = 'none';
+      history.pushState({ mode: mode }, '', '?mode=' + mode);
+      applyMode();
+    }
+
+    // 뒤로가기 버튼 감지 → 모드 선택 화면으로 복귀
+    window.addEventListener('popstate', function (e) {
+      if (!e.state || !e.state.mode) {
+        // 선택 화면으로 복귀
+        location.reload();
+      }
+    });
+
+    function applyMode() {
+      // 오버레이 반드시 먼저 닫기
+      document.getElementById('modeSelectOverlay').style.display = 'none';
+
+      if (MODE === 'instructor') {
+        // 강사 탭 활성화 먼저, 그 다음 학습자 탭 숨기기
+        document.querySelectorAll('.tab-btn').forEach(function (btn) {
+          if (btn.textContent.indexOf('강사') > -1 && btn.textContent.indexOf('학습자') === -1) {
+            btn.click();
+          }
+        });
+        document.querySelectorAll('.tab-btn').forEach(function (btn) {
+          if (btn.textContent.indexOf('학습자') > -1) btn.style.display = 'none';
+        });
+        init();
+        var badge = document.createElement('div');
+        badge.style.cssText = 'position:fixed;bottom:16px;right:16px;background:#1652D8;color:#fff;padding:6px 14px;border-radius:20px;font-size:.78rem;font-weight:700;z-index:9999;box-shadow:0 2px 10px rgba(22,82,216,.4);';
+        badge.textContent = '📺 강사 모드';
+        document.body.appendChild(badge);
+      } else {
+        // 학습자 탭 활성화 먼저, 그 다음 강사 탭 숨기기
+        document.querySelectorAll('.tab-btn').forEach(function (btn) {
+          if (btn.textContent.indexOf('학습자') > -1) btn.click();
+        });
+        document.querySelectorAll('.tab-btn').forEach(function (btn) {
+          if (btn.textContent.indexOf('강사') > -1 && btn.textContent.indexOf('학습자') === -1) {
+            btn.style.display = 'none';
+          }
+        });
+        pTiles = []; pLocked = [];
+        for (var i = 0; i < PLAYER_SLOTS; i++) { pTiles.push(null); pLocked.push(false); }
+        buildLayoutSelector(); buildCurrentLayout();
+        buildScoreTable('sgMini'); buildScoreTable('sgRules');
+        updateCurBox(null); updateCounts(); updateWaitBox(null);
+        document.getElementById('pScore').textContent = '0점';
+        setClearBtnState(true);
+        startPlayerListener();
+        var badge = document.createElement('div');
+        badge.style.cssText = 'position:fixed;bottom:16px;right:16px;background:#059669;color:#fff;padding:6px 14px;border-radius:20px;font-size:.78rem;font-weight:700;z-index:9999;box-shadow:0 2px 10px rgba(5,150,105,.4);';
+        badge.textContent = '📱 학습자 모드';
+        document.body.appendChild(badge);
+      }
+    }
+
+    /* 시작 */
+    (function () {
+      var s = localStorage.getItem('str-t');
+      if (s === 'dark') document.documentElement.classList.replace('theme-light', 'theme-dark');
+
+      if (MODE === 'select') {
+        document.getElementById('modeSelectOverlay').style.display = 'flex';
+      } else if (MODE === 'instructor') {
+        // URL 직접 접근도 비밀번호 확인
+        document.getElementById('modeSelectOverlay').style.display = 'none';
+        openPwModal();
+      } else {
+        // player 모드 직접 접근
+        document.getElementById('modeSelectOverlay').style.display = 'none';
+        applyMode();
+      }
+    })();
+  </script>
+</body>
+
+</html>
