@@ -1695,6 +1695,7 @@
     ═══════════════════════════════════ */
     function revealTile(id) {
       if (tileRevd[id]) return;
+      if(revCount>=PLAYER_SLOTS){ document.getElementById('gameEndModal').classList.add('open'); return; }
       // 이전 라운드 마무리: 배치됐으면 lock, 취소 상태면 그냥 버림
       clearTimerFn();
       if (pPending !== null && pTiles[pPending] !== null) {
@@ -1710,7 +1711,10 @@
       updateCurBox(curNum); updateCounts(); buildPool();
       updateWaitBox(curNum); startTimer();
       setClearBtnState(false);
-      if (revCount >= PLAYER_SLOTS) document.getElementById('goBanner').classList.add('show');
+     if(revCount>=PLAYER_SLOTS){
+  document.getElementById('goBanner').classList.add('show');
+  document.getElementById('gameEndModal').classList.add('open');
+}
       // ★ Firebase: 현재 숫자 학습자에게 전송
       SESSION.update({
         curNum: curNum === '☆' ? 'JOKER' : curNum,
