@@ -1594,12 +1594,12 @@
       // 타이머가 없는 상태 = 이미 배치 완료된 라운드 → 클릭 차단
       if (timerInterval === null && curNum !== null) {
         // 현재 라운드가 이미 autoPlace로 끝났거나 배치 확정된 경우
-        var alreadyPlaced = false;
-        for (var i = 0; i < PLAYER_SLOTS; i++) {
-          if (pLocked[i] && pTiles[i] === curNum) { alreadyPlaced = true; break; }
-        }
-        if (alreadyPlaced) { showToast('⛔ 이미 확정된 숫자입니다. 다음 숫자를 기다리세요.'); return; }
-      }
+        var poolCount = BASE_POOL.filter(function(x){return x===curNum;}).length;
+    var lockedCount = 0;
+    for(var i=0;i<PLAYER_SLOTS;i++){
+      if(pLocked[i]&&pTiles[i]===curNum) lockedCount++;
+    }
+    if(lockedCount>=poolCount){showToast('⛔ 이미 확정된 숫자입니다. 다음 숫자를 기다리세요.');return;}
       if (curNum === null) { showToast('⚠️ 강사가 타일을 클릭해 숫자를 공개해야 합니다!'); return; }
       if (pTiles[idx] !== null) {
         if (pPending === idx) {
