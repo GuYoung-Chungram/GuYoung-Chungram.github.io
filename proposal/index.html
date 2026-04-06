@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>청람M&C AI 교육 전환 진단</title>
+  <meta name="robots" content="noindex">
+  <link rel="stylesheet" href="../assets/proposal/proposal.css">
+  <link rel="stylesheet" href="../assets/proposal/animations.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<div class="platform-wrap">
+
+  <!-- ── Header ─────────────────────────────────── -->
+  <div class="site-header">
+    <div class="site-dot"></div>
+    <span class="site-name">청람M&amp;C</span>
+    <div class="site-divider"></div>
+    <span class="site-sub">AI 교육 전환 진단</span>
+    <a href="https://crmc.co.kr" class="back-home">&larr; 홈으로</a>
+  </div>
+
+  <!-- ── Step Progress ──────────────────────────── -->
+  <div class="step-progress" id="step-progress">
+    <div class="step-item active" data-step="1">
+      <div class="step-num">1</div>
+      <span class="step-label">조직 구조</span>
+    </div>
+    <div class="step-item" data-step="2">
+      <div class="step-num">2</div>
+      <span class="step-label">AI 성숙도</span>
+    </div>
+    <div class="step-item" data-step="3">
+      <div class="step-num">3</div>
+      <span class="step-label">직무 과업</span>
+    </div>
+    <div class="step-item" data-step="4">
+      <div class="step-num">4</div>
+      <span class="step-label">니즈·제출</span>
+    </div>
+  </div>
+
+  <!-- ── Main Card ──────────────────────────────── -->
+  <div class="card">
+
+    <!-- Hero -->
+    <div class="card-hero">
+      <div class="hero-badge">AI EDUCATION TRANSFORMATION</div>
+      <div class="hero-title">AI 교육 전환 진단</div>
+      <div class="hero-sub">
+        귀 기관의 조직 구조와 업무 현황을 분석하여<br>
+        <strong>맞춤형 AI 교육 로드맵</strong>과 <strong>ROI 분석 제안서</strong>를 자동 생성해 드립니다.
+      </div>
+      <div class="pillar-pills">
+        <div class="pillar-pill"><span class="pill-dot"></span>컨설팅</div>
+        <div class="pillar-pill"><span class="pill-dot"></span>교육 실행</div>
+        <div class="pillar-pill"><span class="pill-dot"></span>AX 조직문화</div>
+      </div>
+    </div>
+
+    <!-- ═══ FORM VIEW ═══ -->
+    <div id="form-view">
+      <div class="card-body">
+
+        <!-- ──────────────────────────────────────── -->
+        <!-- LAYER 1: 조직 구조                       -->
+        <!-- ──────────────────────────────────────── -->
+        <div class="layer active" id="layer-1">
+          <div class="section-block">
+            <div class="section-title">01 &nbsp;조직 구조</div>
+            <p style="font-size:11px;color:#bbb;margin:-6px 0 14px;">귀 기관의 조직 특성을 파악하기 위한 기본 정보입니다.</p>
+
+            <div class="form-grid">
+              <!-- 임직원 수 -->
+              <div class="form-group form-full" id="g-org-size">
+                <label>전체 임직원 수 <span class="req">*</span></label>
+                <div class="radio-group" id="rg-org-size">
+                  <button type="button" class="radio-btn" data-val="50명 이하" onclick="selectRadio(this,'rg-org-size')">50명 이하</button>
+                  <button type="button" class="radio-btn" data-val="50~200명" onclick="selectRadio(this,'rg-org-size')">50~200명</button>
+                  <button type="button" class="radio-btn" data-val="200~500명" onclick="selectRadio(this,'rg-org-size')">200~500명</button>
+                  <button type="button" class="radio-btn" data-val="500명 이상" onclick="selectRadio(this,'rg-org-size')">500명 이상</button>
+                </div>
+                <span class="field-error">임직원 수를 선택해 주세요.</span>
+              </div>
+
+              <!-- 주요 부서 -->
+              <div class="form-group form-full">
+                <label>주요 부서 구성 <span style="font-weight:400;color:#AAA;">(복수 선택)</span></label>
+                <div class="check-tags" id="ct-departments">
+                  <button type="button" class="check-tag" onclick="toggleTag(this)">경영/기획</button>
+                  <button type="button" class="check-tag" onclick="toggleTag(this)">HR/교육</button>
+                  <button type="button" class="check-tag" onclick="toggleTag(this)">IT/디지털</button>
+                  <button type="button" class="check-tag" onclick="toggleTag(this)">영업/마케팅</button>
+                  <button type="button" class="check-tag" onclick="toggleTag(this)">생산/현장</button>
+                  <button type="button" class="check-tag" onclick="toggleTag(this)">R&amp;D/연구</button>
+                  <button type="button" class="check-tag" onclick="toggleTag(this)">고객서비스</button>
+                  <button type="button" class="check-tag" onclick="toggleTag(this)">재무/회계</button>
+                </div>
+              </div>
+
+              <!-- 교육 대상 직급 -->
+              <div class="form-group form-full">
+                <label>교육 대상 직급 <span style="font-weight:400;color:#AAA;">(복수 선택)</span></label>
+                <div class="check-tags" id="ct-grades">
+                  <button type="button" class="check-tag" onclick="toggleTag(this)">임원</button>
+                  <button type="button" class="check-tag" onclick="toggleTag(this)">팀장/부장</button>
+                  <button type="button" class="check-tag" onclick="toggleTag(this)">중간관리자</button>
+                  <button type="button" class="check-tag" onclick="toggleTag(this)">실무자</button>
+                  <button type="button" class="check-tag" onclick="toggleTag(this)">신입/인턴</button>
+                </div>
+              </div>
+
+              <!-- 연간 교육 예산 -->
+              <div class="form-group form-full" id="g-budget">
+                <label>연간 교육 예산 <span class="req">*</span></label>
+                <div class="radio-group" id="rg-budget">
+                  <button type="button" class="radio-btn" data-val="1천만원 미만" onclick="selectRadio(this,'rg-budget')">1천만원 미만</button>
+                  <button type="button" class="radio-btn" data-val="1천~3천만원" onclick="selectRadio(this,'rg-budget')">1천~3천만원</button>
+                  <button type="button" class="radio-btn" data-val="3천~1억원" onclick="selectRadio(this,'rg-budget')">3천~1억원</button>
+                  <button type="button" class="radio-btn" data-val="1억원 이상" onclick="selectRadio(this,'rg-budget')">1억원 이상</button>
+                </div>
+                <span class="field-error">교육 예산을 선택해 주세요.</span>
+              </div>
+
+              <!-- 의사결정자 -->
+              <div class="form-group form-full">
+                <label>교육 의사결정자</label>
+                <div class="radio-group" id="rg-decision">
+                  <button type="button" class="radio-btn" data-val="대표/CEO" onclick="selectRadio(this,'rg-decision')">대표/CEO</button>
+                  <button type="button" class="radio-btn" data-val="HR/교육팀장" onclick="selectRadio(this,'rg-decision')">HR/교육팀장</button>
+                  <button type="button" class="radio-btn" data-val="위원회/TF" onclick="selectRadio(this,'rg-decision')">위원회/TF</button>
+                  <button type="button" class="radio-btn" data-val="기타" onclick="selectRadio(this,'rg-decision')">기타</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="nav-buttons">
+            <button class="btn-next" onclick="goLayer(2)">
+              다음: AI 성숙도 진단 &rarr;
+            </button>
+          </div>
+        </div>
+
+        <!-- ──────────────────────────────────────── -->
+        <!-- LAYER 2: AI 성숙도 진단                   -->
+        <!-- ──────────────────────────────────────── -->
+        <div class="layer" id="layer-2">
+          <div class="section-block">
+            <div class="section-title">02 &nbsp;AI 성숙도 진단</div>
+            <p style="font-size:11px;color:#bbb;margin:-6px 0 14px;">현재 조직의 AI 활용 수준을 진단합니다.</p>
+
+            <div class="form-grid">
+              <!-- AI 활용 단계 -->
+              <div class="form-group form-full" id="g-ai-stage">
+                <label>현재 AI 활용 단계 <span class="req">*</span></label>
+                <div class="detail-radio-group" id="drg-ai-stage">
+                  <div class="detail-radio" data-val="1" onclick="selectDetail(this,'drg-ai-stage')">
+                    <div class="dr-num">1</div>
+                    <div class="dr-content">
+                      <div class="dr-label">시작단계</div>
+                      <div class="dr-desc">ChatGPT 써본 직원이 몇 명 있는 정도</div>
+                    </div>
+                  </div>
+                  <div class="detail-radio" data-val="2" onclick="selectDetail(this,'drg-ai-stage')">
+                    <div class="dr-num">2</div>
+                    <div class="dr-content">
+                      <div class="dr-label">증강단계</div>
+                      <div class="dr-desc">일부 업무에 AI 도구 도입, 개인 차원 활용 중</div>
+                    </div>
+                  </div>
+                  <div class="detail-radio" data-val="3" onclick="selectDetail(this,'drg-ai-stage')">
+                    <div class="dr-num">3</div>
+                    <div class="dr-content">
+                      <div class="dr-label">응용단계</div>
+                      <div class="dr-desc">부서 단위 AI 워크플로우 시도 중</div>
+                    </div>
+                  </div>
+                  <div class="detail-radio" data-val="4" onclick="selectDetail(this,'drg-ai-stage')">
+                    <div class="dr-num">4</div>
+                    <div class="dr-content">
+                      <div class="dr-label">통합단계</div>
+                      <div class="dr-desc">조직 전반 AI 정책·가이드라인 보유</div>
+                    </div>
+                  </div>
+                </div>
+                <span class="field-error">AI 활용 단계를 선택해 주세요.</span>
+              </div>
+
+              <!-- AI 적용 우선 부서 (1~3순위) -->
+              <div class="form-group form-full">
+                <label>AI 적용 우선 부서 (1~3순위)</label>
+                <div class="rank-group" id="rank-dept">
+                  <div class="rank-row">
+                    <div class="rank-badge">1</div>
+                    <select id="rank-dept-1">
+                      <option value="">선택</option>
+                      <option>경영/기획</option><option>HR</option><option>IT</option>
+                      <option>영업</option><option>생산</option><option>R&amp;D</option><option>CS</option>
+                    </select>
+                  </div>
+                  <div class="rank-row">
+                    <div class="rank-badge">2</div>
+                    <select id="rank-dept-2">
+                      <option value="">선택</option>
+                      <option>경영/기획</option><option>HR</option><option>IT</option>
+                      <option>영업</option><option>생산</option><option>R&amp;D</option><option>CS</option>
+                    </select>
+                  </div>
+                  <div class="rank-row">
+                    <div class="rank-badge">3</div>
+                    <select id="rank-dept-3">
+                      <option value="">선택</option>
+                      <option>경영/기획</option><option>HR</option><option>IT</option>
+                      <option>영업</option><option>생산</option><option>R&amp;D</option><option>CS</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 구성원 AI 학습 수준 -->
+              <div class="form-group form-full">
+                <label>구성원 평균 AI 학습 수준</label>
+                <div class="radio-group" id="rg-ai-level">
+                  <button type="button" class="radio-btn" data-val="거의 없음" onclick="selectRadio(this,'rg-ai-level')">거의 없음</button>
+                  <button type="button" class="radio-btn" data-val="인지 수준" onclick="selectRadio(this,'rg-ai-level')">인지 수준</button>
+                  <button type="button" class="radio-btn" data-val="사용 수준" onclick="selectRadio(this,'rg-ai-level')">사용 수준</button>
+                  <button type="button" class="radio-btn" data-val="활용 수준" onclick="selectRadio(this,'rg-ai-level')">활용 수준</button>
+                  <button type="button" class="radio-btn" data-val="설계 수준" onclick="selectRadio(this,'rg-ai-level')">설계 수준</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="nav-buttons">
+            <button class="btn-prev" onclick="goLayer(1)">&larr; 이전</button>
+            <button class="btn-next" onclick="goLayer(3)">
+              다음: 직무별 과업 시간 &rarr;
+            </button>
+          </div>
+        </div>
+
+        <!-- ──────────────────────────────────────── -->
+        <!-- LAYER 3: 직무별 과업 시간 (ROI 인풋)       -->
+        <!-- ──────────────────────────────────────── -->
+        <div class="layer" id="layer-3">
+          <div class="section-block">
+            <div class="section-title">03 &nbsp;직무별 과업 시간</div>
+            <p style="font-size:11px;color:#bbb;margin:-6px 0 14px;">
+              AI 도입 시 절감 효과를 산출하기 위한 핵심 데이터입니다. 해당 직무만 입력하세요.
+            </p>
+
+            <!-- Job Tabs -->
+            <div class="job-tabs" id="job-tabs">
+              <button class="job-tab on" onclick="switchJob('office',this)">사무직</button>
+              <button class="job-tab" onclick="switchJob('sales',this)">영업/CS직</button>
+              <button class="job-tab" onclick="switchJob('field',this)">현장직</button>
+              <button class="job-tab" onclick="switchJob('production',this)">생산직</button>
+            </div>
+
+            <!-- 사무직 -->
+            <div class="job-panel active" id="panel-office">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>주당 문서 작성 시간</label>
+                  <div class="num-input-row">
+                    <input type="number" id="j-office-doc" min="0" max="40" value="8" step="1">
+                    <span class="unit">시간/주</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>주당 회의 참여 시간</label>
+                  <div class="num-input-row">
+                    <input type="number" id="j-office-meeting" min="0" max="40" value="6" step="1">
+                    <span class="unit">시간/주</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>주당 데이터 수집·정리 시간</label>
+                  <div class="num-input-row">
+                    <input type="number" id="j-office-data" min="0" max="40" value="5" step="1">
+                    <span class="unit">시간/주</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>주당 이메일·보고 처리 시간</label>
+                  <div class="num-input-row">
+                    <input type="number" id="j-office-email" min="0" max="40" value="5" step="1">
+                    <span class="unit">시간/주</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>평균 연봉</label>
+                  <select id="j-office-salary">
+                    <option value="2500">3천만원 미만</option>
+                    <option value="3500">3천~4천만원</option>
+                    <option value="5000" selected>4천~6천만원</option>
+                    <option value="7000">6천만원 이상</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>해당 직무 인원 수</label>
+                  <div class="num-input-row">
+                    <input type="number" id="j-office-head" min="0" max="9999" value="30">
+                    <span class="unit">명</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 영업/CS직 -->
+            <div class="job-panel" id="panel-sales">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>일평균 고객 응대 건수</label>
+                  <div class="num-input-row">
+                    <input type="number" id="j-sales-contact" min="0" max="200" value="15">
+                    <span class="unit">건/일</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>제안서 작성 평균 소요 시간</label>
+                  <div class="num-input-row">
+                    <input type="number" id="j-sales-proposal" min="0" max="40" value="4">
+                    <span class="unit">시간/건</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>일일 CRM 입력 시간</label>
+                  <div class="num-input-row">
+                    <input type="number" id="j-sales-crm" min="0" max="120" value="30">
+                    <span class="unit">분/일</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>평균 연봉</label>
+                  <select id="j-sales-salary">
+                    <option value="2500">3천만원 미만</option>
+                    <option value="3500">3천~4천만원</option>
+                    <option value="5000" selected>4천~6천만원</option>
+                    <option value="7000">6천만원 이상</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>해당 직무 인원 수</label>
+                  <div class="num-input-row">
+                    <input type="number" id="j-sales-head" min="0" max="9999" value="10">
+                    <span class="unit">명</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 현장직 -->
+            <div class="job-panel" id="panel-field">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>일일 점검·보고 소요 시간</label>
+                  <div class="num-input-row">
+                    <input type="number" id="j-field-report" min="0" max="8" value="2" step="0.5">
+                    <span class="unit">시간/일</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>스마트폰 보유율</label>
+                  <div class="num-input-row">
+                    <input type="number" id="j-field-phone" min="0" max="100" value="95">
+                    <span class="unit">%</span>
+                  </div>
+                </div>
+                <div class="form-group form-full">
+                  <label>현재 점검 기록 방식</label>
+                  <div class="radio-group" id="rg-field-method">
+                    <button type="button" class="radio-btn on" data-val="수기 기록" onclick="selectRadio(this,'rg-field-method')">수기 기록</button>
+                    <button type="button" class="radio-btn" data-val="엑셀/스프레드시트" onclick="selectRadio(this,'rg-field-method')">엑셀/스프레드시트</button>
+                    <button type="button" class="radio-btn" data-val="전용 앱/시스템" onclick="selectRadio(this,'rg-field-method')">전용 앱/시스템</button>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>평균 연봉</label>
+                  <select id="j-field-salary">
+                    <option value="2500">3천만원 미만</option>
+                    <option value="3500" selected>3천~4천만원</option>
+                    <option value="5000">4천~6천만원</option>
+                    <option value="7000">6천만원 이상</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>해당 직무 인원 수</label>
+                  <div class="num-input-row">
+                    <input type="number" id="j-field-head" min="0" max="9999" value="20">
+                    <span class="unit">명</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 생산직 -->
+            <div class="job-panel" id="panel-production">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>일 생산량</label>
+                  <div class="num-input-row">
+                    <input type="number" id="j-prod-output" min="0" max="99999" value="500">
+                    <span class="unit">개/일</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>현재 불량률</label>
+                  <div class="num-input-row">
+                    <input type="number" id="j-prod-defect" min="0" max="100" value="2" step="0.1">
+                    <span class="unit">%</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>불량 1건당 재작업 비용</label>
+                  <div class="num-input-row">
+                    <input type="number" id="j-prod-cost" min="0" max="9999" value="5">
+                    <span class="unit">만원</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>월평균 설비 다운타임</label>
+                  <div class="num-input-row">
+                    <input type="number" id="j-prod-downtime" min="0" max="720" value="8">
+                    <span class="unit">시간/월</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>해당 직무 인원 수</label>
+                  <div class="num-input-row">
+                    <input type="number" id="j-prod-head" min="0" max="9999" value="50">
+                    <span class="unit">명</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="nav-buttons">
+            <button class="btn-prev" onclick="goLayer(2)">&larr; 이전</button>
+            <button class="btn-next" onclick="goLayer(4)">
+              다음: 조직 니즈·제출 &rarr;
+            </button>
+          </div>
+        </div>
+
+        <!-- ──────────────────────────────────────── -->
+        <!-- LAYER 4: 조직 문제·니즈 + 제출             -->
+        <!-- ──────────────────────────────────────── -->
+        <div class="layer" id="layer-4">
+          <div class="section-block">
+            <div class="section-title">04 &nbsp;조직 니즈 &amp; 제출</div>
+
+            <div class="form-grid">
+              <!-- 관심 패키지 선택 -->
+              <div class="form-group form-full" id="g-package">
+                <label>관심 교육 패키지 <span class="req">*</span></label>
+                <div class="package-cards" id="rg-package">
+                  <button type="button" class="package-card" data-val="starter" onclick="selectPackage(this)">
+                    <div class="pkg-badge">3개월</div>
+                    <div class="pkg-name">스타터</div>
+                    <div class="pkg-price">800<span>만원</span></div>
+                    <div class="pkg-desc">AI 기초 교육 + 컨설팅</div>
+                  </button>
+                  <button type="button" class="package-card on" data-val="standard" onclick="selectPackage(this)">
+                    <div class="pkg-badge popular">추천</div>
+                    <div class="pkg-name">스탠다드</div>
+                    <div class="pkg-price">1,500<span>만원</span></div>
+                    <div class="pkg-desc">기초+응용 교육 + 컨설팅</div>
+                  </button>
+                  <button type="button" class="package-card" data-val="premium" onclick="selectPackage(this)">
+                    <div class="pkg-badge">12개월</div>
+                    <div class="pkg-name">프리미엄</div>
+                    <div class="pkg-price">2,800<span>만원</span></div>
+                    <div class="pkg-desc">풀 패키지 + AX 전환</div>
+                  </button>
+                  <button type="button" class="package-card" data-val="enterprise" onclick="selectPackage(this)">
+                    <div class="pkg-badge">맞춤</div>
+                    <div class="pkg-name">엔터프라이즈</div>
+                    <div class="pkg-price">별도 협의</div>
+                    <div class="pkg-desc">대규모 조직 맞춤 설계</div>
+                  </button>
+                </div>
+              </div>
+
+              <!-- 조직 문제 -->
+              <div class="form-group form-full">
+                <label>현재 가장 큰 조직 문제 <span style="font-weight:400;color:#AAA;">(최대 3개)</span></label>
+                <div class="check-tags" id="ct-pains" data-max="3">
+                  <button type="button" class="check-tag" onclick="toggleTagMax(this,'ct-pains',3)">업무 생산성 정체</button>
+                  <button type="button" class="check-tag" onclick="toggleTagMax(this,'ct-pains',3)">팀 간 협업·소통 부재</button>
+                  <button type="button" class="check-tag" onclick="toggleTagMax(this,'ct-pains',3)">리더십 역량 편차</button>
+                  <button type="button" class="check-tag" onclick="toggleTagMax(this,'ct-pains',3)">변화 저항 심함</button>
+                  <button type="button" class="check-tag" onclick="toggleTagMax(this,'ct-pains',3)">AI 도입 방향 모름</button>
+                  <button type="button" class="check-tag" onclick="toggleTagMax(this,'ct-pains',3)">교육 후 현업 적용 안 됨</button>
+                  <button type="button" class="check-tag" onclick="toggleTagMax(this,'ct-pains',3)">조직문화 경직</button>
+                  <button type="button" class="check-tag" onclick="toggleTagMax(this,'ct-pains',3)">우수인재 이탈</button>
+                </div>
+              </div>
+
+              <!-- 기대 변화 -->
+              <div class="form-group form-full">
+                <label>교육 후 기대하는 변화</label>
+                <textarea id="f-expected" rows="3" placeholder="예) AI 도입으로 문서 작성 시간을 절반으로 줄이고, 전 직원이 기본적인 AI 도구를 활용할 수 있게 되기를 바랍니다."></textarea>
+              </div>
+
+              <!-- 이전 교육 만족도 -->
+              <div class="form-group form-full">
+                <label>이전 외부 교육 경험 만족도</label>
+                <div class="radio-group" id="rg-satisfaction">
+                  <button type="button" class="radio-btn" data-val="경험 없음" onclick="selectRadio(this,'rg-satisfaction')">경험 없음</button>
+                  <button type="button" class="radio-btn" data-val="매우 불만족" onclick="selectRadio(this,'rg-satisfaction')">매우 불만족</button>
+                  <button type="button" class="radio-btn" data-val="불만족" onclick="selectRadio(this,'rg-satisfaction')">불만족</button>
+                  <button type="button" class="radio-btn" data-val="보통" onclick="selectRadio(this,'rg-satisfaction')">보통</button>
+                  <button type="button" class="radio-btn" data-val="만족" onclick="selectRadio(this,'rg-satisfaction')">만족</button>
+                  <button type="button" class="radio-btn" data-val="매우 만족" onclick="selectRadio(this,'rg-satisfaction')">매우 만족</button>
+                </div>
+              </div>
+
+              <!-- 선호 교육 방식 -->
+              <div class="form-group form-full">
+                <label>선호 교육 방식 <span style="font-weight:400;color:#AAA;">(복수 선택)</span></label>
+                <div class="check-tags" id="ct-format">
+                  <button type="button" class="check-tag" onclick="toggleTag(this)">집합 오프라인</button>
+                  <button type="button" class="check-tag" onclick="toggleTag(this)">온라인 비동기</button>
+                  <button type="button" class="check-tag" onclick="toggleTag(this)">블렌디드</button>
+                  <button type="button" class="check-tag" onclick="toggleTag(this)">현장 실습형</button>
+                </div>
+              </div>
+
+              <!-- 미팅 가능일 -->
+              <div class="form-group form-full">
+                <label>미팅 가능일 <span style="font-weight:400;color:#AAA;">(복수 선택 가능)</span></label>
+                <p class="field-desc">제안서 검토 후 직접 만나 논의하실 날짜를 선택해주세요.</p>
+                <div class="date-picker-list" id="date-list">
+                  <div class="date-picker-row">
+                    <input type="date" class="meeting-date" min="">
+                  </div>
+                </div>
+                <button type="button" class="add-date-btn" onclick="addDateRow()" style="margin-top:8px;">+ 날짜 추가</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ROI Preview -->
+          <div class="roi-dashboard" id="roi-preview" style="display:none;">
+            <div class="roi-title">AI 도입 ROI 분석 (예상)</div>
+            <div class="roi-grid stagger-in">
+              <div class="roi-card">
+                <div class="rc-label">연간 절감 시간</div>
+                <div class="rc-value"><span id="roi-hours">0</span><span class="rc-unit"> 시간</span></div>
+              </div>
+              <div class="roi-card highlight">
+                <div class="rc-label">연간 절감 비용</div>
+                <div class="rc-value"><span id="roi-cost">0</span><span class="rc-unit"> 만원</span></div>
+              </div>
+              <div class="roi-card">
+                <div class="rc-label" id="roi-pkg-label">스탠다드 6개월 ROI</div>
+                <div class="rc-value"><span id="roi-percent">0</span><span class="rc-unit">%</span></div>
+              </div>
+            </div>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;">
+              <div class="roi-card" style="flex:1;min-width:120px;">
+                <div class="rc-label" id="roi-ann-label">연환산 12개월 ROI</div>
+                <div class="rc-value" style="font-size:20px;"><span id="roi-6m">0</span><span class="rc-unit">%</span></div>
+              </div>
+              <div class="roi-card" style="flex:1;min-width:120px;">
+                <div class="rc-label">손익분기점</div>
+                <div class="rc-value" style="font-size:20px;"><span id="roi-break">0</span><span class="rc-unit"> 개월</span></div>
+              </div>
+            </div>
+            <div style="margin-top:16px;">
+              <button class="roi-detail-toggle" onclick="toggleRoiDetail()">
+                산출 내역 상세 보기 ▾
+              </button>
+              <div class="roi-detail-panel" id="roi-detail-panel">
+                <table class="roi-detail-table" id="roi-detail-table">
+                  <thead>
+                    <tr><th>항목</th><th>산출 근거</th><th style="text-align:right;">절감 효과</th></tr>
+                  </thead>
+                  <tbody id="roi-detail-body"></tbody>
+                </table>
+                <div class="roi-footnotes">
+                  <p>¹⁾ AI 업무 시간 단축률은 McKinsey Global Institute(2023) 「The Economic Potential of Generative AI」, Harvard Business School(2023) 실험 연구, Microsoft Work Trend Index(2023) 등의 산업 평균치를 기반으로 조직의 AI 성숙도 단계별로 보수적으로 적용한 추정값입니다.</p>
+                  <p>²⁾ 절감 비용은 입력하신 평균 연봉을 연간 근무시간(52주 × 40시간)으로 나눈 시간당 인건비에 절감 시간을 곱하여 산출합니다.</p>
+                  <p>³⁾ 교육 투자비는 유사 규모 프로젝트 기준 예시 금액이며, 실제 비용은 교육 범위·기간·인원에 따라 협의하여 확정됩니다.</p>
+                  <p>⁴⁾ 생산직 불량 절감률은 제조업 AI 도입 사례(NIST, 2023) 및 국내 스마트팩토리 실증 데이터를 참고한 추정값입니다.</p>
+                  <p>⁵⁾ 손익분기점은 12개월 투자비를 월평균 절감 비용으로 나누어 산출합니다. 교육 효과의 점진적 발현을 고려하면 실제 손익분기점은 다소 늦어질 수 있습니다.</p>
+                  <p class="roi-disclaimer">※ 본 ROI 분석은 입력된 데이터와 산업 평균 기준에 의한 추정치이며, 실제 성과를 보장하지 않습니다. 정밀한 ROI 산출은 컨설팅 단계에서 조직별 맞춤 진단을 통해 제공됩니다.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Privacy + Submit -->
+          <div class="notice">
+            <span class="notice-icon">&#128202;</span>
+            <span class="notice-text">
+              입력하신 데이터를 기반으로 <strong>AI 교육 ROI 분석</strong>과
+              <strong>맞춤형 12개월 교육 로드맵 제안서</strong>를 자동 생성합니다.<br>
+              제안서는 비밀번호로 보호되어 담당자만 열람할 수 있습니다.
+            </span>
+          </div>
+
+          <div class="privacy-agree" id="g-privacy">
+            <label class="privacy-label">
+              <input type="checkbox" id="privacy-check">
+              <span class="privacy-text">
+                수집된 정보는 교육 컨설팅 및 제안서 발송 목적으로만 사용되며,
+                응답 완료 후 1년간 보관 후 파기됩니다.
+                <strong style="color:var(--cr);text-decoration:underline;">개인정보 수집·이용에 동의합니다.</strong>
+                <span class="req" style="color:var(--cr-danger);margin-left:2px;">*</span>
+              </span>
+            </label>
+            <span class="field-error" id="privacy-error" style="display:none;">개인정보 수집·이용에 동의해 주세요.</span>
+          </div>
+
+          <div class="nav-buttons">
+            <button class="btn-prev" onclick="goLayer(3)">&larr; 이전</button>
+            <button class="btn-submit" id="submit-btn" onclick="submitDiagnosis()">
+              <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M2.5 8.5h10M9 4.5l4.5 4-4.5 4" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              진단 완료 &amp; 제안서 생성
+            </button>
+          </div>
+        </div>
+
+      </div><!-- /card-body -->
+
+      <div class="card-footer">
+        <div class="cf-brand"><div class="cf-dot"></div><span class="cf-name">청람M&amp;C</span></div>
+        <span class="cf-meta">교육콘텐츠 개발 전문기업 · crmc.co.kr</span>
+      </div>
+    </div><!-- /form-view -->
+
+    <!-- ═══ LOADING VIEW — 5단계 분석 시각화 ═══ -->
+    <div class="loading-view" id="loading-view">
+      <div class="loading-header">
+        <h3>AI 진단 분석 진행 중</h3>
+        <p>입력하신 데이터를 기반으로 분석하고 있습니다.</p>
+      </div>
+      <div class="analysis-steps" id="analysis-steps">
+        <div class="analysis-step" data-step="1">
+          <div class="step-icon"><i class="fa-solid fa-building"></i></div>
+          <div class="step-label">조직 구조 분석 중…</div>
+          <div class="step-status">
+            <div class="mini-spinner"></div>
+            <svg class="check-svg" width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="9" r="8" fill="#0C7B4E"/><path d="M5 9l3 3 5-5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+          </div>
+        </div>
+        <div class="analysis-step" data-step="2">
+          <div class="step-icon"><i class="fa-solid fa-brain"></i></div>
+          <div class="step-label">AI 성숙도 진단 분석 중…</div>
+          <div class="step-status">
+            <div class="mini-spinner"></div>
+            <svg class="check-svg" width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="9" r="8" fill="#0C7B4E"/><path d="M5 9l3 3 5-5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+          </div>
+        </div>
+        <div class="analysis-step" data-step="3">
+          <div class="step-icon"><i class="fa-solid fa-chart-line"></i></div>
+          <div class="step-label">직무별 ROI 산출 중…</div>
+          <div class="step-status">
+            <div class="mini-spinner"></div>
+            <svg class="check-svg" width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="9" r="8" fill="#0C7B4E"/><path d="M5 9l3 3 5-5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+          </div>
+        </div>
+        <div class="analysis-step" data-step="4">
+          <div class="step-icon"><i class="fa-solid fa-road"></i></div>
+          <div class="step-label">12개월 로드맵 설계 중…</div>
+          <div class="step-status">
+            <div class="mini-spinner"></div>
+            <svg class="check-svg" width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="9" r="8" fill="#0C7B4E"/><path d="M5 9l3 3 5-5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+          </div>
+        </div>
+        <div class="analysis-step" data-step="5">
+          <div class="step-icon"><i class="fa-solid fa-file-lines"></i></div>
+          <div class="step-label">맞춤형 제안서 생성 중…</div>
+          <div class="step-status">
+            <div class="mini-spinner"></div>
+            <svg class="check-svg" width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="9" r="8" fill="#0C7B4E"/><path d="M5 9l3 3 5-5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="analysis-progress">
+        <div class="analysis-progress-bar" id="analysis-progress-bar"></div>
+      </div>
+    </div>
+
+    <!-- ═══ SUCCESS VIEW — 진단 결과 요약 + 컨설턴트 메시지 ═══ -->
+    <div class="success-view" id="success-view">
+      <div class="success-inner">
+
+        <!-- 헤더 -->
+        <div class="success-header">
+          <div class="success-icon check-anim">
+            <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+              <circle cx="15" cy="15" r="14" fill="#0C7B4E"/>
+              <path d="M8 15l5 5 9-9" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3>진단이 완료되었습니다</h3>
+          <p>입력하신 데이터를 기반으로 분석한 요약 결과입니다.</p>
+        </div>
+
+        <!-- AI 성숙도 배지 -->
+        <div class="maturity-badge" id="maturity-badge">
+          <div class="mb-stage" id="mb-stage-num">1</div>
+          <div>
+            <div class="mb-text" id="mb-stage-name">시작 단계</div>
+            <div class="mb-desc" id="mb-stage-desc">AI 도입 초기</div>
+          </div>
+        </div>
+
+        <!-- 요약 지표 -->
+        <div class="summary-metrics">
+          <div class="summary-metric">
+            <div class="sm-label">연간 절감 시간</div>
+            <div class="sm-value"><span id="sum-hours">0</span><span class="sm-unit">시간</span></div>
+          </div>
+          <div class="summary-metric highlight">
+            <div class="sm-label">연간 절감 비용</div>
+            <div class="sm-value"><span id="sum-cost">0</span><span class="sm-unit">만원</span></div>
+          </div>
+          <div class="summary-metric">
+            <div class="sm-label" id="sum-roi-label">패키지 ROI</div>
+            <div class="sm-value"><span id="sum-roi">0</span><span class="sm-unit">%</span></div>
+          </div>
+          <div class="summary-metric">
+            <div class="sm-label">손익분기점</div>
+            <div class="sm-value"><span id="sum-break">0</span><span class="sm-unit">개월</span></div>
+          </div>
+        </div>
+
+        <!-- 컨설턴트 메시지 -->
+        <div class="consultant-message">
+          <div class="cm-header">
+            <div class="cm-avatar">C</div>
+            <div>
+              <div class="cm-name">청람M&amp;C 접수팀</div>
+              <div class="cm-role">AI 교육 전환 설계</div>
+            </div>
+          </div>
+          <div class="cm-body">
+            고객사로 부터 접수한 데이터를 기반으로 완성도 높은 제안이 될 수 있도록 현황을 고려하여 대표 컨설턴트의 설계 이후 <strong>1일~2일 이내</strong>에 신청하신 이메일 주소로 보내드리겠습니다. 감사합니다.
+          </div>
+        </div>
+
+        <!-- 입력내용 확인하기 -->
+        <button class="btn-submit" onclick="showReviewView()" style="max-width:320px;margin:0 auto;">
+          입력내용 확인하기 &rarr;
+        </button>
+        <a href="https://crmc.co.kr" class="home-link">홈으로 돌아가기</a>
+
+      </div>
+      <div class="card-footer">
+        <div class="cf-brand"><div class="cf-dot"></div><span class="cf-name">청람M&amp;C</span></div>
+        <span class="cf-meta">교육콘텐츠 개발 전문기업 · crmc.co.kr</span>
+      </div>
+    </div>
+
+    <!-- ═══ REVIEW VIEW — 입력내용 확인 + 추가 전달 + 최종 전달 ═══ -->
+    <div class="review-view" id="review-view">
+      <div class="review-inner">
+
+        <div class="review-header">
+          <h3>입력내용 확인</h3>
+          <p>아래 내용을 확인하시고, 추가 전달사항이 있으시면 입력해 주세요.</p>
+        </div>
+
+        <!-- 기관 정보 -->
+        <div class="review-section">
+          <div class="rs-title"><i class="fa-solid fa-building-columns"></i> 기관 정보</div>
+          <div class="rs-grid" id="rv-org-info"></div>
+        </div>
+
+        <!-- 조직 구조 -->
+        <div class="review-section">
+          <div class="rs-title"><i class="fa-solid fa-sitemap"></i> 조직 구조</div>
+          <div class="rs-grid" id="rv-org-structure"></div>
+        </div>
+
+        <!-- AI 성숙도 -->
+        <div class="review-section">
+          <div class="rs-title"><i class="fa-solid fa-brain"></i> AI 성숙도 진단</div>
+          <div class="rs-grid" id="rv-ai-maturity"></div>
+        </div>
+
+        <!-- 직무별 데이터 -->
+        <div class="review-section">
+          <div class="rs-title"><i class="fa-solid fa-briefcase"></i> 직무별 업무 현황</div>
+          <div id="rv-job-data"></div>
+        </div>
+
+        <!-- 조직 문제·니즈 -->
+        <div class="review-section">
+          <div class="rs-title"><i class="fa-solid fa-clipboard-list"></i> 조직 문제·니즈</div>
+          <div class="rs-grid" id="rv-needs"></div>
+        </div>
+
+        <!-- ROI 요약 -->
+        <div class="review-section">
+          <div class="rs-title"><i class="fa-solid fa-chart-pie"></i> ROI 분석 요약</div>
+          <div class="rs-grid" id="rv-roi"></div>
+        </div>
+
+        <!-- 추가 전달사항 -->
+        <div class="review-section">
+          <div class="rs-title"><i class="fa-solid fa-message"></i> 추가 전달사항</div>
+          <textarea class="review-textarea" id="rv-additional-msg" placeholder="추가로 전달하실 내용이 있으시면 자유롭게 입력해 주세요.&#10;&#10;예) 특별히 관심있는 교육 분야, 일정 관련 요청사항, 기타 문의 등"></textarea>
+        </div>
+
+        <!-- 최종 전달 버튼 -->
+        <button class="btn-submit" id="final-submit-btn" onclick="finalSubmit()" style="margin-top:12px;">
+          최종 전달하기
+        </button>
+        <button class="btn-back-review" onclick="backToSuccess()">
+          &larr; 이전으로 돌아가기
+        </button>
+
+      </div>
+      <div class="card-footer">
+        <div class="cf-brand"><div class="cf-dot"></div><span class="cf-name">청람M&amp;C</span></div>
+        <span class="cf-meta">교육콘텐츠 개발 전문기업 · crmc.co.kr</span>
+      </div>
+    </div>
+
+    <!-- ═══ FINAL SUCCESS VIEW ═══ -->
+    <div class="final-success-view" id="final-success-view">
+      <div class="success-inner">
+        <div class="success-header">
+          <div class="success-icon check-anim">
+            <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+              <circle cx="15" cy="15" r="14" fill="#0C7B4E"/>
+              <path d="M8 15l5 5 9-9" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3>전달이 완료되었습니다</h3>
+          <p>입력하신 모든 내용이 청람M&amp;C에 전달되었습니다.</p>
+        </div>
+        <div class="consultant-message">
+          <div class="cm-header">
+            <div class="cm-avatar">C</div>
+            <div>
+              <div class="cm-name">청람M&amp;C 접수팀</div>
+              <div class="cm-role">AI 교육 전환 설계</div>
+            </div>
+          </div>
+          <div class="cm-body">
+            고객사로 부터 접수한 데이터를 기반으로 완성도 높은 제안이 될 수 있도록 현황을 고려하여 대표 컨설턴트의 설계 이후 <strong>1일~2일 이내</strong>에 신청하신 이메일 주소로 보내드리겠습니다. 감사합니다.
+          </div>
+        </div>
+        <a href="https://crmc.co.kr" class="home-link" style="margin-top:20px;">홈으로 돌아가기</a>
+      </div>
+      <div class="card-footer">
+        <div class="cf-brand"><div class="cf-dot"></div><span class="cf-name">청람M&amp;C</span></div>
+        <span class="cf-meta">교육콘텐츠 개발 전문기업 · crmc.co.kr</span>
+      </div>
+    </div>
+
+  </div><!-- /card -->
+</div><!-- /platform-wrap -->
+
+<!-- ═══ SCRIPTS ═══ -->
+<script src="roi-calculator.js"></script>
+<script src="proposal-engine.js"></script>
+<script>
+// ════════════════════════════════════════════════════════
+// 청람M&C AI 교육 전환 진단 — Main Controller
+// ════════════════════════════════════════════════════════
+
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbynMxRNEhfu6btjb2HmkP12aEpWnLQAVmMKJEHEtnbkWf-JpGWgy5y-PG5DnYmqpGxSmA/exec';
+
+let currentLayer = 1;
+
+// ── URL params (1차 폼에서 넘어온 데이터) ───────────
+const urlParams = new URLSearchParams(window.location.search);
+const fromData = {
+  client: urlParams.get('client') || '',
+  name: urlParams.get('name') || '',
+  email: urlParams.get('email') || '',
+  phone: urlParams.get('phone') || '',
+};
+
+// ── Set min date for date pickers ───────────────────
+(function initDates() {
+  const today = new Date().toISOString().split('T')[0];
+  document.querySelectorAll('.meeting-date').forEach(d => d.min = today);
+})();
+
+// ── Radio Select ────────────────────────────────────
+function selectRadio(el, groupId) {
+  document.querySelectorAll('#' + groupId + ' .radio-btn')
+    .forEach(b => b.classList.remove('on'));
+  el.classList.add('on');
+}
+
+function getRadioVal(groupId) {
+  const on = document.querySelector('#' + groupId + ' .radio-btn.on');
+  return on ? on.dataset.val : '';
+}
+
+// ── Detail Radio ────────────────────────────────────
+function selectDetail(el, groupId) {
+  document.querySelectorAll('#' + groupId + ' .detail-radio')
+    .forEach(d => d.classList.remove('on'));
+  el.classList.add('on');
+}
+
+function getDetailVal(groupId) {
+  const on = document.querySelector('#' + groupId + ' .detail-radio.on');
+  return on ? parseInt(on.dataset.val) : 0;
+}
+
+// ── Tag Toggle ──────────────────────────────────────
+function toggleTag(el) { el.classList.toggle('on'); }
+
+function toggleTagMax(el, containerId, max) {
+  const container = document.getElementById(containerId);
+  const selected = container.querySelectorAll('.check-tag.on');
+  if (!el.classList.contains('on') && selected.length >= max) {
+    // 최대 선택 수 도달 시 시각적 피드백
+    container.querySelectorAll('.check-tag:not(.on)').forEach(t => t.classList.add('disabled'));
+    setTimeout(() => container.querySelectorAll('.check-tag:not(.on)').forEach(t => t.classList.remove('disabled')), 600);
+    return;
+  }
+  el.classList.toggle('on');
+  // 최대 수 체크 후 disabled 해제
+  const nowSelected = container.querySelectorAll('.check-tag.on').length;
+  if (nowSelected < max) {
+    container.querySelectorAll('.check-tag').forEach(t => t.classList.remove('disabled'));
+  }
+}
+
+function getTags(containerId) {
+  return [...document.querySelectorAll('#' + containerId + ' .check-tag.on')]
+    .map(t => t.textContent.trim());
+}
+
+// ── Package Selection ───────────────────────────────
+function selectPackage(el) {
+  document.querySelectorAll('.package-card').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+  // Layer 4일 때 ROI 재계산
+  if (currentLayer === 4) calculateROI();
+}
+
+function getSelectedPackage() {
+  const sel = document.querySelector('.package-card.on');
+  return sel ? sel.dataset.val : 'standard';
+}
+
+// ── Job Tab Switch ──────────────────────────────────
+function switchJob(jobId, tabEl) {
+  document.querySelectorAll('.job-tab').forEach(t => t.classList.remove('on'));
+  tabEl.classList.add('on');
+  document.querySelectorAll('.job-panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById('panel-' + jobId);
+  if (panel) {
+    panel.classList.add('active');
+    panel.classList.add('slide-left-enter');
+    setTimeout(() => panel.classList.remove('slide-left-enter'), 350);
+  }
+}
+
+// ── Date Picker ─────────────────────────────────────
+function addDateRow() {
+  const list = document.getElementById('date-list');
+  const today = new Date().toISOString().split('T')[0];
+  const row = document.createElement('div');
+  row.className = 'date-picker-row';
+  row.innerHTML = '<input type="date" class="meeting-date" min="' + today + '">' +
+    '<button type="button" class="remove-date-btn" onclick="this.parentElement.remove()">×</button>';
+  list.appendChild(row);
+}
+
+function getMeetingDates() {
+  return [...document.querySelectorAll('.meeting-date')]
+    .map(d => d.value).filter(v => v);
+}
+
+// ── Layer Navigation ────────────────────────────────
+function goLayer(n) {
+  // 유효성 검사
+  if (n > currentLayer) {
+    if (!validateLayer(currentLayer)) return;
+  }
+
+  // 이전 레이어 숨기기
+  document.getElementById('layer-' + currentLayer).classList.remove('active');
+
+  // 새 레이어 보이기
+  currentLayer = n;
+  const newLayer = document.getElementById('layer-' + n);
+  newLayer.classList.add('active');
+
+  // Layer 4 진입 시 ROI 계산
+  if (n === 4) calculateROI();
+
+  // Step progress 업데이트
+  updateStepProgress(n);
+
+  // 스크롤 상단
+  document.querySelector('.card-body').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function updateStepProgress(active) {
+  document.querySelectorAll('.step-item').forEach(item => {
+    const step = parseInt(item.dataset.step);
+    item.classList.remove('active', 'done');
+    if (step === active) item.classList.add('active');
+    else if (step < active) item.classList.add('done');
+  });
+}
+
+// ── Validation ──────────────────────────────────────
+function validateLayer(n) {
+  if (n === 1) {
+    let ok = true;
+    if (!getRadioVal('rg-org-size')) {
+      document.getElementById('g-org-size').classList.add('is-error');
+      ok = false;
+    } else {
+      document.getElementById('g-org-size').classList.remove('is-error');
+    }
+    if (!getRadioVal('rg-budget')) {
+      document.getElementById('g-budget').classList.add('is-error');
+      ok = false;
+    } else {
+      document.getElementById('g-budget').classList.remove('is-error');
+    }
+    return ok;
+  }
+  if (n === 2) {
+    if (!getDetailVal('drg-ai-stage')) {
+      document.getElementById('g-ai-stage').classList.add('is-error');
+      return false;
+    }
+    document.getElementById('g-ai-stage').classList.remove('is-error');
+    return true;
+  }
+  return true;
+}
+
+// ── ROI Calculation ─────────────────────────────────
+function calculateROI() {
+  const aiStage = getDetailVal('drg-ai-stage') || 1;
+  const packageKey = getSelectedPackage();
+  const data = collectJobData();
+  const result = ROICalculator.calculate(data, aiStage, packageKey);
+
+  // Show ROI dashboard
+  document.getElementById('roi-preview').style.display = 'block';
+
+  // Animate numbers
+  animateNumber('roi-hours', result.totalHoursSaved);
+  animateNumber('roi-cost', result.totalCostSaved);
+  animateNumber('roi-percent', result.roiPackage);
+  animateNumber('roi-6m', result.roi12m);
+  animateNumber('roi-break', result.breakEvenMonths);
+
+  // 패키지에 맞게 라벨 동적 변경
+  const pkg = result.packageInfo;
+  const pkgLabel = document.getElementById('roi-pkg-label');
+  const annLabel = document.getElementById('roi-ann-label');
+  if (pkgLabel) pkgLabel.textContent = pkg.name + ' ' + pkg.months + '개월 ROI';
+  if (annLabel) annLabel.textContent = '연환산 12개월 ROI';
+
+  // Detail table
+  const tbody = document.getElementById('roi-detail-body');
+  tbody.innerHTML = result.details.map(d =>
+    '<tr><td>' + d.label + '</td><td>' + d.basis + '</td>' +
+    '<td class="num">' + d.saving + '</td></tr>'
+  ).join('');
+
+  // ROI dashboard 애니메이션
+  document.getElementById('roi-preview').classList.add('roi-reveal');
+}
+
+function collectJobData() {
+  return {
+    office: {
+      docHours: num('j-office-doc'),
+      meetingHours: num('j-office-meeting'),
+      dataHours: num('j-office-data'),
+      emailHours: num('j-office-email'),
+      salary: num('j-office-salary'),
+      headcount: num('j-office-head')
+    },
+    sales: {
+      contactCount: num('j-sales-contact'),
+      proposalHours: num('j-sales-proposal'),
+      crmMinutes: num('j-sales-crm'),
+      salary: num('j-sales-salary'),
+      headcount: num('j-sales-head')
+    },
+    field: {
+      reportHours: num('j-field-report'),
+      phoneRate: num('j-field-phone'),
+      method: getRadioVal('rg-field-method'),
+      salary: num('j-field-salary'),
+      headcount: num('j-field-head')
+    },
+    production: {
+      dailyOutput: num('j-prod-output'),
+      defectRate: num('j-prod-defect'),
+      defectCost: num('j-prod-cost'),
+      downtime: num('j-prod-downtime'),
+      headcount: num('j-prod-head')
+    }
+  };
+}
+
+function num(id) {
+  const el = document.getElementById(id);
+  if (!el) return 0;
+  return parseFloat(el.value) || 0;
+}
+
+function animateNumber(id, target) {
+  const el = document.getElementById(id);
+  const start = 0;
+  const duration = 800;
+  const startTime = performance.now();
+  target = Math.round(target);
+
+  function tick(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.round(start + (target - start) * eased).toLocaleString();
+    if (progress < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+// ── Toggle ROI Detail ───────────────────────────────
+function toggleRoiDetail() {
+  document.getElementById('roi-detail-panel').classList.toggle('open');
+}
+
+// ── Collect All Data ────────────────────────────────
+function collectAllData() {
+  return {
+    timestamp: new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' }),
+    // 1차 폼 데이터
+    client: fromData.client,
+    name: fromData.name,
+    email: fromData.email,
+    phone: fromData.phone,
+    // Layer 1
+    orgSize: getRadioVal('rg-org-size'),
+    departments: getTags('ct-departments'),
+    targetGrades: getTags('ct-grades'),
+    budget: getRadioVal('rg-budget'),
+    decisionMaker: getRadioVal('rg-decision'),
+    // Layer 2
+    aiStage: getDetailVal('drg-ai-stage'),
+    deptPriority: [
+      document.getElementById('rank-dept-1').value,
+      document.getElementById('rank-dept-2').value,
+      document.getElementById('rank-dept-3').value
+    ].filter(v => v),
+    aiLevel: getRadioVal('rg-ai-level'),
+    // Layer 3
+    jobData: collectJobData(),
+    // Layer 4
+    selectedPackage: getSelectedPackage(),
+    painPoints: getTags('ct-pains'),
+    expectedChange: document.getElementById('f-expected').value.trim(),
+    satisfaction: getRadioVal('rg-satisfaction'),
+    eduFormat: getTags('ct-format'),
+    meetingDates: getMeetingDates()
+  };
+}
+
+// ── AI 성숙도 라벨 매핑 ─────────────────────────────
+const AI_STAGE_MAP = {
+  1: { name: '시작 단계', desc: 'AI 도입 초기 — 인식 및 탐색' },
+  2: { name: '증강 단계', desc: '개인 업무에 AI 보조 도구 활용' },
+  3: { name: '응용 단계', desc: '부서 단위 프로세스에 AI 통합' },
+  4: { name: '통합 단계', desc: '조직 전체 AI 내재화 및 자동화' }
+};
+
+// ── 5단계 분석 애니메이션 ────────────────────────────
+function runAnalysisSteps(callback) {
+  const steps = document.querySelectorAll('#analysis-steps .analysis-step');
+  const bar = document.getElementById('analysis-progress-bar');
+  const total = steps.length;
+  let current = 0;
+
+  function activateNext() {
+    if (current > 0) {
+      // 이전 단계 완료 처리
+      steps[current - 1].classList.remove('active');
+      steps[current - 1].classList.add('done');
+    }
+    if (current < total) {
+      // 현재 단계 활성화
+      steps[current].classList.add('active');
+      bar.style.width = ((current + 1) / total * 100) + '%';
+      current++;
+      setTimeout(activateNext, 2000 + Math.random() * 800);
+    } else {
+      // 모든 단계 완료
+      bar.style.width = '100%';
+      setTimeout(callback, 600);
+    }
+  }
+
+  activateNext();
+}
+
+// ── 성공 뷰에 데이터 삽입 ───────────────────────────
+function populateSuccessView(allData, roiResult) {
+  const stage = parseInt(allData.aiStage) || 1;
+  const info = AI_STAGE_MAP[stage] || AI_STAGE_MAP[1];
+
+  document.getElementById('mb-stage-num').textContent = stage;
+  document.getElementById('mb-stage-name').textContent = info.name;
+  document.getElementById('mb-stage-desc').textContent = info.desc;
+
+  animateNumber('sum-hours', roiResult.totalHoursSaved);
+  animateNumber('sum-cost', roiResult.totalCostSaved);
+  animateNumber('sum-roi', roiResult.roiPackage);
+  animateNumber('sum-break', roiResult.breakEvenMonths);
+
+  // 패키지 라벨 업데이트
+  const pkg = roiResult.packageInfo;
+  const roiLabel = document.getElementById('sum-roi-label');
+  if (roiLabel) roiLabel.textContent = pkg.name + ' ' + pkg.months + '개월 ROI';
+}
+
+// ── Submit ───────────────────────────────────────────
+async function submitDiagnosis() {
+  // Privacy check
+  const privacyOk = document.getElementById('privacy-check').checked;
+  document.getElementById('privacy-error').style.display = privacyOk ? 'none' : 'block';
+  if (!privacyOk) return;
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+
+  // Show loading
+  document.getElementById('form-view').style.display = 'none';
+  document.getElementById('loading-view').style.display = 'block';
+
+  const allData = collectAllData();
+  const aiStage = allData.aiStage || 1;
+  const roiResult = ROICalculator.calculate(allData.jobData, aiStage, allData.selectedPackage);
+
+  // GAS 전송 (비동기, 분석 애니메이션과 병행)
+  fetch(GAS_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({
+      ...allData,
+      departments: allData.departments.join(', '),
+      targetGrades: allData.targetGrades.join(', '),
+      deptPriority: allData.deptPriority.join(' > '),
+      painPoints: allData.painPoints.join(', '),
+      eduFormat: allData.eduFormat.join(', '),
+      meetingDates: allData.meetingDates.join(', '),
+      roiHours: roiResult.totalHoursSaved,
+      roiCost: roiResult.totalCostSaved,
+      roiPackage: roiResult.roiPackage,
+      roi12m: roiResult.roi12m,
+      selectedPackage: allData.selectedPackage,
+      packageName: roiResult.packageInfo.name,
+      packageCost: roiResult.packageInfo.cost,
+      packageMonths: roiResult.packageInfo.months,
+      source: 'ai_diagnosis_initial'
+    })
+  }).catch(err => console.warn('GAS fetch error:', err));
+
+  // 제안서 데이터 저장
+  window._proposalData = { allData, roiResult };
+
+  // 5단계 분석 애니메이션 → 완료 후 성공 뷰 전환
+  runAnalysisSteps(() => {
+    document.getElementById('loading-view').style.display = 'none';
+    document.getElementById('success-view').style.display = 'block';
+    populateSuccessView(allData, roiResult);
+  });
+}
+
+// ── View Proposal ───────────────────────────────────
+function viewProposal() {
+  if (window._proposalData) {
+    ProposalEngine.generate(window._proposalData.allData, window._proposalData.roiResult);
+  }
+}
+
+// ── Review View ─────────────────────────────────────
+function makeRow(label, value, full) {
+  return '<div class="rs-row' + (full ? ' full' : '') + '">' +
+    '<span class="rs-label">' + label + '</span>' +
+    '<span class="rs-value">' + (value || '—') + '</span></div>';
+}
+
+const BUDGET_MAP = { 'under1k': '1천만원 미만', '1k-3k': '1천~3천만원', '3k-1a': '3천~1억원', 'over1a': '1억원 이상' };
+const SIZE_MAP = { 'under50': '50명 이하', '50-200': '50~200명', '200-500': '200~500명', 'over500': '500명 이상' };
+const DECISION_MAP = { 'ceo': '대표/CEO', 'hr': 'HR/교육팀장', 'committee': '위원회/TF', 'etc': '기타' };
+const SATISFACTION_MAP = { '1': '매우 불만', '2': '불만', '3': '보통', '4': '만족', '5': '매우 만족' };
+const AI_LEVEL_MAP = { '1': '전혀 모름', '2': '기초 인식', '3': '간단한 활용', '4': '업무 적용', '5': '고급 활용' };
+
+function showReviewView() {
+  const d = window._proposalData;
+  if (!d) return;
+  const { allData, roiResult } = d;
+  const stage = parseInt(allData.aiStage) || 1;
+  const stageInfo = AI_STAGE_MAP[stage];
+
+  // 기관 정보
+  document.getElementById('rv-org-info').innerHTML =
+    makeRow('기관명', allData.client) +
+    makeRow('담당자', allData.name) +
+    makeRow('이메일', allData.email) +
+    makeRow('연락처', allData.phone);
+
+  // 조직 구조
+  document.getElementById('rv-org-structure').innerHTML =
+    makeRow('임직원 수', SIZE_MAP[allData.orgSize] || allData.orgSize) +
+    makeRow('교육 예산', BUDGET_MAP[allData.budget] || allData.budget) +
+    makeRow('부서 구성', allData.departments.join(', '), true) +
+    makeRow('교육 대상', allData.targetGrades.join(', '), true) +
+    makeRow('의사결정자', DECISION_MAP[allData.decisionMaker] || allData.decisionMaker);
+
+  // AI 성숙도
+  document.getElementById('rv-ai-maturity').innerHTML =
+    makeRow('AI 활용 단계', stage + '단계 — ' + stageInfo.name) +
+    makeRow('AI 학습 수준', AI_LEVEL_MAP[allData.aiLevel] || allData.aiLevel + '단계') +
+    makeRow('우선 부서', allData.deptPriority.join(' > '), true);
+
+  // 직무별 데이터
+  const jd = allData.jobData;
+  let jobHtml = '';
+  if (jd.office.headcount) {
+    jobHtml += '<table class="rv-job-table"><tr><th colspan="2">사무직 (' + jd.office.headcount + '명)</th></tr>' +
+      '<tr><td>문서 작성</td><td>' + jd.office.docHours + '시간/주</td></tr>' +
+      '<tr><td>회의 참여</td><td>' + jd.office.meetingHours + '시간/주</td></tr>' +
+      '<tr><td>데이터 수집</td><td>' + jd.office.dataHours + '시간/주</td></tr>' +
+      '<tr><td>이메일·보고</td><td>' + jd.office.emailHours + '시간/주</td></tr>' +
+      '<tr><td>평균 연봉</td><td>' + jd.office.salary.toLocaleString() + '만원</td></tr></table>';
+  }
+  if (jd.sales.headcount) {
+    jobHtml += '<table class="rv-job-table"><tr><th colspan="2">영업/CS직 (' + jd.sales.headcount + '명)</th></tr>' +
+      '<tr><td>고객응대</td><td>' + jd.sales.contactCount + '건/일</td></tr>' +
+      '<tr><td>제안서 작성</td><td>' + jd.sales.proposalHours + '시간/건</td></tr>' +
+      '<tr><td>CRM 입력</td><td>' + jd.sales.crmMinutes + '분/일</td></tr>' +
+      '<tr><td>평균 연봉</td><td>' + jd.sales.salary.toLocaleString() + '만원</td></tr></table>';
+  }
+  if (jd.field.headcount) {
+    jobHtml += '<table class="rv-job-table"><tr><th colspan="2">현장직 (' + jd.field.headcount + '명)</th></tr>' +
+      '<tr><td>점검·보고</td><td>' + jd.field.reportHours + '시간/일</td></tr>' +
+      '<tr><td>평균 연봉</td><td>' + jd.field.salary.toLocaleString() + '만원</td></tr></table>';
+  }
+  if (jd.production.headcount || jd.production.dailyOutput) {
+    jobHtml += '<table class="rv-job-table"><tr><th colspan="2">생산직' + (jd.production.headcount ? ' (' + jd.production.headcount + '명)' : '') + '</th></tr>' +
+      '<tr><td>일 생산량</td><td>' + jd.production.dailyOutput + '개</td></tr>' +
+      '<tr><td>불량률</td><td>' + jd.production.defectRate + '%</td></tr>' +
+      '<tr><td>재작업 비용</td><td>' + jd.production.defectCost + '만원/건</td></tr>' +
+      '<tr><td>다운타임</td><td>' + jd.production.downtime + '시간/월</td></tr></table>';
+  }
+  if (!jobHtml) jobHtml = '<div style="font-size:13px;color:#888;padding:10px;">입력된 직무 데이터 없음</div>';
+  document.getElementById('rv-job-data').innerHTML = jobHtml;
+
+  // 조직 문제·니즈
+  document.getElementById('rv-needs').innerHTML =
+    makeRow('주요 문제', allData.painPoints.join(', '), true) +
+    makeRow('기대 변화', allData.expectedChange, true) +
+    makeRow('이전 만족도', SATISFACTION_MAP[allData.satisfaction] || allData.satisfaction) +
+    makeRow('선호 방식', allData.eduFormat.join(', '), true) +
+    makeRow('미팅 가능일', allData.meetingDates.join(', '), true);
+
+  // ROI 요약
+  const pkgInfo = roiResult.packageInfo;
+  const pkgDisplay = pkgInfo.cost > 0
+    ? pkgInfo.name + ' (' + pkgInfo.months + '개월 / ' + pkgInfo.cost.toLocaleString() + '만원)'
+    : pkgInfo.name + ' (별도 협의)';
+  document.getElementById('rv-roi').innerHTML =
+    makeRow('선택 패키지', pkgDisplay, true) +
+    makeRow('연간 절감 시간', roiResult.totalHoursSaved.toLocaleString() + '시간') +
+    makeRow('연간 절감 비용', roiResult.totalCostSaved.toLocaleString() + '만원') +
+    makeRow(pkgInfo.name + ' ' + pkgInfo.months + '개월 ROI', roiResult.roiPackage + '%') +
+    makeRow('손익분기점', roiResult.breakEvenMonths > 0 ? roiResult.breakEvenMonths + '개월' : '별도 협의');
+
+  // 뷰 전환
+  document.getElementById('success-view').style.display = 'none';
+  document.getElementById('review-view').style.display = 'block';
+  document.querySelector('.review-inner').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function backToSuccess() {
+  document.getElementById('review-view').style.display = 'none';
+  document.getElementById('success-view').style.display = 'block';
+}
+
+// ── Final Submit — 최종 전달하기 ────────────────────
+async function finalSubmit() {
+  const btn = document.getElementById('final-submit-btn');
+  btn.disabled = true;
+  btn.textContent = '전달 중…';
+
+  const d = window._proposalData;
+  if (!d) return;
+
+  const additionalMsg = document.getElementById('rv-additional-msg').value.trim();
+
+  try {
+    await fetch(GAS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        ...d.allData,
+        departments: d.allData.departments.join(', '),
+        targetGrades: d.allData.targetGrades.join(', '),
+        deptPriority: d.allData.deptPriority.join(' > '),
+        painPoints: d.allData.painPoints.join(', '),
+        eduFormat: d.allData.eduFormat.join(', '),
+        meetingDates: d.allData.meetingDates.join(', '),
+        roiHours: d.roiResult.totalHoursSaved,
+        roiCost: d.roiResult.totalCostSaved,
+        roiPackage: d.roiResult.roiPackage,
+        roi12m: d.roiResult.roi12m,
+        selectedPackage: d.allData.selectedPackage,
+        packageName: d.roiResult.packageInfo.name,
+        packageCost: d.roiResult.packageInfo.cost,
+        packageMonths: d.roiResult.packageInfo.months,
+        additionalMessage: additionalMsg,
+        source: 'ai_diagnosis_final'
+      })
+    });
+  } catch (err) {
+    console.warn('GAS final submit error:', err);
+  }
+
+  // 최종 완료 화면
+  document.getElementById('review-view').style.display = 'none';
+  document.getElementById('final-success-view').style.display = 'block';
+}
+</script>
+</body>
+</html>
