@@ -511,7 +511,7 @@
     <section class="ceo-sec" id="ceo">
       <div class="wrap">
         <div class="sec-label reveal">FOUNDER</div>
-        <h2 class="sec-title reveal"><span class="hl">정구영</span> 대표 컨설턴트</h2>
+        <h2 class="sec-title reveal"><span class="hl">대표 컨설턴트</span></h2>
         <div class="ceo-grid">
 
           <div class="ceo-card reveal">
@@ -850,4 +850,20 @@
 
     // Program filter
     function filterProg(cat, btn) {
-      document.query
+      document.querySelectorAll('.prog-card').forEach(function(card) {
+        var cat2 = card.getAttribute('data-cat');
+        card.style.display = (cat === 'all' || cat2 === cat) ? '' : 'none';
+      });
+      document.querySelectorAll('.pf-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+    }
+
+    // Nav toggle
+    document.getElementById('navLinks') && document.querySelectorAll('.nav-links a').forEach(function(a) {
+      a.addEventListener('click', function() {
+        document.getElementById('navLinks').classList.remove('open');
+      });
+    });
+  </script>
+</body>
+</html>
