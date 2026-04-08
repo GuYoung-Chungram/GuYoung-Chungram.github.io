@@ -12,12 +12,12 @@ const ROICalculator = (() => {
     production: { 1: 0.08, 2: 0.15, 3: 0.22, 4: 0.28 }
   };
 
-  // 패키지 가격표 (만원)
+  // 패키지 가격표 (만원) — 상품가격_및_인력채용_계획.hwpx 기준
   const PACKAGES = {
-    starter:    { name: '스타터',       months: 3,  cost: 800 },
-    standard:   { name: '스탠다드',     months: 6,  cost: 1500 },
-    premium:    { name: '프리미엄',     months: 12, cost: 2800 },
-    enterprise: { name: '엔터프라이즈', months: 12, cost: 0 }
+    starter:    { name: '스타터',       months: 3,  cost: 900,  sessions: 3,  roiMultiplier: 1.0 },
+    standard:   { name: '스탠다드',     months: 6,  cost: 1460, sessions: 6,  roiMultiplier: 1.4 },
+    premium:    { name: '프리미엄',     months: 12, cost: 2200, sessions: 10, roiMultiplier: 2.0 },
+    enterprise: { name: '엔터프라이즈', months: 12, cost: 0,    sessions: 0,  roiMultiplier: 2.5 }
   };
 
   // 시간당 인건비 (만원 → 원 → 시간당 만원)
@@ -124,7 +124,8 @@ const ROICalculator = (() => {
 
   // ── 생산직 계산 ────────────────────────────────────
   function calcProduction(d, stage) {
-    if (!d.headcount && !d.dailyOutput) return { hours: 0, cost: 0, details: [] };
+    // 인원·생산량·불량률·다운타임 모두 0이면 완전 제외 (탭 미선택 시)
+    if (!d.headcount && !d.dailyOutput && !d.downtime && !d.defectRate) return { hours: 0, cost: 0, details: [] };
     const rate = REDUCTION_RATE.production[stage];
 
     // 불량 절감 효과
@@ -163,8 +164,13 @@ const ROICalculator = (() => {
     const field = calcField(jobData.field, aiStage);
     const production = calcProduction(jobData.production, aiStage);
 
-    const totalHoursSaved = office.hours + sales.hours + field.hours + production.hours;
-    const totalCostSaved = office.cost + sales.cost + field.cost + production.cost;
+    const rawHours = office.hours + sales.hours + field.hours + production.hours;
+    const rawCost  = office.cost  + sales.cost  + field.cost  + production.cost;
+
+    // 패키지별 실현율: 교육 깊이·회수가 많을수록 더 많은 절감 실현
+    const m = pkg.roiMultiplier || 1.0;
+    const totalHoursSaved = Math.round(rawHours * m);
+    const totalCostSaved  = Math.round(rawCost  * m);
     const monthlySaving = totalCostSaved / 12;
 
     // 패키지 기간에 맞는 ROI 산출

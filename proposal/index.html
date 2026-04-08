@@ -9,6 +9,53 @@
   <link rel="stylesheet" href="./assets/animations.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+/* ── Package Detail Modal ──────────────────────── */
+.pkg-detail-btn {
+  margin-top:8px; font-size:11px; color:var(--cr);
+  text-decoration:underline; cursor:pointer; font-weight:600;
+}
+.pkg-detail-btn:hover { opacity:.7; }
+.pkg-modal-overlay {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,.55); z-index:9999;
+  align-items:center; justify-content:center; padding:16px;
+}
+.pkg-modal-overlay.open { display:flex; }
+.pkg-modal {
+  background:#fff; border-radius:16px; width:100%;
+  max-width:520px; max-height:85vh; overflow-y:auto;
+  box-shadow:0 20px 60px rgba(0,0,0,.2);
+  animation:modalIn .25s ease;
+}
+@keyframes modalIn {
+  from{opacity:0;transform:translateY(20px) scale(.97)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+.pkg-modal-header {
+  padding:20px 24px 14px; border-bottom:1px solid #eee;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.pkg-modal-header h3{font-size:17px;font-weight:800;color:#0A0F1E}
+.pkg-modal-close{background:none;border:none;font-size:22px;cursor:pointer;color:#999;line-height:1}
+.pkg-modal-body{padding:20px 24px 24px}
+.pkg-modal-price{font-size:28px;font-weight:900;color:#1652D8;margin-bottom:4px}
+.pkg-modal-period{font-size:13px;color:#888;margin-bottom:16px}
+.pkg-modal-section{margin-bottom:16px}
+.pkg-modal-section h4{
+  font-size:13px;font-weight:700;color:#444;
+  margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #f0f0f0;
+}
+.pkg-modal-items{display:flex;flex-direction:column;gap:6px}
+.pkg-modal-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:#333;line-height:1.5}
+.pkg-modal-item::before{content:"✓";color:#1652D8;font-weight:700;flex-shrink:0;margin-top:1px}
+.pkg-modal-saving{background:#EEF3FD;border-radius:8px;padding:12px 14px;margin-top:16px}
+.pkg-modal-saving p{font-size:12px;color:#1652D8;font-weight:600}
+.pkg-modal-discount{
+  display:inline-block;background:#FEF3C7;color:#92400E;
+  font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;margin-bottom:8px;
+}
+</style>
 </head>
 <body>
 
@@ -258,8 +305,12 @@
               <button class="job-tab on" onclick="switchJob('office',this)">사무직</button>
               <button class="job-tab" onclick="switchJob('sales',this)">영업/CS직</button>
               <button class="job-tab" onclick="switchJob('field',this)">현장직</button>
-              <button class="job-tab" onclick="switchJob('production',this)">생산직</button>
+              <button class="job-tab" id="tab-production" onclick="switchJob('production',this)" style="display:none;">생산직</button>
             </div>
+            <label style="display:flex;align-items:center;gap:8px;margin:8px 0 0;font-size:13px;color:#888;cursor:pointer;">
+              <input type="checkbox" id="include-production" onchange="toggleProductionTab(this)">
+              생산직 포함 (제조업 해당 시)
+            </label>
 
             <!-- 사무직 -->
             <div class="job-panel active" id="panel-office">
@@ -463,19 +514,19 @@
                   <button type="button" class="package-card" data-val="starter" onclick="selectPackage(this)">
                     <div class="pkg-badge">3개월</div>
                     <div class="pkg-name">스타터</div>
-                    <div class="pkg-price">800<span>만원</span></div>
+                    <div class="pkg-price">900<span>만원</span></div>
                     <div class="pkg-desc">AI 기초 교육 + 컨설팅</div>
                   </button>
                   <button type="button" class="package-card on" data-val="standard" onclick="selectPackage(this)">
                     <div class="pkg-badge popular">추천</div>
                     <div class="pkg-name">스탠다드</div>
-                    <div class="pkg-price">1,500<span>만원</span></div>
+                    <div class="pkg-price">1,460<span>만원</span></div>
                     <div class="pkg-desc">기초+응용 교육 + 컨설팅</div>
                   </button>
                   <button type="button" class="package-card" data-val="premium" onclick="selectPackage(this)">
                     <div class="pkg-badge">12개월</div>
                     <div class="pkg-name">프리미엄</div>
-                    <div class="pkg-price">2,800<span>만원</span></div>
+                    <div class="pkg-price">2,200<span>만원</span></div>
                     <div class="pkg-desc">풀 패키지 + AX 전환</div>
                   </button>
                   <button type="button" class="package-card" data-val="enterprise" onclick="selectPackage(this)">
@@ -1103,13 +1154,17 @@ function collectJobData() {
       salary: num('j-field-salary'),
       headcount: num('j-field-head')
     },
-    production: {
-      dailyOutput: num('j-prod-output'),
-      defectRate: num('j-prod-defect'),
-      defectCost: num('j-prod-cost'),
-      downtime: num('j-prod-downtime'),
-      headcount: num('j-prod-head')
-    }
+    production: (function(){
+      const cb = document.getElementById('include-production');
+      if (!cb || !cb.checked) return { dailyOutput:0, defectRate:0, defectCost:0, downtime:0, headcount:0 };
+      return {
+        dailyOutput: num('j-prod-output'),
+        defectRate:  num('j-prod-defect'),
+        defectCost:  num('j-prod-cost'),
+        downtime:    num('j-prod-downtime'),
+        headcount:   num('j-prod-head')
+      };
+    })()
   };
 }
 
@@ -1442,6 +1497,170 @@ async function finalSubmit() {
   // 최종 완료 화면
   document.getElementById('review-view').style.display = 'none';
   document.getElementById('final-success-view').style.display = 'block';
+}
+</script>
+
+<!-- ── Package Detail Modal ───────────────────── -->
+<div class="pkg-modal-overlay" id="pkg-modal-overlay" onclick="closePkgModal(event)">
+  <div class="pkg-modal" id="pkg-modal">
+    <div class="pkg-modal-header">
+      <h3 id="pm-title">패키지 상세</h3>
+      <button class="pkg-modal-close" onclick="closePkgModal()">✕</button>
+    </div>
+    <div class="pkg-modal-body" id="pm-body"></div>
+  </div>
+</div>
+
+<script>
+// ── Package Modal Data ──────────────────────────────
+const PKG_DETAIL = {
+  starter: {
+    name: '스타터',
+    price: '900만원',
+    period: '3개월 계약 · 단품 합산 1,000만원 대비 10% 절감',
+    discount: '10% 할인',
+    includes: [
+      'AI 성숙도 진단 + 로드맵 수립 컨설팅 (2~4주)',
+      'AI 실습 워크숍 3회 (3시간×3 / 직무 맞춤)',
+      'AI 인사이트 특강 1회 (2시간 / 전 임직원 인식 전환)',
+      '전담 컨설턴트 배정',
+      '교육 자료 커스터마이징 (조직 사례 반영)',
+      '교육생 수료증 발급',
+    ],
+    outcome: [
+      'AI 도입 방향 수립 완료',
+      '주요 직무 기초 AI 실습 역량 확보',
+      '현업 적용 가능한 프롬프트 30선 제공',
+    ],
+    note: '단기에 AI 도입 타당성을 검증하고 싶은 기관에 적합합니다.',
+  },
+  standard: {
+    name: '스탠다드',
+    price: '1,460만원',
+    period: '6개월 계약 · 단품 합산 1,720만원 대비 15% 절감',
+    discount: '15% 할인 · 추천',
+    includes: [
+      'AI 성숙도 진단 + 로드맵 수립 컨설팅 (2~4주)',
+      'AI 실습 워크숍 6회 (3시간×6 / 기초→중급→응용)',
+      '임원·팀장 대상 AI 전략 리더 워크숍 (4시간)',
+      '후속 코칭 — 월 2회 온라인 (3개월)',
+      '전담 컨설턴트 1:1 배정',
+      '분기별 성과 리포트 제공',
+      '교육 자료 커스터마이징 + 수료증·역량 평가 보고서',
+      '차년도 갱신 시 추가 10% 할인',
+    ],
+    outcome: [
+      'AI 기초·응용 역량 전 직원 내재화',
+      '리더 AI 전략 수립 역량 확보',
+      '교육 후 현업 적용률 추적 및 코칭',
+      '6개월 ROI 실현 기반 조성',
+    ],
+    note: '체계적인 AI 교육 전환을 원하는 중견기업·기관에 최적입니다.',
+  },
+  premium: {
+    name: '프리미엄',
+    price: '2,200만원',
+    period: '12개월 계약 · 단품 합산 2,750만원 대비 20% 절감',
+    discount: '20% 할인',
+    includes: [
+      'AI 성숙도 진단 + 전사 AX(AI 전환) 로드맵 컨설팅',
+      'AI 실습 워크숍 10회 (3시간×10 / 전 직무 맞춤 설계)',
+      '내부 AI 챔피언 육성 과정 (5일 / 부서당 1~2명)',
+      '부서별 AI 자동화 해커톤 (1일 / 아이디어→프로토타입)',
+      '후속 코칭 — 월 2회 온라인 (3개월)',
+      '전담 컨설턴트 1:1 배정 + 비상 채널 (48h 응대)',
+      '분기별 성과 리포트 + 연간 AX 전환 결과 보고서',
+      '교육 자료 전면 커스터마이징 + 수료증·역량 평가',
+      '차년도 갱신 시 추가 10% 할인',
+    ],
+    outcome: [
+      '전사 AI 전환(AX) 기반 완성',
+      '부서별 AI 자동화 프로토타입 도출',
+      '내부 AI 전파자(챔피언) 양성으로 자생적 확산',
+      '12개월 누적 ROI 실현 및 추적',
+    ],
+    note: '단순 교육을 넘어 조직의 AI 전환을 완성하고자 하는 기관에 적합합니다.',
+  },
+  enterprise: {
+    name: '엔터프라이즈',
+    price: '별도 협의',
+    period: '12개월 이상 · 프리미엄 대비 25%+ 추가 절감',
+    discount: '25%+ 할인',
+    includes: [
+      '프리미엄 전체 포함',
+      '온라인 녹화 과정 (10강 / 인원 무제한 6개월 열람)',
+      'Harrison Assessment / 360도 / 조직문화 진단',
+      'HRD 추가 과정 (리더십·문제해결·커뮤니케이션 등)',
+      '전담 팀 구성 (컨설턴트 2인+)',
+      '경영진 직접 보고 및 이사회 발표 지원',
+    ],
+    outcome: [
+      '그룹사·대규모 조직 전체 AI 전환 완성',
+      '조직 역량 데이터 기반 HR 전략 연계',
+      '자체 AI 학습 플랫폼 구축 컨설팅',
+    ],
+    note: '500인 이상 또는 그룹사 단위 교육 전환이 필요한 기관에 맞춤 설계합니다.',
+  },
+};
+
+function showPkgModal(key) {
+  const d = PKG_DETAIL[key];
+  if (!d) return;
+  document.getElementById('pm-title').textContent = d.name + ' 패키지 상세';
+
+  const body = document.getElementById('pm-body');
+  body.innerHTML =
+    '<div class="pkg-modal-price">' + d.price + '</div>' +
+    '<div class="pkg-modal-period">' + d.period + '</div>' +
+    '<span class="pkg-modal-discount">' + d.discount + '</span>' +
+
+    '<div class="pkg-modal-section">' +
+      '<h4>📦 포함 내용</h4>' +
+      '<div class="pkg-modal-items">' +
+        d.includes.map(i => '<div class="pkg-modal-item">' + i + '</div>').join('') +
+      '</div>' +
+    '</div>' +
+
+    '<div class="pkg-modal-section">' +
+      '<h4>🎯 기대 효과</h4>' +
+      '<div class="pkg-modal-items">' +
+        d.outcome.map(i => '<div class="pkg-modal-item">' + i + '</div>').join('') +
+      '</div>' +
+    '</div>' +
+
+    '<div class="pkg-modal-saving"><p>💡 ' + d.note + '</p></div>';
+
+  document.getElementById('pkg-modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePkgModal(e) {
+  if (e && e.target !== document.getElementById('pkg-modal-overlay')) return;
+  document.getElementById('pkg-modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ── 생산직 탭 토글 ──────────────────────────────────
+function toggleProductionTab(cb) {
+  const tab = document.getElementById('tab-production');
+  const panel = document.getElementById('panel-production');
+  if (cb.checked) {
+    tab.style.display = '';
+  } else {
+    tab.style.display = 'none';
+    // 생산직 탭이 현재 활성화돼 있으면 사무직으로 복귀
+    if (panel && panel.classList.contains('active')) {
+      document.querySelectorAll('.job-tab').forEach(t => t.classList.remove('on'));
+      document.querySelectorAll('.job-panel').forEach(p => p.classList.remove('active'));
+      document.querySelector('.job-tab').classList.add('on');
+      document.getElementById('panel-office').classList.add('active');
+    }
+    // 생산직 입력값 초기화
+    ['j-prod-output','j-prod-defect','j-prod-cost','j-prod-downtime','j-prod-head'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = 0;
+    });
+  }
 }
 </script>
 </body>
