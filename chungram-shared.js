@@ -8,7 +8,7 @@
 (function () {
   'use strict';
 
-  const HOME_URL = 'https://guyoung-chungram.github.io/';
+  const HOME_URL = 'https://www.crmc.co.kr';
   const currentPage = window.location.pathname.split('/').pop() || 'index.html';
 
   /* ── 1. 스타일 주입 ───────────────────────────────── */
