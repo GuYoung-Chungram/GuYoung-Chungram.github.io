@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="ko" class="theme-light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>심리적 안전감 TOP 10 | MG새마을금고 조직문화 교육</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
+<style>
+/* ============================
+   CSS CUSTOM PROPERTIES
+============================ */
+html.theme-light {
+  --bg: #FFFFFF;
+  --surface: #F8FAFF;
+  --surface-hover: #EEF3FD;
+  --border: rgba(22,82,216,0.08);
+  --text: #1A1A1A;
+  --text-secondary: #555555;
+  --accent: #1652D8;
+  --accent-secondary: #0F3D99;
+  --positive: #059669;
+  --negative: #e11d48;
+  --warning: #d97706;
+  --cr-header-bar: #1652D8;
+  --cr-light-bg: #EEF3FD;
+  --cr-card-border: #D0D9F5;
+  --dark-bg: #0F0F0F;
+  --dark-text: #FFFFFF;
+}
+html.theme-dark {
+  --bg: #0F0F0F;
+  --surface: #1A1A2E;
+  --surface-hover: #252540;
+  --border: rgba(255,255,255,0.06);
+  --text: #EDEDED;
+  --text-secondary: #888888;
+  --accent: #4B7BF5;
+  --accent-secondary: #6B8FFF;
+  --positive: #10b981;
+  --negative: #f43f5e;
+  --warning: #f59e0b;
+  --cr-header-bar: #4B7BF5;
+  --cr-light-bg: #1e2040;
+  --cr-card-border: #2e3260;
+  --dark-bg: #000000;
+  --dark-text: #FFFFFF;
+}
+
+/* ============================
+   RESET & BASE
+============================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Noto Sans KR', sans-serif; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 16px;
+  letter-spacing: -0.01em;
+  transition: background 0.3s, color 0.3s;
+}
+a { color: var(--accent); text-decoration: none; }
+img { max-width: 100%; }
+
+/* ============================
+   UTILITY MENU
+============================ */
+.viz-menu {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 9999;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.viz-menu button {
+  background: var(--surface);
+  border: 1px solid var(--cr-card-border);
+  color: var(--text);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  white-space: nowrap;
+}
+.viz-menu button:hover { background: var(--surface-hover); transform: translateY(-1px); }
+
+/* ============================
+   SKIP TO CONTENT
+============================ */
+.skip-to-content {
+  position: absolute;
+  top: -100px;
+  left: 8px;
+  background: var(--accent);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: top 0.2s;
+  z-index: 99999;
+}
+.skip-to-content:focus { top: 8px; }
+
+/* ============================
+   HERO SECTION (Type A - Impact)
+============================ */
+.hero {
+  background: #0F0F0F;
+  color: #FFFFFF;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 80px 60px 60px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: radial-gradient(circle, rgba(22,82,216,0.06) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+.hero-eyebrow {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 3px;
+  margin-bottom: 28px;
+}
+.hero h1 {
+  font-size: clamp(2.6rem, 6vw, 5rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+  margin-bottom: 20px;
+  max-width: 800px;
+}
+.hero h1 .accent-word {
+  color: #4B7BF5;
+}
+.hero-subtitle {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: rgba(255,255,255,0.65);
+  max-width: 580px;
+  margin-bottom: 40px;
+  line-height: 1.7;
+  font-weight: 300;
+}
+.hero-meta {
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+.hero-meta-item {
+  display: flex;
+  flex-direction: column;
+}
+.hero-meta-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 4px;
+}
+.hero-meta-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.85);
+}
+.hero-blue-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--accent);
+}
+.scroll-hint {
+  position: absolute;
+  bottom: 32px;
+  left: 60px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255,255,255,0.35);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  font-weight: 500;
+}
+.scroll-hint::before {
+  content: '';
+  width: 1px;
+  height: 40px;
+  background: rgba(255,255,255,0.2);
+  animation: scrollLine 1.6s ease-in-out infinite;
+}
+@keyframes scrollLine {
+  0%,100% { opacity: 0.3; }
+  50% { opacity: 0.8; }
+}
+
+/* ============================
+   DEFINITION SECTION
+============================ */
+.definition-section {
+  background: var(--accent);
+  color: #fff;
+  padding: 64px 60px;
+  position: relative;
+}
+.definition-section::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: rgba(255,255,255,0.15);
+}
+.definition-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+.definition-quote {
+  font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: -0.02em;
+}
+.definition-quote::before {
+  content: '"';
+  font-size: 4rem;
+  line-height: 0;
+  vertical-align: -0.35em;
+  margin-right: 4px;
+  opacity: 0.5;
+}
+.definition-source {
+  font-size: 13px;
+  font-weight: 500;
+  opacity: 0.7;
+  margin-top: 16px;
+  letter-spacing: 0.02em;
+}
+.definition-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.stat-item {
+  background: rgba(255,255,255,0.12);
+  border-radius: 10px;
+  padding: 20px 24px;
+  border-left: 3px solid rgba(255,255,255,0.5);
+}
+.stat-number {
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.stat-desc {
+  font-size: 13px;
+  opacity: 0.8;
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+/* ============================
+   SECTION COMMON
+============================ */
+section {
+  padding: 80px 60px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+.section-title {
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-bottom: 16px;
+  color: var(--text);
+}
+.section-desc {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  max-width: 640px;
+  line-height: 1.8;
+  margin-bottom: 56px;
+}
+.divider {
+  width: 48px;
+  height: 3px;
+  background: var(--accent);
+  margin: 16px 0 20px;
+}
+
+/* ============================
+   OVERVIEW GRID
+============================ */
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.overview-card {
+  background: var(--surface);
+  border: 1px solid var(--cr-card-border);
+  border-radius: 10px;
+  padding: 20px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.overview-card:hover {
+  background: var(--surface-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(22,82,216,0.12);
+  border-color: var(--accent);
+}
+.overview-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transition: transform 0.2s;
+  transform-origin: left;
+}
+.overview-card:hover::before {
+  transform: scaleX(1);
+}
+.overview-num {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.overview-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.4;
+  word-break: keep-all;
+}
+
+/* ============================
+   CARD LIST (TOP 10 DETAILS)
+============================ */
+.cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.detail-card {
+  background: var(--surface);
+  border: 1px solid var(--cr-card-border);
+  border-radius: 14px;
+  padding: 40px 44px;
+  transition: all 0.25s;
+  position: relative;
+  overflow: hidden;
+}
+.detail-card:hover {
+  background: var(--surface-hover);
+  box-shadow: 0 12px 40px rgba(22,82,216,0.10);
+  transform: translateX(4px);
+}
+.detail-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 4px;
+  background: var(--accent);
+}
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+.card-num {
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  min-width: 56px;
+  opacity: 0.18;
+}
+.card-title-group { flex: 1; }
+.card-category {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+.card-title {
+  font-size: clamp(1.3rem, 2.5vw, 1.7rem);
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+.card-icon-wrap {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: var(--cr-light-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+  border: 1px solid var(--cr-card-border);
+}
+.card-body {
+  padding-left: 80px;
+}
+.card-desc {
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.85;
+  margin-bottom: 20px;
+  word-break: keep-all;
+}
+.card-actions {
+  background: var(--bg);
+  border: 1px solid var(--cr-card-border);
+  border-radius: 10px;
+  padding: 20px 24px;
+}
+.card-actions-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+.card-actions ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.card-actions ul li {
+  font-size: 14px;
+  color: var(--text);
+  padding-left: 20px;
+  position: relative;
+  line-height: 1.6;
+  word-break: keep-all;
+}
+.card-actions ul li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 7px;
+  height: 7px;
+  background: var(--accent);
+  border-radius: 1px;
+}
+.card-tag {
+  display: inline-block;
+  background: var(--cr-light-bg);
+  color: var(--accent);
+  border: 1px solid var(--cr-card-border);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-top: 16px;
+  margin-right: 6px;
+  letter-spacing: 0.02em;
+}
+
+/* ============================
+   REFLECTION SECTION (Dark Type A)
+============================ */
+.reflection-section {
+  background: #0F0F0F;
+  color: #fff;
+  padding: 80px 60px;
+  position: relative;
+  overflow: hidden;
+}
+.reflection-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: radial-gradient(circle, rgba(22,82,216,0.05) 1px, transparent 1px);
+  background-size: 36px 36px;
+}
+.reflection-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+.reflection-title {
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 48px;
+  color: #fff;
+}
+.reflection-title span { color: #4B7BF5; }
+.reflection-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.reflection-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 28px;
+  transition: all 0.2s;
+}
+.reflection-card:hover {
+  background: rgba(22,82,216,0.12);
+  border-color: rgba(75,123,245,0.3);
+}
+.reflection-q-num {
+  font-size: 11px;
+  font-weight: 700;
+  color: #4B7BF5;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.reflection-q {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.6;
+  word-break: keep-all;
+}
+.reflection-sub {
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
+  margin-top: 10px;
+  line-height: 1.6;
+  word-break: keep-all;
+}
+
+/* ============================
+   FOOTER
+============================ */
+footer {
+  background: var(--surface);
+  border-top: 1px solid var(--cr-card-border);
+  padding: 40px 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.footer-brand { display: flex; align-items: center; gap: 12px; }
+.footer-logo-block {
+  width: 36px;
+  height: 36px;
+  background: var(--accent);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.03em;
+}
+.footer-brand-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+.footer-brand-sub {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+.footer-meta {
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-align: right;
+  line-height: 1.7;
+}
+
+/* ============================
+   ANIMATIONS
+============================ */
+.animate {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.animate.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.animate[data-delay="1"] { transition-delay: 0.1s; }
+.animate[data-delay="2"] { transition-delay: 0.2s; }
+.animate[data-delay="3"] { transition-delay: 0.3s; }
+.animate[data-delay="4"] { transition-delay: 0.4s; }
+.animate[data-delay="5"] { transition-delay: 0.5s; }
+
+/* ============================
+   RESPONSIVE
+============================ */
+@media (max-width: 1024px) {
+  .definition-inner { grid-template-columns: 1fr; gap: 32px; }
+  .overview-grid { grid-template-columns: repeat(3, 1fr); }
+  .reflection-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .hero { padding: 80px 24px 60px; }
+  section { padding: 56px 24px; }
+  .definition-section { padding: 48px 24px; }
+  .reflection-section { padding: 56px 24px; }
+  footer { padding: 32px 24px; }
+  .overview-grid { grid-template-columns: repeat(2, 1fr); }
+  .reflection-grid { grid-template-columns: 1fr; }
+  .detail-card { padding: 28px 24px; }
+  .card-body { padding-left: 0; }
+  .card-header { flex-wrap: wrap; }
+  .card-num { font-size: 2rem; min-width: 40px; }
+  .scroll-hint { display: none; }
+  .footer-meta { text-align: left; }
+}
+@media (max-width: 480px) {
+  .hero h1 { font-size: 2rem; }
+  .overview-grid { grid-template-columns: repeat(2, 1fr); }
+  .viz-menu button { padding: 5px 8px; font-size: 11px; }
+}
+
+/* ============================
+   PRINT
+============================ */
+@media print {
+  .viz-menu, .scroll-hint { display: none !important; }
+  body { font-size: 12px; }
+  .hero { min-height: auto; padding: 40px; }
+  .detail-card { break-inside: avoid; }
+  section { padding: 40px; }
+}
+
+/* ============================
+   REDUCED MOTION
+============================ */
+@media (prefers-reduced-motion: reduce) {
+  .animate { transition: none; opacity: 1; transform: none; }
+  * { animation: none !important; transition: none !important; }
+}
+
+/* ============================
+   PROGRESS BAR
+============================ */
+.progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  background: var(--accent);
+  z-index: 10000;
+  transition: width 0.1s linear;
+  width: 0%;
+}
+
+/* ============================
+  INTRO STRIP
+============================ */
+.intro-strip {
+  background: var(--cr-light-bg);
+  border-top: 4px solid var(--accent);
+  padding: 48px 60px;
+}
+.intro-strip-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 32px;
+}
+.intro-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.intro-item-icon {
+  font-size: 28px;
+  margin-bottom: 4px;
+}
+.intro-item-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+.intro-item-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  word-break: keep-all;
+}
+@media (max-width: 768px) {
+  .intro-strip { padding: 40px 24px; }
+  .intro-strip-inner { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+
+<body>
+
+<a href="#main-content" class="skip-to-content">본문으로 이동</a>
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- UTILITY MENU -->
+<div class="viz-menu" role="toolbar" aria-label="도구 메뉴">
+  <button onclick="cycleTheme()" title="테마 전환">🌓 테마</button>
+  <button onclick="downloadPNG()" title="PNG 저장">⬇ 저장</button>
+  <button onclick="window.print()" title="인쇄">🖨 인쇄</button>
+</div>
+
+<!-- HERO -->
+<header class="hero" role="banner">
+  <span class="hero-eyebrow">MG새마을금고 조직문화 교육</span>
+  <h1>
+    <span class="accent-word">심리적 안전감</span><br>
+    대화가 통하는<br>직장 만들기
+  </h1>
+  <p class="hero-subtitle">
+    솔직하게 말해도 괜찮은 조직 — 심리적 안전감을 높이는<br>
+    검증된 10가지 핵심 실천 전략
+  </p>
+  <div class="hero-meta">
+    <div class="hero-meta-item">
+      <span class="hero-meta-label">과정</span>
+      <span class="hero-meta-value">조직문화 교육</span>
+    </div>
+    <div class="hero-meta-item">
+      <span class="hero-meta-label">대상</span>
+      <span class="hero-meta-value">MG새마을금고 구성원</span>
+    </div>
+    <div class="hero-meta-item">
+      <span class="hero-meta-label">참조</span>
+      <span class="hero-meta-value">PsychSafety.com 글로벌 연구</span>
+    </div>
+  </div>
+  <div class="hero-blue-bar"></div>
+  <div class="scroll-hint">SCROLL</div>
+</header>
+
+<!-- INTRO STRIP -->
+<div class="intro-strip animate">
+  <div class="intro-strip-inner">
+    <div class="intro-item">
+      <div class="intro-item-icon">🔬</div>
+      <div class="intro-item-title">170+ 가지 방법 중 최상위 10선</div>
+      <div class="intro-item-desc">전 세계 의료·항공·기술·교육 업종 현장 경험과 실증적 연구 데이터를 바탕으로 추려낸 가장 효과적인 전략입니다.</div>
+    </div>
+    <div class="intro-item">
+      <div class="intro-item-icon">💬</div>
+      <div class="intro-item-title">말할 수 있어야 강해진다</div>
+      <div class="intro-item-desc">실수를 숨기고 의견을 삼키는 팀은 결코 성장할 수 없습니다. 심리적 안전감은 성과의 전제 조건입니다.</div>
+    </div>
+    <div class="intro-item">
+      <div class="intro-item-icon">🎯</div>
+      <div class="intro-item-title">오늘부터 바로 적용 가능</div>
+      <div class="intro-item-desc">거창한 시스템 개혁 없이도 리더 한 사람의 말 한마디, 태도 하나가 팀 전체의 심리적 안전감을 바꿀 수 있습니다.</div>
+    </div>
+  </div>
+</div>
+
+<!-- DEFINITION SECTION -->
+<div class="definition-section animate">
+  <div class="definition-inner">
+    <div>
+      <p class="definition-quote">
+        팀 안에서 대인관계 위험을 감수해도 안전하다는 공유된 믿음
+      </p>
+      <p class="definition-source">— Amy Edmondson, Harvard Business School (1999)</p>
+      <p style="margin-top:20px; font-size:15px; opacity:0.85; line-height:1.8; word-break:keep-all;">
+        심리적 안전감이란 아이디어를 말하거나, 질문을 던지거나, 우려를 표명하거나, 실수를 인정해도 처벌받지 않는다고 믿는 환경입니다. 단순한 '편안함'이 아니라, 팀 성과를 결정짓는 핵심 조건입니다.
+      </p>
+    </div>
+    <div class="definition-stats">
+      <div class="stat-item">
+        <div class="stat-number">3.5×</div>
+        <div class="stat-desc">심리적 안전감이 높은 팀의 혁신 아이디어 창출량 (Google Project Aristotle)</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">76%</div>
+        <div class="stat-desc">심리적 안전감이 낮을 때 직원들이 의견을 말하지 않는 비율</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">#1</div>
+        <div class="stat-desc">Google이 꼽은 고성과 팀의 가장 중요한 요소</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- OVERVIEW -->
+<main id="main-content">
+<section class="animate">
+  <div class="section-label">Overview</div>
+  <h2 class="section-title">심리적 안전감을 높이는<br>10가지 전략</h2>
+  <div class="divider"></div>
+  <p class="section-desc">각 전략을 클릭하면 해당 상세 내용으로 이동합니다. 팀의 현재 상황에서 가장 시급한 영역부터 시작해 보세요.</p>
+
+  <div class="overview-grid">
+    <a href="#card1" class="overview-card animate" data-delay="1">
+      <div class="overview-num">01</div>
+      <div class="overview-title">권력 격차 줄이기</div>
+    </a>
+    <a href="#card2" class="overview-card animate" data-delay="2">
+      <div class="overview-num">02</div>
+      <div class="overview-title">공동 규범 만들기</div>
+    </a>
+    <a href="#card3" class="overview-card animate" data-delay="3">
+      <div class="overview-num">03</div>
+      <div class="overview-title">경청과 공간 만들기</div>
+    </a>
+    <a href="#card4" class="overview-card animate" data-delay="4">
+      <div class="overview-num">04</div>
+      <div class="overview-title">명확하고 따뜻한 소통</div>
+    </a>
+    <a href="#card5" class="overview-card animate" data-delay="5">
+      <div class="overview-num">05</div>
+      <div class="overview-title">발언에 보상하기</div>
+    </a>
+    <a href="#card6" class="overview-card animate" data-delay="1">
+      <div class="overview-num">06</div>
+      <div class="overview-title">일을 실험으로 보기</div>
+    </a>
+    <a href="#card7" class="overview-card animate" data-delay="2">
+      <div class="overview-num">07</div>
+      <div class="overview-title">회고와 미래성찰</div>
+    </a>
+    <a href="#card8" class="overview-card animate" data-delay="3">
+      <div class="overview-num">08</div>
+      <div class="overview-title">문제 행동 다루기</div>
+    </a>
+    <a href="#card9" class="overview-card animate" data-delay="4">
+      <div class="overview-num">09</div>
+      <div class="overview-title">다양성 존중하기</div>
+    </a>
+    <a href="#card10" class="overview-card animate" data-delay="5">
+      <div class="overview-num">10</div>
+      <div class="overview-title">실수는 당연하다</div>
+    </a>
+  </div>
+</section>
+
+<!-- DETAIL CARDS -->
+<section>
+  <div class="section-label">Top 10 Strategies</div>
+  <h2 class="section-title">상세 전략 가이드</h2>
+  <div class="divider"></div>
+  <p class="section-desc">각 전략의 핵심 개념과 현장 적용 방법을 정리했습니다.</p>
+
+  <div class="cards-list">
+
+    <!-- CARD 1 -->
+    <div class="detail-card animate" id="card1">
+      <div class="card-header">
+        <div class="card-num">01</div>
+        <div class="card-title-group">
+          <div class="card-category">Power Gradient</div>
+          <h3 class="card-title">권력 격차 줄이기 (Levelling Power Gradients)</h3>
+        </div>
+        <div class="card-icon-wrap">⚖️</div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">
+          심리적 안전감을 높이는 가장 강력하고 직접적인 방법입니다. 조직 내 권력 격차가 클수록 사람들은 솔직하게 말하지 않습니다. 1977년 테네리페 항공 참사처럼, 극단적인 권력 격차는 목숨이 위태로운 상황에서도 누군가 의견을 내지 못하게 막을 수 있습니다. 리더는 자신이 가진 공식적 권한(직급), 비공식 권한(연공서열), 사회적 권한(성별·나이 등)을 인식하고 의도적으로 낮춰야 합니다.
+        </p>
+        <div class="card-actions">
+          <div class="card-actions-title">📌 현장 적용 방법</div>
+          <ul>
+            <li>직급 대신 이름으로 부르는 문화 만들기 (예: "김부장님" → "민준 씨")</li>
+            <li>회의 진행 역할을 팀원들에게 순번제로 배분하기</li>
+            <li>결정권을 실제 업무를 수행하는 현장 가까운 곳에 위임하기</li>
+            <li>전 직급이 참여하는 열린 대화 세션(타운홀) 정기 운영</li>
+          </ul>
+        </div>
+        <span class="card-tag">리더십</span>
+        <span class="card-tag">문화</span>
+        <span class="card-tag">우선순위 HIGH</span>
+      </div>
+    </div>
+
+    <!-- CARD 2 -->
+    <div class="detail-card animate" id="card2">
+      <div class="card-header">
+        <div class="card-num">02</div>
+        <div class="card-title-group">
+          <div class="card-category">Shared Norms</div>
+          <h3 class="card-title">공동 규범 만들기 (Establishing Shared Norms)</h3>
+        </div>
+        <div class="card-icon-wrap">📋</div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">
+          팀에서 어떻게 행동해야 하는지 예측 가능할 때 사람들은 더 안전하게 느낍니다. 고성과 팀에는 반드시 팀이 함께 만든 '사회적 계약(Social Contract)'이 있습니다. 이것은 단순한 규칙이 아니라, "우리 팀에서는 이렇게 한다"는 공유된 약속입니다. 중요한 것은 팀원들이 함께 만들어야 한다는 점 — 리더가 혼자 정해서 내려주면 효과가 절반입니다.
+        </p>
+        <div class="card-actions">
+          <div class="card-actions-title">📌 현장 적용 방법</div>
+          <ul>
+            <li>팀 헌장(Team Charter) 워크숍: "우리 팀에서 중요하게 여기는 것은?" 함께 작성</li>
+            <li>회의 규칙 공동 설정 (예: 발언 기회 균등, 다른 의견 환영)</li>
+            <li>신규 입사자 온보딩 시 팀 규범 문서 공유</li>
+            <li>분기별 팀 규범 점검 및 업데이트</li>
+          </ul>
+        </div>
+        <span class="card-tag">팀 빌딩</span>
+        <span class="card-tag">프로세스</span>
+      </div>
+    </div>
+
+    <!-- CARD 3 -->
+    <div class="detail-card animate" id="card3">
+      <div class="card-header">
+        <div class="card-num">03</div>
+        <div class="card-title-group">
+          <div class="card-category">Active Listening</div>
+          <h3 class="card-title">경청과 공간 만들기 (Effective Listening & Giving Space)</h3>
+        </div>
+        <div class="card-icon-wrap">👂</div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">
+          심리적 안전감은 '말하기'만의 문제가 아닙니다. 말해도 듣지 않는 조직에서는 곧 아무도 말하지 않게 됩니다. 특히 좋지 않은 소식 — 프로젝트 지연, 실수, 나쁜 결정 — 을 들을 때 리더가 어떻게 반응하느냐가 핵심입니다. 연구에 따르면 적극적 경청은 팀 성과를 유의미하게 높이는 것으로 나타났습니다.
+        </p>
+        <div class="card-actions">
+          <div class="card-actions-title">📌 현장 적용 방법</div>
+          <ul>
+            <li>회의 중 노트북·핸드폰 내려놓기 — 발언자에 집중하는 환경 조성</li>
+            <li>발언 후 즉각 반박 대신 2~3초 침묵으로 상대방 존중 표현</li>
+            <li>조용한 팀원을 위해 "OO씨는 어떻게 생각하세요?" 먼저 묻기</li>
+            <li>회의 전 잠깐의 '침묵 시간' 도입 — 생각 정리 기회 제공</li>
+          </ul>
+        </div>
+        <span class="card-tag">소통</span>
+        <span class="card-tag">리더십 스킬</span>
+      </div>
+    </div>
+
+    <!-- CARD 4 -->
+    <div class="detail-card animate" id="card4">
+      <div class="card-header">
+        <div class="card-num">04</div>
+        <div class="card-title-group">
+          <div class="card-category">Communication</div>
+          <h3 class="card-title">명확하고 따뜻한 소통 (Clear & Compassionate Communication)</h3>
+        </div>
+        <div class="card-icon-wrap">💬</div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">
+          바쁘고 스트레스받는 상황에서 우리는 자신도 모르게 퉁명스럽게 말합니다. 의도가 없어도 받아들이는 쪽에서는 상처가 됩니다. 심리적 안전감이 높은 팀은 항상 의도적으로 명확하고 친절하게 소통합니다. 비폭력 대화(NVC), 단계적 주장법(Graded Assertiveness) 같은 구체적 도구를 활용하면 효과가 높아집니다.
+        </p>
+        <div class="card-actions">
+          <div class="card-actions-title">📌 현장 적용 방법</div>
+          <ul>
+            <li>피드백 시 SBI 모델 활용: 상황(Situation) → 행동(Behavior) → 영향(Impact)</li>
+            <li>줄임말·전문용어 사용 시 반드시 설명 추가</li>
+            <li>슬랙·카카오톡 메시지에서도 톤 의식하기 — 짧아도 따뜻하게</li>
+            <li>비판 전에 이해 먼저: "어떤 이유에서 그렇게 하셨나요?" 먼저 묻기</li>
+          </ul>
+        </div>
+        <span class="card-tag">소통 스킬</span>
+        <span class="card-tag">피드백</span>
+      </div>
+    </div>
+
+    <!-- CARD 5 -->
+    <div class="detail-card animate" id="card5">
+      <div class="card-header">
+        <div class="card-num">05</div>
+        <div class="card-title-group">
+          <div class="card-category">Rewarding Voice</div>
+          <h3 class="card-title">발언에 보상하기 (Rewarding Speaking Up)</h3>
+        </div>
+        <div class="card-icon-wrap">🏆</div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">
+          안전한 환경을 만드는 것만으로는 부족합니다. 발언 자체를 가치 있게 여기고, 칭찬하고, 권장해야 합니다. 우려를 제기했을 때 감사를 표현하고, 실수를 인정했을 때 비난 대신 원인 분석으로 접근하는 것 — 이 한 가지만으로도 팀 문화가 달라집니다. 사람들은 '말해도 괜찮다'는 것을 경험으로 배웁니다.
+        </p>
+        <div class="card-actions">
+          <div class="card-actions-title">📌 현장 적용 방법</div>
+          <ul>
+            <li>회의에서 의견 낸 팀원에게 즉각적인 인정과 감사 표현</li>
+            <li>문제를 먼저 제기한 팀원을 공개적으로 칭찬하기</li>
+            <li>실수 보고 시 "어떻게 이런 일이!" 대신 "알려줘서 고마워요, 같이 봅시다"</li>
+            <li>1:1 미팅에서 "최근 걱정되는 부분이 있나요?" 정기적으로 질문하기</li>
+          </ul>
+        </div>
+        <span class="card-tag">인정·칭찬</span>
+        <span class="card-tag">팀 문화</span>
+        <span class="card-tag">우선순위 HIGH</span>
+      </div>
+    </div>
+
+    <!-- CARD 6 -->
+    <div class="detail-card animate" id="card6">
+      <div class="card-header">
+        <div class="card-num">06</div>
+        <div class="card-title-group">
+          <div class="card-category">Experimentation</div>
+          <h3 class="card-title">일을 실험으로 바라보기 (Framing Work as Experiments)</h3>
+        </div>
+        <div class="card-icon-wrap">🧪</div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">
+          언어가 문화를 만듭니다. "목표", "마감", "성과"만 이야기하면 사람들은 달성/미달의 이분법으로 일을 바라보게 됩니다. 반면 일을 '실험'으로 프레이밍하면, 실패는 문제가 아니라 학습의 원천이 됩니다. 고성과 팀은 "이번 시도에서 뭘 배울 수 있을까?"를 항상 묻습니다.
+        </p>
+        <div class="card-actions">
+          <div class="card-actions-title">📌 현장 적용 방법</div>
+          <ul>
+            <li>새 프로젝트를 시작할 때 "이 실험의 성공 기준과 학습 기준은 무엇인가?" 함께 정의</li>
+            <li>실패한 시도를 팀 전체에 공유하고 "여기서 배운 것은?" 토론</li>
+            <li>파일럿(시범) 방식 도입: 작게 시작, 빠르게 학습, 개선 반복</li>
+            <li>"이걸 해봐도 될까요?" 질문에 "한번 해봐요" 로 응답하는 문화</li>
+          </ul>
+        </div>
+        <span class="card-tag">학습 문화</span>
+        <span class="card-tag">혁신</span>
+      </div>
+    </div>
+
+    <!-- CARD 7 -->
+    <div class="detail-card animate" id="card7">
+      <div class="card-header">
+        <div class="card-num">07</div>
+        <div class="card-title-group">
+          <div class="card-category">Retrospectives</div>
+          <h3 class="card-title">회고와 미래성찰 (Retrospectives & Futurespectives)</h3>
+        </div>
+        <div class="card-icon-wrap">🔄</div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">
+          고성과 팀은 의도적으로 '배움'을 일상에 내재화합니다. 프로젝트 종료 후 회고(Retrospective)를 통해 잘된 것과 개선할 것을 함께 살펴보고, '미래성찰(Futurespective)'로 아직 일어나지 않은 실패를 미리 상상하며 대비합니다. 이런 논의가 반복될수록 팀은 실패를 자연스럽게 이야기하는 근육이 생깁니다.
+        </p>
+        <div class="card-actions">
+          <div class="card-actions-title">📌 현장 적용 방법</div>
+          <ul>
+            <li>월 1회 팀 회고 미팅: Keep(잘한 것) / Problem(아쉬운 것) / Try(다음에 해볼 것)</li>
+            <li>프리모텀(Pre-mortem): "이 프로젝트가 실패한다면 이유는 무엇일까?" 미리 상상</li>
+            <li>회고 결과를 문서화하고 팀 전체가 접근 가능하게 공유</li>
+            <li>비난 없는 회고 원칙 명시: "사람이 아니라 시스템과 프로세스를 봅니다"</li>
+          </ul>
+        </div>
+        <span class="card-tag">학습 조직</span>
+        <span class="card-tag">리스크 관리</span>
+      </div>
+    </div>
+
+    <!-- CARD 8 -->
+    <div class="detail-card animate" id="card8">
+      <div class="card-header">
+        <div class="card-num">08</div>
+        <div class="card-title-group">
+          <div class="card-category">Accountability</div>
+          <h3 class="card-title">문제 행동에 단호하게 대응하기 (Addressing Problematic Behaviour)</h3>
+        </div>
+        <div class="card-icon-wrap">🛡️</div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">
+          심리적 안전감이 높은 팀에는 명확하고 강력한 행동 기준이 있습니다. 처벌이나 수치심을 주는 게 아니라, 구성원 모두가 높은 기준에 서로 책임을 집니다. 중요한 것은 한 번의 실수는 공감과 피드백으로 접근하되, 반복적이고 해악적인 행동(왕따, 배제, 폄하)에는 단호하게 대응해야 한다는 점입니다.
+        </p>
+        <div class="card-actions">
+          <div class="card-actions-title">📌 현장 적용 방법</div>
+          <ul>
+            <li>팀 헌장에 '절대 안 되는 행동' 명시 — 모두 합의하에</li>
+            <li>발언 가로막기, 비아냥, 배제 등 발생 시 그 자리에서 즉시 부드럽게 언급</li>
+            <li>반복되는 문제 행동은 1:1 미팅에서 명확하게 피드백</li>
+            <li>"심리적 안전감 = 아무 말 해도 OK"가 아님을 팀 전체에 공유</li>
+          </ul>
+        </div>
+        <span class="card-tag">책임</span>
+        <span class="card-tag">경계 설정</span>
+      </div>
+    </div>
+
+    <!-- CARD 9 -->
+    <div class="detail-card animate" id="card9">
+      <div class="card-header">
+        <div class="card-num">09</div>
+        <div class="card-title-group">
+          <div class="card-category">Inclusion</div>
+          <h3 class="card-title">다양성 존중하기 (Embracing Differences)</h3>
+        </div>
+        <div class="card-icon-wrap">🌈</div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">
+          심리적 안전감은 모든 사람에게 똑같이 보이지 않습니다. 문화적 배경, 신경다양성, 경험 차이에 따라 각자가 '안전함'을 느끼는 방식은 다릅니다. 눈을 맞추며 크게 말하는 것이 어떤 이에게는 자신감이지만, 다른 이에게는 고통일 수 있습니다. 중요한 것은 획일적인 '모범 팀원' 이미지를 버리는 것입니다.
+        </p>
+        <div class="card-actions">
+          <div class="card-actions-title">📌 현장 적용 방법</div>
+          <ul>
+            <li>회의 전 서면 의견 제출 옵션 제공 — 내성적인 팀원 배려</li>
+            <li>발언 스타일 다양성 존중: 짧게 말하는 것, 돌아서 말하는 것 모두 괜찮</li>
+            <li>나이·직급·성별 고정관념 없이 모든 의견을 동등하게 다루기</li>
+            <li>"침묵 = 동의"가 아님을 회의 원칙으로 명시</li>
+          </ul>
+        </div>
+        <span class="card-tag">포용성</span>
+        <span class="card-tag">다양성</span>
+      </div>
+    </div>
+
+    <!-- CARD 10 -->
+    <div class="detail-card animate" id="card10">
+      <div class="card-header">
+        <div class="card-num">10</div>
+        <div class="card-title-group">
+          <div class="card-category">Human Error</div>
+          <h3 class="card-title">실수는 인간의 당연한 속성 (Accepting Human Error as Normal)</h3>
+        </div>
+        <div class="card-icon-wrap">🧠</div>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">
+          고성과 팀은 인간이 완벽할 수 없다는 사실을 받아들입니다. 실수를 개인 문제로 보지 않고, 그 실수를 유발한 상황·시스템·맥락을 함께 분석합니다. 이것이 '로컬 합리성(Local Rationality)' 원칙입니다. 실수가 시스템적으로 대비되어 있다고 느낄 때, 사람들은 더 자유롭게 말하고 더 용감하게 도전합니다.
+        </p>
+        <div class="card-actions">
+          <div class="card-actions-title">📌 현장 적용 방법</div>
+          <ul>
+            <li>실수 발생 시 첫 마디: "어떤 상황에서 이런 일이 생겼나요?" (원인 탐색)</li>
+            <li>체크리스트·이중 확인·알림 등 실수 방지 시스템 팀이 함께 설계</li>
+            <li>"누구의 잘못인가" 대신 "어떤 시스템을 바꿀까" 질문으로 전환</li>
+            <li>리더가 먼저 자신의 실수를 공개적으로 인정하고 학습 내용 공유</li>
+          </ul>
+        </div>
+        <span class="card-tag">심리적 안전감 핵심</span>
+        <span class="card-tag">우선순위 HIGH</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+</main>
+
+<!-- REFLECTION SECTION -->
+<div class="reflection-section">
+  <div class="reflection-inner">
+    <h2 class="reflection-title">
+      지금 우리 팀은<br>
+      <span>어디에 있나요?</span>
+    </h2>
+    <div class="reflection-grid">
+      <div class="reflection-card animate">
+        <div class="reflection-q-num">성찰 01</div>
+        <div class="reflection-q">우리 팀에서 "솔직히 말씀드리기가 좀 어렵습니다"라는 말이 나온 적 있나요?</div>
+        <div class="reflection-sub">있다면 — 왜 그랬을지 맥락을 먼저 살펴보세요.</div>
+      </div>
+      <div class="reflection-card animate" data-delay="1">
+        <div class="reflection-q-num">성찰 02</div>
+        <div class="reflection-q">팀 회의에서 항상 같은 사람만 이야기하고 있지는 않나요?</div>
+        <div class="reflection-sub">조용한 팀원의 침묵이 동의인지, 포기인지 확인해보세요.</div>
+      </div>
+      <div class="reflection-card animate" data-delay="2">
+        <div class="reflection-q-num">성찰 03</div>
+        <div class="reflection-q">내가 실수를 인정했을 때, 팀원들은 어떤 반응을 보였나요?</div>
+        <div class="reflection-sub">리더의 솔직함이 팀의 솔직함을 만듭니다.</div>
+      </div>
+      <div class="reflection-card animate" data-delay="3">
+        <div class="reflection-q-num">성찰 04</div>
+        <div class="reflection-q">우리 팀에 "우리는 이렇게 한다"는 공유된 약속이 있나요?</div>
+        <div class="reflection-sub">없다면 오늘 팀원들과 함께 만들어보세요.</div>
+      </div>
+      <div class="reflection-card animate" data-delay="4">
+        <div class="reflection-q-num">성찰 05</div>
+        <div class="reflection-q">지난 한 달간 좋지 않은 소식을 보고받았을 때 어떻게 반응했나요?</div>
+        <div class="reflection-sub">그 반응이 팀의 다음 보고 문화를 결정합니다.</div>
+      </div>
+      <div class="reflection-card animate" data-delay="5">
+        <div class="reflection-q-num">성찰 06</div>
+        <div class="reflection-q">10가지 전략 중 오늘부터 바로 실천할 수 있는 한 가지는 무엇인가요?</div>
+        <div class="reflection-sub">작은 시작이 팀 문화를 바꾸는 첫 번째 실험입니다.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">
+    <div class="footer-logo-block">청람</div>
+    <div>
+      <div class="footer-brand-name">청람M&C</div>
+      <div class="footer-brand-sub">Leadership & Organizational Culture Consulting</div>
+    </div>
+  </div>
+  <div class="footer-meta">
+    MG새마을금고 | 조직문화 교육<br>
+    내용 출처: psychsafety.com (Tom Geraghty) | 번역·재구성: 청람M&C<br>
+    <a href="https://crmc.co.kr" target="_blank" style="color: var(--accent); text-decoration: underline;">crmc.co.kr</a>
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script>
+// Theme management
+var currentTheme = localStorage.getItem('cr-theme') || 'light';
+applyTheme(currentTheme);
+
+function applyTheme(t) {
+  document.documentElement.className = 'theme-' + t;
+  currentTheme = t;
+  localStorage.setItem('cr-theme', t);
+}
+function cycleTheme() {
+  applyTheme(currentTheme === 'light' ? 'dark' : 'light');
+}
+
+// Menu toggle (not used but required by spec)
+function toggleMenu() {}
+
+// PNG Download
+function downloadPNG() {
+  if (typeof htmlToImage === 'undefined') { alert('html-to-image 라이브러리 로딩 중입니다. 잠시 후 다시 시도해주세요.'); return; }
+  var btn = document.querySelector('.viz-menu button:nth-child(2)');
+  if (btn) btn.textContent = '⏳ 저장 중...';
+  htmlToImage.toPng(document.body, { quality: 1.0, pixelRatio: 2 })
+    .then(function(dataUrl) {
+      var link = document.createElement('a');
+      link.download = 'psychological-safety-top10.png';
+      link.href = dataUrl;
+      link.click();
+      if (btn) btn.textContent = '⬇ 저장';
+    })
+    .catch(function() {
+      if (btn) btn.textContent = '⬇ 저장';
+      alert('저장 중 오류가 발생했습니다.');
+    });
+}
+
+// Intersection Observer for animations
+var observer = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.animate').forEach(function(el) {
+  observer.observe(el);
+});
+
+// Progress bar
+window.addEventListener('scroll', function() {
+  var scrollTop = window.scrollY || document.documentElement.scrollTop;
+  var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  document.getElementById('progressBar').style.width = progress + '%';
+});
+</script>
+</body>
+</html>
