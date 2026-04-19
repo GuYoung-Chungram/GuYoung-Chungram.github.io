@@ -1,5 +1,5 @@
 // Google Cloud Console에서 HTTP 참조자 제한 설정 필수: crmc.co.kr/*
-const GEMINI_API_KEY = 'AIzaSyBhCfpaiaAgPHrdQLJ1d_Mb2Cyy59lyZK8';
+const GEMINI_API_KEY = 'AIzaSyBDEZloySOoxx4nVH11ll4bHi2Qv3PHGUo';
 const GEMINI_MODEL = 'gemini-3-flash-preview';
 const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:streamGenerateContent?alt=sse&key=${GEMINI_API_KEY}`;
 
