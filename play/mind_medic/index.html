@@ -1,1 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko" class="theme-light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>마음 처방전</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a href="#main-content" class="skip-link" onfocus="this.style.cssText='position:fixed;left:16px;top:16px;z-index:10000;padding:8px 16px;background:var(--accent);color:white;text-decoration:none;border-radius:4px;width:auto;height:auto;overflow:visible;'" onblur="this.style.cssText='position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;'">본문으로 건너뛰기</a>
 
+  <div class="viz-menu">
+    <button class="viz-menu-toggle" onclick="toggleMenu()" aria-label="메뉴">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="3" y1="5" x2="17" y2="5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="15" x2="17" y2="15"/>
+      </svg>
+    </button>
+    <div class="viz-menu-dropdown" id="vizMenuDropdown">
+      <button onclick="cycleTheme()"><span id="themeIcon">☀️</span><span id="themeLabel">라이트</span></button>
+      <button onclick="downloadImage()"><span>📥</span><span>PNG 다운로드</span></button>
+      <button onclick="window.print()"><span>🖨️</span><span>인쇄 / PDF</span></button>
+    </div>
+  </div>
+
+  <header class="cr-header-bar" role="banner">
+    <div class="header-inner">
+      <span class="header-brand">마음 처방전</span>
+      <span class="header-tag">Mind Medic</span>
+    </div>
+  </header>
+
+  <main id="main-content" role="main">
+    <div class="page-shell">
+
+      <section class="hero animate" aria-labelledby="hero-heading">
+        <p class="eyebrow">감정 처방 서비스</p>
+        <h1 id="hero-heading" class="cr-accent-underline">오늘 당신의 마음에<br>귀 기울여 볼까요?</h1>
+        <p class="subtitle">자신의 감정을 파악하기 어려운 현대인의 혼란스러운 마음을 함께 읽어보고, 나에게 필요한 처방을 찾아보세요.</p>
+      </section>
+
+      <section class="survey" id="surveySection" aria-label="감정 선택">
+        <p class="section-label">오늘 당신의 마음은 어떤가요? <span class="text-secondary">(여러 개 선택)</span></p>
+        <div class="mood-grid" id="moodGrid" role="group" aria-label="감정 목록"></div>
+        <div class="action-row">
+          <button class="action-button" id="diagnoseButton" disabled>마음 처방받기</button>
+        </div>
+      </section>
+
+      <section class="result hidden" id="resultSection" aria-label="처방 결과">
+        <div class="result-card card" data-reveal>
+          <div class="result-meta animate">
+            <span class="result-tag">당신을 위한 마음 처방전</span>
+            <time class="result-date text-secondary animate delay-1" id="resultDate"></time>
+          </div>
+          <p class="result-title animate delay-2" id="resultTitle"></p>
+          <blockquote class="result-summary animate delay-3" id="resultSummary"></blockquote>
+
+          <div class="prescriptions" id="prescriptions">
+            <div class="prescription-loading">
+              <div class="spinner"></div>
+              <p>당신만을 위한 처방을 정성스레 준비하고 있습니다...</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="result-actions">
+          <button class="secondary-button" id="backButton">다른 기분 선택하기</button>
+          <button class="share-button" id="shareButton">저장하기 / 공유하기</button>
+        </div>
+        <p class="share-note text-secondary" id="shareNote"></p>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p class="text-secondary">마음 처방전 — 당신의 감정을 소중히 여깁니다</p>
+    </div>
+  </footer>
+
+  <script>
+    // === Menu ===
+    function toggleMenu() {
+      var dropdown = document.getElementById('vizMenuDropdown');
+      if (dropdown) dropdown.classList.toggle('open');
+    }
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.viz-menu')) {
+        var dropdown = document.getElementById('vizMenuDropdown');
+        if (dropdown) dropdown.classList.remove('open');
+      }
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        var dropdown = document.getElementById('vizMenuDropdown');
+        if (dropdown) dropdown.classList.remove('open');
+      }
+    });
+
+    // === Theme ===
+    var savedTheme = localStorage.getItem('cr-viz-theme');
+    var currentTheme = savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    function applyTheme(t) {
+      document.documentElement.className = 'theme-' + t;
+      document.getElementById('themeIcon').textContent = t === 'dark' ? '🌙' : '☀️';
+      document.getElementById('themeLabel').textContent = t === 'dark' ? '다크' : '라이트';
+      localStorage.setItem('cr-viz-theme', t);
+      currentTheme = t;
+    }
+    function cycleTheme() { applyTheme(currentTheme === 'dark' ? 'light' : 'dark'); }
+    applyTheme(currentTheme);
+
+    // === Scroll Reveal ===
+    document.querySelectorAll('[data-reveal]').forEach(function(el) { el.classList.add('reveal'); });
+    var revealObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('visible'); revealObserver.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(function(el) { revealObserver.observe(el); });
+    setTimeout(function() { document.querySelectorAll('.reveal').forEach(function(el) { el.classList.add('visible'); }); }, 500);
+
+    // === Download PNG ===
+    async function downloadImage() {
+      var menu = document.querySelector('.viz-menu');
+      menu.style.display = 'none';
+      try {
+        var url = await htmlToImage.toPng(document.body, { quality: 1, pixelRatio: 2, filter: function(n) { return !n.classList || !n.classList.contains('viz-menu'); } });
+        var a = document.createElement('a'); a.href = url;
+        a.download = '마음처방전.png'; a.click();
+      } catch(e) { console.error('Download failed:', e); }
+      menu.style.display = '';
+    }
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>
