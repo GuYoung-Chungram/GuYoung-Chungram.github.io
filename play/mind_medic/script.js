@@ -283,7 +283,8 @@ function renderPrescriptions(text) {
 
 async function shareResult() {
   const prescriptionText = document.getElementById('prescriptions').innerText;
-  const shareText = `마음 처방전\n\n${buildSummary()}\n\n${prescriptionText}`;
+  const shareText = `${buildSummary()}\n\n${prescriptionText}`;
+
 
   if (navigator.share) {
     try {
