@@ -443,6 +443,23 @@ body {
   font-family: var(--cr-font);
 }
 .copy-btn:hover { background: rgba(22,82,216,0.45); color: #fff; }
+.gemini-btn {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  width: 100%;
+  background: #fff;
+  color: #1a73e8;
+  border: 1.5px solid #dadce0;
+  border-radius: var(--cr-radius);
+  padding: 9px 14px;
+  font-size: 12px; font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s;
+  font-family: var(--cr-font);
+  text-decoration: none;
+  margin-top: 8px;
+}
+.gemini-btn:hover { background: #f0f4ff; box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
+.gemini-btn img { width: 16px; height: 16px; }
 .prompt-text {
   font-size: 12.5px;
   line-height: 1.85;
@@ -2305,6 +2322,10 @@ body {
 「고양특례시 노인복지 지원 조례」 제○조
 
 <span class="cmt"># 위 통계는 KOSIS(kosis.kr)에서 복사해서 붙여넣기하세요.</span></div>
+              <a class="gemini-btn" href="https://gemini.google.com" target="_blank" rel="noopener">
+                <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" alt="Gemini">
+                Gemini 열기
+              </a>
             </div>
 
             <div class="ex-prompt-box">
@@ -2336,6 +2357,10 @@ body {
 <span class="var">{ALIO 또는 KOSIS에서 찾은 사례 1~2건 붙여넣기}</span>
 
 <span class="cmt"># 사례를 넣으면 AI가 "수원시 사례와 비교하면~" 형식으로 자동 인용합니다.</span></div>
+              <a class="gemini-btn" href="https://gemini.google.com" target="_blank" rel="noopener">
+                <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" alt="Gemini">
+                Gemini 열기
+              </a>
             </div>
 
             <div class="ex-prompt-box">
@@ -2362,6 +2387,10 @@ body {
 - 마지막: 담당자·연락처 포함
 
 <span class="cmt"># 정보가 부족해도 즉시 초안 작성. 빈칸은 (확인 중)으로 처리해줘.</span></div>
+              <a class="gemini-btn" href="https://gemini.google.com" target="_blank" rel="noopener">
+                <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" alt="Gemini">
+                Gemini 열기
+              </a>
             </div>
 
           </div>
@@ -2616,6 +2645,10 @@ body {
 [담당부서]:
 
 <span class="comment"># 입력이 불완전하면 빠진 항목을 먼저 물어보세요.</span></div>
+              <a class="gemini-btn" href="https://gemini.google.com" target="_blank" rel="noopener">
+                <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" alt="Gemini">
+                Gemini 열기
+              </a>
             </div>
           </div>
 
@@ -2663,6 +2696,10 @@ body {
 [참고 사례]:
 
 <span class="comment"># 사례가 있으면 유사 지자체 정책을 참고해 보완하세요.</span></div>
+              <a class="gemini-btn" href="https://gemini.google.com" target="_blank" rel="noopener">
+                <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" alt="Gemini">
+                Gemini 열기
+              </a>
             </div>
           </div>
 
@@ -2710,6 +2747,10 @@ body {
 [담당자·연락처]:
 
 <span class="comment"># 정보가 부족해도 일단 초안을 작성하고 "(확인 중)" 표시 후 보완 요청하세요.</span></div>
+              <a class="gemini-btn" href="https://gemini.google.com" target="_blank" rel="noopener">
+                <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" alt="Gemini">
+                Gemini 열기
+              </a>
             </div>
           </div>
 
@@ -3539,6 +3580,10 @@ function renderPanels() {
                 <button class="copy-btn" onclick="copyPrompt(this,'${r.id}')">복사</button>
               </div>
               <div class="prompt-text" id="prompt-${r.id}">${r.prompt.replace(/<var>/g,'<span class="var">').replace(/<\/var>/g,'</span>')}</div>
+              <a class="gemini-btn" href="https://gemini.google.com" target="_blank" rel="noopener">
+                <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" alt="Gemini">
+                Gemini 열기
+              </a>
             </div>
             <div class="tip-box">
               <div class="tip-icon">💡</div>
