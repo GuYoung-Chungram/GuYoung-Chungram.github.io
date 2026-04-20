@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>고양특례시 신규공직자를 위한 AI활용 보고서 작성 실습</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -24,6 +27,14 @@
   --green: #1B7A4E;
   --green-bg: #E8F5EE;
   --green-border: #A3D5BC;
+  /* ── 고양특례시 페스티벌 팔레트 ── */
+  --goyang-amber:  #E8951A;
+  --goyang-amber2: #C8780E;
+  --goyang-brown:  #5C2D0A;
+  --goyang-gold:   #F5C842;
+  --goyang-cream:  #FEF6E4;
+  --goyang-warm:   #FDF0D0;
+  --bnav-h: 62px;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -488,42 +499,6 @@ body {
   border-color: var(--green);
 }
 
-/* WRITE AREA */
-.write-area {
-  background: var(--cr-bg);
-  border: 1px solid var(--cr-border);
-  border-radius: var(--cr-radius);
-  box-shadow: var(--cr-shadow-sm);
-  padding: 20px;
-  margin-top: 4px;
-}
-.write-label {
-  font-size: 12px; font-weight: 600;
-  color: var(--cr-gray);
-  margin-bottom: 10px;
-}
-.write-input {
-  width: 100%;
-  border: 1px solid var(--cr-border);
-  border-radius: var(--cr-radius);
-  padding: 12px 14px;
-  font-size: 13px;
-  font-family: var(--cr-font);
-  line-height: 1.7;
-  color: var(--cr-text);
-  background: var(--cr-surface);
-  resize: vertical;
-  min-height: 110px;
-  outline: none;
-  transition: border-color 0.15s;
-}
-.write-input:focus { border-color: var(--cr-accent); background: #fff; }
-.write-actions {
-  display: flex;
-  gap: 8px;
-  margin-top: 10px;
-  justify-content: flex-end;
-}
 .btn {
   padding: 8px 20px;
   border-radius: var(--cr-radius);
@@ -542,23 +517,6 @@ body {
   border: 1px solid var(--cr-border);
 }
 .btn-outline:hover { background: var(--cr-surface); }
-
-/* FEEDBACK */
-.feedback-area {
-  display: none;
-  margin-top: 12px;
-  padding: 14px 16px;
-  background: var(--green-bg);
-  border: 1px solid var(--green-border);
-  border-radius: var(--cr-radius);
-}
-.feedback-area.show { display: block; }
-.feedback-title {
-  font-size: 13px; font-weight: 700;
-  color: var(--green);
-  margin-bottom: 4px;
-}
-.feedback-text { font-size: 12.5px; color: #1A4038; line-height: 1.65; }
 
 /* PANEL */
 .report-panel { display: none; }
@@ -1023,7 +981,6 @@ body {
 
 /* Entrance animations for panels */
 .report-panel.active .card,
-.report-panel.active .write-area,
 .report-panel.active .two-col {
   animation: fadeSlideUp 0.38s cubic-bezier(0.22,1,0.36,1) both;
 }
@@ -1031,7 +988,6 @@ body {
 .report-panel.active .card:nth-child(2) { animation-delay: 0.1s; }
 .report-panel.active .two-col { animation-delay: 0.16s; }
 .report-panel.active .card:nth-child(4) { animation-delay: 0.22s; }
-.report-panel.active .write-area { animation-delay: 0.28s; }
 
 .report-panel.active .page-header {
   animation: fadeSlideIn 0.4s cubic-bezier(0.22,1,0.36,1) both;
@@ -1129,6 +1085,7 @@ body {
   z-index: 9000;
   transform: translateY(80px);
   opacity: 0;
+  pointer-events: none;
   transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), opacity 0.3s;
   min-width: 260px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.3);
@@ -1136,6 +1093,7 @@ body {
 .complete-toast.show {
   transform: translateY(0);
   opacity: 1;
+  pointer-events: auto;
 }
 .toast-icon { font-size: 26px; flex-shrink: 0; }
 .toast-text-wrap {}
@@ -1306,6 +1264,9 @@ body {
 }
 @media (max-width: 600px) {
   .site-footer { flex-direction: column; align-items: flex-start; padding: 18px 20px; }
+}
+@media (max-width: 860px) {
+  .site-footer { padding-bottom: calc(var(--bnav-h) + env(safe-area-inset-bottom, 0px) + 16px); }
 }
 
 /* ── OPTIMIZER SIDEBAR ITEM ── */
@@ -1578,6 +1539,299 @@ body {
 }
 .cs-box.before .cs-result { background: #FEE2E2; color: #991B1B; }
 .cs-box.after  .cs-result { background: #D1FAE5; color: #065F46; }
+
+/* ══════════════════════════════════════════
+   고양 모바일 히어로 헤더
+══════════════════════════════════════════ */
+.goyang-hero { display: none; }
+
+@media (max-width: 860px) {
+  .goyang-hero {
+    display: block;
+    background: linear-gradient(150deg, #2E1104 0%, #6B2F08 35%, #B86810 68%, #E8951A 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .goyang-hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 80% at 15% 90%, rgba(245,200,66,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 90% 10%, rgba(255,255,255,0.07) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .goyang-hero::after {
+    content: '';
+    position: absolute;
+    right: -8px; top: 0; bottom: 0; width: 100px;
+    background-image: repeating-linear-gradient(
+      -12deg,
+      rgba(245,200,66,0.07) 0px, rgba(245,200,66,0.07) 1.5px,
+      transparent 1.5px, transparent 18px
+    );
+    pointer-events: none;
+  }
+  .goyang-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px 6px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    position: relative; z-index: 1;
+  }
+  .goyang-topbar-left { display: flex; align-items: center; gap: 7px; }
+  .goyang-logo-chip {
+    background: rgba(255,255,255,0.14);
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 5px;
+    padding: 2px 8px;
+    font-size: 11px; font-weight: 800;
+    color: #fff;
+    letter-spacing: 0.04em;
+  }
+  .goyang-topbar-text {
+    font-size: 11px; font-weight: 500;
+    color: rgba(255,255,255,0.65);
+  }
+  .goyang-topbar-badge {
+    font-size: 10px; font-weight: 700;
+    background: rgba(245,200,66,0.18);
+    color: var(--goyang-gold);
+    border: 1px solid rgba(245,200,66,0.38);
+    padding: 2px 7px;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+  }
+  .goyang-hero-body {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 12px 16px 14px;
+    position: relative; z-index: 1;
+    gap: 8px;
+  }
+  .goyang-hero-main { flex: 1; min-width: 0; }
+  .goyang-hero-eyebrow {
+    font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: rgba(245,200,66,0.85);
+    margin-bottom: 3px;
+  }
+  .goyang-hero-title {
+    font-size: 21px; font-weight: 900;
+    color: #fff;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    margin-bottom: 5px;
+  }
+  .goyang-hero-title em { font-style: normal; color: var(--goyang-gold); }
+  .goyang-hero-sub {
+    font-size: 10.5px; color: rgba(255,255,255,0.5);
+    margin-bottom: 10px;
+  }
+  .goyang-prog-row { display: flex; align-items: center; gap: 7px; }
+  .goyang-prog-dots { display: flex; gap: 4px; }
+  .gpd {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.22);
+    transition: background 0.3s, transform 0.2s;
+  }
+  .gpd.done { background: var(--goyang-gold); }
+  .gpd.active { background: #fff; transform: scale(1.3); box-shadow: 0 0 0 2px rgba(255,255,255,0.25); }
+  .goyang-prog-label {
+    font-size: 11px; font-weight: 700;
+    color: rgba(255,255,255,0.75);
+  }
+  .goyang-mascots {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    flex-shrink: 0;
+    padding-bottom: 2px;
+  }
+  .goyang-mascot-row { display: flex; gap: 5px; }
+  .mascot-bubble {
+    width: 42px; height: 42px;
+    background: rgba(255,255,255,0.11);
+    border: 1.5px solid rgba(255,255,255,0.18);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .mascot-label {
+    font-size: 8.5px; font-weight: 600;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 0.04em;
+    text-align: center;
+  }
+}
+
+/* ══════════════════════════════════════════
+   하단 바텀 네비게이션 (모바일 전용)
+══════════════════════════════════════════ */
+.bottom-nav { display: none; }
+
+@media (max-width: 860px) {
+  .bottom-nav {
+    display: block;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: #fff;
+    border-top: 1px solid var(--cr-border);
+    z-index: 300;
+    box-shadow: 0 -3px 16px rgba(0,0,0,0.07);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .bottom-nav-scroll {
+    display: flex;
+    align-items: stretch;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .bottom-nav-scroll::-webkit-scrollbar { display: none; }
+  .bnav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 58px;
+    padding: 7px 8px 5px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    gap: 3px;
+    flex-shrink: 0;
+    position: relative;
+    transition: background 0.12s;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .bnav-item:active { background: var(--cr-light); }
+  .bnav-item.active { background: var(--cr-surface); }
+  .bnav-item.active::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 10px; right: 10px;
+    height: 2px;
+    background: var(--cr-accent);
+    border-radius: 0 0 2px 2px;
+  }
+  .bnav-num {
+    width: 28px; height: 28px;
+    border-radius: 7px;
+    background: var(--cr-surface);
+    border: 1.5px solid var(--cr-border);
+    color: var(--cr-gray);
+    font-size: 11px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.15s;
+  }
+  .bnav-item.active .bnav-num {
+    background: var(--cr-accent);
+    border-color: var(--cr-accent);
+    color: #fff;
+  }
+  .bnav-item.done .bnav-num {
+    background: var(--green);
+    border-color: var(--green);
+    color: #fff;
+  }
+  .bnav-label {
+    font-size: 9px; font-weight: 600;
+    color: var(--cr-gray);
+    white-space: nowrap;
+    line-height: 1;
+  }
+  .bnav-item.active .bnav-label { color: var(--cr-accent); font-weight: 700; }
+  .bnav-item.done .bnav-label { color: var(--green); }
+  .bnav-divider {
+    width: 1px;
+    background: var(--cr-border);
+    margin: 6px 0;
+    flex-shrink: 0;
+    align-self: stretch;
+  }
+  .bnav-item.bnav-opt .bnav-num {
+    background: #FFF4E6;
+    border-color: #FFB366;
+    font-size: 15px;
+  }
+  .bnav-item.bnav-opt.active .bnav-num {
+    background: var(--goyang-amber);
+    border-color: var(--goyang-amber2);
+    font-size: 15px;
+  }
+  .bnav-item.bnav-opt.active::after { background: var(--goyang-amber); }
+  .bnav-item.bnav-auto .bnav-num {
+    background: var(--cr-light);
+    border-color: var(--cr-accent);
+    font-size: 15px;
+  }
+  .bnav-item.bnav-auto.active .bnav-num {
+    background: var(--cr-accent2);
+    border-color: var(--cr-accent2);
+    font-size: 15px;
+  }
+}
+
+/* ══════════════════════════════════════════
+   모바일 전반 최적화 (860px 이하)
+══════════════════════════════════════════ */
+@media (max-width: 860px) {
+  /* 헤더 컴팩트화 */
+  .header { height: 48px; padding: 0 14px; }
+  .header-logo-mark { width: 28px; height: 28px; }
+  .header-logo-mark span { font-size: 11px; }
+  .header-title { font-size: 12.5px; }
+  .header-sub { display: none; }
+  .progress-wrap { display: none; }
+  .header-badge { display: none; }
+
+  /* 레이아웃 */
+  .layout { grid-template-columns: 1fr; min-height: calc(100vh - 48px); }
+  .sidebar { display: none; }
+  .main {
+    padding: 16px 14px calc(var(--bnav-h) + env(safe-area-inset-bottom, 0px) + 20px);
+    font-size: 15px;
+  }
+  /* 구 모바일 드롭다운 숨김 */
+  .mobile-nav { display: none !important; }
+
+  /* 텍스트 영역 — iOS 자동 확대 방지 */
+  input, textarea, select { font-size: 16px !important; }
+
+  /* 터치 타깃 */
+  .btn { min-height: 46px; padding: 10px 18px; font-size: 14px; }
+  .btn-primary, .btn-outline { touch-action: manipulation; }
+
+  /* 복사 버튼 모바일 강화 */
+  .copy-btn { padding: 7px 16px; font-size: 12px; min-height: 36px; }
+
+  /* 페이지 타이틀 */
+  .page-title { font-size: 20px; }
+
+  /* 2칸 그리드 → 1칸 */
+  .ref-grid { grid-template-columns: 1fr; }
+  .layer-cards { grid-template-columns: 1fr; }
+
+  /* 프롬프트 박스 */
+  .ex-prompt-box { padding: 14px; }
+  .ex-prompt-text { font-size: 13px; line-height: 1.8; }
+
+  /* 토스트 — 바텀 네비 위로 */
+  .complete-toast {
+    bottom: calc(var(--bnav-h) + env(safe-area-inset-bottom,0px) + 12px);
+    right: 12px; left: 12px;
+    min-width: auto;
+  }
+
+  /* 올완료 오버레이 */
+  .all-done-title { font-size: 28px; }
+}
 </style>
 </head>
 <body>
@@ -1601,7 +1855,7 @@ body {
 <!-- HEADER -->
 <header class="header">
   <div class="header-left">
-    <div class="header-logo-mark"><span>청람</span></div>
+
     <div class="header-title-wrap">
       <div class="header-title">고양특례시 신규공직자를 위한 AI활용 보고서 작성 실습</div>
       <div class="header-sub">청람M&amp;C · AI 활용 공직역량 강화 과정</div>
@@ -1618,7 +1872,36 @@ body {
   </div>
 </header>
 
-<!-- MOBILE NAV -->
+<!-- GOYANG MOBILE HERO (모바일 전용) -->
+<section class="goyang-hero" id="goyang-hero">
+  <div class="goyang-topbar">
+    <div class="goyang-topbar-left">
+      <div class="goyang-logo-chip">고양시</div>
+      <span class="goyang-topbar-text">신규공직자 AI 실습</span>
+    </div>
+    <span class="goyang-topbar-badge">2026 교육과정</span>
+  </div>
+  <div class="goyang-hero-body">
+    <div class="goyang-hero-main">
+      <div class="goyang-hero-eyebrow">AI 활용 공직역량 강화 과정</div>
+      <div class="goyang-hero-title">보고서 작성<br><em>AI 실습</em></div>
+      <div class="goyang-hero-sub">청람M&amp;C · 고양특례시 신규공직자</div>
+      <div class="goyang-prog-row">
+        <div class="goyang-prog-dots" id="hero-dots"></div>
+        <span class="goyang-prog-label" id="hero-prog-text">0 / 7 완료</span>
+      </div>
+    </div>
+    <div class="goyang-mascots">
+      <div class="goyang-mascot-row">
+        <div class="mascot-bubble">🌾</div>
+        <div class="mascot-bubble">🐱</div>
+      </div>
+      <div class="mascot-label">고양가와지볍씨</div>
+    </div>
+  </div>
+</section>
+
+<!-- MOBILE NAV (기존 — 하단 바텀 네비로 교체됨) -->
 <nav class="mobile-nav" id="mobile-nav">
   <span class="mobile-nav-label">메뉴</span>
   <select class="mobile-nav-select" id="mobile-select" onchange="onMobileSelect(this.value)">
@@ -2496,7 +2779,7 @@ body {
 <!-- FOOTER -->
 <footer class="site-footer">
   <div class="footer-left">
-    <div class="footer-logo-mark"><span>청람</span></div>
+
     <div class="footer-copy">
       청람M&amp;C · AI 활용 공직역량 강화 과정<br>
       고양특례시 신규공직자 교육 2026
@@ -3056,6 +3339,8 @@ function updateProgress() {
   var total = reports.length;
   document.getElementById('progress-text').textContent = done + ' / ' + total + ' 완료';
   document.getElementById('progress-bar').style.width = ((done/total)*100) + '%';
+  updateHeroDots();
+  syncBottomNav(currentId);
   // 모바일 진행률 동기화
   var mp = document.getElementById('m-prog-text');
   var mb = document.getElementById('m-prog-bar');
@@ -3282,19 +3567,6 @@ function renderPanels() {
         </div>
       </div>
 
-      <!-- 실습 작성 -->
-      <div class="write-area">
-        <div class="write-label">✍️ 직접 작성 실습 — 위 프롬프트로 AI가 생성한 보고서를 붙여넣거나, 직접 작성해보세요.</div>
-        <textarea class="write-input" id="input-${r.id}" placeholder="AI가 작성해준 보고서, 또는 직접 작성한 내용을 여기에 입력하세요..."></textarea>
-        <div class="write-actions">
-          <button class="btn btn-outline" onclick="clearInput('${r.id}')">초기화</button>
-          <button class="btn btn-primary" onclick="submitPractice('${r.id}')">제출 및 완료</button>
-        </div>
-        <div class="feedback-area" id="feedback-${r.id}">
-          <div class="feedback-title">✅ 실습 완료!</div>
-          <div class="feedback-text">수고하셨습니다. 체크리스트를 다시 한 번 확인하고 미흡한 항목은 AI에게 보완을 요청해보세요.</div>
-        </div>
-      </div>
 
     </div>
   `).join('');
@@ -3313,13 +3585,14 @@ function showPanel(id) {
   var panel = document.getElementById('panel-' + id);
   panel.classList.add('active');
   // Force reflow for animation restart
-  panel.querySelectorAll('.card, .write-area, .two-col, .page-header').forEach(function(el){
+  panel.querySelectorAll('.card, .two-col, .page-header').forEach(function(el){
     el.style.animation = 'none';
     el.offsetHeight;
     el.style.animation = '';
   });
   document.getElementById('si-' + id).classList.add('active');
   syncMobileSelect(id);
+  syncBottomNav(id);
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 function showAuto() {
@@ -3337,6 +3610,7 @@ function activateAutoPanel() {
   document.querySelector('.auto-panel').classList.add('active');
   document.getElementById('si-auto').classList.add('active');
   syncMobileSelect('auto');
+  syncBottomNav('auto');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 function showPasswordModal() {
@@ -3418,57 +3692,6 @@ function toggleCheck(rid, ci) {
 function copyPrompt(btn, rid) {
   copyToClipboard(document.getElementById('prompt-' + rid).innerText, btn);
 }
-function clearInput(rid) {
-  document.getElementById('input-' + rid).value = '';
-  document.getElementById('feedback-' + rid).classList.remove('show');
-}
-function submitPractice(rid) {
-  var val = document.getElementById('input-' + rid).value.trim();
-  if (!val) { alert('내용을 입력해주세요.'); return; }
-  var isNew = !doneSet.has(rid);
-  doneSet.add(rid);
-  saveDone();
-  document.getElementById('feedback-' + rid).classList.add('show');
-  renderSidebar();
-  updateProgress();
-
-  if (isNew) {
-    // Confetti burst from button position
-    var btn = event && event.target ? event.target : document.body;
-    var rect = btn.getBoundingClientRect ? btn.getBoundingClientRect() : {left: window.innerWidth/2, top: window.innerHeight/2};
-    var cx = rect.left + (rect.width||0)/2;
-    var cy = rect.top;
-    spawnConfetti(cx, cy);
-
-    // Float emojis
-    var emojis = ['⭐','🎉','✨','🚀','👏'];
-    for (var i = 0; i < 3; i++) {
-      (function(delay, em){
-        setTimeout(function(){
-          spawnFloatEmoji(cx + (Math.random()-0.5)*80, cy, em);
-        }, delay);
-      })(i * 160, emojis[Math.floor(Math.random()*emojis.length)]);
-    }
-
-    // Toast message
-    var doneCount = doneSet.size;
-    var total = reports.length;
-    var msgs = [
-      ['훌륭합니다! 🎯', '첫 번째 보고서 완료! 나머지도 도전해보세요.'],
-      ['순항 중! 🚀', '벌써 ' + doneCount + '개 완료! 이 속도라면 금방입니다.'],
-      ['절반 돌파! ⚡', '딱 중간! 후반전도 파이팅입니다.'],
-      ['거의 다 왔어요! 🔥', doneCount + ' / ' + total + ' 완료. 마지막까지!'],
-      ['대단해요! 💪', total + '개 중 ' + doneCount + '개 달성! 거의 완주입니다.'],
-      ['한 발 남았습니다! 🏅', '마지막 하나! 최선을 다해보세요.'],
-      ['완주! 🏆', '모든 실습을 완료하셨습니다!']
-    ];
-    var msgIdx = Math.min(doneCount - 1, msgs.length - 1);
-    showToast(msgs[msgIdx][0], msgs[msgIdx][1], ['🎯','🚀','⚡','🔥','💪','🏅','🏆'][msgIdx]);
-
-    // Check all done
-    setTimeout(checkAllDone, 800);
-  }
-}
 
 
 // ── OPTIMIZER PANEL ──
@@ -3480,16 +3703,79 @@ function showOpt() {
   document.querySelector('.opt-panel').classList.add('active');
   document.getElementById('si-opt').classList.add('active');
   syncMobileSelect('opt');
+  syncBottomNav('opt');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 function copyOptPrompt(btn, id) {
   copyToClipboard(document.getElementById(id).innerText, btn);
 }
 
+// ── BOTTOM NAV SYNC ──
+var BNAV_ITEMS = ['opt','briefing','policy','event','plan','analysis','incident','survey','auto'];
+function syncBottomNav(activeId) {
+  BNAV_ITEMS.forEach(function(id) {
+    var el = document.getElementById('bnav-' + id);
+    if (!el) return;
+    el.classList.remove('active');
+    if (id !== 'opt' && id !== 'auto') {
+      el.classList.toggle('done', doneSet.has(id));
+    }
+    if (id === activeId) el.classList.add('active');
+  });
+  // 활성 아이템 스크롤 표시
+  var activeEl = document.getElementById('bnav-' + activeId);
+  if (activeEl && activeEl.scrollIntoView) {
+    activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }
+}
+function updateHeroDots() {
+  var dotsEl = document.getElementById('hero-dots');
+  var textEl = document.getElementById('hero-prog-text');
+  if (!dotsEl) return;
+  var total = reports.length;
+  var done = doneSet.size;
+  if (textEl) textEl.textContent = done + ' / ' + total + ' 완료';
+  var html = '';
+  reports.forEach(function(r) {
+    var cls = doneSet.has(r.id) ? 'gpd done' : 'gpd';
+    html += '<div class="' + cls + '"></div>';
+  });
+  dotsEl.innerHTML = html;
+}
+
 // ── INIT ──
 renderSidebar();
 renderPanels();
 updateProgress();
+
+// ── BOTTOM NAV HTML 동적 생성 ──
+(function() {
+  var nav = document.createElement('nav');
+  nav.className = 'bottom-nav';
+  nav.id = 'bottom-nav';
+  var scroll = document.createElement('div');
+  scroll.className = 'bottom-nav-scroll';
+
+  // 먼저 읽기
+  scroll.innerHTML += '<button class="bnav-item bnav-opt" id="bnav-opt" onclick="showOpt()" aria-label="먼저읽기"><div class="bnav-num">🚀</div><span class="bnav-label">먼저읽기</span></button>';
+  scroll.innerHTML += '<div class="bnav-divider"></div>';
+
+  // 보고서 1~7
+  var labels = ['현황','정책','행사','계획','사례','긴급','민원'];
+  reports.forEach(function(r, i) {
+    scroll.innerHTML += '<button class="bnav-item" id="bnav-' + r.id + '" onclick="showPanel(\'' + r.id + '\')" aria-label="' + labels[i] + '">'
+      + '<div class="bnav-num">' + (i+1) + '</div>'
+      + '<span class="bnav-label">' + labels[i] + '</span>'
+      + '</button>';
+  });
+
+  scroll.innerHTML += '<div class="bnav-divider"></div>';
+  scroll.innerHTML += '<button class="bnav-item bnav-auto" id="bnav-auto" onclick="showAuto()" aria-label="심화"><div class="bnav-num">⚡</div><span class="bnav-label">심화</span></button>';
+
+  nav.appendChild(scroll);
+  document.body.appendChild(nav);
+  syncBottomNav('opt');
+})();
 </script>
 </body>
 </html>
