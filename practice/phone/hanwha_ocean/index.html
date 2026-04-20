@@ -1,1 +1,1452 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#E85D00" />
+<title>한화오션 AI Practice Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Sans+Devanagari:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --hanwha-orange: #E85D00;
+  --hanwha-orange-dark: #C54D00;
+  --hanwha-orange-light: #FFF4EC;
+  --hanwha-navy: #0A2540;
+  --hanwha-navy-light: #EEF2F8;
+  --hanwha-teal: #0E7C7B;
+  --hanwha-teal-light: #E6F5F4;
+  --hanwha-amber: #FFB800;
+  --hanwha-amber-light: #FFF9E6;
 
+  --bg: #FFFFFF;
+  --bg-soft: #F7F8FA;
+  --surface: #FFFFFF;
+  --surface-2: #F2F4F8;
+  --text: #0A2540;
+  --text-soft: #46556B;
+  --text-muted: #8996A8;
+  --border: #E5E9F0;
+  --shadow-sm: 0 1px 2px rgba(10,37,64,.06);
+  --shadow: 0 4px 16px rgba(10,37,64,.08);
+  --shadow-lg: 0 12px 40px rgba(10,37,64,.16);
+}
+
+[data-theme="dark"] {
+  --bg: #070D16;
+  --bg-soft: #0D1622;
+  --surface: #111C2C;
+  --surface-2: #172438;
+  --text: #F1F5FB;
+  --text-soft: #C3CDDB;
+  --text-muted: #7A8AA3;
+  --border: #1F2C40;
+  --hanwha-orange-light: #2A1A0D;
+  --hanwha-navy-light: #0F1A2A;
+  --hanwha-teal-light: #0D2A29;
+  --hanwha-amber-light: #2A2310;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.3);
+  --shadow: 0 4px 16px rgba(0,0,0,.4);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,.6);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  font-family: 'Noto Sans KR', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-soft);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: none;
+  transition: background-color .25s ease, color .25s ease;
+}
+
+body.is-locked { overflow: hidden; }
+
+.app {
+  max-width: 430px;
+  min-height: 100vh;
+  margin: 0 auto;
+  background: var(--bg);
+  box-shadow: 0 0 60px rgba(10,37,64,.06);
+  position: relative;
+  padding-bottom: 96px;
+}
+
+/* ===== HEADER ===== */
+.brand-head {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--bg);
+}
+
+.brand-logo-row {
+  height: 88px;
+  background: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border-bottom: 1px solid rgba(10,37,64,.04);
+}
+
+[data-theme="dark"] .brand-logo-row {
+  background: #FFFFFF;
+}
+
+.brand-logo-img {
+  height: 44px;
+  width: auto;
+  display: block;
+  max-width: 74%;
+  object-fit: contain;
+}
+
+.theme-toggle {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(10,37,64,.05);
+  border: 1px solid rgba(10,37,64,.08);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .2s;
+}
+
+.theme-toggle:hover { background: rgba(10,37,64,.1); }
+
+.brand-band {
+  height: 44px;
+  background: var(--hanwha-orange);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.3px;
+}
+
+.brand-hero {
+  width: 100%;
+  display: block;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  background: #0A2540;
+}
+
+/* ===== VIEWS / TABS ===== */
+.view { display: none; padding: 20px 18px 40px; }
+.view.active { display: block; animation: fadeIn .3s ease; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== HOME ===== */
+.home-intro {
+  padding: 22px 0 10px;
+}
+
+.home-intro h1 {
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 1.3;
+  color: var(--text);
+  margin-bottom: 8px;
+  letter-spacing: -0.3px;
+}
+
+.home-intro h1 span {
+  color: var(--hanwha-orange);
+}
+
+.home-intro p {
+  font-size: 14px;
+  color: var(--text-soft);
+  line-height: 1.6;
+}
+
+.section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  margin: 28px 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.section-title::before {
+  content: '';
+  width: 4px;
+  height: 14px;
+  background: var(--hanwha-orange);
+  border-radius: 2px;
+}
+
+/* ===== LANG CHIPS ===== */
+.lang-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.lang-panel-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lang-panel-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+
+.lang-chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.lang-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 14px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1.5px solid transparent;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .18s ease;
+  user-select: none;
+  font-family: inherit;
+}
+
+.lang-chip:hover:not(.fixed) {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.lang-chip .flag { font-size: 15px; line-height: 1; }
+.lang-chip .native {
+  font-family: 'Noto Sans KR', 'Noto Sans Devanagari', 'Inter', sans-serif;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.lang-chip.fixed {
+  background: var(--hanwha-navy);
+  color: #FFFFFF;
+  cursor: default;
+  border-color: var(--hanwha-navy);
+}
+.lang-chip.fixed .native { color: rgba(255,255,255,.75); }
+
+.lang-chip.active {
+  background: var(--hanwha-orange);
+  color: #FFFFFF;
+  border-color: var(--hanwha-orange);
+  box-shadow: 0 4px 12px rgba(232,93,0,.25);
+}
+.lang-chip.active .native { color: rgba(255,255,255,.85); }
+
+.lang-chip.sm { padding: 7px 12px; font-size: 12px; }
+.lang-chip.sm .flag { font-size: 14px; }
+.lang-chip.sm .native { font-size: 11px; }
+
+/* ===== GROUP CARDS ===== */
+.group-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.group-card {
+  padding: 18px 14px 16px;
+  border-radius: 18px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: transform .2s ease, box-shadow .2s ease;
+  border: 1px solid var(--border);
+}
+
+.group-card:active { transform: scale(0.98); }
+
+.group-card.c-orange { background: var(--hanwha-orange-light); }
+.group-card.c-orange .group-icon-wrap { background: rgba(232,93,0,.15); color: var(--hanwha-orange); }
+.group-card.c-orange .group-count { color: var(--hanwha-orange); }
+
+.group-card.c-navy { background: var(--hanwha-navy-light); }
+.group-card.c-navy .group-icon-wrap { background: rgba(10,37,64,.12); color: var(--hanwha-navy); }
+.group-card.c-navy .group-count { color: var(--hanwha-navy); }
+
+.group-card.c-amber { background: var(--hanwha-amber-light); }
+.group-card.c-amber .group-icon-wrap { background: rgba(255,184,0,.2); color: #8A6200; }
+.group-card.c-amber .group-count { color: #8A6200; }
+
+.group-card.c-teal { background: var(--hanwha-teal-light); }
+.group-card.c-teal .group-icon-wrap { background: rgba(14,124,123,.15); color: var(--hanwha-teal); }
+.group-card.c-teal .group-count { color: var(--hanwha-teal); }
+
+[data-theme="dark"] .group-card.c-amber .group-icon-wrap { color: var(--hanwha-amber); }
+[data-theme="dark"] .group-card.c-amber .group-count { color: var(--hanwha-amber); }
+
+.group-icon-wrap {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: 12px;
+}
+
+.group-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+  letter-spacing: -0.2px;
+}
+
+.group-sub {
+  font-size: 11.5px;
+  color: var(--text-soft);
+  line-height: 1.4;
+  margin-bottom: 10px;
+  min-height: 32px;
+}
+
+.group-count {
+  font-size: 11px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ===== CTA ===== */
+
+/* ===== PRACTICE VIEW ===== */
+.filter-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 6px 0 14px;
+  scrollbar-width: none;
+  margin: 4px -18px 0;
+  padding-left: 18px;
+  padding-right: 18px;
+}
+.filter-row::-webkit-scrollbar { display: none; }
+
+.filter-chip {
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-soft);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all .18s ease;
+  flex-shrink: 0;
+  font-family: inherit;
+}
+
+.filter-chip.active {
+  background: var(--hanwha-navy);
+  color: #FFFFFF;
+  border-color: var(--hanwha-navy);
+}
+
+.filter-chip[data-group="report"].active { background: var(--hanwha-orange); border-color: var(--hanwha-orange); }
+.filter-chip[data-group="communicate"].active { background: var(--hanwha-amber); border-color: var(--hanwha-amber); color: #3A2A00; }
+.filter-chip[data-group="growth"].active { background: var(--hanwha-teal); border-color: var(--hanwha-teal); }
+
+.practice-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.practice-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 16px 16px 16px;
+  cursor: pointer;
+  transition: transform .2s ease, box-shadow .2s ease;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: cardIn .35s ease forwards;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+@keyframes cardIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.practice-card:active { transform: scale(0.985); }
+.practice-card:hover { box-shadow: var(--shadow); }
+
+.practice-card.highlight {
+  border: 2px solid var(--hanwha-orange);
+  background: linear-gradient(135deg, var(--hanwha-orange-light) 0%, var(--surface) 60%);
+}
+
+.practice-card.highlight::before {
+  content: 'HOT';
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: var(--hanwha-orange);
+  color: #FFF;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  font-family: 'Inter', sans-serif;
+}
+
+.practice-emoji {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.practice-emoji.c-orange { background: var(--hanwha-orange-light); }
+.practice-emoji.c-navy { background: var(--hanwha-navy-light); }
+.practice-emoji.c-amber { background: var(--hanwha-amber-light); }
+.practice-emoji.c-teal { background: var(--hanwha-teal-light); }
+
+.practice-body { flex: 1; min-width: 0; }
+
+.practice-cat {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-family: 'Inter', sans-serif;
+  margin-bottom: 4px;
+}
+.practice-cat.c-orange { color: var(--hanwha-orange); }
+.practice-cat.c-navy { color: var(--hanwha-navy); }
+.practice-cat.c-amber { color: #8A6200; }
+.practice-cat.c-teal { color: var(--hanwha-teal); }
+
+[data-theme="dark"] .practice-cat.c-navy { color: #7CA6D9; }
+[data-theme="dark"] .practice-cat.c-amber { color: var(--hanwha-amber); }
+
+.practice-title {
+  font-size: 15.5px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.35;
+  margin-bottom: 6px;
+  letter-spacing: -0.2px;
+}
+
+.practice-wow {
+  font-size: 12.5px;
+  color: var(--text-soft);
+  line-height: 1.5;
+}
+
+/* ===== USAGE VIEW ===== */
+.usage-hero {
+  background: linear-gradient(135deg, var(--hanwha-navy) 0%, #14385E 100%);
+  color: #FFF;
+  padding: 24px 20px;
+  border-radius: 20px;
+  margin-top: 8px;
+  margin-bottom: 22px;
+  position: relative;
+  overflow: hidden;
+}
+.usage-hero::after {
+  content: '';
+  position: absolute;
+  right: -40px;
+  top: -40px;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(232,93,0,.4) 0%, transparent 70%);
+}
+.usage-hero h2 {
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 1.35;
+  margin-bottom: 6px;
+  position: relative;
+  z-index: 1;
+}
+.usage-hero p { font-size: 13px; opacity: .85; position: relative; z-index: 1; line-height: 1.5; }
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.step {
+  display: flex;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.step-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--hanwha-orange);
+  color: #FFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.step-body h3 {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+
+.step-body p {
+  font-size: 13px;
+  color: var(--text-soft);
+  line-height: 1.55;
+}
+
+.step-body code {
+  background: var(--surface-2);
+  color: var(--hanwha-orange);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: 'Inter', monospace;
+}
+
+.usage-lang-tip {
+  margin-top: 18px;
+  padding: 16px;
+  border-radius: 14px;
+  background: var(--hanwha-orange-light);
+  border-left: 4px solid var(--hanwha-orange);
+}
+.usage-lang-tip strong { display: block; font-size: 13px; color: var(--hanwha-orange); margin-bottom: 6px; font-weight: 700; }
+.usage-lang-tip p { font-size: 12.5px; color: var(--text-soft); line-height: 1.55; }
+
+/* ===== BOTTOM NAV ===== */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex;
+  z-index: 40;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+  box-shadow: 0 -4px 20px rgba(10,37,64,.06);
+}
+
+.nav-btn {
+  flex: 1;
+  background: transparent;
+  border: 0;
+  padding: 12px 4px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  font-size: 10.5px;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-family: inherit;
+  transition: color .2s;
+  font-weight: 500;
+}
+
+.nav-btn .nav-icon { font-size: 20px; line-height: 1; }
+
+.nav-btn.active {
+  color: var(--hanwha-orange);
+  font-weight: 700;
+}
+
+/* ===== MODAL ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10,37,64,.55);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s ease;
+  z-index: 100;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.modal-overlay.open { opacity: 1; pointer-events: auto; }
+
+.modal-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-width: 430px;
+  margin: 0 auto;
+  background: var(--bg);
+  border-radius: 22px 22px 0 0;
+  max-height: 88vh;
+  overflow-y: auto;
+  transform: translateY(100%);
+  transition: transform .32s cubic-bezier(.16,1,.3,1);
+  z-index: 101;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.modal-sheet.open { transform: translateY(0); }
+
+.sheet-handle {
+  width: 40px;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  margin: 10px auto 4px;
+}
+
+.sheet-close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  border: 0;
+  font-size: 18px;
+  cursor: pointer;
+  color: var(--text-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sheet-head {
+  padding: 14px 20px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sheet-cat {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  font-family: 'Inter', sans-serif;
+  color: var(--hanwha-orange);
+  margin-bottom: 4px;
+}
+
+.sheet-title {
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1.35;
+  color: var(--text);
+  letter-spacing: -0.2px;
+  padding-right: 40px;
+}
+
+.sheet-body { padding: 18px 20px 20px; }
+
+.wow-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: var(--hanwha-orange-light);
+  color: var(--hanwha-orange);
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+.sheet-sublabel {
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.modal-lang {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+}
+
+.prompt-box {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  font-size: 13px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  color: var(--text);
+  font-family: 'Noto Sans KR', 'Noto Sans Devanagari', 'Inter', monospace;
+  max-height: 280px;
+  overflow-y: auto;
+  word-break: break-word;
+}
+
+.tip-box {
+  background: var(--hanwha-navy-light);
+  border-left: 4px solid var(--hanwha-navy);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 12.5px;
+  color: var(--text-soft);
+  line-height: 1.55;
+  margin-top: 14px;
+}
+
+[data-theme="dark"] .tip-box { border-left-color: #7CA6D9; }
+
+.tip-box strong { color: var(--text); font-weight: 700; }
+
+.sheet-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.btn {
+  flex: 1;
+  padding: 13px 16px;
+  border-radius: 12px;
+  border: 0;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: inherit;
+  transition: transform .1s ease, background-color .2s ease;
+}
+
+.btn:active { transform: scale(0.97); }
+
+.btn-primary {
+  background: var(--hanwha-orange);
+  color: #FFF;
+  box-shadow: 0 4px 14px rgba(232,93,0,.3);
+}
+.btn-primary:hover { background: var(--hanwha-orange-dark); }
+
+.btn-secondary {
+  background: var(--hanwha-navy);
+  color: #FFF;
+  text-decoration: none;
+}
+.btn-secondary:hover { background: #062040; }
+
+.btn.copied { background: #1a9f5a; }
+
+/* ===== TOAST ===== */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 110px;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--hanwha-navy);
+  color: #FFF;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transition: all .28s ease;
+  box-shadow: var(--shadow-lg);
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ===== CALC MODAL ===== */
+.calc-overlay {
+  position: fixed; inset: 0; background: rgba(10,37,64,.55);
+  z-index: 100; opacity: 0; pointer-events: none; transition: opacity .28s ease;
+}
+.calc-overlay.open { opacity: 1; pointer-events: auto; }
+
+.calc-sheet {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%) translateY(100%);
+  width: 100%; max-width: 430px; background: var(--surface);
+  border-radius: 24px 24px 0 0; z-index: 101; padding: 0 0 env(safe-area-inset-bottom);
+  box-shadow: var(--shadow-lg); transition: transform .32s cubic-bezier(.32,1,.45,1);
+  max-height: 90vh; overflow-y: auto;
+}
+.calc-sheet.open { transform: translateX(-50%) translateY(0); }
+
+.calc-label {
+  display: block; font-size: 13px; font-weight: 700;
+  color: var(--text-soft); margin-bottom: 6px; margin-top: 14px;
+}
+.calc-input {
+  display: block; width: 100%; padding: 14px 16px;
+  border: 1.5px solid var(--border); border-radius: 14px;
+  background: var(--surface-2); color: var(--text);
+  font-size: 18px; font-family: inherit; outline: none;
+  transition: border-color .18s;
+  -moz-appearance: textfield;
+}
+.calc-input::-webkit-inner-spin-button,
+.calc-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.calc-input:focus { border-color: var(--hanwha-navy); }
+
+.calc-result {
+  margin-top: 18px; padding: 18px;
+  background: var(--surface-2); border-radius: 16px;
+  text-align: center; display: none;
+}
+.calc-result.show { display: block; }
+.calc-result-rate {
+  font-size: 2.4rem; font-weight: 900; letter-spacing: -1px; line-height: 1.1;
+}
+.calc-result-rate.good { color: var(--hanwha-teal); }
+.calc-result-rate.warn { color: var(--hanwha-orange); }
+.calc-result-rate.bad  { color: #D32F2F; }
+.calc-result-sub { font-size: 13px; color: var(--text-soft); margin-top: 8px; }
+
+/* ===== SMALL ===== */
+@media (max-width: 360px) {
+  .home-intro h1 { font-size: 21px; }
+  .group-name { font-size: 14px; }
+}
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+
+  <header class="brand-head" role="banner">
+    <div class="brand-logo-row">
+      <img class="brand-logo-img" src="hanwha_ocean_logo.png" alt="Hanwha Ocean" />
+      <button class="theme-toggle" id="themeToggle" aria-label="테마 전환" title="라이트/다크 전환">🌙</button>
+    </div>
+    <div class="brand-band" role="heading" aria-level="2">Global Ocean Solution Provider</div>
+    <img class="brand-hero" src="hanwha_ocean_hero.png" alt="Hanwha Ocean LNG Carrier" onerror="this.style.display='none'">
+  </header>
+
+  <!-- HOME VIEW -->
+  <section class="view active" id="view-home" aria-labelledby="home-title">
+    <div class="home-intro">
+      <h1 id="home-title">현장에서 바로 쓰는<br><span>AI 실무 17선</span></h1>
+      <p>말하듯 적기만 해도 보고서가 완성됩니다.<br>5개 언어 병기로 외국인 동료와 바로 협업하세요.</p>
+    </div>
+
+    <div class="section-title">언어 설정</div>
+    <div class="lang-panel" id="homeLangPanel" aria-label="전역 언어 설정">
+      <div class="lang-panel-title">🌐 병기 출력 언어</div>
+      <div class="lang-panel-desc">한국어는 기본이고, 외국어 1개를 선택하면 프롬프트 뒤에 병기 번역 지시문이 자동 추가됩니다.</div>
+      <div class="lang-chip-group" id="homeLangChips" role="group"></div>
+    </div>
+
+    <div class="section-title">실무 그룹</div>
+    <div class="group-grid" id="groupGrid"></div>
+
+  </section>
+
+  <!-- PRACTICE VIEW -->
+  <section class="view" id="view-practice" aria-labelledby="practice-title">
+    <div class="home-intro">
+      <h1 id="practice-title">실습 <span>17선</span></h1>
+      <p>그룹 필터로 원하는 실습을 빠르게 찾아보세요.</p>
+    </div>
+    <div class="filter-row" id="filterRow" role="tablist"></div>
+    <div class="practice-list" id="practiceList"></div>
+  </section>
+
+  <!-- USAGE VIEW -->
+  <section class="view" id="view-usage" aria-labelledby="usage-title">
+    <div class="usage-hero">
+      <h2 id="usage-title">5초 만에 AI 비서 쓰는 법</h2>
+      <p>승격자의 시간을 벌어주는 실전 사용법</p>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>언어 고르기</h3>
+          <p>홈 화면에서 한국어 + 외국어 1개를 고르세요. 외국인 동료와 함께하는 작업이면 꼭 선택하세요.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>실습 카드 탭하기</h3>
+          <p>12개 실습 중 지금 필요한 걸 고르세요. 카드를 탭하면 프롬프트가 나타납니다.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>내용 채우고 복사</h3>
+          <p>프롬프트의 <code>[대괄호]</code> 부분에 내 상황을 적으세요. 복사 버튼을 탭하면 끝.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h3>Gemini에 붙여넣기</h3>
+          <p>Gemini 버튼 → 열린 창에 붙여넣기 → 엔터. 3초 안에 결과가 나옵니다.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <h3>현장에서 써먹기</h3>
+          <p>결과를 바로 카톡·메일·게시판에 공유하세요. 외국인 동료에게는 스크린샷이면 충분합니다.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="usage-lang-tip">
+      <strong>🌐 다국어 병기 출력이란?</strong>
+      <p>외국어 칩을 하나 선택하면, 프롬프트 끝에 "한국어와 ○○어 두 가지로 나란히 작성해줘"라는 지시문이 자동으로 붙습니다. Gemini가 한국어 문장 오른쪽(또는 아래)에 현지어를 나란히 출력해 줍니다.</p>
+    </div>
+  </section>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav" role="tablist" aria-label="메인 네비게이션">
+  <button class="nav-btn active" data-tab="home" aria-selected="true"><span class="nav-icon">🏠</span>홈</button>
+  <button class="nav-btn" data-tab="practice" aria-selected="false"><span class="nav-icon">📝</span>실습</button>
+  <button class="nav-btn" data-tab="usage" aria-selected="false"><span class="nav-icon">💡</span>사용법</button>
+</nav>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay"></div>
+<aside class="modal-sheet" id="modalSheet" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="sheet-handle"></div>
+  <button class="sheet-close" id="modalClose" aria-label="닫기">×</button>
+  <div class="sheet-head">
+    <div class="sheet-cat" id="modalCat"></div>
+    <div class="sheet-title" id="modalTitle"></div>
+  </div>
+  <div class="sheet-body">
+    <div class="wow-chip" id="modalWow"></div>
+
+    <div class="sheet-sublabel">🌐 출력 언어 (이 실습만)</div>
+    <div class="modal-lang">
+      <div class="lang-chip-group" id="modalLangChips"></div>
+    </div>
+
+    <div class="sheet-sublabel">📋 프롬프트 (수정 후 복사 가능)</div>
+    <div class="prompt-box" id="modalPrompt" contenteditable="false" spellcheck="false"></div>
+
+    <div class="tip-box" id="modalTip"></div>
+
+    <div class="sheet-actions">
+      <button class="btn btn-primary" id="btnCopy">📋 복사하기</button>
+      <a class="btn btn-secondary" id="btnGemini" href="https://gemini.google.com" target="_blank" rel="noopener">✨ Gemini 열기</a>
+    </div>
+  </div>
+</aside>
+
+<!-- CALC MODAL -->
+<div class="calc-overlay" id="calcOverlay"></div>
+<aside class="calc-sheet" id="calcSheet" role="dialog" aria-modal="true" aria-labelledby="calcTitle">
+  <div class="sheet-handle"></div>
+  <button class="sheet-close" id="calcClose" aria-label="닫기">×</button>
+  <div class="sheet-head">
+    <div class="sheet-cat c-navy">품질관리</div>
+    <div class="sheet-title" id="calcTitle">불량률 계산기</div>
+  </div>
+  <div class="sheet-body">
+    <label class="calc-label" for="calcTotal">전체 생산 수량</label>
+    <input class="calc-input" type="number" id="calcTotal" inputmode="numeric" placeholder="예: 1000" min="1" />
+    <label class="calc-label" for="calcDefect">불량 수량</label>
+    <input class="calc-input" type="number" id="calcDefect" inputmode="numeric" placeholder="예: 15" min="0" />
+    <button class="btn btn-primary" id="calcBtn" style="margin-top:4px;">계산하기</button>
+    <div class="calc-result" id="calcResult"></div>
+    <div class="tip-box">💡 불량률(%) = 불량 수량 ÷ 전체 수량 × 100</div>
+  </div>
+</aside>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ====== DATA ====== */
+var LANGUAGES = [
+  {code:'ko', flag:'🇰🇷', label:'한국어',     native:'한국어',           fixed:true,  injection:''},
+  {code:'vi', flag:'🇻🇳', label:'베트남어',   native:'Tiếng Việt',      fixed:false, injection:'\n\n★ 결과물은 한국어와 베트남어(Tiếng Việt) 두 가지로 나란히 작성해줘. 베트남어는 거제 조선소 현장에서 바로 쓸 수 있는 쉬운 단어로 번역해줘.'},
+  {code:'id', flag:'🇮🇩', label:'인도네시아어', native:'Bahasa Indonesia', fixed:false, injection:'\n\n★ 결과물은 한국어와 인도네시아어(Bahasa Indonesia) 두 가지로 나란히 작성해줘. 인도네시아어는 거제 조선소 현장에서 바로 쓸 수 있는 쉬운 단어로 번역해줘.'},
+  {code:'ne', flag:'🇳🇵', label:'네팔어',     native:'नेपाली',           fixed:false, injection:'\n\n★ 결과물은 한국어와 네팔어(नेपाली) 두 가지로 나란히 작성해줘. 네팔어는 거제 조선소 현장에서 바로 쓸 수 있는 쉬운 단어로 번역해줘.'},
+  {code:'en', flag:'🇺🇸', label:'영어',       native:'English',         fixed:false, injection:'\n\n★ 결과물은 한국어와 영어(English) 두 가지로 나란히 작성해줘. 영어는 비영어권 외국인 동료도 이해할 수 있는 쉬운 단어로 번역해줘.'}
+];
+
+var GROUPS = [
+  {id:'report',      icon:'📋', color:'orange', label:'보고서',   name:'보고·문서 자동화',   subtitle:'매일 쓰는 보고서를 빠르게',    cats:['작업일보','인수인계','회의록','성과정리']},
+  {id:'safety',      icon:'🦺', color:'navy',   label:'안전·품질', name:'현장 안전·품질관리',  subtitle:'사고 예방과 품질 개선',        cats:['안전보고','개선제안','품질이슈','체크리스트','품질관리']},
+  {id:'communicate', icon:'💬', color:'amber',  label:'소통·협업', name:'현장 소통',           subtitle:'윗사람·동료·외국인과 통하기', cats:['윗분 보고','지시서 풀이','외국인 협업','사내 소통']},
+  {id:'growth',      icon:'🚀', color:'teal',   label:'자기계발', name:'역량 성장',           subtitle:'승격자의 다음 단계',           cats:['용어사전','AI 비서']}
+];
+
+var PRACTICES = [
+  {id:1,group:'report',color:'orange',cat:'작업일보',title:'오늘 작업 일보 자동 정리',wow_point:'말하듯 적기만 해도 공식 일보 형식으로 변환',prompt:'오늘 내가 한 작업 내용을 한화오션 현장 작업일보 양식으로 깔끔하게 정리해줘.\n\n[오늘 한 작업을 말하듯 자유롭게]\n예: 07시 출근, 3번 도크 LNG선 2번 블록 용접 작업, 오전에 탑재 위치 확인, 오후 검사 통과, 18시 마무리\n\n형식:\n- 작업일자 / 작업자 / 작업구역\n- 시간대별 작업 내용 (3~5줄)\n- 특이사항·이슈\n- 내일 예정 작업\n\n분량: A4 반 페이지 이내, 공식적이고 간결하게',tip:'말하듯 편하게 적어도 AI가 공식 양식으로 바꿔줍니다. 시간·장소·작업 이름만 들어가면 충분합니다.'},
+  {id:2,group:'report',color:'orange',cat:'성과정리',title:'주간 업무 성과 정리 (승격자용)',wow_point:'한 주 성과가 승격자다운 보고서로 자동 정리',prompt:'이번 주 내 업무 성과를 반장·직장님께 보고할 주간 성과 보고서로 정리해줘.\n\n직위: [기선/기정/기감/기원 중 선택]\n\n이번 주 한 일:\n[완료한 주요 업무 3~5가지 자유롭게]\n\n요청:\n① 완료 업무 (정량 성과 포함)\n② 진행 중 업무 (진척도)\n③ 다음 주 계획\n④ 건의·지원 필요 사항\n\n톤: 승격자답게 책임감·주도성 드러나게\n분량: A4 반 페이지',tip:'승격 후 첫 주간 보고는 윗분들이 주목합니다. 정량 숫자가 들어가면 프로페셔널해 보입니다.'},
+  {id:3,group:'report',color:'orange',cat:'인수인계',title:'교대 인수인계 메모',wow_point:'다음 조가 5초만에 이해하는 인수인계 완성',prompt:'다음 근무자에게 넘길 교대 인수인계 메모를 작성해줘.\n\n내 조: [1조/2조/3조]\n인계 대상: [다음 조]\n\n오늘 작업 상태:\n[어디까지 했는지, 뭐가 남았는지 편하게]\n\n주의사항:\n[안전 이슈, 장비 상태, 자재 위치]\n\n형식:\n① 작업 진행 현황 (완료/진행중/대기)\n② 다음 조가 이어받을 작업\n③ 꼭 알아야 할 주의사항\n④ 장비·자재 위치\n\n★ 빠르게 읽을 수 있게 번호로',tip:'5분만 써도 다음 조가 10분 아낍니다. 외국인 동료 포함된 조면 언어 옵션 선택하세요.'},
+  {id:4,group:'report',color:'orange',cat:'회의록',title:'현장 회의록 자동 정리',wow_point:'녹음·메모 붙여넣기만 해도 공식 회의록 완성',prompt:'아래 현장 회의 내용을 공식 회의록으로 정리해줘.\n\n회의명: [회의 제목]\n일시: [날짜·시간]\n장소: [회의실/현장]\n참석자: [이름·직위]\n\n회의 내용 (메모 그대로):\n[녹취나 메모를 자유롭게 붙여넣기]\n\n형식:\n① 일시 / 장소 / 참석자\n② 안건별 논의 내용\n③ 결정사항\n④ 액션아이템 (담당자 + 기한)\n⑤ 차기 회의 안내\n\n★ 핵심만 추려서 한눈에',tip:'녹음 내용을 카카오톡 음성인식으로 받아적은 것도 그대로 붙여넣어도 됩니다.'},
+  {id:5,group:'safety',color:'navy',cat:'안전보고',title:'현장 안전 이슈 긴급 보고',wow_point:'목격한 사실만 적어도 정식 안전보고서 완성',prompt:'현장에서 발견한 안전 이슈를 안전관리자에게 전달할 보고문으로 정리해줘.\n\n발견 일시: [언제]\n발견 장소: [구역/위치]\n\n목격 내용:\n[본 것을 있는 그대로 자유롭게]\n예: 3번 도크 사다리 한쪽 다리 흔들림, 작업자 2명 사용 중\n\n형식:\n① 발생 일시·장소\n② 상황 설명 (객관적 사실)\n③ 예상 위험 (무슨 사고로 이어질 수 있는지)\n④ 즉시 조치 제안\n⑤ 재발 방지 의견\n\n톤: 비난 없이, 사실 중심으로',tip:'안전 보고는 빨리 올릴수록 사고를 막습니다. 외국인 동료 관련이면 언어 옵션 선택해서 당사자에게도 공유하세요.'},
+  {id:6,group:'safety',color:'navy',cat:'개선제안',title:'현장 개선제안서 작성',wow_point:'머릿속 아이디어가 제출 가능한 공식 제안서로 변환',prompt:'내가 떠올린 현장 개선 아이디어를 공식 개선제안서로 만들어줘.\n\n아이디어:\n[머릿속 아이디어를 자유롭게]\n예: 용접봉 보관함을 작업 동선에 맞게 재배치하면 하루 10분 절약\n\n형식:\n① 제안 제목 (한 줄)\n② 현재 상황 (무엇이 불편한지)\n③ 개선 방안 (어떻게 바꿀지)\n④ 기대 효과 (시간·비용·안전)\n⑤ 필요 자원 (돈·사람·도구)\n\n★ 숫자로 효과를 보여주면 더 강력',tip:'승격자가 된 당신의 현장 노하우가 회사 자산입니다. 제안이 채택되면 승격 후 첫 성과가 됩니다.'},
+  {id:7,group:'safety',color:'navy',cat:'품질이슈',title:'품질 이슈 현장 보고서',wow_point:'현장 육성 설명이 정식 품질 보고서로 즉시 변환',prompt:'발견한 품질 이슈를 보고서로 정리해줘.\n\n이슈 발생: [일시·장소·대상]\n\n발견 내용:\n[품질 문제 상황을 편하게]\n예: 용접 비드 일정하지 않음, 지정 규격보다 두께 부족 부위 3곳\n\n형식:\n① 이슈 개요\n② 확인된 사실 (치수·수량·상태)\n③ 추정 원인 (내 의견)\n④ 긴급도 평가 (즉시조치/검토대상)\n⑤ 조치 제안\n\n★ 추정과 사실은 구분해서',tip:'사진이 있으면 Gemini에 이미지도 같이 올려보세요. 더 정확한 판단이 가능합니다.'},
+  {id:8,group:'communicate',color:'amber',cat:'윗분 보고',title:'반장·공장장 카톡 보고',wow_point:'결론 먼저, 예의있는 150자 보고 메시지',prompt:'반장님 또는 공장장님께 보고할 메시지를 카톡/문자용으로 작성해줘.\n\n보고 내용:\n[보고할 내용 편하게]\n예: 오늘 3번 도크 작업 완료. 자재 부족으로 내일 2시간 지연 예상. 부속품 2개 추가 요청 필요.\n\n조건:\n① 첫 줄에 핵심 결론\n② 상황 → 문제 → 요청사항 순서\n③ 답변 받고 싶은 기한 명시\n④ 예의 있되 간결\n\n글자 수: 150자 이내',tip:'윗분들은 바쁩니다. 결론 먼저 오면 답변이 빨라집니다. 승격자다운 깔끔한 보고가 신뢰를 쌓습니다.'},
+  {id:9,group:'communicate',color:'amber',cat:'지시서 풀이',title:'어려운 작업지시서 쉽게 풀어쓰기',wow_point:'전문 용어 투성이 지시서가 현장 말로 바로 이해되게',prompt:'어려운 용어로 적힌 작업지시서나 기술문서를 현장에서 바로 이해할 수 있게 쉽게 풀어써줘.\n\n원문:\n[지시서나 기술문서를 그대로 붙여넣기]\n\n요청:\n① 전문 용어는 현장 말로\n② 순서대로 번호 정리\n③ 주의해야 할 부분은 ⚠️ 표시\n④ 빠뜨리면 안 되는 것 따로 강조\n\n★ 20년차 숙련공이 신입에게 설명하듯 친절하게',tip:'영어·한자어·약어 섞인 문서도 가능. 외국인 동료와 같은 지시서 받으면 언어 옵션으로 공유.'},
+  {id:10,group:'communicate',color:'amber',cat:'외국인 협업',title:'⭐ 외국인 동료 협업 지시',wow_point:'내 지시가 한국어+현지어 병기로 즉시 전달 가능',highlight:true,prompt:'외국인 동료에게 전달할 작업 지시를 작성해줘.\n\n전달 상황:\n[어떤 작업을 누구와 어떻게 진행할지 편하게 한국어로]\n예: 오늘 오후에 2번 도크에서 탑재 작업. 응우옌 씨와 수핫맛 씨가 함께, 안전모 꼭 착용, 3시에 모여서 시작, 저녁 6시까지 마무리 목표.\n\n요청 형식:\n① 작업 개요 (뭘 하는지)\n② 시간·장소\n③ 함께할 사람\n④ 준비물·주의사항 (특히 안전)\n⑤ 완료 기준\n\n톤:\n- 현장에서 바로 읽을 수 있는 짧고 쉬운 문장\n- 안전 관련 내용은 굵게 강조\n- 반말 아닌 평범한 존중 톤',tip:'⭐ 이 실습이 외국인 동료 협업의 핵심입니다. 언어 옵션 선택하면 한국어+현지어 병기로 나옵니다. 스크린샷 찍어서 전달하거나 카톡으로 바로 보낼 수 있습니다.'},
+  {id:11,group:'growth',color:'teal',cat:'용어사전',title:'현장 용어·기술 사전',wow_point:'궁금한 용어 물어보면 현장 맥락 포함 설명',prompt:'조선소 현장에서 자주 나오는 용어를 설명해줘.\n\n알고 싶은 용어:\n[궁금한 용어, 여러 개 가능]\n예: 블록 / 의장 / 탑재 / NDT / PWHT / 레이아웃 / LNG Cargo Tank\n\n요청:\n① 한 줄 정의 (현장 말로)\n② 어떤 상황에서 쓰는지\n③ 관련된 다른 용어 (같이 알면 좋은 것)\n④ 신입·승격자가 헷갈리는 포인트\n\n★ 교과서 말고, 한화오션 거제 현장에서 실제 어떻게 쓰이는지 중심으로',tip:'승격자는 후배들 질문 받을 일이 많아집니다. 나 먼저 확실히 알아두면 후배 지도가 쉬워집니다.'},
+  {id:12,group:'growth',color:'teal',cat:'AI 비서',title:'나만의 AI 비서 (Gems) 만들기',wow_point:'매번 설명할 필요 없는 내 전용 AI 비서 완성',prompt:'내 현장 업무에 딱 맞는 Gemini Gems(AI 비서)를 만들어줘.\n\nGems 이름:\n[예: 용접 일보 도우미 / 안전보고 전문가 / 인수인계 정리봇]\n\n내 업무:\n- 직위: [기선/기정/기감/기원]\n- 직무: [용접/도장/의장/조립/탑재 등]\n- 자주 쓰는 문서: [일보·보고·인수인계 등]\n- 원하는 말투: [공식적/친절한/간결한]\n- 피하고 싶은 것: [너무 긴 답변, 어려운 용어 등]\n- 외국인 협업 여부: [있음/없음, 있다면 주로 어느 나라]\n\n아래 형식으로 Gems 설정을 완성해줘:\n① 이름\n② 설명 (1~2줄)\n③ 지시사항 (Gemini에게 줄 상세 역할·규칙·출력 형식)\n\n★ 지시사항은 Gemini → Gems → 새 Gem에 그대로 붙여넣을 수 있게',tip:'한 번만 만들어두면 매번 처음부터 설명할 필요가 없습니다. 승격자의 시간을 벌어주는 핵심 실습.'},
+  {id:13,group:'safety',color:'navy',cat:'체크리스트',title:'고소작업 전후 안전점검표',wow_point:'작업 정보만 넣으면 현장 맞춤 점검표 즉시 생성',prompt:'작업 전후에 확인할 고소작업 안전점검표를 만들어줘.\n\n작업 정보:\n- 작업 장소/높이: [예: 5번 도크 선체 외벽, 지상 8m]\n- 작업 내용: [예: 도장 작업, 볼트 조임]\n- 작업 인원: [명]\n- 예상 작업 시간: [예: 오전 9시~오후 3시]\n\n형식:\n[작업 전 체크리스트]\n① 안전대·안전모 착용 여부\n② 작업 발판 고정 상태\n③ 추락 방지망 설치 여부\n④ 풍속·날씨 확인\n⑤ 구명줄 연결 상태\n... 상황에 맞게 추가\n\n[작업 후 체크리스트]\n① 작업자 전원 하강 확인\n② 장비·공구 회수\n③ 작업 구역 정리\n④ 이상 유무 점검 기록\n...\n\n★ 체크박스( □ ) 형식으로, 현장에서 바로 출력 가능하게',tip:'높이 2m 이상 작업은 반드시 사전 점검이 필수입니다. 점검표를 출력해서 현장에 비치하면 더 좋습니다.\n⚠️ AI 생성 초안입니다. 사내 공식 안전 절차 및 직장·안전관리자 검토 후 사용하세요.'},
+  {id:14,group:'safety',color:'navy',cat:'체크리스트',title:'용접 작업 전후 안전점검표',wow_point:'용접 종류·장소 입력하면 맞춤 안전점검표 자동 완성',prompt:'용접 작업 전후에 확인할 안전점검표를 만들어줘.\n\n작업 정보:\n- 용접 종류: [예: CO2 용접 / TIG / 아크 용접]\n- 작업 장소: [예: 2번 도크 선내 탱크 구역]\n- 작업 인원: [명]\n- 밀폐 공간 여부: [해당/비해당]\n\n형식:\n[작업 전 체크리스트]\n① 환기 상태 확인 (밀폐 공간이면 산소 농도 측정)\n② 소화기 위치 확인\n③ 용접 보호구 착용 (차광 마스크, 가죽 장갑, 앞치마)\n④ 주변 가연물 제거\n⑤ 화기 허가증 수령 여부\n... 상황에 맞게 추가\n\n[작업 후 체크리스트]\n① 스패터·슬래그 완전 소화 확인\n② 작업 부위 30분 이상 냉각 확인\n③ 가스 밸브 잠금\n④ 주변 정리 및 이상 유무 기록\n...\n\n★ 체크박스( □ ) 형식으로, 현장에서 바로 출력 가능하게',tip:'화재·폭발 위험이 가장 높은 작업입니다. 화기 허가증 확인과 소화기 위치 파악은 절대 빠뜨리지 마세요.\n⚠️ AI 생성 초안입니다. 사내 공식 안전 절차 및 직장·안전관리자 검토 후 사용하세요.'},
+  {id:15,group:'safety',color:'navy',cat:'품질관리',title:'불량률 계산기',wow_point:'생산 수량과 불량 수량만 입력하면 즉시 계산',type:'calc'},
+  {id:16,group:'communicate',color:'amber',cat:'사내 소통',title:'건배사 생성',wow_point:'행사 분위기에 딱 맞는 건배사·스피치 즉시 완성',prompt:'회식이나 행사에서 쓸 건배사를 만들어줘.\n\n상황:\n- 행사 종류: [예: 승격 축하 회식 / 프로젝트 완료 / 연말 송년회]\n- 분위기: [예: 유쾌하고 짧게 / 무게감 있게 / 웃음 포인트 포함]\n- 참석자: [예: 팀 전체 20명 / 반장님 포함 / 외국인 동료도 있음]\n- 주인공 (있다면): [예: 이번에 승격한 김○○ 씨]\n\n요청:\n① 핵심 건배사 1문장 (10~20자)\n② 짧은 스피치 (30초 이내, 3~5줄)\n③ 후렴 건배 구호 (참석자들이 따라 외칠 것)\n\n톤: 밝고 진심 담기게, 과하지 않게',tip:'승격 축하 자리라면 주인공 이름을 넣으면 더 감동적입니다. 외국인 동료가 있다면 언어 옵션을 선택해보세요.'},
+  {id:17,group:'communicate',color:'amber',cat:'사내 소통',title:'생일·기념일 축하 메시지',wow_point:'관계와 상황에 딱 맞는 축하 메시지 두 버전 완성',prompt:'동료나 상사에게 보낼 생일·기념일 축하 메시지를 써줘.\n\n받는 사람:\n- 관계: [예: 직장 상사 / 팀 동료 / 후배]\n- 이름 (선택): [예: 김반장님 / 응우옌 씨]\n- 특별한 점 (있다면): [예: 올해 승격, 10년 근속]\n\n종류: [생일 / 결혼기념일 / 입사기념일 / 기타]\n\n요청:\n① 카톡/문자용 짧은 메시지 (50자 이내)\n② 카드·게시판용 조금 긴 버전 (100자 내외)\n\n톤:\n- 상사: 정중하고 따뜻하게\n- 동료: 친근하게\n- 후배: 응원 담아서',tip:'이름이나 특별한 상황을 넣으면 훨씬 진심이 전해집니다. 외국인 동료 경우 언어 옵션으로 현지어 버전도 만들 수 있습니다.'}
+];
+
+/* ====== STATE ====== */
+var LANG_KEY = 'hanwha-lang';
+var THEME_KEY = 'hanwha-theme';
+var currentLang = localStorage.getItem(LANG_KEY) || 'ko';
+var currentFilter = 'all';
+var activePracticeId = null;
+
+/* ====== HELPERS ====== */
+function $(id) { return document.getElementById(id); }
+function findLang(code) {
+  for (var i=0; i<LANGUAGES.length; i++) if (LANGUAGES[i].code === code) return LANGUAGES[i];
+  return LANGUAGES[0];
+}
+function findPractice(id) {
+  for (var i=0; i<PRACTICES.length; i++) if (PRACTICES[i].id === id) return PRACTICES[i];
+  return null;
+}
+function countByGroup(gid) {
+  var n = 0;
+  for (var i=0; i<PRACTICES.length; i++) if (PRACTICES[i].group === gid) n++;
+  return n;
+}
+function buildPrompt(practice, langCode) {
+  var lang = findLang(langCode);
+  return practice.prompt + (lang && lang.injection ? lang.injection : '');
+}
+
+/* ====== THEME ====== */
+function initTheme() {
+  var saved = localStorage.getItem(THEME_KEY) || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+  $('themeToggle').textContent = saved === 'dark' ? '☀️' : '🌙';
+}
+function toggleTheme() {
+  var cur = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', cur);
+  localStorage.setItem(THEME_KEY, cur);
+  $('themeToggle').textContent = cur === 'dark' ? '☀️' : '🌙';
+}
+
+/* ====== LANG CHIPS ====== */
+function renderLangChips(container, small) {
+  container.innerHTML = '';
+  for (var i=0; i<LANGUAGES.length; i++) {
+    (function(lang){
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'lang-chip' + (small ? ' sm' : '');
+      btn.setAttribute('data-lang', lang.code);
+      if (lang.fixed) btn.classList.add('fixed');
+      if (!lang.fixed && currentLang === lang.code) btn.classList.add('active');
+      btn.innerHTML = '<span class="flag">' + lang.flag + '</span>' +
+                      '<span>' + lang.label + '</span>' +
+                      '<span class="native">' + lang.native + '</span>';
+      btn.setAttribute('aria-pressed', btn.classList.contains('active') ? 'true' : 'false');
+      if (!lang.fixed) {
+        btn.addEventListener('click', function() { setLang(lang.code); });
+      } else {
+        btn.setAttribute('aria-label', '한국어 (기본)');
+      }
+      container.appendChild(btn);
+    })(LANGUAGES[i]);
+  }
+
+  // Append "none" chip to reset back to Korean-only
+  var hasActive = false;
+  for (var j=0; j<LANGUAGES.length; j++) {
+    if (!LANGUAGES[j].fixed && LANGUAGES[j].code === currentLang) { hasActive = true; break; }
+  }
+  if (hasActive) {
+    var noneBtn = document.createElement('button');
+    noneBtn.type = 'button';
+    noneBtn.className = 'lang-chip' + (small ? ' sm' : '');
+    noneBtn.innerHTML = '<span>✕</span><span>외국어 해제</span>';
+    noneBtn.addEventListener('click', function() { setLang('ko'); });
+    container.appendChild(noneBtn);
+  }
+}
+
+function setLang(code) {
+  currentLang = code;
+  localStorage.setItem(LANG_KEY, code);
+  renderAllLangChips();
+  if (activePracticeId !== null) refreshModalPrompt();
+}
+
+function renderAllLangChips() {
+  renderLangChips($('homeLangChips'), false);
+  if ($('modalLangChips').children.length) renderLangChips($('modalLangChips'), true);
+}
+
+/* ====== HOME GROUPS ====== */
+function renderGroups() {
+  var grid = $('groupGrid');
+  grid.innerHTML = '';
+  for (var i=0; i<GROUPS.length; i++) {
+    (function(g){
+      var card = document.createElement('div');
+      card.className = 'group-card c-' + g.color;
+      card.setAttribute('role', 'button');
+      card.setAttribute('tabindex', '0');
+      card.innerHTML =
+        '<div class="group-icon-wrap">' + g.icon + '</div>' +
+        '<div class="group-name">' + g.name + '</div>' +
+        '<div class="group-sub">' + g.subtitle + '</div>' +
+        '<div class="group-count">' + countByGroup(g.id) + '개 실습 →</div>';
+      card.addEventListener('click', function() {
+        currentFilter = g.id;
+        switchTab('practice');
+        renderFilters();
+        renderPractices();
+      });
+      card.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); card.click(); }
+      });
+      grid.appendChild(card);
+    })(GROUPS[i]);
+  }
+}
+
+/* ====== FILTERS ====== */
+function renderFilters() {
+  var row = $('filterRow');
+  row.innerHTML = '';
+  var all = document.createElement('button');
+  all.type = 'button';
+  all.className = 'filter-chip' + (currentFilter === 'all' ? ' active' : '');
+  all.textContent = '전체 ' + PRACTICES.length;
+  all.addEventListener('click', function() { currentFilter = 'all'; renderFilters(); renderPractices(); });
+  row.appendChild(all);
+
+  for (var i=0; i<GROUPS.length; i++) {
+    (function(g){
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'filter-chip' + (currentFilter === g.id ? ' active' : '');
+      btn.setAttribute('data-group', g.id);
+      btn.textContent = g.icon + ' ' + g.label + ' ' + countByGroup(g.id);
+      btn.addEventListener('click', function() { currentFilter = g.id; renderFilters(); renderPractices(); });
+      row.appendChild(btn);
+    })(GROUPS[i]);
+  }
+}
+
+/* ====== PRACTICE CARDS ====== */
+function renderPractices() {
+  var list = $('practiceList');
+  list.innerHTML = '';
+  var shown = 0;
+  for (var i=0; i<PRACTICES.length; i++) {
+    var p = PRACTICES[i];
+    if (currentFilter !== 'all' && p.group !== currentFilter) continue;
+    (function(pr, idx){
+      var card = document.createElement('div');
+      card.className = 'practice-card' + (pr.highlight ? ' highlight' : '');
+      card.setAttribute('role', 'button');
+      card.setAttribute('tabindex', '0');
+      card.style.animationDelay = (idx * 30) + 'ms';
+      var group = null;
+      for (var k=0; k<GROUPS.length; k++) if (GROUPS[k].id === pr.group) { group = GROUPS[k]; break; }
+      var icon = group ? group.icon : '📝';
+      card.innerHTML =
+        '<div class="practice-emoji c-' + pr.color + '">' + icon + '</div>' +
+        '<div class="practice-body">' +
+          '<div class="practice-cat c-' + pr.color + '">' + pr.cat + '</div>' +
+          '<div class="practice-title">' + pr.title + '</div>' +
+          (pr.wow_point ? '<div class="practice-wow">' + pr.wow_point + '</div>' : '') +
+        '</div>';
+      card.addEventListener('click', function() { openModal(pr.id); });
+      card.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); card.click(); }
+      });
+      list.appendChild(card);
+    })(p, shown);
+    shown++;
+  }
+}
+
+/* ====== CALC MODAL ====== */
+function openCalc() {
+  $('calcTotal').value = '';
+  $('calcDefect').value = '';
+  var res = $('calcResult');
+  res.innerHTML = '';
+  res.classList.remove('show');
+  $('calcOverlay').classList.add('open');
+  $('calcSheet').classList.add('open');
+  document.body.classList.add('is-locked');
+  setTimeout(function(){ $('calcTotal').focus(); }, 200);
+}
+
+function closeCalc() {
+  $('calcOverlay').classList.remove('open');
+  $('calcSheet').classList.remove('open');
+  document.body.classList.remove('is-locked');
+}
+
+function doCalc() {
+  var total = parseFloat($('calcTotal').value);
+  var defect = parseFloat($('calcDefect').value);
+  var res = $('calcResult');
+  if (!total || isNaN(total) || total <= 0) {
+    $('calcTotal').focus(); return;
+  }
+  if (isNaN(defect) || defect < 0) {
+    $('calcDefect').focus(); return;
+  }
+  if (defect > total) {
+    res.innerHTML = '<div class="calc-result-rate bad">입력 오류</div><div class="calc-result-sub">불량 수량이 전체 수량보다 클 수 없습니다.</div>';
+    res.classList.add('show'); return;
+  }
+  var rate = (defect / total) * 100;
+  var yield_ = 100 - rate;
+  var cls = rate < 1 ? 'good' : rate < 5 ? 'warn' : 'bad';
+  var label = rate < 1 ? '양호' : rate < 5 ? '주의' : '불량 과다';
+  res.innerHTML =
+    '<div class="calc-result-rate ' + cls + '">' + rate.toFixed(2) + '%</div>' +
+    '<div class="calc-result-sub">' +
+      '불량률 ' + rate.toFixed(2) + '% · 양품률 ' + yield_.toFixed(2) + '% (' + label + ')<br>' +
+      '전체 ' + total.toLocaleString() + '개 중 불량 ' + defect.toLocaleString() + '개' +
+    '</div>';
+  res.classList.add('show');
+}
+
+/* ====== MODAL ====== */
+function openModal(id) {
+  var p = findPractice(id);
+  if (!p) return;
+  if (p.type === 'calc') { openCalc(); return; }
+  activePracticeId = id;
+
+  $('modalCat').textContent = p.cat;
+  $('modalTitle').textContent = p.title;
+  $('modalWow').innerHTML = '✨ ' + p.wow_point;
+  $('modalTip').innerHTML = '<strong>💡 TIP · </strong>' + p.tip;
+  renderLangChips($('modalLangChips'), true);
+  refreshModalPrompt();
+
+  $('modalOverlay').classList.add('open');
+  $('modalSheet').classList.add('open');
+  document.body.classList.add('is-locked');
+  setTimeout(function(){ $('btnCopy').focus(); }, 200);
+}
+
+function closeModal() {
+  $('modalOverlay').classList.remove('open');
+  $('modalSheet').classList.remove('open');
+  document.body.classList.remove('is-locked');
+  activePracticeId = null;
+  var btn = $('btnCopy');
+  btn.textContent = '📋 복사하기';
+  btn.classList.remove('copied');
+}
+
+function refreshModalPrompt() {
+  if (activePracticeId === null) return;
+  var p = findPractice(activePracticeId);
+  $('modalPrompt').textContent = buildPrompt(p, currentLang);
+}
+
+/* ====== COPY ====== */
+function copyPrompt() {
+  if (activePracticeId === null) return;
+  var p = findPractice(activePracticeId);
+  var text = buildPrompt(p, currentLang);
+  var btn = $('btnCopy');
+
+  function afterCopy(ok) {
+    if (ok) {
+      btn.textContent = '✅ 복사됨!';
+      btn.classList.add('copied');
+      showToast('클립보드에 복사되었습니다');
+      setTimeout(function() {
+        btn.textContent = '📋 복사하기';
+        btn.classList.remove('copied');
+      }, 2000);
+    } else {
+      showToast('복사 실패. 직접 선택해주세요');
+    }
+  }
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function(){ afterCopy(true); }, function(){ fallbackCopy(text, afterCopy); });
+  } else {
+    fallbackCopy(text, afterCopy);
+  }
+}
+
+function fallbackCopy(text, cb) {
+  try {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.top = '-9999px';
+    document.body.appendChild(ta);
+    ta.focus(); ta.select();
+    var ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    cb(ok);
+  } catch (e) { cb(false); }
+}
+
+/* ====== TOAST ====== */
+var toastTimer = null;
+function showToast(msg) {
+  var t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2200);
+}
+
+/* ====== TABS ====== */
+function switchTab(name) {
+  var views = document.querySelectorAll('.view');
+  for (var i=0; i<views.length; i++) views[i].classList.remove('active');
+  var target = $('view-' + name);
+  if (target) target.classList.add('active');
+
+  var btns = document.querySelectorAll('.nav-btn');
+  for (var j=0; j<btns.length; j++) {
+    var isActive = btns[j].getAttribute('data-tab') === name;
+    btns[j].classList.toggle('active', isActive);
+    btns[j].setAttribute('aria-selected', isActive ? 'true' : 'false');
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ====== INIT ====== */
+function init() {
+  initTheme();
+  renderAllLangChips();
+  renderGroups();
+  renderFilters();
+  renderPractices();
+
+  $('themeToggle').addEventListener('click', toggleTheme);
+
+  var navBtns = document.querySelectorAll('.nav-btn');
+  for (var i=0; i<navBtns.length; i++) {
+    navBtns[i].addEventListener('click', function() {
+      switchTab(this.getAttribute('data-tab'));
+    });
+  }
+
+  $('modalOverlay').addEventListener('click', closeModal);
+  $('modalClose').addEventListener('click', closeModal);
+  $('btnCopy').addEventListener('click', copyPrompt);
+
+  $('calcOverlay').addEventListener('click', closeCalc);
+  $('calcClose').addEventListener('click', closeCalc);
+  $('calcBtn').addEventListener('click', doCalc);
+  $('calcTotal').addEventListener('keydown', function(e) { if (e.key === 'Enter') doCalc(); });
+  $('calcDefect').addEventListener('keydown', function(e) { if (e.key === 'Enter') doCalc(); });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      if (activePracticeId !== null) closeModal();
+      if ($('calcSheet').classList.contains('open')) closeCalc();
+    }
+  });
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+</script>
+</body>
+</html>
