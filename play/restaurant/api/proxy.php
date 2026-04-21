@@ -11,8 +11,8 @@ if (file_exists($envFile)) {
     }
 }
 
-$clientId     = getenv('NAVER_CLIENT_ID');
-$clientSecret = getenv('NAVER_CLIENT_SECRET');
+$clientId     = 'MHSC_KK0eEmhIIbkKTn6';
+$clientSecret = '1fNm2BLvv5';
 
 if (!$clientId || !$clientSecret) {
     http_response_code(500);
