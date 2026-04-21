@@ -1,1 +1,863 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍀 행운의 로또 번호 추천</title>
+<style>
+  :root {
+    --yellow: #ffd700;
+    --blue: #4a90d9;
+    --red: #e74c3c;
+    --gray: #7f8c8d;
+    --green: #27ae60;
+    --bg-dark: #0a0a1a;
+    --bg-card: #12122a;
+    --gold: #f5c842;
+    --purple: #8e44ad;
+  }
 
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+    background: var(--bg-dark);
+    min-height: 100vh;
+    color: #fff;
+    overflow-x: hidden;
+  }
+
+  /* 별 배경 */
+  .stars {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .star {
+    position: absolute;
+    background: #fff;
+    border-radius: 50%;
+    animation: twinkle var(--d) ease-in-out infinite alternate;
+  }
+  @keyframes twinkle {
+    from { opacity: 0.1; transform: scale(0.8); }
+    to   { opacity: 0.9; transform: scale(1.2); }
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 24px 16px 60px;
+  }
+
+  /* 헤더 */
+  header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .logo {
+    font-size: 3.5rem;
+    filter: drop-shadow(0 0 20px #ffd700);
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-8px); }
+  }
+  header h1 {
+    font-size: 1.8rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #ffd700, #ff8c00, #ffd700);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 3s linear infinite;
+    margin-top: 8px;
+  }
+  @keyframes shimmer {
+    0%   { background-position: 0% center; }
+    100% { background-position: 200% center; }
+  }
+  header p {
+    color: #aaa;
+    font-size: 0.9rem;
+    margin-top: 6px;
+    letter-spacing: 0.05em;
+  }
+
+  /* 추천 방식 탭 */
+  .mode-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 14px;
+    padding: 6px;
+  }
+  .mode-tab {
+    flex: 1;
+    padding: 10px 4px;
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    color: #888;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s;
+    line-height: 1.3;
+  }
+  .mode-tab.active {
+    background: linear-gradient(135deg, #6c3dca, #a855f7);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(168,85,247,0.4);
+  }
+
+  /* 메인 카드 */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 24px;
+    padding: 28px 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+
+  /* 번호 디스플레이 */
+  .balls-area {
+    min-height: 110px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 16px 0;
+  }
+
+  .ball {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    position: relative;
+    opacity: 0;
+    transform: scale(0) rotate(-180deg);
+    transition: opacity 0.4s, transform 0.4s;
+    flex-shrink: 0;
+  }
+  .ball.show {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  .ball::after {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 12px;
+    width: 14px;
+    height: 8px;
+    background: rgba(255,255,255,0.35);
+    border-radius: 50%;
+    transform: rotate(-30deg);
+  }
+  /* 번호별 색상 */
+  .ball.y  { background: radial-gradient(circle at 35% 35%, #ffe566, #e6a800); box-shadow: 0 4px 20px rgba(230,168,0,0.6); }
+  .ball.b  { background: radial-gradient(circle at 35% 35%, #6ab4f5, #2272c3); box-shadow: 0 4px 20px rgba(34,114,195,0.6); }
+  .ball.r  { background: radial-gradient(circle at 35% 35%, #f07070, #c0392b); box-shadow: 0 4px 20px rgba(192,57,43,0.6); }
+  .ball.g  { background: radial-gradient(circle at 35% 35%, #888ea0, #4a5568); box-shadow: 0 4px 20px rgba(74,85,104,0.6); }
+  .ball.gr { background: radial-gradient(circle at 35% 35%, #5ddc7e, #1a8c3c); box-shadow: 0 4px 20px rgba(26,140,60,0.6); }
+  /* 보너스 */
+  .bonus-sep {
+    font-size: 1.4rem;
+    color: #888;
+    opacity: 0;
+    transition: opacity 0.4s 0.8s;
+  }
+  .bonus-sep.show { opacity: 1; }
+  .ball.bonus {
+    width: 52px;
+    height: 52px;
+    border: 3px solid var(--gold);
+    font-size: 1rem;
+  }
+
+  /* 생성 버튼 */
+  .btn-generate {
+    width: 100%;
+    padding: 18px;
+    border: none;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #6c3dca, #a855f7);
+    color: #fff;
+    font-size: 1.15rem;
+    font-weight: 800;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    box-shadow: 0 6px 24px rgba(168,85,247,0.4);
+    transition: transform 0.15s, box-shadow 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-generate:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(168,85,247,0.5); }
+  .btn-generate:active { transform: translateY(0); }
+  .btn-generate .ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    transform: scale(0);
+    animation: ripple 0.6s linear;
+    pointer-events: none;
+  }
+  @keyframes ripple {
+    to { transform: scale(4); opacity: 0; }
+  }
+
+  /* 행운 메시지 */
+  .lucky-msg {
+    text-align: center;
+    margin-top: 16px;
+    padding: 14px 20px;
+    background: rgba(255,215,0,0.08);
+    border: 1px solid rgba(255,215,0,0.2);
+    border-radius: 12px;
+    font-size: 0.9rem;
+    color: #ffd700;
+    min-height: 52px;
+    line-height: 1.5;
+    opacity: 0;
+    transition: opacity 0.5s 1s;
+  }
+  .lucky-msg.show { opacity: 1; }
+
+  /* 번호 색상 안내 */
+  .legend {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.78rem;
+    color: #888;
+  }
+  .legend-dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* 저장 목록 */
+  .section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #ccc;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .saved-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .saved-item {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    animation: slideIn 0.3s ease;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-16px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  .saved-balls {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+  .mini-ball {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    flex-shrink: 0;
+  }
+  .mini-ball.y  { background: radial-gradient(circle at 35% 35%, #ffe566, #e6a800); }
+  .mini-ball.b  { background: radial-gradient(circle at 35% 35%, #6ab4f5, #2272c3); }
+  .mini-ball.r  { background: radial-gradient(circle at 35% 35%, #f07070, #c0392b); }
+  .mini-ball.g  { background: radial-gradient(circle at 35% 35%, #888ea0, #4a5568); }
+  .mini-ball.gr { background: radial-gradient(circle at 35% 35%, #5ddc7e, #1a8c3c); }
+  .mini-ball.bns { background: radial-gradient(circle at 35% 35%, #ffe566, #e6a800); border: 2px solid var(--gold); }
+
+  .saved-meta {
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .saved-meta .mode-badge {
+    display: inline-block;
+    font-size: 0.68rem;
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: rgba(168,85,247,0.25);
+    color: #c084fc;
+    margin-bottom: 4px;
+  }
+  .saved-meta .time {
+    display: block;
+    font-size: 0.7rem;
+    color: #555;
+  }
+  .btn-del {
+    background: none;
+    border: none;
+    color: #444;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 4px;
+    transition: color 0.2s;
+  }
+  .btn-del:hover { color: #e74c3c; }
+
+  .btn-save {
+    width: 100%;
+    margin-top: 12px;
+    padding: 13px;
+    border: 2px solid rgba(255,215,0,0.3);
+    border-radius: 12px;
+    background: rgba(255,215,0,0.05);
+    color: var(--gold);
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-save:hover { background: rgba(255,215,0,0.12); border-color: rgba(255,215,0,0.6); }
+  .btn-save:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  .empty-state {
+    text-align: center;
+    color: #444;
+    font-size: 0.85rem;
+    padding: 20px 0;
+  }
+
+  /* 추첨 애니메이션 오버레이 */
+  .draw-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .draw-overlay.show {
+    opacity: 1;
+    pointer-events: all;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+  }
+  .draw-machine {
+    text-align: center;
+  }
+  .draw-spinner {
+    font-size: 5rem;
+    animation: spin 0.3s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .draw-label {
+    color: #ffd700;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: 16px;
+    animation: pulse 0.5s ease-in-out infinite alternate;
+  }
+  @keyframes pulse {
+    from { opacity: 0.5; }
+    to   { opacity: 1; }
+  }
+
+  /* 폭죽 파티클 */
+  .confetti-container {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 200;
+    overflow: hidden;
+  }
+  .confetti-piece {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    animation: confettiFall var(--dur) ease-in var(--delay) forwards;
+  }
+  @keyframes confettiFall {
+    0%   { transform: translate(0, -20px) rotate(0deg); opacity: 1; }
+    100% { transform: translate(var(--tx), 100vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* 당첨금 안내 */
+  .prize-card {
+    background: linear-gradient(135deg, rgba(108,61,202,0.2), rgba(168,85,247,0.1));
+    border: 1px solid rgba(168,85,247,0.3);
+    border-radius: 16px;
+    padding: 18px 20px;
+  }
+  .prize-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .prize-row {
+    background: rgba(0,0,0,0.2);
+    border-radius: 10px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .prize-rank { font-size: 0.72rem; color: #888; }
+  .prize-match { font-size: 0.85rem; font-weight: 700; color: #ddd; }
+  .prize-amt  { font-size: 0.78rem; color: var(--gold); }
+
+  @media (max-width: 400px) {
+    .ball { width: 46px; height: 46px; font-size: 0.95rem; }
+    header h1 { font-size: 1.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 별 배경 -->
+<div class="stars" id="stars"></div>
+
+<!-- 추첨 오버레이 -->
+<div class="draw-overlay" id="drawOverlay">
+  <div class="draw-machine">
+    <div class="draw-spinner">🎱</div>
+    <div class="draw-label">번호 추첨 중...</div>
+  </div>
+</div>
+
+<!-- 폭죽 -->
+<div class="confetti-container" id="confetti"></div>
+
+<div class="container">
+  <header>
+    <div class="logo">🍀</div>
+    <h1>행운의 로또 번호</h1>
+    <p>이번 주 당신의 행운 번호를 뽑아드립니다</p>
+  </header>
+
+  <!-- 번호 색상 안내 -->
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-dot" style="background:radial-gradient(circle,#ffe566,#e6a800)"></div>
+      <span>1~10</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:radial-gradient(circle,#6ab4f5,#2272c3)"></div>
+      <span>11~20</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:radial-gradient(circle,#f07070,#c0392b)"></div>
+      <span>21~30</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:radial-gradient(circle,#888ea0,#4a5568)"></div>
+      <span>31~40</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:radial-gradient(circle,#5ddc7e,#1a8c3c)"></div>
+      <span>41~45</span>
+    </div>
+  </div>
+
+  <!-- 번호 생성 카드 -->
+  <div class="card">
+    <!-- 추천 방식 -->
+    <div class="mode-tabs">
+      <button class="mode-tab active" data-mode="random">🎲<br>순수<br>랜덤</button>
+      <button class="mode-tab" data-mode="hot">🔥<br>핫<br>번호</button>
+      <button class="mode-tab" data-mode="cold">❄️<br>콜드<br>번호</button>
+      <button class="mode-tab" data-mode="balanced">⚖️<br>균형<br>선택</button>
+      <button class="mode-tab" data-mode="lucky">🌟<br>행운의<br>날</button>
+    </div>
+
+    <!-- 번호 공 -->
+    <div class="balls-area" id="ballsArea">
+      <div style="color:#444;font-size:0.9rem;text-align:center;line-height:1.7">
+        버튼을 눌러<br>이번 주 행운 번호를<br>뽑아보세요! 🎯
+      </div>
+    </div>
+
+    <!-- 행운 메시지 -->
+    <div class="lucky-msg" id="luckyMsg"></div>
+
+    <!-- 버튼 -->
+    <button class="btn-generate" id="btnGenerate" onclick="generateNumbers()">
+      ✨ 행운 번호 추첨하기
+    </button>
+    <button class="btn-save" id="btnSave" onclick="saveNumbers()" disabled>
+      ⭐ 이 번호 저장하기
+    </button>
+  </div>
+
+  <!-- 당첨금 안내 -->
+  <div class="card prize-card">
+    <div class="section-title">🏆 등수별 당첨 기준</div>
+    <div class="prize-grid">
+      <div class="prize-row">
+        <span class="prize-rank">1등</span>
+        <span class="prize-match">6개 일치</span>
+        <span class="prize-amt">평균 약 20억원</span>
+      </div>
+      <div class="prize-row">
+        <span class="prize-rank">2등</span>
+        <span class="prize-match">5개 + 보너스</span>
+        <span class="prize-amt">평균 약 5천만원</span>
+      </div>
+      <div class="prize-row">
+        <span class="prize-rank">3등</span>
+        <span class="prize-match">5개 일치</span>
+        <span class="prize-amt">평균 약 150만원</span>
+      </div>
+      <div class="prize-row">
+        <span class="prize-rank">4등</span>
+        <span class="prize-match">4개 일치</span>
+        <span class="prize-amt">5만원 고정</span>
+      </div>
+      <div class="prize-row">
+        <span class="prize-rank">5등</span>
+        <span class="prize-match">3개 일치</span>
+        <span class="prize-amt">5천원 고정</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 저장 목록 -->
+  <div class="card">
+    <div class="section-title">📋 내 번호 목록 <span style="font-size:0.8rem;color:#666;font-weight:400" id="savedCount"></span></div>
+    <div class="saved-list" id="savedList">
+      <div class="empty-state">저장된 번호가 없습니다<br>번호를 뽑고 저장해보세요!</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ───────── 별 생성 ─────────
+(function createStars() {
+  const container = document.getElementById('stars');
+  for (let i = 0; i < 80; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 2.5 + 0.5;
+    s.style.cssText = `
+      width:${size}px; height:${size}px;
+      top:${Math.random()*100}%;
+      left:${Math.random()*100}%;
+      --d:${(Math.random()*3+1).toFixed(1)}s;
+      animation-delay:${(Math.random()*3).toFixed(1)}s;
+    `;
+    container.appendChild(s);
+  }
+})();
+
+// ───────── 데이터 ─────────
+// 최근 자주 나온 번호 (핫): 실제 통계 기반 상위 번호
+const HOT_NUMS  = [34,27,43,7,17,2,45,14,22,38,11,40,19,6,30,35,23,12,3,9];
+// 최근 덜 나온 번호 (콜드)
+const COLD_NUMS = [44,41,37,28,18,15,4,26,36,42,20,5,21,8,33,16,25,39,32,29];
+
+const MODES = {
+  random:   { label: '랜덤',  desc: '순수하게 무작위로 뽑은 번호예요.' },
+  hot:      { label: '핫번호', desc: '최근 자주 당첨된 번호 중에서 선택했어요.' },
+  cold:     { label: '콜드번호', desc: '최근 뜸했던 번호를 선택했어요. 이번엔 나올 차례!' },
+  balanced: { label: '균형',  desc: '각 번호 구간에서 골고루 선택했어요.' },
+  lucky:    { label: '행운날', desc: '오늘의 날짜 기운이 담긴 특별 번호예요.' },
+};
+
+const LUCKY_MESSAGES = [
+  '🌠 이번 주는 큰 행운이 찾아올 것 같은 기운이에요!',
+  '💫 지금 이 순간 온 우주가 당신의 행운을 응원하고 있어요!',
+  '🎯 자신감 있게 이 번호를 믿어보세요. 직관이 빛날 때예요!',
+  '🌈 좋은 일이 연달아 일어날 것 같은 특별한 날이에요!',
+  '🔮 이 번호에는 당신만의 특별한 에너지가 담겨 있어요!',
+  '⭐ 기다림은 빛나는 결실로 돌아온답니다. 기대해보세요!',
+  '🍀 네잎클로버의 행운이 이 번호에 깃들었어요!',
+  '✨ 꿈을 크게 꾸세요. 당신은 이미 행운아예요!',
+  '🌙 이 번호가 당신의 삶을 바꿔줄 첫 번째 신호일지도 몰라요!',
+  '🎪 행운은 준비된 자에게 찾아온답니다. 오늘이 그 날이에요!',
+  '💎 작은 희망이 큰 기적을 만들어요. 포기하지 마세요!',
+  '🌺 이번 주 로또 번호가 당신의 꿈을 이뤄줄지도 모르니까요!',
+];
+
+let currentMode = 'random';
+let currentNumbers = null;
+let currentBonus = null;
+let savedItems = JSON.parse(localStorage.getItem('lotto_saved') || '[]');
+
+// ───────── 탭 전환 ─────────
+document.querySelectorAll('.mode-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    currentMode = tab.dataset.mode;
+  });
+});
+
+// ───────── 번호 생성 로직 ─────────
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function pickRandom(pool, n) {
+  return shuffle(pool).slice(0, n).sort((a, b) => a - b);
+}
+
+function generateSet(mode) {
+  const all = Array.from({length: 45}, (_, i) => i + 1);
+
+  if (mode === 'random') {
+    return pickRandom(all, 7);  // 6 + 1 bonus
+
+  } else if (mode === 'hot') {
+    const main = pickRandom(HOT_NUMS, 5);
+    const rest = all.filter(n => !main.includes(n));
+    const extra = pickRandom(rest, 2);
+    return [...main, ...extra].sort((a,b)=>a-b).slice(0,7);
+
+  } else if (mode === 'cold') {
+    const main = pickRandom(COLD_NUMS, 5);
+    const rest = all.filter(n => !main.includes(n));
+    const extra = pickRandom(rest, 2);
+    return [...main, ...extra].sort((a,b)=>a-b).slice(0,7);
+
+  } else if (mode === 'balanced') {
+    // 각 구간에서 1~2개씩
+    const zones = [
+      all.filter(n => n <= 10),
+      all.filter(n => n >= 11 && n <= 20),
+      all.filter(n => n >= 21 && n <= 30),
+      all.filter(n => n >= 31 && n <= 40),
+      all.filter(n => n >= 41),
+    ];
+    let picked = [];
+    zones.forEach(z => picked.push(pickRandom(z, 1)[0]));
+    const rest = all.filter(n => !picked.includes(n));
+    picked.push(pickRandom(rest, 1)[0]);
+    picked = picked.sort((a,b)=>a-b);
+    // 보너스
+    const bonus = pickRandom(all.filter(n => !picked.includes(n)), 1)[0];
+    return [...picked, bonus];
+
+  } else if (mode === 'lucky') {
+    // 날짜 기반 시드 + 랜덤
+    const d = new Date();
+    const seed = d.getFullYear() * 10000 + (d.getMonth()+1) * 100 + d.getDate();
+    const seeded = all.map(n => ({ n, v: Math.sin(n * seed) }))
+                      .sort((a,b) => a.v - b.v)
+                      .map(x => x.n);
+    // 절반은 날짜 기반, 절반은 랜덤
+    const lucky3 = seeded.slice(0, 3);
+    const rest = all.filter(n => !lucky3.includes(n));
+    const rand3 = pickRandom(rest, 3);
+    const main = [...lucky3, ...rand3].sort((a,b)=>a-b);
+    const bonus = pickRandom(all.filter(n => !main.includes(n)), 1)[0];
+    return [...main, bonus];
+  }
+}
+
+function ballClass(n) {
+  if (n <= 10) return 'y';
+  if (n <= 20) return 'b';
+  if (n <= 30) return 'r';
+  if (n <= 40) return 'g';
+  return 'gr';
+}
+
+// ───────── 번호 화면 표시 ─────────
+function displayBalls(nums, bonus) {
+  const area = document.getElementById('ballsArea');
+  area.innerHTML = '';
+
+  nums.forEach((n, i) => {
+    const ball = document.createElement('div');
+    ball.className = `ball ${ballClass(n)}`;
+    ball.textContent = n;
+    area.appendChild(ball);
+    setTimeout(() => ball.classList.add('show'), 100 + i * 120);
+  });
+
+  const sep = document.createElement('div');
+  sep.className = 'bonus-sep';
+  sep.textContent = '+';
+  area.appendChild(sep);
+  setTimeout(() => sep.classList.add('show'), 100 + nums.length * 120);
+
+  const bball = document.createElement('div');
+  bball.className = `ball bonus ${ballClass(bonus)}`;
+  bball.textContent = bonus;
+  area.appendChild(bball);
+  setTimeout(() => bball.classList.add('show'), 200 + nums.length * 120);
+}
+
+// ───────── 번호 추첨 ─────────
+async function generateNumbers() {
+  const overlay = document.getElementById('drawOverlay');
+  overlay.classList.add('show');
+
+  await new Promise(r => setTimeout(r, 1200));
+
+  overlay.classList.remove('show');
+
+  const set = generateSet(currentMode);
+  currentNumbers = set.slice(0, 6);
+  currentBonus   = set[6];
+
+  displayBalls(currentNumbers, currentBonus);
+
+  // 행운 메시지
+  const msg = document.getElementById('luckyMsg');
+  msg.textContent = LUCKY_MESSAGES[Math.floor(Math.random() * LUCKY_MESSAGES.length)];
+  msg.classList.add('show');
+
+  // 저장 버튼 활성화
+  document.getElementById('btnSave').disabled = false;
+
+  // 폭죽
+  setTimeout(launchConfetti, 300);
+
+  // 버튼 리플 효과
+  addRipple(document.getElementById('btnGenerate'));
+}
+
+// ───────── 폭죽 ─────────
+function launchConfetti() {
+  const container = document.getElementById('confetti');
+  container.innerHTML = '';
+  const colors = ['#ffd700','#ff6b6b','#a855f7','#4a90d9','#27ae60','#ff8c00'];
+  for (let i = 0; i < 50; i++) {
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    p.style.cssText = `
+      left:${Math.random()*100}%;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      --tx:${(Math.random()-0.5)*200}px;
+      --dur:${(Math.random()*1.5+1).toFixed(1)}s;
+      --delay:${(Math.random()*0.5).toFixed(2)}s;
+      width:${Math.random()*10+5}px;
+      height:${Math.random()*10+5}px;
+    `;
+    container.appendChild(p);
+  }
+  setTimeout(() => container.innerHTML = '', 3000);
+}
+
+// ───────── 리플 효과 ─────────
+function addRipple(btn) {
+  const r = document.createElement('span');
+  r.className = 'ripple';
+  r.style.width = r.style.height = btn.offsetWidth + 'px';
+  r.style.left = r.style.top = '0';
+  btn.appendChild(r);
+  setTimeout(() => r.remove(), 700);
+}
+
+// ───────── 저장 ─────────
+function saveNumbers() {
+  if (!currentNumbers) return;
+  const now = new Date();
+  const item = {
+    id: Date.now(),
+    nums: currentNumbers,
+    bonus: currentBonus,
+    mode: currentMode,
+    modeLabel: MODES[currentMode].label,
+    time: `${now.getMonth()+1}/${now.getDate()} ${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`,
+  };
+  savedItems.unshift(item);
+  if (savedItems.length > 20) savedItems = savedItems.slice(0, 20);
+  localStorage.setItem('lotto_saved', JSON.stringify(savedItems));
+  renderSaved();
+  document.getElementById('btnSave').disabled = true;
+  document.getElementById('btnSave').textContent = '✅ 저장 완료!';
+  setTimeout(() => {
+    document.getElementById('btnSave').textContent = '⭐ 이 번호 저장하기';
+  }, 2000);
+}
+
+function deleteItem(id) {
+  savedItems = savedItems.filter(x => x.id !== id);
+  localStorage.setItem('lotto_saved', JSON.stringify(savedItems));
+  renderSaved();
+}
+
+function renderSaved() {
+  const list = document.getElementById('savedList');
+  const count = document.getElementById('savedCount');
+  count.textContent = savedItems.length > 0 ? `(${savedItems.length}개)` : '';
+
+  if (savedItems.length === 0) {
+    list.innerHTML = '<div class="empty-state">저장된 번호가 없습니다<br>번호를 뽑고 저장해보세요!</div>';
+    return;
+  }
+
+  list.innerHTML = savedItems.map(item => `
+    <div class="saved-item">
+      <div class="saved-balls">
+        ${item.nums.map(n => `<div class="mini-ball ${ballClass(n)}">${n}</div>`).join('')}
+        <div style="display:flex;align-items:center;color:#555;font-size:0.85rem;padding:0 2px">+</div>
+        <div class="mini-ball bns">${item.bonus}</div>
+      </div>
+      <div class="saved-meta">
+        <span class="mode-badge">${item.modeLabel}</span>
+        <span class="time">${item.time}</span>
+      </div>
+      <button class="btn-del" onclick="deleteItem(${item.id})" title="삭제">✕</button>
+    </div>
+  `).join('');
+}
+
+// ───────── 초기 렌더 ─────────
+renderSaved();
+</script>
+</body>
+</html>
