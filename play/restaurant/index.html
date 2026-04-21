@@ -1,1 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#1A0A00" />
+  <title>오늘 뭐 먹지? — 맛집 추천</title>
 
+  <!-- Pretendard font -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css"
+    crossorigin="anonymous" />
+
+  <link rel="stylesheet" href="css/style.css" />
+
+</head>
+<body>
+  <!-- Toast notification -->
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <!-- GPS / info banner -->
+  <div id="banner" role="alert" aria-live="assertive"></div>
+
+  <!-- Progress indicator (hidden on splash) -->
+  <div class="progress-wrap" id="progress-wrap" aria-hidden="true">
+    <div class="progress-track">
+      <div id="progress-bar"></div>
+    </div>
+    <div class="progress-dots">
+      <div class="progress-dot" aria-label="1단계: 지역"></div>
+      <div class="progress-dot" aria-label="2단계: 음식"></div>
+      <div class="progress-dot" aria-label="3단계: 필터"></div>
+    </div>
+  </div>
+
+  <div id="app">
+
+    <!-- ── Step 0: Splash ───────────────────────────────────────── -->
+    <section id="screen-splash" class="screen screen--active" aria-label="시작 화면">
+      <div class="splash-inner">
+        <span class="splash-emoji" aria-hidden="true">🍽️</span>
+        <h1 class="splash-title">오늘 뭐 먹지?</h1>
+        <p class="splash-wit">뭐 먹을지 고민만 3시간째라면<br>잘 오셨습니다</p>
+        <p class="splash-sub">배고픔에는 정답이 있다</p>
+        <button class="btn-splash-start" id="btn-splash-start" aria-label="맛집 찾기 시작">
+          <span class="btn-splash-rumble">꼬로록</span>
+          <span class="btn-splash-hint">배고프다, 출발!</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ── Step 1: Region ───────────────────────────────────────── -->
+    <section id="screen-region" class="screen" aria-label="지역 선택">
+      <div class="screen-header">
+        <h2>어디서 드실 건가요?</h2>
+        <p>지역을 선택하거나 내 주변을 탭하세요</p>
+      </div>
+
+      <div id="region-content" role="list" aria-label="지역 목록"></div>
+
+      <div class="screen-footer">
+        <button class="btn-primary" data-next="2" aria-label="다음 단계로">
+          다음 — 음식 종류 선택
+        </button>
+      </div>
+    </section>
+
+    <!-- ── Step 2: Food Type ────────────────────────────────────── -->
+    <section id="screen-food" class="screen" aria-label="음식 종류 선택">
+      <button class="btn-back" data-back aria-label="이전으로">←</button>
+
+      <div class="screen-header">
+        <h2>어떤 음식이<br>끌리세요?</h2>
+        <p>여러 개 선택할 수 있어요</p>
+      </div>
+
+      <div id="food-content" role="list" aria-label="음식 종류 목록"></div>
+
+      <div class="screen-footer">
+        <button class="btn-primary" data-next="3" aria-label="다음 단계로">
+          다음 — 세부 필터
+        </button>
+      </div>
+    </section>
+
+    <!-- ── Step 3: Filters ──────────────────────────────────────── -->
+    <section id="screen-filters" class="screen" aria-label="추가 필터">
+      <button class="btn-back" data-back aria-label="이전으로">←</button>
+
+      <div class="screen-header">
+        <h2>더 세밀하게<br>찾아볼까요?</h2>
+        <p>선택하지 않아도 괜찮아요</p>
+      </div>
+
+      <div id="filter-content" role="group" aria-label="필터 옵션"></div>
+
+      <div class="screen-footer">
+        <button class="btn-primary" id="btn-apply-filters" aria-label="필터 적용 후 검색">
+          맛집 찾기 🔍
+        </button>
+        <button class="btn-skip" id="btn-skip-filters" aria-label="필터 건너뛰기">
+          필터 없이 바로 검색
+        </button>
+      </div>
+    </section>
+
+    <!-- ── Step 4: Results ──────────────────────────────────────── -->
+    <section id="screen-results" class="screen" aria-label="검색 결과">
+
+      <!-- Card list -->
+      <div id="results-list" role="list" aria-label="검색된 맛집 목록"></div>
+
+    </section>
+
+  </div><!-- /#app -->
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
