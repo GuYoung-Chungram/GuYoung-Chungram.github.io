@@ -973,7 +973,9 @@
     var np={id:mx+1,cat:ca,pinned:pi,title:t,date:new Date().toISOString().slice(0,10),author:au,views:0,content:co};
     if(GAS_URL!=='YOUR_GAS_DEPLOYMENT_URL_HERE'){
       try{
-        await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'create',...np})});
+        var r=await fetch(GAS_URL+'?action=create&data='+encodeURIComponent(JSON.stringify(np))+'&t='+Date.now());
+        var res=await r.json();
+        if(!res.ok){showToast('⚠️ 서버 저장 실패 — 재시도하세요');return;}
       }catch(e){showToast('⚠️ 서버 저장 실패 — 재시도하세요');return;}
     }
     posts.unshift(np);
@@ -984,7 +986,9 @@
     if(!confirm('이 게시글을 삭제하시겠습니까?'))return;
     if(GAS_URL!=='YOUR_GAS_DEPLOYMENT_URL_HERE'){
       try{
-        await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'delete',id:id})});
+        var r=await fetch(GAS_URL+'?action=delete&id='+id+'&t='+Date.now());
+        var res=await r.json();
+        if(!res.ok){showToast('⚠️ 삭제 실패 — 재시도하세요');return;}
       }catch(e){showToast('⚠️ 삭제 실패 — 재시도하세요');return;}
     }
     posts=posts.filter(function(p){return p.id!==id;});
