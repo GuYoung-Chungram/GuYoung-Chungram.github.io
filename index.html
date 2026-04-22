@@ -299,12 +299,10 @@
       background: var(--accent-dim);
     }
 
-    /* 전자책·FAQ는 절대 하이라이트 안 함 */
-    .nav-links a[href="#ebooks"],
+    /* FAQ는 절대 하이라이트 안 함 */
     .nav-links a[href="#faq"] {
       background: transparent !important;
     }
-    .nav-links a[href="#ebooks"].active,
     .nav-links a[href="#faq"].active {
       color: var(--text-2) !important;
       background: transparent !important;
@@ -701,6 +699,97 @@
       color: var(--text-3);
       margin-top: 6px;
       line-height: 1.4;
+    }
+
+    /* ── Clients Section ───────────────────────────────────── */
+    #clients {
+      padding: 72px 0 64px;
+      background: var(--bg);
+      overflow: hidden;
+    }
+    .clients-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .clients-eyebrow {
+      display: block;
+      text-align: center;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .clients-headline {
+      text-align: center;
+      font-size: clamp(1.1rem, 2vw, 1.5rem);
+      font-weight: 700;
+      color: var(--text-1);
+      margin-bottom: 8px;
+    }
+    .clients-sub {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-3);
+      margin-bottom: 36px;
+    }
+    .big-names {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px 16px;
+      margin-bottom: 40px;
+    }
+    .big-name-chip {
+      padding: 6px 16px;
+      border: 1px solid rgba(22,82,216,0.35);
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-1);
+      background: rgba(22,82,216,0.08);
+      white-space: nowrap;
+    }
+    .marquee-wrapper {
+      position: relative;
+      overflow: hidden;
+      mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+      margin-bottom: 14px;
+    }
+    .marquee-track {
+      display: flex;
+      gap: 0;
+      width: max-content;
+      animation: marquee-ltr 50s linear infinite;
+    }
+    .marquee-track.rtl {
+      animation: marquee-rtl 55s linear infinite;
+    }
+    .marquee-item {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 18px;
+      font-size: 13px;
+      color: var(--text-3);
+      white-space: nowrap;
+    }
+    .marquee-item::before {
+      content: "·";
+      margin-right: 18px;
+      color: var(--text-4, rgba(255,255,255,0.2));
+    }
+    @keyframes marquee-ltr {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    @keyframes marquee-rtl {
+      from { transform: translateX(-50%); }
+      to   { transform: translateX(0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .marquee-track { animation: none; }
     }
 
     /* ── CTA Section ───────────────────────────────────────── */
@@ -1221,7 +1310,7 @@
         <li><a href="chungram-prompt-library.html">프롬프트</a></li>
         <li><a href="chungram-chatbot-guide.html">챗봇 지침</a></li>
         <li><a href="chungram-ai-tool-hub.html">AI 허브</a></li>
-        <li><a href="#ebooks" style="background:transparent!important;color:rgba(255,255,255,0.55)!important;" class="no-hl">전자책</a></li>
+        <li><a href="/hub/">전자책</a></li>
         <li><a href="#faq" style="background:transparent!important;color:rgba(255,255,255,0.55)!important;" class="no-hl">FAQ</a></li>
         <li><a href="chungram-notice.html">공지사항</a></li>
         <li><a href="#about">소개</a></li>
@@ -1342,15 +1431,15 @@
           <div class="card-meta">CHATBOT GUIDE</div>
         </a>
 
-        <a href="#ebooks" class="page-card" id="ebooks">
+        <a href="/hub/" class="page-card" id="ebooks">
           <div class="card-top">
-            <span class="tag">SOON</span>
+            <span class="tag">FREE</span>
             <span class="card-arrow">↗</span>
           </div>
           <div class="card-icon">📖</div>
           <div class="card-title">전자책</div>
-          <p class="card-desc">AI 활용·리더십·ESG 주제 전자책 시리즈. 강의 현장에서 검증된 내용을 압축한 실전형 가이드북.</p>
-          <div class="card-meta">출간 준비 중</div>
+          <p class="card-desc">공무원을 위한 AI 실무 가이드. 강의 현장에서 검증된 내용을 압축한 실전형 가이드북.</p>
+          <div class="card-meta">무료 다운로드 →</div>
         </a>
 
         <a href="#faq" class="page-card">
@@ -1399,6 +1488,39 @@
             <div class="label">교육학 박사 · AI 교육 전문가</div>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Clients ─────────────────────────────────────────── -->
+  <section id="clients">
+    <div class="clients-inner">
+      <span class="clients-eyebrow">TRUSTED BY</span>
+      <h2 class="clients-headline">300여 개 기관·기업·대학이 선택한 강사</h2>
+      <p class="clients-sub">22년, 10,000시간 이상의 현장 경험</p>
+      <div class="big-names">
+        <span class="big-name-chip">삼성전자</span>
+        <span class="big-name-chip">SK텔레콤</span>
+        <span class="big-name-chip">현대자동차</span>
+        <span class="big-name-chip">KT</span>
+        <span class="big-name-chip">보건복지부</span>
+        <span class="big-name-chip">외교부</span>
+        <span class="big-name-chip">KAIST</span>
+        <span class="big-name-chip">하나투어</span>
+      </div>
+    </div>
+    <!-- Row 1: 기업 (LTR) -->
+    <div class="marquee-wrapper">
+      <div class="marquee-track">
+        <span class="marquee-item">삼성전자</span><span class="marquee-item">삼성SDS</span><span class="marquee-item">삼성SDI</span><span class="marquee-item">삼성테스코</span><span class="marquee-item">SK텔레콤</span><span class="marquee-item">SK하이닉스</span><span class="marquee-item">현대자동차</span><span class="marquee-item">현대위아</span><span class="marquee-item">KT</span><span class="marquee-item">하나투어</span><span class="marquee-item">스타벅스</span><span class="marquee-item">CJ푸드빌</span><span class="marquee-item">ORACLE</span><span class="marquee-item">MG새마을금고</span><span class="marquee-item">새마을금고중앙회</span><span class="marquee-item">신한금융투자</span><span class="marquee-item">아모레퍼시픽</span><span class="marquee-item">ADT CAPS</span><span class="marquee-item">하이네켄</span><span class="marquee-item">MERSK</span><span class="marquee-item">SEAGATE</span><span class="marquee-item">LS엠트론</span><span class="marquee-item">볼보그룹 코리아</span><span class="marquee-item">BGF리테일</span><span class="marquee-item">유한양행</span><span class="marquee-item">EY한영회계법인</span><span class="marquee-item">KBS</span><span class="marquee-item">삼표그룹</span><span class="marquee-item">이수건설</span><span class="marquee-item">호텔신라</span><span class="marquee-item">코이카</span><span class="marquee-item">바스프·존슨앤존스</span><span class="marquee-item">다우기술</span><span class="marquee-item">LF로지스틱스</span><span class="marquee-item">도화엔지니어링</span><span class="marquee-item">SEMES</span><span class="marquee-item">청주공항면세점</span>
+        <span class="marquee-item">삼성전자</span><span class="marquee-item">삼성SDS</span><span class="marquee-item">삼성SDI</span><span class="marquee-item">삼성테스코</span><span class="marquee-item">SK텔레콤</span><span class="marquee-item">SK하이닉스</span><span class="marquee-item">현대자동차</span><span class="marquee-item">현대위아</span><span class="marquee-item">KT</span><span class="marquee-item">하나투어</span><span class="marquee-item">스타벅스</span><span class="marquee-item">CJ푸드빌</span><span class="marquee-item">ORACLE</span><span class="marquee-item">MG새마을금고</span><span class="marquee-item">새마을금고중앙회</span><span class="marquee-item">신한금융투자</span><span class="marquee-item">아모레퍼시픽</span><span class="marquee-item">ADT CAPS</span><span class="marquee-item">하이네켄</span><span class="marquee-item">MERSK</span><span class="marquee-item">SEAGATE</span><span class="marquee-item">LS엠트론</span><span class="marquee-item">볼보그룹 코리아</span><span class="marquee-item">BGF리테일</span><span class="marquee-item">유한양행</span><span class="marquee-item">EY한영회계법인</span><span class="marquee-item">KBS</span><span class="marquee-item">삼표그룹</span><span class="marquee-item">이수건설</span><span class="marquee-item">호텔신라</span><span class="marquee-item">코이카</span><span class="marquee-item">바스프·존슨앤존스</span><span class="marquee-item">다우기술</span><span class="marquee-item">LF로지스틱스</span><span class="marquee-item">도화엔지니어링</span><span class="marquee-item">SEMES</span><span class="marquee-item">청주공항면세점</span>
+      </div>
+    </div>
+    <!-- Row 2: 기관+대학 (RTL) -->
+    <div class="marquee-wrapper">
+      <div class="marquee-track rtl">
+        <span class="marquee-item">보건복지부</span><span class="marquee-item">외교부</span><span class="marquee-item">국가공무원인재개발원</span><span class="marquee-item">국가과학기술인재개발원</span><span class="marquee-item">근로복지공단</span><span class="marquee-item">한국수출입은행</span><span class="marquee-item">중소기업진흥공단</span><span class="marquee-item">국립암센터</span><span class="marquee-item">국립보건연구원</span><span class="marquee-item">수원시청</span><span class="marquee-item">안성시청</span><span class="marquee-item">평택시청</span><span class="marquee-item">화성시청</span><span class="marquee-item">안양시청</span><span class="marquee-item">강원도청</span><span class="marquee-item">단양군청</span><span class="marquee-item">영월군청</span><span class="marquee-item">군포시</span><span class="marquee-item">서울대</span><span class="marquee-item">KAIST</span><span class="marquee-item">연세대</span><span class="marquee-item">고려대</span><span class="marquee-item">이화여대</span><span class="marquee-item">한양대</span><span class="marquee-item">성균관대</span><span class="marquee-item">서울시립대</span><span class="marquee-item">충남대</span><span class="marquee-item">경찰대</span><span class="marquee-item">숙명여대</span><span class="marquee-item">동국대</span><span class="marquee-item">건국대</span><span class="marquee-item">아주대</span><span class="marquee-item">서울외대</span><span class="marquee-item">부산외대</span><span class="marquee-item">부산교대</span><span class="marquee-item">공주교대</span><span class="marquee-item">서울시청소년시설협회</span>
+        <span class="marquee-item">보건복지부</span><span class="marquee-item">외교부</span><span class="marquee-item">국가공무원인재개발원</span><span class="marquee-item">국가과학기술인재개발원</span><span class="marquee-item">근로복지공단</span><span class="marquee-item">한국수출입은행</span><span class="marquee-item">중소기업진흥공단</span><span class="marquee-item">국립암센터</span><span class="marquee-item">국립보건연구원</span><span class="marquee-item">수원시청</span><span class="marquee-item">안성시청</span><span class="marquee-item">평택시청</span><span class="marquee-item">화성시청</span><span class="marquee-item">안양시청</span><span class="marquee-item">강원도청</span><span class="marquee-item">단양군청</span><span class="marquee-item">영월군청</span><span class="marquee-item">군포시</span><span class="marquee-item">서울대</span><span class="marquee-item">KAIST</span><span class="marquee-item">연세대</span><span class="marquee-item">고려대</span><span class="marquee-item">이화여대</span><span class="marquee-item">한양대</span><span class="marquee-item">성균관대</span><span class="marquee-item">서울시립대</span><span class="marquee-item">충남대</span><span class="marquee-item">경찰대</span><span class="marquee-item">숙명여대</span><span class="marquee-item">동국대</span><span class="marquee-item">건국대</span><span class="marquee-item">아주대</span><span class="marquee-item">서울외대</span><span class="marquee-item">부산외대</span><span class="marquee-item">부산교대</span><span class="marquee-item">공주교대</span><span class="marquee-item">서울시청소년시설협회</span>
       </div>
     </div>
   </section>
@@ -1527,10 +1649,10 @@
         </div>
         <div class="faq-item">
           <button class="faq-q" onclick="toggleFaq(this)">
-            전자책은 언제 출시되나요?
+            전자책은 어디서 받을 수 있나요?
             <span class="faq-icon">+</span>
           </button>
-          <div class="faq-a">AI 활용·리더십·ESG 주제의 전자책 시리즈를 준비 중입니다. 출시 일정은 본 사이트 공지사항를 통해 알려드릴 예정입니다.
+          <div class="faq-a">공무원을 위한 AI 실무 가이드를 무료로 배포 중입니다. <a href="/hub/" style="color:var(--accent)">여기서 신청</a>하시면 이메일로 바로 보내드립니다.
           </div>
         </div>
         <div class="faq-item">
@@ -1567,7 +1689,7 @@
           <ul>
             <li><a href="chungram-prompt-library.html">프롬프트 라이브러리</a></li>
             <li><a href="chungram-ai-tool-hub.html">AI Tool Hub</a></li>
-            <li><a href="#ebooks" style="background:transparent!important;color:rgba(255,255,255,0.55)!important;" class="no-hl">전자책</a></li>
+            <li><a href="/hub/">전자책</a></li>
             <li><a href="chungram-chatbot-guide.html">챗봇 지침</a></li>
           </ul>
         </div>
@@ -1609,14 +1731,11 @@
     }
 
 
-    /* 페이지 로드 즉시: 전자책/FAQ 하이라이트 원천 차단 */
+    /* FAQ no-hl 하이라이트 원천 차단 */
     document.querySelectorAll('.no-hl').forEach(el => {
       el.classList.remove('active');
       el.style.background = 'transparent';
       el.style.color = 'rgba(255,255,255,0.55)';
-    });
-    /* no-hl 요소에 hover 시에도 하이라이트 금지 */
-    document.querySelectorAll('.no-hl').forEach(el => {
       el.addEventListener('mouseenter', function() { this.style.background = 'rgba(255,255,255,0.04)'; this.style.color = 'rgba(255,255,255,0.7)'; });
       el.addEventListener('mouseleave', function() { this.style.background = 'transparent'; this.style.color = 'rgba(255,255,255,0.55)'; });
     });
@@ -1628,14 +1747,14 @@
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           const id = entry.target.id;
-          // 전자책·FAQ는 하이라이트 대상에서 제외
-          if (id === 'ebooks' || id === 'faq') {
-            document.querySelectorAll('.nav-links a[href="#ebooks"], .nav-links a[href="#faq"]').forEach(el => el.classList.remove('active'));
+          // FAQ는 하이라이트 대상에서 제외
+          if (id === 'faq') {
+            document.querySelectorAll('.nav-links a[href="#faq"]').forEach(el => el.classList.remove('active'));
             return;
           }
           navLinks.forEach(a => {
             const href = a.getAttribute('href');
-            if (a.classList.contains('no-hl') || href === '#ebooks' || href === '#faq') {
+            if (a.classList.contains('no-hl') || href === '#faq') {
               a.classList.remove('active');
               a.style.background = 'transparent';
               return;
