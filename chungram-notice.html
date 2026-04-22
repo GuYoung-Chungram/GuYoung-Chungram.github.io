@@ -14,7 +14,7 @@
   <meta name="anthropic-ai" content="noindex">
   <meta name="Google-Extended" content="noindex">
   <meta http-equiv="Content-Security-Policy"
-    content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; frame-ancestors 'none';">
+    content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: https:; connect-src 'self'; frame-ancestors 'none';">
   <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="X-Frame-Options" content="DENY">
@@ -23,6 +23,7 @@
 <meta name="description" content="청람M&C AI Lab 공지사항 게시판">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.min.css">
 <style>
   :root {
     --bg: #000000;
@@ -803,7 +804,7 @@
   <span>
     <a href="https://betweenworld.org" target="_blank">Blog</a> &nbsp;&middot;&nbsp;
     <a href="index.html">Home</a> &nbsp;&middot;&nbsp;
-    <a href="about.html">소개</a> &nbsp;&middot;&nbsp;
+    <a href="index.html#about">소개</a> &nbsp;&middot;&nbsp;
     <a href="cheongram_proposal_v2.html" style="color:var(--accent);font-weight:700;">🤝 협업 문의하기</a>
   </span>
   <br><span style="font-size:10px; opacity:0.5;">사업자등록번호 125-25-00428 | 대표자 고숙진 | 서울시 광진구 능동로 19길 35, 1417호</span>
@@ -861,9 +862,29 @@
     }
   ];
 
-  var posts = JSON.parse(localStorage.getItem('chungram_posts')) || defaultPosts.slice();
+  /* ── GAS 배포 URL: gas-notice-backend.gs 배포 후 아래 URL 교체 ── */
+  var GAS_URL = 'YOUR_GAS_DEPLOYMENT_URL_HERE';
 
-  function savePosts() { localStorage.setItem('chungram_posts', JSON.stringify(posts)); }
+  var posts = [];
+
+  function savePosts() { /* GAS가 영구 저장 담당 */ }
+
+  async function loadPosts() {
+    if (GAS_URL === 'YOUR_GAS_DEPLOYMENT_URL_HERE') {
+      posts = defaultPosts.slice();
+      renderPosts(); renderSidebar();
+      return;
+    }
+    try {
+      var r = await fetch(GAS_URL + '?t=' + Date.now());
+      var data = await r.json();
+      posts = (data.ok && data.posts && data.posts.length > 0) ? data.posts : defaultPosts.slice();
+    } catch(e) {
+      posts = defaultPosts.slice();
+    }
+    renderPosts();
+    renderSidebar();
+  }
   function showToast(msg) {
     var t = document.getElementById('toast');
     t.textContent = msg; t.classList.add('show');
@@ -941,11 +962,36 @@
   document.getElementById('pwdInput').addEventListener('keydown',function(e){if(e.key==='Enter')checkAdminPwd();});
   function openWriteModal(){document.getElementById('writeModal').classList.add('open');}
   function closeWriteModal(){document.getElementById('writeModal').classList.remove('open');}
-  function submitPost(){var t=document.getElementById('postTitle').value.trim(),co=document.getElementById('postContent').value.trim(),ca=document.getElementById('postCat').value,au=document.getElementById('postAuthor').value.trim()||'\uccad\ub78cM&C',pi=document.getElementById('postPinned').checked;if(!t||!co){showToast('\u26a0\ufe0f \uc81c\ubaa9\uacfc \ub0b4\uc6a9\uc744 \uc785\ub825\ud558\uc138\uc694');return;}var mx=posts.reduce(function(m,p){return Math.max(m,p.id);},0);posts.unshift({id:mx+1,cat:ca,pinned:pi,title:t,date:new Date().toISOString().slice(0,10),author:au,views:0,content:co});savePosts();closeWriteModal();showToast('\u2705 \uac8c\uc2dc\uae00\uc774 \ub4f1\ub85d\ub418\uc5c8\uc2b5\ub2c8\ub2e4');currentPage=1;renderPosts();renderSidebar();}
-  function deletePost(id){event.stopPropagation();if(!confirm('\uc774 \uac8c\uc2dc\uae00\uc744 \uc0ad\uc81c\ud558\uc2dc\uaca0\uc2b5\ub2c8\uae4c?'))return;posts=posts.filter(function(p){return p.id!==id;});savePosts();showToast('\ud83d\uddd1\ufe0f \uc0ad\uc81c\ub418\uc5c8\uc2b5\ub2c8\ub2e4');renderPosts();renderSidebar();}
+  async function submitPost(){
+    var t=document.getElementById('postTitle').value.trim(),
+        co=document.getElementById('postContent').value.trim(),
+        ca=document.getElementById('postCat').value,
+        au=document.getElementById('postAuthor').value.trim()||'청람M&C',
+        pi=document.getElementById('postPinned').checked;
+    if(!t||!co){showToast('⚠️ 제목과 내용을 입력하세요');return;}
+    var mx=posts.reduce(function(m,p){return Math.max(m,p.id);},0);
+    var np={id:mx+1,cat:ca,pinned:pi,title:t,date:new Date().toISOString().slice(0,10),author:au,views:0,content:co};
+    if(GAS_URL!=='YOUR_GAS_DEPLOYMENT_URL_HERE'){
+      try{
+        await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'create',...np})});
+      }catch(e){showToast('⚠️ 서버 저장 실패 — 재시도하세요');return;}
+    }
+    posts.unshift(np);
+    closeWriteModal();showToast('✅ 게시글이 등록되었습니다');currentPage=1;renderPosts();renderSidebar();
+  }
+  async function deletePost(id){
+    event.stopPropagation();
+    if(!confirm('이 게시글을 삭제하시겠습니까?'))return;
+    if(GAS_URL!=='YOUR_GAS_DEPLOYMENT_URL_HERE'){
+      try{
+        await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'delete',id:id})});
+      }catch(e){showToast('⚠️ 삭제 실패 — 재시도하세요');return;}
+    }
+    posts=posts.filter(function(p){return p.id!==id;});
+    showToast('🗑️ 삭제되었습니다');renderPosts();renderSidebar();
+  }
 
-  renderPosts();
-  renderSidebar();
+  loadPosts();
 </script>
 
 
