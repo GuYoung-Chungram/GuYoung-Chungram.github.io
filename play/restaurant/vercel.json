@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/api/proxy.php", "destination": "/api/search" }
+  ]
+}
