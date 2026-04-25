@@ -1,5 +1,5 @@
 // Naver Local Search API via PHP proxy
-const PROXY_URL = 'api/proxy.php';
+const PROXY_URL = '/api/search';
 const PAGE_SIZE = 5;
 
 /**
@@ -26,7 +26,12 @@ export async function searchRestaurants({ region, foodTypes, filters, page = 1, 
   const res = await fetch(`${PROXY_URL}?${params}`);
   if (!res.ok) throw new Error(`검색 요청 실패: ${res.status}`);
 
-  const data = await res.json();
+  let data;
+  try {
+    data = await res.json();
+  } catch {
+    throw new Error('서버 응답 오류 — 잠시 후 다시 시도해주세요');
+  }
   if (data.error) throw new Error(data.error);
 
   const items = (data.items || []).map(normalizeItem);
@@ -47,10 +52,14 @@ export async function searchRestaurants({ region, foodTypes, filters, page = 1, 
 async function fetchThumbnail(name, category) {
   const query = `${name} ${category || ''}`.trim();
   const params = new URLSearchParams({ action: 'image', query });
-  const res = await fetch(`${PROXY_URL}?${params}`);
-  if (!res.ok) return null;
-  const data = await res.json();
-  return data.items?.[0]?.thumbnail || null;
+  try {
+    const res = await fetch(`${PROXY_URL}?${params}`);
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.items?.[0]?.thumbnail || null;
+  } catch {
+    return null;
+  }
 }
 
 function buildSearchQuery(region, foodTypes, filters) {
