@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✦ 강점 슬라이딩</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Orbitron:wght@400;700;900&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;}
+  :root{
+    --w1:#ff9a56;--w2:#ffb347;--w3:#ff6b9d;--glow:#ffd700;
+    --bg:#0d0d1a;--card:rgba(255,255,255,0.04);--border:rgba(255,180,100,0.25);
+    --text:#fff3e8;--dim:rgba(255,243,232,0.5);
+    --feel:#f472b6;--think:#60a5fa;--do:#4ade80;
+    --red:#f87171;--green:#4ade80;--yellow:#fbbf24;--purple:#a78bfa;
+  }
+  body{background:var(--bg);font-family:'Noto Sans KR',sans-serif;color:var(--text);min-height:100vh;overflow-x:hidden;}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:radial-gradient(ellipse at 20% 20%,rgba(255,154,86,.07) 0%,transparent 55%),
+               radial-gradient(ellipse at 80% 75%,rgba(255,107,157,.07) 0%,transparent 55%);}
+  .stars{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+  .star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--dur,3s) ease-in-out infinite;opacity:0;}
+  @keyframes twinkle{0%,100%{opacity:0;transform:scale(.5)}50%{opacity:var(--op,.7);transform:scale(1)}}
+  @keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
+  @keyframes pFly{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(0)}}
+
+  /* ── 공통 ── */
+  .screen{position:relative;z-index:1;min-height:100vh;display:none;flex-direction:column;align-items:center;padding:28px 16px 60px;isolation:auto;}
+  .screen.active{display:flex;}
+  .logo{font-family:'Orbitron',monospace;font-size:1rem;font-weight:700;letter-spacing:5px;color:var(--w2);margin-bottom:6px;filter:drop-shadow(0 0 10px rgba(255,180,71,.4));text-align:center;}
+  .sub{color:var(--dim);font-size:.83rem;letter-spacing:1px;text-align:center;}
+  .card-box{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:22px 26px;width:100%;max-width:560px;backdrop-filter:blur(12px);}
+  .card-box+.card-box{margin-top:14px;}
+  .card-ttl{font-size:.7rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--w2);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+  .card-ttl::before{content:'';display:inline-block;width:14px;height:2px;background:linear-gradient(90deg,var(--w1),var(--w2));border-radius:2px;}
+  input[type=text]{width:100%;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,154,86,.2);border-radius:12px;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:.92rem;padding:11px 15px;outline:none;transition:border-color .2s,box-shadow .2s;}
+  input[type=text]:focus{border-color:var(--w1);box-shadow:0 0 14px rgba(255,154,86,.2);}
+  input[type=text]::placeholder{color:rgba(255,243,232,.25);}
+  .btn{padding:12px 32px;font-family:'Orbitron',monospace;font-size:.82rem;font-weight:700;letter-spacing:2px;color:#fff;background:linear-gradient(135deg,var(--w1),var(--w3));border:none;border-radius:50px;cursor:pointer;transition:all .25s;box-shadow:0 6px 28px rgba(255,107,157,.35);}
+  .btn:hover{transform:translateY(-2px) scale(1.03);}
+  .btn:active{transform:scale(.97);}
+  .btn:disabled{opacity:.35;cursor:not-allowed;transform:none;}
+  .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--dim);box-shadow:none;font-family:'Noto Sans KR',sans-serif;font-size:.8rem;letter-spacing:0;padding:9px 18px;}
+  .btn-ghost:hover{border-color:var(--w2);color:var(--w2);background:rgba(255,180,71,.08);}
+  .btn-teal{background:linear-gradient(135deg,#0d9488,#0891b2);}
+  .btn-purple{background:linear-gradient(135deg,#7c3aed,#6d28d9);}
+  .room-code{font-family:'Orbitron',monospace;font-size:2.2rem;font-weight:900;color:var(--w1);letter-spacing:6px;text-align:center;filter:drop-shadow(0 0 14px rgba(255,154,86,.5));margin:8px 0;}
+  .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:.7rem;font-weight:500;}
+  .badge-g{background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.3);color:var(--green);}
+  .badge-y{background:rgba(255,180,71,.12);border:1px solid rgba(255,180,71,.3);color:var(--w2);}
+  .badge-r{background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);color:var(--red);}
+  .badge-p{background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.3);color:var(--purple);}
+  .badge-feel{background:rgba(244,114,182,.12);border:1px solid rgba(244,114,182,.3);color:var(--feel);}
+  .badge-think{background:rgba(96,165,250,.12);border:1px solid rgba(96,165,250,.3);color:var(--think);}
+  .badge-do{background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.3);color:var(--do);}
+
+  /* ── 강점카드 그리드 ── */
+  .cards-grid{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;}
+  .str-card{
+    width:86px;height:86px;border-radius:14px;
+    border:1.5px solid rgba(255,180,100,.15);
+    background:rgba(255,255,255,.04);
+    color:var(--dim);font-size:.68rem;font-weight:500;
+    cursor:pointer;transition:all .18s;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:3px;text-align:center;padding:6px;position:relative;overflow:visible;
+    line-height:1.3;
+  }
+  .str-card .ce{font-size:1.25rem;}
+  .str-card .cn{font-size:.68rem;line-height:1.2;}
+  .str-card .ccat{font-size:.55rem;opacity:.5;margin-top:1px;}
+  .str-card:hover:not(.disabled):not(.passed){
+    border-color:rgba(255,154,86,.5);color:var(--text);
+    transform:translateY(-3px);box-shadow:0 6px 20px rgba(255,154,86,.2);
+  }
+  .str-card.kept{border-color:var(--glow);color:#fff;box-shadow:0 0 20px rgba(255,215,0,.4);}
+  .str-card.kept::before{content:'';position:absolute;inset:0;background:rgba(255,215,0,.08);border-radius:12px;}
+  .str-card.kept::after{content:'✦';position:absolute;top:3px;right:5px;font-size:.58rem;color:var(--glow);}
+  .str-card.passed{opacity:.2;cursor:default;pointer-events:none;}
+  .str-card.disabled{opacity:.4;cursor:default;pointer-events:none;}
+  .str-card.feel-card{border-color:rgba(244,114,182,.2);}
+  .str-card.think-card{border-color:rgba(96,165,250,.2);}
+  .str-card.do-card{border-color:rgba(74,222,128,.2);}
+  .str-card.kept.feel-card{border-color:var(--feel);box-shadow:0 0 18px rgba(244,114,182,.4);}
+  .str-card.kept.think-card{border-color:var(--think);box-shadow:0 0 18px rgba(96,165,250,.4);}
+  .str-card.kept.do-card{border-color:var(--do);box-shadow:0 0 18px rgba(74,222,128,.4);}
+
+  /* 툴팁 */
+  .str-card .tooltip{
+    position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);
+    background:rgba(13,13,26,.97);border:1px solid var(--border);
+    border-radius:10px;padding:8px 12px;width:180px;
+    font-size:.72rem;color:var(--text);line-height:1.5;
+    pointer-events:none;opacity:0;transition:opacity .15s;
+    z-index:100;text-align:left;font-weight:400;
+    box-shadow:0 4px 20px rgba(0,0,0,.5);
+    white-space:normal;
+  }
+  .str-card:hover .tooltip{opacity:1;}
+  .str-card .tooltip .tt-name{font-weight:700;color:var(--w2);margin-bottom:3px;font-size:.75rem;}
+
+  /* ── 플레이어 행 ── */
+  .player-row{display:flex;align-items:center;gap:10px;padding:9px 13px;background:rgba(255,255,255,.03);border-radius:10px;border:1px solid rgba(255,255,255,.05);margin-bottom:6px;}
+  .avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;flex-shrink:0;}
+  .player-name{flex:1;font-size:.86rem;font-weight:500;}
+
+  /* ── 킵 카드 누적 표시 ── */
+  .kept-bar{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;}
+  .kept-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:16px;font-size:.72rem;font-weight:500;}
+  .kept-chip.feel{background:rgba(244,114,182,.12);border:1px solid rgba(244,114,182,.3);color:var(--feel);}
+  .kept-chip.think{background:rgba(96,165,250,.12);border:1px solid rgba(96,165,250,.3);color:var(--think);}
+  .kept-chip.do{background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.3);color:var(--do);}
+
+  /* ── 라운드 배너 ── */
+  .round-banner{text-align:center;margin-bottom:18px;}
+  .round-num{font-family:'Orbitron',monospace;font-size:.9rem;color:var(--w2);letter-spacing:4px;margin-bottom:3px;}
+  .round-desc{font-size:.83rem;color:var(--dim);line-height:1.6;}
+
+  /* ── 동시공개 오버레이 ── */
+  .overlay{position:fixed;inset:0;background:rgba(13,13,26,.95);backdrop-filter:blur(8px);z-index:500;display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:20px;}
+  .overlay.active{display:flex;}
+  .countdown-big{font-family:'Orbitron',monospace;font-size:7rem;font-weight:900;background:linear-gradient(135deg,var(--w1),var(--glow),var(--w3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 30px rgba(255,154,86,.7));animation:cPop .9s ease-out forwards;}
+  @keyframes cPop{0%{transform:scale(2);opacity:0}40%{transform:scale(.9);opacity:1}70%{transform:scale(1.05)}100%{transform:scale(1);opacity:.3}}
+  .reveal-grid{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:720px;}
+  .reveal-item{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;text-align:center;min-width:110px;}
+  .reveal-item .rn{font-size:.72rem;color:var(--dim);margin-bottom:6px;}
+  .reveal-item .re{font-size:1.5rem;margin-bottom:3px;}
+  .reveal-item .rc{font-size:.88rem;font-weight:700;color:var(--text);}
+
+  /* ── 결과 화면 ── */
+  .result-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:22px 26px;width:100%;max-width:560px;}
+  .domain-bar{display:flex;gap:8px;margin-bottom:16px;}
+  .domain-badge{flex:1;padding:10px 8px;border-radius:12px;text-align:center;}
+  .domain-badge .db-num{font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:900;}
+  .domain-badge .db-lbl{font-size:.68rem;margin-top:2px;opacity:.8;}
+  .db-feel{background:rgba(244,114,182,.12);border:1px solid rgba(244,114,182,.25);color:var(--feel);}
+  .db-think{background:rgba(96,165,250,.12);border:1px solid rgba(96,165,250,.25);color:var(--think);}
+  .db-do{background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.25);color:var(--do);}
+
+  .scrollable{max-height:55vh;overflow-y:auto;padding-right:4px;}
+  .scrollable::-webkit-scrollbar{width:4px;}
+  .scrollable::-webkit-scrollbar-thumb{background:rgba(255,154,86,.3);border-radius:2px;}
+
+  .top-btns{position:fixed;top:14px;right:14px;z-index:100;display:flex;gap:8px;}
+  .top-btn{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--dim);font-size:.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;backdrop-filter:blur(8px);}
+  .top-btn:hover{border-color:var(--w2);color:var(--w2);}
+
+  .particle{position:fixed;pointer-events:none;border-radius:50%;z-index:999;animation:pFly var(--pd,1s) ease-out forwards;}
+
+  @media(max-width:480px){
+    .str-card{width:72px;height:72px;}
+    .str-card .ce{font-size:1.1rem;}
+    .countdown-big{font-size:5rem;}
+  }
+
+  /* ── 설명 모달 ── */
+  .modal-backdrop{
+    position:fixed;inset:0;background:rgba(0,0,0,.7);
+    backdrop-filter:blur(6px);z-index:900;
+    display:flex;align-items:center;justify-content:center;
+    padding:20px;opacity:0;pointer-events:none;
+    transition:opacity .25s;
+  }
+  .modal-backdrop.open{opacity:1;pointer-events:all;}
+  .modal{
+    background:#0f0f22;border:1px solid var(--border);
+    border-radius:24px;padding:32px 28px;
+    width:100%;max-width:480px;max-height:85vh;
+    overflow-y:auto;position:relative;
+    transform:translateY(16px);transition:transform .25s;
+    box-shadow:0 20px 60px rgba(0,0,0,.6);
+  }
+  .modal-backdrop.open .modal{transform:translateY(0);}
+  .modal::-webkit-scrollbar{width:4px;}
+  .modal::-webkit-scrollbar-thumb{background:rgba(255,154,86,.3);border-radius:2px;}
+  .modal-close{
+    position:absolute;top:16px;right:16px;
+    width:32px;height:32px;border-radius:50%;
+    background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
+    color:var(--dim);font-size:1rem;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    transition:all .2s;
+  }
+  .modal-close:hover{background:rgba(255,154,86,.15);border-color:var(--w1);color:var(--w1);}
+  .modal-icon{font-size:2rem;margin-bottom:10px;text-align:center;}
+  .modal-title{
+    font-family:'Orbitron',monospace;font-size:.9rem;font-weight:700;
+    letter-spacing:3px;color:var(--w2);text-align:center;
+    margin-bottom:6px;
+  }
+  .modal-sub{font-size:.78rem;color:var(--dim);text-align:center;margin-bottom:20px;letter-spacing:.5px;}
+  .modal-section{margin-bottom:18px;}
+  .modal-section-title{
+    font-size:.68rem;font-weight:700;letter-spacing:3px;
+    text-transform:uppercase;color:var(--w1);
+    margin-bottom:10px;display:flex;align-items:center;gap:8px;
+  }
+  .modal-section-title::before{content:'';display:inline-block;width:12px;height:2px;background:var(--w1);border-radius:2px;}
+  .modal-step{
+    display:flex;gap:12px;align-items:flex-start;
+    padding:10px 12px;border-radius:12px;
+    background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);
+    margin-bottom:8px;
+  }
+  .modal-step-num{
+    width:22px;height:22px;border-radius:50%;flex-shrink:0;
+    background:rgba(255,154,86,.15);border:1px solid rgba(255,154,86,.3);
+    color:var(--w1);font-size:.7rem;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+    margin-top:1px;
+  }
+  .modal-step-text{font-size:.82rem;color:var(--text);line-height:1.6;}
+  .modal-step-text strong{color:var(--w2);}
+  .modal-tip{
+    background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.2);
+    border-radius:12px;padding:12px 14px;
+    font-size:.8rem;color:rgba(255,243,232,.8);line-height:1.6;
+  }
+  .modal-tip::before{content:'💡 ';font-size:.85rem;}
+  .modal-domain-row{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+  .modal-domain{flex:1;min-width:80px;padding:10px 8px;border-radius:12px;text-align:center;}
+  .modal-domain .md-ico{font-size:1.1rem;margin-bottom:3px;}
+  .modal-domain .md-name{font-size:.75rem;font-weight:700;}
+  .modal-domain .md-desc{font-size:.65rem;opacity:.75;margin-top:2px;line-height:1.3;}
+  .md-feel{background:rgba(244,114,182,.1);border:1px solid rgba(244,114,182,.25);color:var(--feel);}
+  .md-think{background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.25);color:var(--think);}
+  .md-do{background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);color:var(--do);}
+  .help-btn{
+    display:inline-flex;align-items:center;gap:5px;
+    padding:5px 14px;border-radius:20px;
+    border:1px solid rgba(255,180,100,.25);background:transparent;
+    color:var(--dim);font-size:.74rem;cursor:pointer;
+    transition:all .2s;font-family:'Noto Sans KR',sans-serif;
+  }
+  .help-btn:hover{border-color:var(--w2);color:var(--w2);background:rgba(255,180,71,.08);}
+</style>
+</head>
+<body>
+<div class="stars" id="starsEl"></div>
+<div class="overlay" id="overlay"></div>
+
+<!-- ══ 설명 모달 ══ -->
+<div class="modal-backdrop" id="modalBackdrop" onclick="closeModalOutside(event)">
+  <div class="modal" id="modalBox">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<!-- ══ 홈 ══ -->
+<div class="screen active" id="homeScreen" style="justify-content:center;">
+  <div class="logo" style="margin-bottom:4px;">✦ STRENGTH SLIDING</div>
+  <div class="sub" style="margin-bottom:6px;">강점 슬라이딩 게임</div>
+  <button class="help-btn" onclick="showModal('home')" style="margin-bottom:22px;">❓ 이 게임은 무엇인가요?</button>
+  <div class="card-box">
+    <div class="card-ttl" style="justify-content:space-between;">
+      방 만들기 (강사)
+      <button class="help-btn" onclick="showModal('host')">❓ 강사 안내</button>
+    </div>
+    <input type="text" id="hostName" placeholder="강사 이름" style="margin-bottom:10px;">
+    <button class="btn" onclick="createRoom()" style="width:100%;">🏠 방 만들기</button>
+  </div>
+  <div class="card-box">
+    <div class="card-ttl" style="justify-content:space-between;">
+      방 입장하기 (참가자)
+      <button class="help-btn" onclick="showModal('join')">❓ 참가자 안내</button>
+    </div>
+    <input type="text" id="joinName" placeholder="내 이름" style="margin-bottom:8px;">
+    <input type="text" id="joinCode" placeholder="방 코드 (4자리)" style="margin-bottom:10px;text-transform:uppercase;letter-spacing:4px;font-family:'Orbitron',monospace;font-size:1rem;">
+    <button class="btn" onclick="joinRoom()" style="width:100%;">🚪 입장하기</button>
+  </div>
+  <div id="homeMsg" style="margin-top:10px;font-size:.8rem;color:var(--red);min-height:18px;text-align:center;"></div>
+</div>
+
+<!-- ══ 대기실 (강사) ══ -->
+<div class="screen" id="hostLobby" style="justify-content:center;">
+  <div class="logo">✦ 대기실</div>
+  <div class="card-box" style="text-align:center;max-width:420px;">
+    <div class="card-ttl" style="justify-content:center;">방 코드 공유</div>
+    <div class="room-code" id="displayCode">----</div>
+    <div class="sub" style="margin-bottom:14px;">카톡으로 코드를 공유하세요</div>
+    <div id="playerListHost" class="scrollable" style="text-align:left;margin-bottom:12px;"></div>
+    <div id="playerCountHost" style="font-size:.78rem;color:var(--dim);margin-bottom:12px;"></div>
+    <button class="btn" id="startBtn" onclick="hostStartGame()" disabled style="width:100%;">🎮 게임 시작</button>
+    <div style="font-size:.72rem;color:var(--dim);margin-top:7px;">2명 이상 입장 시 시작 가능</div>
+  </div>
+</div>
+
+<!-- ══ 대기실 (참가자) ══ -->
+<div class="screen" id="joinLobby" style="justify-content:center;">
+  <div class="logo">✦ 입장 완료</div>
+  <div class="card-box" style="max-width:420px;text-align:center;">
+    <div class="sub" style="margin-bottom:10px;">강사가 게임을 시작할 때까지 기다려주세요</div>
+    <div style="font-family:'Orbitron',monospace;font-size:.85rem;color:var(--w2);letter-spacing:2px;margin-bottom:16px;animation:pulse 2s ease-in-out infinite;">⏳ 대기 중...</div>
+    <button class="help-btn" onclick="showModal('player')" style="margin-bottom:14px;">❓ 게임 진행 방법 보기</button>
+    <div id="playerListJoin" class="scrollable" style="text-align:left;"></div>
+  </div>
+</div>
+
+<!-- ══ 게임 화면 (참가자) ══ -->
+<div class="screen" id="gameScreen">
+  <div class="top-btns">
+    <button class="top-btn" onclick="showModal('player')" title="도움말">❓</button>
+    <button class="top-btn" onclick="toggleFS()" title="전체화면">⛶</button>
+  </div>
+  <div style="width:100%;max-width:640px;">
+    <div class="round-banner">
+      <div class="round-num" id="gameRoundNum">ROUND 1 / 4</div>
+      <div class="round-desc" id="gameRoundDesc">내 강점과 가장 잘 어울리는 카드를 선택하세요</div>
+    </div>
+
+    <!-- 킵 카드 누적 -->
+    <div class="card-box" id="keptAccumBox" style="margin-bottom:12px;display:none;">
+      <div class="card-ttl">지금까지 킵한 내 강점 카드</div>
+      <div class="kept-bar" id="keptAccumBar"></div>
+    </div>
+
+    <!-- 현재 덱 -->
+    <div class="card-box">
+      <div class="card-ttl">
+        현재 내 카드 덱
+        <span id="deckCount" style="color:var(--w1);font-size:.78rem;letter-spacing:0;font-weight:400;margin-left:4px;"></span>
+      </div>
+      <div class="cards-grid" id="gameGrid"></div>
+    </div>
+
+    <!-- 킵 제한 안내 -->
+    <div id="keepLimitMsg" style="text-align:center;font-size:.8rem;color:var(--yellow);margin-top:10px;min-height:18px;"></div>
+
+    <div style="text-align:center;margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+      <button class="btn" id="keepBtn" onclick="confirmKeep()" disabled>✦ 킵 확정 (대기)</button>
+    </div>
+    <div id="gameStatusMsg" style="text-align:center;font-size:.78rem;color:var(--dim);margin-top:8px;min-height:16px;"></div>
+  </div>
+</div>
+
+<!-- ══ 강사 컨트롤 ══ -->
+<div class="screen" id="hostControl">
+  <div class="top-btns">
+    <button class="top-btn" onclick="showModal('hostControl')" title="도움말">❓</button>
+    <button class="top-btn" onclick="toggleFS()" title="전체화면">⛶</button>
+  </div>
+  <div style="width:100%;max-width:520px;">
+    <div class="round-banner">
+      <div class="round-num" id="hostRoundNum">ROUND 1 / 4</div>
+      <div class="round-desc" id="hostRoundDesc">참가자 킵 현황을 확인하세요</div>
+    </div>
+    <div class="card-box">
+      <div class="card-ttl">참가자 준비 현황</div>
+      <div id="hostReadyList" class="scrollable"></div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px;">
+      <button class="btn" id="revealBtn" onclick="doReveal()">🥁 하나둘셋!</button>
+      <button class="btn btn-teal" id="slideBtn" onclick="doSlide()" style="display:none;">🔄 슬라이딩!</button>
+      <button class="btn btn-purple" id="nextRoundBtn" onclick="nextRound()" style="display:none;">▶ 다음 라운드</button>
+      <button class="btn" id="finishBtn" onclick="finishGame()" style="display:none;background:linear-gradient(135deg,var(--glow),#ff9a00);">🏆 최종 결과</button>
+    </div>
+    <div id="hostMsg" style="text-align:center;font-size:.78rem;color:var(--dim);margin-top:10px;min-height:16px;"></div>
+  </div>
+</div>
+
+<!-- ══ 결과 (개인) ══ -->
+<div class="screen" id="resultScreen">
+  <div style="width:100%;max-width:560px;">
+    <div class="round-banner">
+      <div class="round-num" style="color:var(--glow);font-size:1rem;">✦ 나의 핵심 강점 ✦</div>
+    </div>
+    <div id="myResultBox"></div>
+    <div style="text-align:center;margin-top:18px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+      <button class="btn" onclick="saveResultImage()" style="background:linear-gradient(135deg,#7c3aed,#6d28d9);">📸 이미지 저장</button>
+      <button class="btn-ghost btn" onclick="showAllResults()">전체 결과 보기</button>
+      <button class="btn-ghost btn" onclick="location.reload()">새 게임</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 결과 (전체, 강사) ══ -->
+<div class="screen" id="allResultScreen">
+  <div style="width:100%;max-width:640px;">
+    <div class="round-banner">
+      <div class="round-num" style="color:var(--glow);">✦ 전체 결과 ✦</div>
+    </div>
+    <div id="allResultBox" class="scrollable" style="max-height:70vh;"></div>
+    <div style="text-align:center;margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+      <button class="btn-ghost btn" onclick="showScreen('resultScreen')">내 결과로</button>
+      <button class="btn-ghost btn" onclick="location.reload()">새 게임</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ Firebase SDK ══ -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+// ══════════════════════════════
+// ⚠️ Firebase 설정값 붙여넣기
+// ══════════════════════════════
+const firebaseConfig = {
+  apiKey: "AIzaSyCgZedtOkdNcfxyBusCchAqL9UL_23UF1w",
+  authDomain: "strength-card.firebaseapp.com",
+  databaseURL: "https://strength-card-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "strength-card",
+  storageBucket: "strength-card.firebasestorage.app",
+  messagingSenderId: "191034033959",
+  appId: "1:191034033959:web:6a2f12eaa13a013cbe8b02"
+};
+// ══════════════════════════════
+
+let db = null;
+try {
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.database();
+} catch(e) {
+  console.warn('Firebase 미설정 상태입니다. 설정값을 입력해주세요.');
+}
+
+// ── BLOOM 54 강점카드 ──
+const CARDS = [
+  // 감성 (1~18)
+  {id:'f01',e:'🙏',n:'감사',cat:'feel',def:'자신에게 주어진 현실은 물론 일상의 사소한 것에도 고마움을 느낀다.'},
+  {id:'f02',e:'🌸',n:'감수성',cat:'feel',def:'외부에서 오는 자극을 오감을 통해 풍부하게 받아들인다.'},
+  {id:'f03',e:'🤝',n:'공감',cat:'feel',def:'다른 사람의 선택과 감정, 의견을 이해하려 노력한다.'},
+  {id:'f04',e:'💛',n:'다정함',cat:'feel',def:'사람이나 동물에게 관심과 정이 많아 두터운 관계를 유지한다.'},
+  {id:'f05',e:'😄',n:'명랑',cat:'feel',def:'흐린 데 없이 밝고 쾌활하다.'},
+  {id:'f06',e:'❤️',n:'사랑',cat:'feel',def:'주변의 사람을 몹시 아끼고 긍정적이고 따뜻한 정서의 교류에 능하다.'},
+  {id:'f07',e:'💭',n:'상상력',cat:'feel',def:'실제로 경험하지 않은 현상이나 사물에 대해서 쉽게 떠올린다.'},
+  {id:'f08',e:'🔎',n:'세심함',cat:'feel',def:'작은 일에도 꼼꼼하게 주의를 기울여 빈틈이 없다.'},
+  {id:'f09',e:'🎨',n:'심미안',cat:'feel',def:'아름다움을 살피고 음미하는 것에 탁월하다.'},
+  {id:'f10',e:'🔥',n:'열정',cat:'feel',def:'활기와 에너지를 가지고 삶에 임하여 언제나 생기가 넘친다.'},
+  {id:'f11',e:'🕊️',n:'온화',cat:'feel',def:'성격이나 태도가 온순하며 부드럽다.'},
+  {id:'f12',e:'⚔️',n:'용기',cat:'feel',def:'사물과 현상을 두려워하지 않고 씩씩하고 굳센 기운을 가지고 있다.'},
+  {id:'f13',e:'💪',n:'자신감',cat:'feel',def:'자기 자신을 믿으며 열심히 노력하면 성공할 수 있다고 생각한다.'},
+  {id:'f14',e:'🛡️',n:'책임감',cat:'feel',def:'맡아서 해야 할 임무나 의무를 중요하게 여긴다.'},
+  {id:'f15',e:'🧘',n:'평정심',cat:'feel',def:'마음이 평안하고 고요하고 잔잔하다.'},
+  {id:'f16',e:'🫂',n:'포용력',cat:'feel',def:'타인을 너그럽게 감싸 주거나 받아들인다.'},
+  {id:'f17',e:'🔍',n:'호기심',cat:'feel',def:'사람이나 사물에 마음이 끌려 주의를 기울인다.'},
+  {id:'f18',e:'🌈',n:'희망',cat:'feel',def:'앞으로 발생할 일에 대하여 긍정적인 시각으로 기대한다.'},
+  // 이성 (19~36)
+  {id:'t01',e:'⚡',n:'논리성',cat:'think',def:'사물이나 상황 속의 이치나 법칙을 파악하는 능력이다.'},
+  {id:'t02',e:'🗺️',n:'도식화',cat:'think',def:'사물이나 상황의 본질과 특성을 이해하고 틀을 만들 수 있다.'},
+  {id:'t03',e:'🔬',n:'문제파악',cat:'think',def:'사물의 옳고 그름을 가리며 판단할 수 있는 능력이다.'},
+  {id:'t04',e:'📚',n:'박학다식',cat:'think',def:'여러 분야에서 학식이 넓고 아는 것이 많다.'},
+  {id:'t05',e:'🧩',n:'분석력',cat:'think',def:'얽혀있거나 복잡한 것을 풀어 개방적인 성질로 나눌 수 있다.'},
+  {id:'t06',e:'⚖️',n:'신중성',cat:'think',def:'상황을 다각도에서 조심스럽게 바라보고 의사결정에 반영한다.'},
+  {id:'t07',e:'🌊',n:'유연성',cat:'think',def:'틀에 얽매이지 않은 다양한 생각과 태도를 취할 수 있다.'},
+  {id:'t08',e:'🔧',n:'응용력',cat:'think',def:'이미 얻은 지식을 다른 분야의 일에 적용하여 이용하는 능력이다.'},
+  {id:'t09',e:'💡',n:'이해력',cat:'think',def:'사물 및 상황 등을 분별하여 해석하고 빠르게 받아들이는 능력이다.'},
+  {id:'t10',e:'♟️',n:'전략적',cat:'think',def:'어떤 일에 앞서 필요한 방법과 책략을 미리 세우고 계획하는 능력이다.'},
+  {id:'t11',e:'🎯',n:'중립적',cat:'think',def:'어느 편에도 치우치지 않고 공정한 태도를 취한다.'},
+  {id:'t12',e:'✨',n:'창의성',cat:'think',def:'어떤 일을 할 때 새롭고 생산적인 방식으로 생각하는데 능하다.'},
+  {id:'t13',e:'📐',n:'체계성',cat:'think',def:'일정한 원리에 따라서 짜임새있게 전체를 통일하는 능력이다.'},
+  {id:'t14',e:'🔭',n:'추리력',cat:'think',def:'알고 있는 것을 바탕으로 알지 못하는 것을 미루어 생각하는 능력이다.'},
+  {id:'t15',e:'🧪',n:'탐구력',cat:'think',def:'더 알고 싶은 욕구가 강해 다양한 정보를 모아 연구하기를 즐긴다.'},
+  {id:'t16',e:'👁️',n:'통찰력',cat:'think',def:'예리한 관찰력으로 사물과 상황을 꿰뚫어 볼 수 있는 능력이다.'},
+  {id:'t17',e:'🔗',n:'통합력',cat:'think',def:'여러 가지 상황과 지식을 관계 지어 하나로 모으는 능력이다.'},
+  {id:'t18',e:'⚖️',n:'판단력',cat:'think',def:'어떤 상황이나 사물을 인식하여 논리나 기준에 따라 올바른 결정을 내리는 능력이다.'},
+  // 행동 (37~54)
+  {id:'d01',e:'✍️',n:'글쓰기',cat:'do',def:'생각이나 사실을 글로 써서 표현하는 능력이다.'},
+  {id:'d02',e:'🏋️',n:'끈기',cat:'do',def:'쉽게 단념하지 않고 시작한 일을 끝까지 마무리 해낸다.'},
+  {id:'d03',e:'🚀',n:'도전',cat:'do',def:'새롭거나 어려운 일에 부딪혔을 때 이를 피하지 않고 임한다.'},
+  {id:'d04',e:'🎤',n:'말하기',cat:'do',def:'자기의 의사를 상대방이 알아들을 수 있도록 말로 표현하는 능력이다.'},
+  {id:'d05',e:'💬',n:'소통',cat:'do',def:'생각을 타인에게 효과적으로 전달하고 타인의 의도를 잘 파악하여 대화를 매끄럽게 지속시킬 수 있다.'},
+  {id:'d06',e:'😂',n:'유머',cat:'do',def:'유쾌한 에너지로 다른 사람을 웃게 만드는 능력이다.'},
+  {id:'d07',e:'🧘',n:'자제력',cat:'do',def:'자신의 감정이나 욕망에 휩싸이지 않고 스스로 확인하고 조절하는 능력이다.'},
+  {id:'d08',e:'🌱',n:'적응력',cat:'do',def:'변화된 외부환경에 맞추어 행동하며 받아들이는 능력이다.'},
+  {id:'d09',e:'🗂️',n:'정돈',cat:'do',def:'어지럽게 흩어진 것을 고쳐 놓거나 가지런히 정리하는 능력이다.'},
+  {id:'d10',e:'🌟',n:'주목성',cat:'do',def:'일반 대중이 친숙하게 느끼고 앞장서서 주목 받는 것을 즐긴다.'},
+  {id:'d11',e:'📋',n:'준비성',cat:'do',def:'어떤 일을 수행하기에 앞서 시간과 자원 배분을 미리 확인하여 준비한다.'},
+  {id:'d12',e:'🎯',n:'집중력',cat:'do',def:'외부 상황에 관계 없이 어떤 일에 마음이나 주의를 기울일 수 있는 능력이다.'},
+  {id:'d13',e:'⚡',n:'촉진',cat:'do',def:'타인의 마음이나 의사결정을 도와 일을 진척시키는 능력이다.'},
+  {id:'d14',e:'🏃',n:'추진력',cat:'do',def:'목표 달성하는 과정에서 어려움과 장애에도 불구하고 나아가는 능력이다.'},
+  {id:'d15',e:'🤗',n:'친절',cat:'do',def:'타인을 위해서 좋은 일을 하면서 기쁨과 즐거움을 얻는다.'},
+  {id:'d16',e:'👑',n:'통솔력',cat:'do',def:'무리를 이끌고 지휘할 수 있는 능력이 있다.'},
+  {id:'d17',e:'📖',n:'학습',cat:'do',def:'배우는 과정 자체에 매력을 느끼고 즐기는 태도이다.'},
+  {id:'d18',e:'🤜',n:'협력',cat:'do',def:'서로 돕고 힘을 합쳐 어떤 일을 이루어 내는 것을 즐긴다.'},
+];
+
+const CARD_MAP = {};
+CARDS.forEach(c => CARD_MAP[c.id] = c);
+
+const TOTAL_ROUNDS = 4;
+const COLORS = ['#ff9a56','#ff6b9d','#ffd700','#a78bfa','#2dd4bf','#4ade80','#f87171','#60a5fa'];
+
+// ── 상태 ──
+let myId = null, myName = '', roomCode = '', isHost = false;
+let roomRef = null, state = null;
+
+// ── 별 ──
+(function(){
+  const c = document.getElementById('starsEl');
+  for(let i=0;i<120;i++){
+    const s=document.createElement('div'); s.className='star';
+    const sz=Math.random()*2.5+.5;
+    s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--dur:${Math.random()*4+2}s;--op:${Math.random()*.6+.2};animation-delay:${Math.random()*5}s;`;
+    c.appendChild(s);
+  }
+})();
+
+// ── 유틸 ──
+function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); window.scrollTo(0,0); }
+function genCode(){ const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let r=''; for(let i=0;i<4;i++) r+=c[Math.floor(Math.random()*c.length)]; return r; }
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+function showMsg(msg){ document.getElementById('homeMsg').textContent=msg; }
+
+function catLabel(cat){ return cat==='feel'?'감성':cat==='think'?'이성':'행동'; }
+function catClass(cat){ return cat==='feel'?'feel':cat==='think'?'think':'do'; }
+
+// ── 카드 수에 따른 킵 제한 ──
+function getMaxKeep(deckSize){
+  if(deckSize >= 4) return 2;
+  if(deckSize === 3) return 1;
+  return deckSize; // 2장 이하: 전부 킵 가능
+}
+
+// ── 방 만들기 ──
+async function createRoom(){
+  const name = document.getElementById('hostName').value.trim();
+  if(!name){ showMsg('이름을 입력해주세요'); return; }
+  myName=name; isHost=true; myId='host';
+  roomCode=genCode();
+  roomRef=db.ref('rooms/'+roomCode);
+  // 54장을 랜덤 섞어서 준비
+  const shuffled = cryptoShuffle([...CARDS.map(c=>c.id)]);
+  await roomRef.set({
+    host:name, phase:'lobby', round:0,
+    players:{ host:{name,isHost:true,ready:false,keptAll:[]} },
+    masterDeck: shuffled,
+    decks:{}, reveals:{}, slideCount:0
+  });
+  roomRef.onDisconnect().remove();
+  document.getElementById('displayCode').textContent=roomCode;
+  showScreen('hostLobby');
+  listenRoom();
+}
+
+// ── 입장 ──
+async function joinRoom(){
+  const name=document.getElementById('joinName').value.trim();
+  const code=document.getElementById('joinCode').value.trim().toUpperCase();
+  if(!name){ showMsg('이름을 입력해주세요'); return; }
+  if(code.length!==4){ showMsg('방 코드 4자리를 입력해주세요'); return; }
+  const snap=await db.ref('rooms/'+code).once('value');
+  if(!snap.exists()){ showMsg('방을 찾을 수 없습니다'); return; }
+  const data=snap.val();
+  if(data.phase!=='lobby'){ showMsg('이미 시작된 방입니다'); return; }
+  const players=data.players||{};
+  if(Object.values(players).find(p=>p.name===name)){ showMsg('같은 이름이 이미 있습니다'); return; }
+  myName=name; myId='p_'+Date.now();
+  roomCode=code; roomRef=db.ref('rooms/'+roomCode);
+  await roomRef.child('players/'+myId).set({name,isHost:false,ready:false,keptAll:[]});
+  roomRef.child('players/'+myId).onDisconnect().remove();
+  showScreen('joinLobby');
+  listenRoom();
+}
+
+// ── 리스너 ──
+function listenRoom(){
+  roomRef.on('value', snap=>{
+    if(!snap.exists()) return;
+    state=snap.val();
+    updateUI(state);
+  });
+}
+
+function updateUI(data){
+  const phase=data.phase;
+  const players=data.players||{};
+  const pList=Object.entries(players);
+
+  if(isHost){
+    renderPlayerList('playerListHost', pList);
+    document.getElementById('playerCountHost').textContent=`현재 ${pList.length}명 입장`;
+    document.getElementById('startBtn').disabled=pList.length<2;
+  } else {
+    renderPlayerList('playerListJoin', pList);
+  }
+
+  if(phase==='lobby'){
+    if(isHost) showScreen('hostLobby');
+    else       showScreen('joinLobby');
+  }
+  else if(phase==='playing'){
+    if(isHost){ showScreen('hostControl'); updateHostControl(data); }
+    else      { showScreen('gameScreen');  updateGameScreen(data); }
+  }
+  else if(phase==='result'){
+    buildResult(data);
+  }
+}
+
+// ── 플레이어 목록 ──
+function renderPlayerList(elId, pList){
+  const el=document.getElementById(elId);
+  el.innerHTML=pList.map(([id,p],i)=>`
+    <div class="player-row">
+      <div class="avatar" style="background:${COLORS[i%COLORS.length]}22;color:${COLORS[i%COLORS.length]}">${p.name[0]}</div>
+      <div class="player-name">${p.name} ${p.isHost?'<span class="badge badge-y">강사</span>':''}</div>
+      <div>${p.ready?'<span class="badge badge-g">완료</span>':'<span style="font-size:.7rem;color:var(--dim)">대기중</span>'}</div>
+    </div>
+  `).join('');
+}
+
+// ── 게임 시작 ──
+async function hostStartGame(){
+  const players=state.players||{};
+  const pIds=Object.keys(players).filter(id=>id!=='host');
+  const n=pIds.length;
+  const deck=state.masterDeck||CARDS.map(c=>c.id);
+
+  // 각 참가자에게 카드 배분 (최대 9장씩, 남은 건 버림)
+  const cardsPerPerson=Math.floor(deck.length/n);
+  const updates={phase:'playing',round:1,'decks':{},'reveals':{}};
+  pIds.forEach((pid,i)=>{
+    updates['decks/'+pid]=deck.slice(i*cardsPerPerson,(i+1)*cardsPerPerson);
+  });
+  // ready 초기화
+  Object.keys(players).forEach(pid=>{ updates['players/'+pid+'/ready']=false; });
+  await roomRef.update(updates);
+}
+
+// ── 게임 화면 (참가자) ──
+function updateGameScreen(data){
+  const round=data.round||1;
+  document.getElementById('gameRoundNum').textContent=`ROUND ${round} / ${TOTAL_ROUNDS}`;
+  document.getElementById('gameRoundDesc').textContent=
+    round===1?'내 강점과 가장 잘 어울리는 카드를 선택하세요':
+    `슬라이딩된 카드 중 킵할 카드를 선택하세요 (라운드 ${round})`;
+
+  const myDeck=(data.decks&&data.decks[myId])||[];
+  const myKeptAll=(data.players&&data.players[myId]&&data.players[myId].keptAll)||[];
+  const maxKeep=getMaxKeep(myDeck.length);
+
+  // 덱 정보
+  document.getElementById('deckCount').textContent=`(${myDeck.length}장, 최대 ${maxKeep}장 킵 가능)`;
+
+  // 킵 제한 안내
+  const limitMsg=document.getElementById('keepLimitMsg');
+  if(myDeck.length>=4){
+    limitMsg.textContent=`💡 카드가 ${myDeck.length}장 → 최대 ${maxKeep}장만 킵할 수 있어요`;
+  } else {
+    limitMsg.textContent='';
+  }
+
+  // 누적 킵 표시
+  const accumBox=document.getElementById('keptAccumBox');
+  const accumBar=document.getElementById('keptAccumBar');
+  if(myKeptAll.length>0){
+    accumBox.style.display='block';
+    accumBar.innerHTML=myKeptAll.map(cid=>{
+      const c=CARD_MAP[cid]; if(!c) return '';
+      const cc=catClass(c.cat);
+      return `<span class="kept-chip ${cc}">${c.e} ${c.n}</span>`;
+    }).join('');
+  } else {
+    accumBox.style.display='none';
+  }
+
+  // 카드 그리드
+  const grid=document.getElementById('gameGrid');
+  // 현재 선택된 킵 카드
+  const myReveal=(data.reveals&&data.reveals[myId])||[];
+
+  grid.innerHTML=myDeck.map(cid=>{
+    const c=CARD_MAP[cid]; if(!c) return '';
+    const isKept=myReveal.includes(cid);
+    return `<div class="str-card ${c.cat}-card${isKept?' kept':''}" onclick="toggleKeep('${cid}')">
+      <div class="tooltip"><div class="tt-name">${c.e} ${c.n}</div>${c.def}</div>
+      <div class="ce">${c.e}</div>
+      <div class="cn">${c.n}</div>
+      <div class="ccat">${catLabel(c.cat)}</div>
+    </div>`;
+  }).join('');
+
+  // 버튼 상태
+  const myReady=data.players&&data.players[myId]&&data.players[myId].ready;
+  const btn=document.getElementById('keepBtn');
+  if(myReady){
+    btn.textContent='✅ 킵 확정됨';
+    btn.style.opacity='.7';
+    document.getElementById('gameStatusMsg').textContent='강사가 "하나둘셋!"을 누를 때까지 기다려주세요';
+  } else {
+    btn.textContent=`✦ 킵 확정 (${myReveal.length}장 선택)`;
+    btn.style.opacity='1';
+    btn.disabled=myReveal.length===0;
+    document.getElementById('gameStatusMsg').textContent='';
+  }
+}
+
+// ── 카드 킵 토글 ──
+async function toggleKeep(cardId){
+  if(!state||state.phase!=='playing') return;
+  const myReady=state.players&&state.players[myId]&&state.players[myId].ready;
+  if(myReady) return;
+
+  const myDeck=(state.decks&&state.decks[myId])||[];
+  const maxKeep=getMaxKeep(myDeck.length);
+  const myReveal=(state.reveals&&state.reveals[myId])||[];
+
+  let newReveal=[...myReveal];
+  if(newReveal.includes(cardId)){
+    newReveal=newReveal.filter(id=>id!==cardId);
+  } else {
+    if(newReveal.length>=maxKeep){
+      // 최대 초과 시 첫 번째 제거 후 추가
+      newReveal.shift();
+    }
+    newReveal.push(cardId);
+  }
+  await roomRef.child('reveals/'+myId).set(newReveal);
+}
+
+// ── 킵 확정 ──
+async function confirmKeep(){
+  const myReveal=(state.reveals&&state.reveals[myId])||[];
+  if(myReveal.length===0){ alert('카드를 선택해주세요!'); return; }
+  const myReady=state.players&&state.players[myId]&&state.players[myId].ready;
+  await roomRef.child('players/'+myId+'/ready').set(!myReady);
+}
+
+// ── 강사 컨트롤 ──
+function updateHostControl(data){
+  const round=data.round||1;
+  document.getElementById('hostRoundNum').textContent=`ROUND ${round} / ${TOTAL_ROUNDS}`;
+
+  const players=data.players||{};
+  const pList=Object.entries(players).filter(([,p])=>!p.isHost);
+  const readyCount=pList.filter(([,p])=>p.ready).length;
+
+  document.getElementById('hostReadyList').innerHTML=pList.map(([id,p])=>{
+    const keptAll=p.keptAll||[];
+    const keptBar=keptAll.map(cid=>{
+      const c=CARD_MAP[cid]; if(!c) return '';
+      return `<span class="kept-chip ${catClass(c.cat)}">${c.e} ${c.n}</span>`;
+    }).join('');
+    return `<div class="player-row" style="flex-direction:column;align-items:flex-start;gap:6px;">
+      <div style="display:flex;align-items:center;gap:10px;width:100%;">
+        <div class="player-name">${p.name}</div>
+        <div>${p.ready?'<span class="badge badge-g">완료</span>':'<span class="badge badge-r">선택 중</span>'}</div>
+      </div>
+      ${keptBar?`<div class="kept-bar">${keptBar}</div>`:''}
+    </div>`;
+  }).join('')+`<div style="margin-top:8px;font-size:.75rem;color:var(--dim);">${readyCount}/${pList.length}명 킵 확정</div>`;
+
+  // 버튼 제어
+  document.getElementById('revealBtn').style.display='inline-block';
+  document.getElementById('slideBtn').style.display='none';
+  document.getElementById('nextRoundBtn').style.display='none';
+  document.getElementById('finishBtn').style.display='none';
+  document.getElementById('hostMsg').textContent='모든 참가자 킵 확정 후 "하나둘셋!" 버튼을 누르세요';
+}
+
+// ── 하나둘셋 공개 ──
+async function doReveal(){
+  const data=state;
+  const round=data.round||1;
+  const players=data.players||{};
+  const reveals=data.reveals||{};
+  const overlay=document.getElementById('overlay');
+
+  overlay.style.display='flex';
+  overlay.classList.add('active');
+  for(const [n,sub] of [['3','READY'],['2','SET'],['1','GO!']]) {
+    overlay.innerHTML=`<div class="countdown-big">${n}</div><div style="color:var(--dim);letter-spacing:5px;font-size:.85rem;">${sub}</div>`;
+    await sleep(900);
+  }
+
+  const pList=Object.entries(players).filter(([,p])=>!p.isHost);
+  overlay.innerHTML=`<div style="font-family:'Orbitron',monospace;font-size:1rem;color:var(--glow);letter-spacing:4px;margin-bottom:20px;">✦ 라운드 ${round} 공개! ✦</div>
+  <div class="reveal-grid">${
+    pList.map(([pid,p])=>{
+      const kept=reveals[pid]||[];
+      const cards=kept.map((cid,i)=>{
+        const c=CARD_MAP[cid]; if(!c) return '';
+        return `<div class="reveal-item">
+          <div class="rn">${p.name}</div>
+          <div class="re">${c.e}</div>
+          <div class="rc">${c.n}</div>
+          <span class="badge badge-${catClass(c.cat)}" style="margin-top:4px;">${catLabel(c.cat)}</span>
+        </div>`;
+      }).join('');
+      return cards||`<div class="reveal-item"><div class="rn">${p.name}</div><div class="rc" style="color:var(--dim)">미선택</div></div>`;
+    }).join('')
+  }</div>
+  <div style="margin-top:24px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+    ${round<TOTAL_ROUNDS
+      ? `<button class="btn btn-teal" onclick="closeRevealToSlide()">🔄 슬라이딩으로</button>`
+      : `<button class="btn" style="background:linear-gradient(135deg,var(--glow),#ff9a00);" onclick="closeRevealToResult()">🏆 최종 결과로</button>`
+    }
+  </div>`;
+
+  // Firebase에 킵 누적 저장
+  const updates={};
+  for(const [pid,p] of pList){
+    const kept=reveals[pid]||[];
+    const prevKept=p.keptAll||[];
+    updates['players/'+pid+'/keptAll']=[...prevKept,...kept];
+    updates['players/'+pid+'/ready']=false;
+  }
+  await roomRef.update(updates);
+  spawnParticles();
+}
+
+async function closeRevealToSlide(){
+  document.getElementById('overlay').classList.remove('active');
+  document.getElementById('overlay').style.display='none';
+  // 슬라이딩 버튼 표시
+  document.getElementById('revealBtn').style.display='none';
+  document.getElementById('slideBtn').style.display='inline-block';
+  document.getElementById('hostMsg').textContent='"슬라이딩!" 버튼을 눌러 카드를 옆 사람에게 이동시키세요';
+}
+
+async function closeRevealToResult(){
+  document.getElementById('overlay').classList.remove('active');
+  document.getElementById('overlay').style.display='none';
+  await roomRef.update({phase:'result'});
+}
+
+// ── 슬라이딩 ──
+async function doSlide(){
+  const data=state;
+  const players=data.players||{};
+  const pIds=Object.keys(players).filter(id=>id!=='host');
+  const reveals=data.reveals||{};
+  const decks=data.decks||{};
+
+  // 각 참가자의 킵하지 않은 카드(남은 카드)를 옆 사람에게 이동
+  const updates={'reveals':{}};
+  const newDecks={};
+
+  pIds.forEach((pid,i)=>{
+    const myDeck=decks[pid]||[];
+    const kept=reveals[pid]||[];
+    const remaining=myDeck.filter(cid=>!kept.includes(cid));
+    // 다음 사람 인덱스 (순환)
+    const nextIdx=(i+1)%pIds.length;
+    const nextPid=pIds[nextIdx];
+    newDecks[nextPid]=(newDecks[nextPid]||[]).concat(remaining);
+  });
+
+  // 덱 업데이트
+  Object.entries(newDecks).forEach(([pid,deck])=>{
+    updates['decks/'+pid]=deck;
+  });
+  // ready 초기화
+  pIds.forEach(pid=>{ updates['players/'+pid+'/ready']=false; });
+
+  await roomRef.update(updates);
+
+  // 버튼 상태 변경
+  document.getElementById('slideBtn').style.display='none';
+  document.getElementById('nextRoundBtn').style.display='inline-block';
+  document.getElementById('hostMsg').textContent='슬라이딩 완료! "다음 라운드" 버튼을 눌러주세요';
+}
+
+// ── 다음 라운드 ──
+async function nextRound(){
+  const round=(state.round||1)+1;
+  if(round>TOTAL_ROUNDS){
+    await roomRef.update({phase:'result'});
+    return;
+  }
+  const updates={round,reveals:{}};
+  const players=state.players||{};
+  Object.keys(players).forEach(pid=>{ updates['players/'+pid+'/ready']=false; });
+  await roomRef.update(updates);
+  document.getElementById('nextRoundBtn').style.display='none';
+  document.getElementById('revealBtn').style.display='inline-block';
+  document.getElementById('hostMsg').textContent='';
+}
+
+// ── 게임 종료 ──
+async function finishGame(){
+  await roomRef.update({phase:'result'});
+}
+
+// ── 결과 빌드 ──
+function buildResult(data){
+  const players=data.players||{};
+  const me=players[myId];
+
+  if(isHost){
+    buildAllResults(data);
+    return;
+  }
+
+  if(!me) return;
+  const keptAll=me.keptAll||[];
+  const myResultBox=document.getElementById('myResultBox');
+
+  // 영역 분류
+  const byDomain={feel:[],think:[],do:[]};
+  keptAll.forEach(cid=>{
+    const c=CARD_MAP[cid]; if(!c) return;
+    byDomain[c.cat].push(c);
+  });
+
+  myResultBox.innerHTML=`
+    <div class="result-card" id="resultCard">
+      <div style="text-align:center;margin-bottom:16px;">
+        <div style="font-size:.75rem;color:var(--dim);letter-spacing:2px;margin-bottom:4px;">✦ ${myName}님의 강점 프로파일 ✦</div>
+      </div>
+      <div class="domain-bar">
+        <div class="domain-badge db-feel"><div class="db-num">${byDomain.feel.length}</div><div class="db-lbl">😊 감성</div></div>
+        <div class="domain-badge db-think"><div class="db-num">${byDomain.think.length}</div><div class="db-lbl">🧠 이성</div></div>
+        <div class="domain-badge db-do"><div class="db-num">${byDomain.do.length}</div><div class="db-lbl">⚡ 행동</div></div>
+      </div>
+      ${['feel','think','do'].map(cat=>{
+        if(!byDomain[cat].length) return '';
+        const cc=catClass(cat);
+        return `<div style="margin-bottom:14px;">
+          <div style="font-size:.7rem;font-weight:700;letter-spacing:2px;color:var(--${cc});margin-bottom:8px;text-transform:uppercase;">${catLabel(cat)} 강점</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;">
+            ${byDomain[cat].map(c=>`<span class="kept-chip ${cc}">${c.e} ${c.n}</span>`).join('')}
+          </div>
+        </div>`;
+      }).join('')}
+      ${keptAll.length===0?'<div style="text-align:center;color:var(--dim);font-size:.85rem;">킵한 카드가 없습니다</div>':''}
+    </div>
+  `;
+  showScreen('resultScreen');
+}
+
+function buildAllResults(data){
+  const players=data.players||{};
+  const box=document.getElementById('allResultBox');
+  box.innerHTML=Object.entries(players).filter(([,p])=>!p.isHost).map(([pid,p])=>{
+    const keptAll=p.keptAll||[];
+    const byDomain={feel:[],think:[],do:[]};
+    keptAll.forEach(cid=>{ const c=CARD_MAP[cid]; if(c) byDomain[c.cat].push(c); });
+    return `<div class="result-card" style="margin-bottom:14px;">
+      <div style="font-size:.95rem;font-weight:700;color:var(--text);margin-bottom:10px;">${p.name}</div>
+      <div class="domain-bar" style="margin-bottom:10px;">
+        <div class="domain-badge db-feel"><div class="db-num">${byDomain.feel.length}</div><div class="db-lbl">감성</div></div>
+        <div class="domain-badge db-think"><div class="db-num">${byDomain.think.length}</div><div class="db-lbl">이성</div></div>
+        <div class="domain-badge db-do"><div class="db-num">${byDomain.do.length}</div><div class="db-lbl">행동</div></div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;">
+        ${keptAll.map(cid=>{ const c=CARD_MAP[cid]; return c?`<span class="kept-chip ${catClass(c.cat)}">${c.e} ${c.n}</span>`:''; }).join('')}
+      </div>
+    </div>`;
+  }).join('');
+  showScreen('allResultScreen');
+}
+
+function showAllResults(){
+  if(!state) return;
+  buildAllResults(state);
+}
+
+// ── 이미지 저장 ──
+async function saveResultImage(){
+  // html2canvas 로드
+  if(!window.html2canvas){
+    await new Promise((res,rej)=>{
+      const s=document.createElement('script');
+      s.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+      s.onload=res; s.onerror=rej;
+      document.head.appendChild(s);
+    });
+  }
+  const el=document.getElementById('resultCard');
+  if(!el){ alert('결과 카드를 찾을 수 없습니다'); return; }
+  try {
+    const canvas=await html2canvas(el,{
+      backgroundColor:'#0d0d1a', scale:2,
+      useCORS:true, logging:false
+    });
+    const a=document.createElement('a');
+    a.download=`${myName}_강점프로파일.png`;
+    a.href=canvas.toDataURL('image/png');
+    a.click();
+  } catch(e){
+    alert('이미지 저장 중 오류가 발생했습니다.');
+  }
+}
+
+// ── 파티클 ──
+function spawnParticles(){
+  const cx=window.innerWidth/2, cy=window.innerHeight/2;
+  const colors=['#ff9a56','#ffd700','#ff6b9d','#a855f7','#2dd4bf','#4ade80'];
+  for(let i=0;i<36;i++){
+    const p=document.createElement('div'); p.className='particle';
+    const sz=Math.random()*12+4, angle=Math.random()*360, dist=Math.random()*200+80;
+    p.style.cssText=`left:${cx}px;top:${cy}px;width:${sz}px;height:${sz}px;background:${colors[Math.floor(Math.random()*colors.length)]};--dx:${Math.cos(angle*Math.PI/180)*dist}px;--dy:${Math.sin(angle*Math.PI/180)*dist-80}px;--pd:${Math.random()*.6+.9}s;animation-delay:${Math.random()*.12}s;`;
+    document.body.appendChild(p); setTimeout(()=>p.remove(),1600);
+  }
+}
+
+// ── 셔플 ──
+function cryptoShuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){
+    const range=i+1, limit=Math.floor(0x100000000/range)*range;
+    let r; const buf=new Uint32Array(1);
+    do{ crypto.getRandomValues(buf); r=buf[0]; }while(r>=limit);
+    [a[i],a[r%range]]=[a[r%range],a[i]];
+  }
+  return a;
+}
+
+// ── 설명 모달 ──
+var MODAL_CONTENTS = {
+  home: {
+    icon: '✦',
+    title: 'STRENGTH SLIDING',
+    sub: '강점 슬라이딩 게임 소개',
+    html: `
+      <div class="modal-section">
+        <div class="modal-section-title">게임 목적</div>
+        <div class="modal-step">
+          <div class="modal-step-num">🎯</div>
+          <div class="modal-step-text">54장의 강점 카드를 돌려보며 <strong>나의 진짜 강점</strong>을 발견하는 활동입니다. 4라운드 동안 카드를 킵하거나 패스하며 나와 가장 잘 어울리는 강점을 찾아보세요.</div>
+        </div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">카드 영역 구성</div>
+        <div class="modal-domain-row">
+          <div class="modal-domain md-feel"><div class="md-ico">😊</div><div class="md-name">감성</div><div class="md-desc">느끼고 공감하는 강점 18장</div></div>
+          <div class="modal-domain md-think"><div class="md-ico">🧠</div><div class="md-name">이성</div><div class="md-desc">생각하고 분석하는 강점 18장</div></div>
+          <div class="modal-domain md-do"><div class="md-ico">⚡</div><div class="md-name">행동</div><div class="md-desc">실행하고 표현하는 강점 18장</div></div>
+        </div>
+        <div class="modal-tip">총 54장의 카드를 참가자 수에 맞게 나누어 시작합니다. 카드에 마우스를 올리면 각 강점의 의미를 확인할 수 있어요.</div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">게임 흐름</div>
+        <div class="modal-step"><div class="modal-step-num">1</div><div class="modal-step-text">강사가 <strong>방을 만들고</strong> 방 코드를 참가자에게 공유합니다.</div></div>
+        <div class="modal-step"><div class="modal-step-num">2</div><div class="modal-step-text">참가자가 코드를 입력해 <strong>입장</strong>합니다.</div></div>
+        <div class="modal-step"><div class="modal-step-num">3</div><div class="modal-step-text"><strong>4라운드</strong> 동안 카드를 킵하거나 패스합니다.</div></div>
+        <div class="modal-step"><div class="modal-step-num">4</div><div class="modal-step-text">최종 킵 카드로 <strong>나의 핵심 강점</strong>을 확인합니다.</div></div>
+      </div>
+    `
+  },
+  host: {
+    icon: '🏠',
+    title: '강사 안내',
+    sub: '방 만들기 & 게임 진행',
+    html: `
+      <div class="modal-section">
+        <div class="modal-section-title">방 만들기</div>
+        <div class="modal-step"><div class="modal-step-num">1</div><div class="modal-step-text"><strong>강사 이름</strong>을 입력하고 "방 만들기"를 누르세요.</div></div>
+        <div class="modal-step"><div class="modal-step-num">2</div><div class="modal-step-text">생성된 <strong>4자리 방 코드</strong>를 카톡 등으로 참가자에게 공유하세요.</div></div>
+        <div class="modal-step"><div class="modal-step-num">3</div><div class="modal-step-text">2명 이상 입장하면 <strong>"게임 시작"</strong> 버튼이 활성화됩니다.</div></div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">라운드 진행 순서</div>
+        <div class="modal-step"><div class="modal-step-num">①</div><div class="modal-step-text">참가자가 킵 카드를 선택하면 <strong>"완료"</strong> 표시가 나타납니다.</div></div>
+        <div class="modal-step"><div class="modal-step-num">②</div><div class="modal-step-text"><strong>🥁 하나둘셋!</strong> 버튼 → 3·2·1 카운트다운 후 모두의 킵 카드가 동시 공개됩니다.</div></div>
+        <div class="modal-step"><div class="modal-step-num">③</div><div class="modal-step-text"><strong>🔄 슬라이딩!</strong> 버튼 → 남은 카드가 옆 사람에게 자동으로 이동합니다.</div></div>
+        <div class="modal-step"><div class="modal-step-num">④</div><div class="modal-step-text"><strong>▶ 다음 라운드</strong> 버튼 → 다음 라운드를 시작합니다. (4라운드 반복)</div></div>
+        <div class="modal-step"><div class="modal-step-num">⑤</div><div class="modal-step-text">4라운드 완료 후 <strong>🏆 최종 결과</strong> 버튼으로 마무리합니다.</div></div>
+      </div>
+      <div class="modal-tip">참가자 모두 킵 확정 전이라도 언제든 "하나둘셋!"을 눌러 진행할 수 있습니다.</div>
+    `
+  },
+  join: {
+    icon: '🚪',
+    title: '참가자 안내',
+    sub: '입장 방법',
+    html: `
+      <div class="modal-section">
+        <div class="modal-section-title">입장 방법</div>
+        <div class="modal-step"><div class="modal-step-num">1</div><div class="modal-step-text"><strong>내 이름</strong>을 입력하세요. (다른 참가자와 구분됩니다)</div></div>
+        <div class="modal-step"><div class="modal-step-num">2</div><div class="modal-step-text">강사에게 받은 <strong>방 코드 4자리</strong>를 입력하세요.</div></div>
+        <div class="modal-step"><div class="modal-step-num">3</div><div class="modal-step-text">"입장하기"를 누르면 대기실에서 강사의 시작을 기다립니다.</div></div>
+      </div>
+      <div class="modal-tip">같은 이름으로는 중복 입장이 불가합니다. 게임이 시작된 방에는 입장할 수 없어요.</div>
+    `
+  },
+  player: {
+    icon: '🎮',
+    title: '게임 진행 방법',
+    sub: '참가자 플레이 가이드',
+    html: `
+      <div class="modal-section">
+        <div class="modal-section-title">카드 선택 방법</div>
+        <div class="modal-step"><div class="modal-step-num">1</div><div class="modal-step-text">화면에 나타난 카드 중 <strong>내 강점과 가장 잘 어울리는 카드</strong>를 클릭하세요. 선택된 카드에 ✦ 표시가 나타납니다.</div></div>
+        <div class="modal-step"><div class="modal-step-num">2</div><div class="modal-step-text">카드에 <strong>마우스를 올리면</strong> 그 강점의 의미 설명을 볼 수 있습니다.</div></div>
+        <div class="modal-step"><div class="modal-step-num">3</div><div class="modal-step-text">선택이 완료되면 <strong>"✦ 킵 확정"</strong> 버튼을 눌러 강사에게 준비 완료를 알리세요.</div></div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">킵 카드 개수 제한</div>
+        <div class="modal-step"><div class="modal-step-num">💡</div><div class="modal-step-text">카드가 <strong>4장 이상</strong>이면 최대 <strong>2장</strong>만 킵할 수 있어요.</div></div>
+        <div class="modal-step"><div class="modal-step-num">💡</div><div class="modal-step-text">카드가 <strong>3장</strong>이면 <strong>1장</strong>만 킵할 수 있어요.</div></div>
+        <div class="modal-step"><div class="modal-step-num">💡</div><div class="modal-step-text">카드가 <strong>2장 이하</strong>이면 모두 킵할 수 있어요.</div></div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">라운드 흐름</div>
+        <div class="modal-step"><div class="modal-step-num">①</div><div class="modal-step-text">킵할 카드를 선택 → 킵 확정 버튼 클릭 → <strong>강사의 "하나둘셋!" 대기</strong></div></div>
+        <div class="modal-step"><div class="modal-step-num">②</div><div class="modal-step-text">동시 공개 후 남은 카드가 <strong>슬라이딩</strong>되어 옆 사람 카드가 내 화면으로 옵니다.</div></div>
+        <div class="modal-step"><div class="modal-step-num">③</div><div class="modal-step-text">4라운드 반복 후 최종 킵 카드가 <strong>나의 핵심 강점</strong>이 됩니다.</div></div>
+      </div>
+      <div class="modal-tip">매 라운드마다 상단에 지금까지 킵한 카드가 누적되어 표시됩니다. 내 강점이 쌓이는 걸 확인해보세요!</div>
+    `
+  },
+  hostControl: {
+    icon: '🎛️',
+    title: '강사 컨트롤 가이드',
+    sub: '버튼 기능 안내',
+    html: `
+      <div class="modal-section">
+        <div class="modal-section-title">버튼 순서 및 기능</div>
+        <div class="modal-step"><div class="modal-step-num" style="font-size:.65rem;width:28px;">🥁</div><div class="modal-step-text"><strong>하나둘셋!</strong> — 3·2·1 카운트다운 후 모든 참가자의 킵 카드를 동시에 공개합니다. 공개 창에서 결과를 확인하세요.</div></div>
+        <div class="modal-step"><div class="modal-step-num" style="font-size:.65rem;width:28px;">🔄</div><div class="modal-step-text"><strong>슬라이딩!</strong> — 각 참가자의 남은 카드(킵하지 않은 카드)를 옆 사람에게 자동으로 전달합니다.</div></div>
+        <div class="modal-step"><div class="modal-step-num" style="font-size:.65rem;width:28px;">▶</div><div class="modal-step-text"><strong>다음 라운드</strong> — 다음 라운드를 시작합니다. 참가자 화면에 새 카드 덱이 표시됩니다.</div></div>
+        <div class="modal-step"><div class="modal-step-num" style="font-size:.65rem;width:28px;">🏆</div><div class="modal-step-text"><strong>최종 결과</strong> — 4라운드 완료 후 나타나는 버튼으로, 전체 결과 화면으로 이동합니다.</div></div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">준비 현황 확인</div>
+        <div class="modal-step"><div class="modal-step-num">👀</div><div class="modal-step-text">참가자 이름 옆 <strong>초록 "완료"</strong> 표시가 모두 켜지면 진행 준비가 된 것입니다. 모든 참가자가 준비되기 전에도 진행할 수 있습니다.</div></div>
+      </div>
+      <div class="modal-tip">각 참가자 아래 표시된 칩들이 지금까지 킵한 강점 카드입니다. 실시간으로 누적 현황을 확인할 수 있어요.</div>
+    `
+  }
+};
+
+function showModal(type) {
+  const content = MODAL_CONTENTS[type];
+  if(!content) return;
+  document.getElementById('modalContent').innerHTML = `
+    <div class="modal-icon">${content.icon}</div>
+    <div class="modal-title">${content.title}</div>
+    <div class="modal-sub">${content.sub}</div>
+    ${content.html}
+  `;
+  document.getElementById('modalBackdrop').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modalBackdrop').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeModalOutside(e) {
+  if(e.target === document.getElementById('modalBackdrop')) closeModal();
+}
+
+// ── 전체화면 ──
+function toggleFS(){
+  if(!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{});
+  else document.exitFullscreen();
+}
+</script>
+</body>
+</html>
