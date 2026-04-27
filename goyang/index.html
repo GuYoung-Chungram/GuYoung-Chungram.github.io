@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>약 복용 도우미</title>
+<style>
+  :root {
+    --morning-color: #FF9500;
+    --morning-bg: #FFF3E0;
+    --morning-light: #FFE0B2;
+    --lunch-color: #2E7D32;
+    --lunch-bg: #E8F5E9;
+    --lunch-light: #C8E6C9;
+    --evening-color: #4527A0;
+    --evening-bg: #EDE7F6;
+    --evening-light: #D1C4E9;
+    --text-dark: #1a1a1a;
+    --text-medium: #444;
+    --bg-page: #F5F5F7;
+    --white: #ffffff;
+    --radius-card: 20px;
+    --radius-btn: 50px;
+    --shadow: 0 4px 20px rgba(0,0,0,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+    background: var(--bg-page);
+    min-height: 100vh;
+    padding-bottom: 40px;
+    color: var(--text-dark);
+  }
+
+  /* ── Header ── */
+  .app-header {
+    background: linear-gradient(135deg, #1565C0, #0D47A1);
+    color: white;
+    padding: 28px 20px 24px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 16px rgba(21,101,192,0.35);
+  }
+  .header-title { font-size: 17px; opacity: 0.85; margin-bottom: 6px; letter-spacing: 0.5px; }
+  .header-date { font-size: 28px; font-weight: 700; margin-bottom: 10px; }
+  .header-day { font-size: 16px; opacity: 0.8; margin-bottom: 14px; }
+
+  .streak-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .streak-fire { font-size: 20px; }
+
+  .progress-bar-wrap {
+    margin-top: 14px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 10px;
+    height: 10px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: #FFEB3B;
+    border-radius: 10px;
+    transition: width 0.6s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .progress-label { font-size: 13px; margin-top: 6px; opacity: 0.8; }
+
+  /* ── Tabs ── */
+  .tab-nav {
+    display: flex;
+    background: var(--white);
+    border-bottom: 2px solid #eee;
+    position: sticky;
+    top: 165px;
+    z-index: 90;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 14px 8px;
+    border: none;
+    background: none;
+    font-size: 15px;
+    font-weight: 600;
+    color: #999;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+  }
+  .tab-btn.active { color: #1565C0; border-bottom-color: #1565C0; }
+
+  /* ── Sections ── */
+  .section { display: none; padding: 20px 16px; }
+  .section.active { display: block; }
+
+  /* ── Motivational Quote ── */
+  .quote-card {
+    background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
+    border-radius: var(--radius-card);
+    padding: 18px 20px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .quote-icon { font-size: 28px; flex-shrink: 0; }
+  .quote-text { font-size: 16px; color: #0D47A1; font-weight: 500; line-height: 1.5; }
+
+  /* ── Time Cards ── */
+  .time-card {
+    background: var(--white);
+    border-radius: var(--radius-card);
+    padding: 24px 20px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.15s;
+  }
+  .time-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+  }
+  .time-card.morning::before { background: var(--morning-color); }
+  .time-card.lunch::before { background: var(--lunch-color); }
+  .time-card.evening::before { background: var(--evening-color); }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .time-emoji { font-size: 36px; }
+  .time-info { flex: 1; }
+  .time-name { font-size: 24px; font-weight: 700; }
+  .time-sub { font-size: 14px; color: #888; margin-top: 2px; }
+  .time-card.morning .time-name { color: var(--morning-color); }
+  .time-card.lunch .time-name { color: var(--lunch-color); }
+  .time-card.evening .time-name { color: var(--evening-color); }
+
+  /* ── Checkbox ── */
+  .check-label {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    padding: 8px 0;
+    user-select: none;
+  }
+  .check-label input[type="checkbox"] { display: none; }
+
+  .check-circle {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 3px solid #ddd;
+    background: #f8f8f8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    flex-shrink: 0;
+    transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    color: transparent;
+  }
+  .check-label input:checked ~ .check-circle {
+    border-color: transparent;
+    color: white;
+    transform: scale(1.05);
+  }
+  .morning .check-label input:checked ~ .check-circle { background: var(--morning-color); }
+  .lunch .check-label input:checked ~ .check-circle { background: var(--lunch-color); }
+  .evening .check-label input:checked ~ .check-circle { background: var(--evening-color); }
+
+  .check-text-wrap { flex: 1; }
+  .check-main-text { font-size: 20px; font-weight: 600; color: var(--text-dark); }
+  .check-sub-text { font-size: 14px; color: #aaa; margin-top: 3px; }
+  .check-label input:checked ~ .check-text-wrap .check-main-text { color: #666; text-decoration: line-through; }
+  .check-label input:checked ~ .check-text-wrap .check-sub-text::after { content: ' ✓ 복용 완료!'; color: #4CAF50; font-weight: 600; text-decoration: none; }
+
+  /* ── Celebration Overlay ── */
+  .celebrate-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .celebrate-overlay.show { display: block; }
+
+  .celebrate-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: white;
+    border-radius: 24px;
+    padding: 32px 28px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    width: 300px;
+    animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;
+    pointer-events: auto;
+  }
+  .celebrate-message.all-done {
+    background: linear-gradient(135deg, #1565C0, #42A5F5);
+    color: white;
+  }
+  .celebrate-emoji { font-size: 56px; margin-bottom: 12px; display: block; }
+  .celebrate-text { font-size: 20px; font-weight: 700; line-height: 1.4; color: var(--text-dark); }
+  .celebrate-message.all-done .celebrate-text { color: white; }
+  .celebrate-close { margin-top: 16px; font-size: 14px; color: #aaa; }
+  .celebrate-message.all-done .celebrate-close { color: rgba(255,255,255,0.7); }
+
+  .confetti { position: absolute; width: 10px; height: 10px; border-radius: 2px; }
+
+  /* ── All Done Banner ── */
+  .all-done-banner {
+    display: none;
+    background: linear-gradient(135deg, #1565C0, #0288D1);
+    color: white;
+    border-radius: var(--radius-card);
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 16px;
+    animation: slideDown 0.4s ease;
+  }
+  .all-done-banner.show { display: block; }
+  .all-done-banner .banner-emoji { font-size: 40px; }
+  .all-done-banner .banner-text { font-size: 20px; font-weight: 700; margin-top: 8px; }
+  .all-done-banner .banner-sub { font-size: 14px; opacity: 0.85; margin-top: 4px; }
+
+  /* ── Calendar ── */
+  .calendar-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .cal-nav-btn {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 2px solid #ddd;
+    background: white;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .cal-nav-btn:active { background: #f0f0f0; transform: scale(0.95); }
+  .cal-month-label { font-size: 20px; font-weight: 700; }
+
+  .cal-grid {
+    background: white;
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+  }
+  .cal-week-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background: #1565C0;
+    color: white;
+  }
+  .cal-week-day {
+    text-align: center;
+    padding: 10px 0;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .cal-week-day:first-child { color: #ffcdd2; }
+  .cal-week-day:last-child { color: #bbdefb; }
+
+  .cal-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+  }
+  .cal-day {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 600;
+    border: 1px solid #f5f5f5;
+    position: relative;
+    gap: 2px;
+  }
+  .cal-day.empty { background: #fafafa; }
+  .cal-day.today {
+    background: #E3F2FD;
+    border-color: #1565C0;
+    color: #1565C0;
+  }
+  .cal-day.future { color: #ccc; }
+  .cal-day .cal-num { font-size: 16px; line-height: 1; }
+  .cal-day .cal-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .cal-day.sun .cal-num { color: #e53935; }
+  .cal-day.sat .cal-num { color: #1565C0; }
+  .cal-day.today .cal-num { color: #1565C0; font-weight: 800; }
+  .cal-day.full { background: #E8F5E9; }
+  .cal-day.partial { background: #FFF8E1; }
+  .cal-day.missed { background: #FFEBEE; }
+  .cal-day.full .cal-dot { background: #2E7D32; }
+  .cal-day.partial .cal-dot { background: #F57F17; }
+  .cal-day.missed .cal-dot { background: #C62828; }
+
+  /* ── Calendar Legend ── */
+  .cal-legend {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+  }
+  .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+
+  /* ── Stats Card ── */
+  .stats-card {
+    background: white;
+    border-radius: var(--radius-card);
+    padding: 22px 20px;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+  }
+  .stats-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; color: #1565C0; }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .stat-item {
+    background: var(--bg-page);
+    border-radius: 14px;
+    padding: 14px;
+    text-align: center;
+  }
+  .stat-num { font-size: 28px; font-weight: 800; }
+  .stat-label { font-size: 13px; color: #666; margin-top: 4px; }
+  .stat-item.full .stat-num { color: #2E7D32; }
+  .stat-item.partial .stat-num { color: #F57F17; }
+  .stat-item.missed .stat-num { color: #C62828; }
+  .stat-item.rate .stat-num { color: #1565C0; }
+
+  .missed-dates {
+    background: #FFEBEE;
+    border-radius: 14px;
+    padding: 16px;
+    margin-top: 14px;
+  }
+  .missed-dates-title { font-size: 15px; font-weight: 700; color: #C62828; margin-bottom: 10px; }
+  .missed-dates-list { font-size: 15px; color: #555; line-height: 1.8; }
+  .missed-dates-empty { font-size: 15px; color: #2E7D32; font-weight: 600; }
+
+  .doctor-copy {
+    background: #E3F2FD;
+    border-radius: 14px;
+    padding: 16px;
+    margin-top: 14px;
+  }
+  .doctor-copy-title { font-size: 14px; color: #666; margin-bottom: 8px; }
+  .doctor-copy-text { font-size: 15px; color: #0D47A1; font-weight: 600; line-height: 1.6; }
+
+  /* ── Animations ── */
+  @keyframes popIn {
+    from { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+    to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  }
+  @keyframes popOut {
+    from { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    to { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+  }
+  @keyframes confettiFall {
+    0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+  }
+  @keyframes slideDown {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  @keyframes checkBounce {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.25); }
+    70% { transform: scale(0.9); }
+    100% { transform: scale(1.05); }
+  }
+  .bounce { animation: checkBounce 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+
+  /* ── Medication Names ── */
+  .med-names-section {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid #f0f0f0;
+  }
+  .med-names-label {
+    font-size: 13px;
+    color: #aaa;
+    margin-bottom: 10px;
+    letter-spacing: 0.3px;
+  }
+  .med-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-height: 8px;
+    margin-bottom: 10px;
+  }
+  .med-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 15px;
+    font-weight: 500;
+    animation: slideDown 0.25s ease;
+  }
+  .morning .med-tag { background: var(--morning-light); color: #BF360C; }
+  .lunch .med-tag { background: var(--lunch-light); color: #1B5E20; }
+  .evening .med-tag { background: var(--evening-light); color: #311B92; }
+  .med-tag-delete {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: inherit;
+    opacity: 0.5;
+    padding: 0;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .med-tag-delete:active { opacity: 1; }
+  .med-add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 16px;
+    border: 2px dashed #ccc;
+    border-radius: 20px;
+    background: none;
+    font-size: 14px;
+    color: #aaa;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .med-add-btn:active { background: #f5f5f5; border-color: #aaa; color: #666; }
+  .med-input-row {
+    display: none;
+    gap: 8px;
+    margin-top: 10px;
+    align-items: center;
+  }
+  .med-input-row.show { display: flex; }
+  .med-input {
+    flex: 1;
+    padding: 11px 16px;
+    border: 2px solid #ddd;
+    border-radius: 20px;
+    font-size: 16px;
+    outline: none;
+    font-family: inherit;
+    transition: border-color 0.2s;
+  }
+  .morning .med-input:focus { border-color: var(--morning-color); }
+  .lunch .med-input:focus { border-color: var(--lunch-color); }
+  .evening .med-input:focus { border-color: var(--evening-color); }
+  .med-save-btn {
+    padding: 11px 20px;
+    border: none;
+    border-radius: 20px;
+    font-size: 15px;
+    font-weight: 700;
+    color: white;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+  }
+  .med-save-btn:active { opacity: 0.8; }
+  .morning .med-save-btn { background: var(--morning-color); }
+  .lunch .med-save-btn { background: var(--lunch-color); }
+  .evening .med-save-btn { background: var(--evening-color); }
+  .med-cancel-btn {
+    width: 38px; height: 38px;
+    border: 2px solid #ddd;
+    border-radius: 50%;
+    background: white;
+    font-size: 16px;
+    color: #aaa;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  /* ── Day Edit Modal ── */
+  .day-edit-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .day-edit-overlay.show { display: flex; }
+  .day-edit-modal {
+    background: white;
+    border-radius: 24px;
+    padding: 28px 24px;
+    width: min(340px, 100%);
+    animation: popIn 0.25s cubic-bezier(0.34,1.56,0.64,1) forwards;
+  }
+  .day-edit-title { font-size: 20px; font-weight: 800; color: #1565C0; margin-bottom: 4px; }
+  .day-edit-sub { font-size: 14px; color: #999; margin-bottom: 20px; }
+  .day-edit-rows { display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px; }
+  .day-edit-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border-radius: 16px;
+    cursor: pointer;
+    user-select: none;
+    transition: opacity 0.15s;
+  }
+  .day-edit-row:active { opacity: 0.75; }
+  .day-edit-row.morning { background: var(--morning-light); }
+  .day-edit-row.lunch   { background: var(--lunch-light); }
+  .day-edit-row.evening { background: var(--evening-light); }
+  .day-edit-row-emoji { font-size: 22px; }
+  .day-edit-row-label { flex: 1; font-size: 17px; font-weight: 700; }
+  .day-edit-row.morning .day-edit-row-label { color: #BF360C; }
+  .day-edit-row.lunch   .day-edit-row-label { color: #1B5E20; }
+  .day-edit-row.evening .day-edit-row-label { color: #311B92; }
+  .day-edit-check {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700; color: transparent;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .day-edit-row.checked .day-edit-check { color: white; }
+  .day-edit-row.morning.checked .day-edit-check { background: var(--morning-color); border-color: var(--morning-color); }
+  .day-edit-row.lunch.checked   .day-edit-check { background: var(--lunch-color);   border-color: var(--lunch-color); }
+  .day-edit-row.evening.checked .day-edit-check { background: var(--evening-color); border-color: var(--evening-color); }
+  .day-edit-btns { display: flex; gap: 10px; }
+  .day-edit-save {
+    flex: 1; padding: 14px; border: none; border-radius: 16px;
+    background: #1565C0; color: white; font-size: 16px; font-weight: 700; cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .day-edit-save:active { opacity: 0.8; }
+  .day-edit-cancel {
+    padding: 14px 20px; border: 2px solid #ddd; border-radius: 16px;
+    background: white; color: #aaa; font-size: 16px; cursor: pointer;
+  }
+  .cal-day.past { cursor: pointer; }
+  .cal-day.past:active { opacity: 0.7; }
+  .cal-edited-mark {
+    position: absolute; top: 2px; right: 3px;
+    font-size: 9px; line-height: 1;
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header class="app-header">
+  <div class="header-title">💊 약 복용 도우미</div>
+  <div class="header-date" id="headerDate"></div>
+  <div class="header-day" id="headerDay"></div>
+  <div class="streak-badge">
+    <span class="streak-fire">🔥</span>
+    <span id="streakCount">0</span>일 연속 복용 중!
+  </div>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+  </div>
+  <div class="progress-label" id="progressLabel">오늘 0/3 복용</div>
+</header>
+
+<!-- ── Tab Nav ── -->
+<nav class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('today')">오늘 복약</button>
+  <button class="tab-btn" onclick="switchTab('calendar')">달력</button>
+  <button class="tab-btn" onclick="switchTab('stats')">의사 보고</button>
+</nav>
+
+<!-- ── TODAY TAB ── -->
+<section class="section active" id="tab-today">
+
+  <div class="quote-card" id="quoteCard">
+    <span class="quote-icon">💬</span>
+    <p class="quote-text" id="quoteText"></p>
+  </div>
+
+  <div class="all-done-banner" id="allDoneBanner">
+    <div class="banner-emoji">🏆</div>
+    <div class="banner-text">오늘 복약 완벽 달성!</div>
+    <div class="banner-sub">세 번 모두 약을 드셨어요. 정말 대단해요!</div>
+  </div>
+
+  <!-- Morning -->
+  <div class="time-card morning" id="card-morning">
+    <div class="card-header">
+      <span class="time-emoji">🌅</span>
+      <div class="time-info">
+        <div class="time-name">아침</div>
+        <div class="time-sub">기상 후 · 오전 식사와 함께</div>
+      </div>
+    </div>
+    <label class="check-label" onclick="handleCheck('morning')">
+      <input type="checkbox" id="check-morning">
+      <span class="check-circle" id="circle-morning">✓</span>
+      <div class="check-text-wrap">
+        <div class="check-main-text">아침 약 복용</div>
+        <div class="check-sub-text">탭하면 체크돼요</div>
+      </div>
+    </label>
+    <div class="med-names-section">
+      <div class="med-names-label">💊 복용 중인 약 이름</div>
+      <div class="med-tags" id="med-tags-morning"></div>
+      <button class="med-add-btn" onclick="showMedInput('morning')">＋ 약 이름 추가</button>
+      <div class="med-input-row" id="med-input-row-morning">
+        <input class="med-input" id="med-input-morning" type="text" placeholder="예: 혈압약, 아스피린" maxlength="20"
+          onkeydown="if(event.key==='Enter') saveMedInput('morning')">
+        <button class="med-save-btn" onclick="saveMedInput('morning')">저장</button>
+        <button class="med-cancel-btn" onclick="hideMedInput('morning')">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lunch -->
+  <div class="time-card lunch" id="card-lunch">
+    <div class="card-header">
+      <span class="time-emoji">☀️</span>
+      <div class="time-info">
+        <div class="time-name">점심</div>
+        <div class="time-sub">점심 식사와 함께</div>
+      </div>
+    </div>
+    <label class="check-label" onclick="handleCheck('lunch')">
+      <input type="checkbox" id="check-lunch">
+      <span class="check-circle" id="circle-lunch">✓</span>
+      <div class="check-text-wrap">
+        <div class="check-main-text">점심 약 복용</div>
+        <div class="check-sub-text">탭하면 체크돼요</div>
+      </div>
+    </label>
+    <div class="med-names-section">
+      <div class="med-names-label">💊 복용 중인 약 이름</div>
+      <div class="med-tags" id="med-tags-lunch"></div>
+      <button class="med-add-btn" onclick="showMedInput('lunch')">＋ 약 이름 추가</button>
+      <div class="med-input-row" id="med-input-row-lunch">
+        <input class="med-input" id="med-input-lunch" type="text" placeholder="예: 소화제, 항생제" maxlength="20"
+          onkeydown="if(event.key==='Enter') saveMedInput('lunch')">
+        <button class="med-save-btn" onclick="saveMedInput('lunch')">저장</button>
+        <button class="med-cancel-btn" onclick="hideMedInput('lunch')">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Evening -->
+  <div class="time-card evening" id="card-evening">
+    <div class="card-header">
+      <span class="time-emoji">🌙</span>
+      <div class="time-info">
+        <div class="time-name">저녁</div>
+        <div class="time-sub">저녁 식사 후 · 취침 전</div>
+      </div>
+    </div>
+    <label class="check-label" onclick="handleCheck('evening')">
+      <input type="checkbox" id="check-evening">
+      <span class="check-circle" id="circle-evening">✓</span>
+      <div class="check-text-wrap">
+        <div class="check-main-text">저녁 약 복용</div>
+        <div class="check-sub-text">탭하면 체크돼요</div>
+      </div>
+    </label>
+    <div class="med-names-section">
+      <div class="med-names-label">💊 복용 중인 약 이름</div>
+      <div class="med-tags" id="med-tags-evening"></div>
+      <button class="med-add-btn" onclick="showMedInput('evening')">＋ 약 이름 추가</button>
+      <div class="med-input-row" id="med-input-row-evening">
+        <input class="med-input" id="med-input-evening" type="text" placeholder="예: 수면제, 당뇨약" maxlength="20"
+          onkeydown="if(event.key==='Enter') saveMedInput('evening')">
+        <button class="med-save-btn" onclick="saveMedInput('evening')">저장</button>
+        <button class="med-cancel-btn" onclick="hideMedInput('evening')">✕</button>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ── CALENDAR TAB ── -->
+<section class="section" id="tab-calendar">
+  <div class="calendar-nav">
+    <button class="cal-nav-btn" onclick="changeMonth(-1)">‹</button>
+    <div class="cal-month-label" id="calMonthLabel"></div>
+    <button class="cal-nav-btn" onclick="changeMonth(1)">›</button>
+  </div>
+
+  <div class="cal-legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#2E7D32"></div> 완전 복용</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#F57F17"></div> 부분 복용</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#C62828"></div> 미복용</div>
+  </div>
+
+  <div class="cal-grid">
+    <div class="cal-week-header">
+      <div class="cal-week-day">일</div><div class="cal-week-day">월</div>
+      <div class="cal-week-day">화</div><div class="cal-week-day">수</div>
+      <div class="cal-week-day">목</div><div class="cal-week-day">금</div>
+      <div class="cal-week-day">토</div>
+    </div>
+    <div class="cal-days" id="calDays"></div>
+  </div>
+</section>
+
+<!-- ── STATS TAB ── -->
+<section class="section" id="tab-stats">
+  <div class="stats-card">
+    <div class="stats-title" id="statsTitle">📊 이번 달 복약 현황</div>
+    <div class="stats-grid">
+      <div class="stat-item full"><div class="stat-num" id="statFull">0</div><div class="stat-label">완전 복용일</div></div>
+      <div class="stat-item partial"><div class="stat-num" id="statPartial">0</div><div class="stat-label">부분 복용일</div></div>
+      <div class="stat-item missed"><div class="stat-num" id="statMissed">0</div><div class="stat-label">미복용일</div></div>
+      <div class="stat-item rate"><div class="stat-num" id="statRate">0%</div><div class="stat-label">복용률</div></div>
+    </div>
+
+    <div class="missed-dates" id="missedDatesBox">
+      <div class="missed-dates-title">🔴 미복용 날짜</div>
+      <div class="missed-dates-list" id="missedDatesList"></div>
+    </div>
+
+    <div class="doctor-copy">
+      <div class="doctor-copy-title">💬 의사 선생님께 말씀드릴 내용</div>
+      <div class="doctor-copy-text" id="doctorSummary"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Day Edit Modal ── -->
+<div class="day-edit-overlay" id="dayEditOverlay" onclick="if(event.target===this)closeDayEdit()">
+  <div class="day-edit-modal">
+    <div class="day-edit-title" id="dayEditTitle"></div>
+    <div class="day-edit-sub">복약 기록을 수정할 수 있어요</div>
+    <div class="day-edit-rows">
+      <div class="day-edit-row morning" id="edit-row-morning" onclick="toggleEditRow('morning')">
+        <span class="day-edit-row-emoji">🌅</span>
+        <span class="day-edit-row-label">아침</span>
+        <div class="day-edit-check">✓</div>
+      </div>
+      <div class="day-edit-row lunch" id="edit-row-lunch" onclick="toggleEditRow('lunch')">
+        <span class="day-edit-row-emoji">☀️</span>
+        <span class="day-edit-row-label">점심</span>
+        <div class="day-edit-check">✓</div>
+      </div>
+      <div class="day-edit-row evening" id="edit-row-evening" onclick="toggleEditRow('evening')">
+        <span class="day-edit-row-emoji">🌙</span>
+        <span class="day-edit-row-label">저녁</span>
+        <div class="day-edit-check">✓</div>
+      </div>
+    </div>
+    <div class="day-edit-btns">
+      <button class="day-edit-save" onclick="saveDayEdit()">저장</button>
+      <button class="day-edit-cancel" onclick="closeDayEdit()">취소</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Celebration Overlay ── -->
+<div class="celebrate-overlay" id="celebrateOverlay" onclick="closeCelebrate()">
+  <div class="celebrate-message" id="celebrateMsg">
+    <span class="celebrate-emoji" id="celebrateEmoji"></span>
+    <div class="celebrate-text" id="celebrateText"></div>
+    <div class="celebrate-close">탭하면 닫혀요</div>
+  </div>
+</div>
+
+<script>
+  const QUOTES = [
+    "꾸준한 약 복용이 빠른 회복의 지름길이에요!",
+    "오늘 하루도 건강을 위해 최선을 다하고 있어요!",
+    "작은 습관 하나가 큰 건강을 만들어요.",
+    "규칙적인 복약, 당신의 건강을 지키는 힘이에요!",
+    "오늘도 건강한 하루 되세요! 약 꼭 챙겨드세요.",
+    "건강은 스스로 지키는 것! 오늘도 파이팅이에요!",
+    "약을 빠짐없이 드실 때마다 몸이 감사해해요.",
+    "오늘 복약 완료하면 내일이 더 건강해져요!",
+  ];
+
+  const MESSAGES = [
+    { emoji: "🌟", text: "참 잘하셨어요!\n건강을 지키고 있어요!" },
+    { emoji: "🎉", text: "오늘도 약 챙겨 드셨군요!\n최고예요!" },
+    { emoji: "💪", text: "규칙적인 복약!\n건강의 첫걸음이에요!" },
+    { emoji: "🌸", text: "정말 잘 하셨어요!\n건강해지고 있어요!" },
+    { emoji: "✨", text: "약 복용 완료!\n오늘도 파이팅이에요!" },
+  ];
+
+  const ALL_DONE = [
+    { emoji: "🏆", text: "세 번 모두 복약 완료!\n완벽한 하루예요!" },
+    { emoji: "🌈", text: "오늘 약 모두 드셨네요!\n정말 대단해요!" },
+    { emoji: "💚", text: "완벽한 복약 달성!\n건강이 쑥쑥 자라고 있어요!" },
+  ];
+
+  const KR_DAYS = ['일요일','월요일','화요일','수요일','목요일','금요일','토요일'];
+  const KR_MONTHS = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+
+  let calYear, calMonth;
+  let celebrateTimer = null;
+
+  function getTodayKey() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+
+  function getMedData() {
+    try { return JSON.parse(localStorage.getItem('medData') || '{}'); } catch(e) { return {}; }
+  }
+
+  function saveMedData(data) {
+    localStorage.setItem('medData', JSON.stringify(data));
+  }
+
+  function getDayData(dateKey) {
+    const data = getMedData();
+    return data[dateKey] || { morning: false, lunch: false, evening: false };
+  }
+
+  function setDayField(dateKey, field, value) {
+    const data = getMedData();
+    if (!data[dateKey]) data[dateKey] = { morning: false, lunch: false, evening: false };
+    data[dateKey][field] = value;
+    saveMedData(data);
+  }
+
+  function countChecked(dayData) {
+    return [dayData.morning, dayData.lunch, dayData.evening].filter(Boolean).length;
+  }
+
+  // ── Medication Names ──
+  function getMedNames() {
+    try {
+      return JSON.parse(localStorage.getItem('medNames') || '{"morning":[],"lunch":[],"evening":[]}');
+    } catch(e) { return { morning: [], lunch: [], evening: [] }; }
+  }
+
+  function saveMedNames(names) {
+    localStorage.setItem('medNames', JSON.stringify(names));
+  }
+
+  function renderMedNames() {
+    const names = getMedNames();
+    ['morning','lunch','evening'].forEach(p => {
+      const container = document.getElementById(`med-tags-${p}`);
+      if (!container) return;
+      container.innerHTML = '';
+      (names[p] || []).forEach((name, i) => {
+        const tag = document.createElement('div');
+        tag.className = 'med-tag';
+        tag.innerHTML = `💊 ${name}<button class="med-tag-delete" onclick="removeMed('${p}',${i})" aria-label="삭제">×</button>`;
+        container.appendChild(tag);
+      });
+    });
+  }
+
+  function showMedInput(period) {
+    const row = document.getElementById(`med-input-row-${period}`);
+    row.classList.add('show');
+    document.getElementById(`med-input-${period}`).focus();
+  }
+
+  function hideMedInput(period) {
+    document.getElementById(`med-input-row-${period}`).classList.remove('show');
+    document.getElementById(`med-input-${period}`).value = '';
+  }
+
+  function saveMedInput(period) {
+    const input = document.getElementById(`med-input-${period}`);
+    const name = input.value.trim();
+    if (!name) { input.focus(); return; }
+    const names = getMedNames();
+    if (!names[period]) names[period] = [];
+    names[period].push(name);
+    saveMedNames(names);
+    hideMedInput(period);
+    renderMedNames();
+  }
+
+  function removeMed(period, index) {
+    const names = getMedNames();
+    names[period].splice(index, 1);
+    saveMedNames(names);
+    renderMedNames();
+  }
+
+  // ── Init ──
+  function init() {
+    const now = new Date();
+    calYear = now.getFullYear();
+    calMonth = now.getMonth();
+
+    document.getElementById('headerDate').textContent =
+      `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일`;
+    document.getElementById('headerDay').textContent = KR_DAYS[now.getDay()];
+
+    document.getElementById('quoteText').textContent = QUOTES[now.getDate() % QUOTES.length];
+
+    renderToday();
+    renderCalendar();
+    renderStats();
+    renderMedNames();
+  }
+
+  function renderToday() {
+    const key = getTodayKey();
+    const day = getDayData(key);
+    const periods = ['morning','lunch','evening'];
+
+    periods.forEach(p => {
+      const cb = document.getElementById(`check-${p}`);
+      const circle = document.getElementById(`circle-${p}`);
+      cb.checked = day[p];
+      if (day[p]) circle.classList.add('bounce');
+    });
+
+    const checked = countChecked(day);
+    document.getElementById('progressBar').style.width = `${(checked/3)*100}%`;
+    document.getElementById('progressLabel').textContent = `오늘 ${checked}/3 복용`;
+
+    const banner = document.getElementById('allDoneBanner');
+    if (checked === 3) banner.classList.add('show');
+    else banner.classList.remove('show');
+
+    renderStreak();
+  }
+
+  function renderStreak() {
+    const data = getMedData();
+    let streak = 0;
+    const today = new Date();
+    for (let i = 0; i < 365; i++) {
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+      const day = data[key];
+      if (!day) break;
+      const cnt = countChecked(day);
+      if (i === 0 && cnt === 0) continue;
+      if (cnt === 3) streak++;
+      else if (i > 0) break;
+    }
+    document.getElementById('streakCount').textContent = streak;
+  }
+
+  function handleCheck(period) {
+    const key = getTodayKey();
+    const cb = document.getElementById(`check-${period}`);
+    const circle = document.getElementById(`circle-${period}`);
+
+    setTimeout(() => {
+      const newVal = cb.checked;
+      setDayField(key, period, newVal);
+
+      circle.classList.remove('bounce');
+      void circle.offsetWidth;
+      circle.classList.add('bounce');
+
+      const day = getDayData(key);
+      const checked = countChecked(day);
+      document.getElementById('progressBar').style.width = `${(checked/3)*100}%`;
+      document.getElementById('progressLabel').textContent = `오늘 ${checked}/3 복용`;
+
+      if (newVal) {
+        if (checked === 3) {
+          const msg = ALL_DONE[Math.floor(Math.random()*ALL_DONE.length)];
+          showCelebrate(msg.emoji, msg.text, true);
+          document.getElementById('allDoneBanner').classList.add('show');
+        } else {
+          const msg = MESSAGES[Math.floor(Math.random()*MESSAGES.length)];
+          showCelebrate(msg.emoji, msg.text, false);
+        }
+      } else {
+        document.getElementById('allDoneBanner').classList.remove('show');
+      }
+
+      renderStreak();
+      renderCalendar();
+      renderStats();
+    }, 10);
+  }
+
+  function showCelebrate(emoji, text, isAllDone) {
+    if (celebrateTimer) clearTimeout(celebrateTimer);
+    const overlay = document.getElementById('celebrateOverlay');
+    const msg = document.getElementById('celebrateMsg');
+    document.getElementById('celebrateEmoji').textContent = emoji;
+    document.getElementById('celebrateText').textContent = text;
+
+    msg.className = 'celebrate-message' + (isAllDone ? ' all-done' : '');
+    overlay.classList.add('show');
+    launchConfetti();
+
+    celebrateTimer = setTimeout(closeCelebrate, 2800);
+  }
+
+  function closeCelebrate() {
+    document.getElementById('celebrateOverlay').classList.remove('show');
+  }
+
+  function launchConfetti() {
+    const overlay = document.getElementById('celebrateOverlay');
+    const colors = ['#FF9500','#34C759','#5856D6','#FF2D55','#FFD700','#00C7BE'];
+    for (let i = 0; i < 30; i++) {
+      const el = document.createElement('div');
+      el.className = 'confetti';
+      el.style.cssText = `
+        left:${Math.random()*100}%;
+        top:-10px;
+        background:${colors[Math.floor(Math.random()*colors.length)]};
+        width:${6+Math.random()*8}px;
+        height:${6+Math.random()*8}px;
+        border-radius:${Math.random()>0.5?'50%':'2px'};
+        animation:confettiFall ${1.5+Math.random()*1.5}s linear ${Math.random()*0.5}s forwards;
+      `;
+      overlay.appendChild(el);
+      setTimeout(() => el.remove(), 3500);
+    }
+  }
+
+  // ── Calendar ──
+  function changeMonth(delta) {
+    calMonth += delta;
+    if (calMonth > 11) { calMonth = 0; calYear++; }
+    if (calMonth < 0) { calMonth = 11; calYear--; }
+    renderCalendar();
+    renderStats();
+  }
+
+  function renderCalendar() {
+    const data = getMedData();
+    const today = new Date();
+    const todayKey = getTodayKey();
+
+    document.getElementById('calMonthLabel').textContent =
+      `${calYear}년 ${KR_MONTHS[calMonth]}`;
+
+    const firstDay = new Date(calYear, calMonth, 1).getDay();
+    const lastDate = new Date(calYear, calMonth+1, 0).getDate();
+    const container = document.getElementById('calDays');
+    container.innerHTML = '';
+
+    for (let i = 0; i < firstDay; i++) {
+      container.insertAdjacentHTML('beforeend', '<div class="cal-day empty"></div>');
+    }
+
+    for (let d = 1; d <= lastDate; d++) {
+      const key = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const dow = new Date(calYear, calMonth, d).getDay();
+      const dayData = data[key];
+      const isToday = key === todayKey;
+      const isFuture = new Date(calYear, calMonth, d) > today && !isToday;
+
+      const isPast = !isFuture && !isToday;
+
+      let cls = 'cal-day';
+      if (dow === 0) cls += ' sun';
+      if (dow === 6) cls += ' sat';
+      if (isToday) cls += ' today';
+      if (isFuture) cls += ' future';
+      if (isPast) cls += ' past';
+
+      let dot = '';
+      if (!isFuture && dayData) {
+        const cnt = countChecked(dayData);
+        if (cnt === 3) { cls += ' full'; dot = '<div class="cal-dot"></div>'; }
+        else if (cnt > 0) { cls += ' partial'; dot = '<div class="cal-dot"></div>'; }
+        else { cls += ' missed'; dot = '<div class="cal-dot"></div>'; }
+      } else if (!isFuture && key < todayKey && !dayData) {
+        cls += ' missed'; dot = '<div class="cal-dot"></div>';
+      }
+
+      const editMark = (dayData && dayData.edited) ? '<span class="cal-edited-mark">✏️</span>' : '';
+      const clickAttr = isPast ? ` onclick="openDayEdit('${key}')"` : '';
+
+      container.insertAdjacentHTML('beforeend',
+        `<div class="${cls}"${clickAttr}><span class="cal-num">${d}</span>${dot}${editMark}</div>`);
+    }
+  }
+
+  // ── Stats ──
+  function renderStats() {
+    const data = getMedData();
+    const today = new Date();
+    let fullDays = 0, partialDays = 0, missedDays = 0;
+    const missedList = [];
+
+    const firstDay = new Date(calYear, calMonth, 1);
+    const lastDay = new Date(calYear, calMonth+1, 0);
+
+    for (let d = new Date(firstDay); d <= lastDay && d <= today; d.setDate(d.getDate()+1)) {
+      const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+      const dayData = data[key];
+      if (!dayData) {
+        missedDays++;
+        missedList.push(`${d.getMonth()+1}월 ${d.getDate()}일`);
+        continue;
+      }
+      const cnt = countChecked(dayData);
+      if (cnt === 3) fullDays++;
+      else if (cnt > 0) partialDays++;
+      else { missedDays++; missedList.push(`${d.getMonth()+1}월 ${d.getDate()}일`); }
+    }
+
+    const total = fullDays + partialDays + missedDays;
+    const rate = total > 0 ? Math.round((fullDays / total) * 100) : 0;
+
+    document.getElementById('statsTitle').textContent = `📊 ${calYear}년 ${KR_MONTHS[calMonth]} 복약 현황`;
+    document.getElementById('statFull').textContent = fullDays;
+    document.getElementById('statPartial').textContent = partialDays;
+    document.getElementById('statMissed').textContent = missedDays;
+    document.getElementById('statRate').textContent = `${rate}%`;
+
+    const missedBox = document.getElementById('missedDatesBox');
+    const missedListEl = document.getElementById('missedDatesList');
+    if (missedList.length === 0) {
+      missedListEl.innerHTML = `<div class="missed-dates-empty">이번 달 미복용일이 없어요! 🎉</div>`;
+      missedBox.style.background = '#E8F5E9';
+      missedBox.querySelector('.missed-dates-title').style.color = '#2E7D32';
+      missedBox.querySelector('.missed-dates-title').textContent = '🟢 미복용 날짜';
+    } else {
+      missedBox.style.background = '#FFEBEE';
+      missedBox.querySelector('.missed-dates-title').style.color = '#C62828';
+      missedBox.querySelector('.missed-dates-title').textContent = '🔴 미복용 날짜';
+      missedListEl.innerHTML = missedList.join(', ');
+    }
+
+    const names = getMedNames();
+    const medLine = ['morning','lunch','evening']
+      .map(p => {
+        const list = (names[p] || []);
+        if (!list.length) return null;
+        const label = p === 'morning' ? '아침' : p === 'lunch' ? '점심' : '저녁';
+        return `${label}(${list.join(', ')})`;
+      })
+      .filter(Boolean).join(' / ');
+
+    const medSummary = medLine ? `복용 약: ${medLine}. ` : '';
+    const summary = missedList.length === 0
+      ? `${medSummary}이번 달(${KR_MONTHS[calMonth]}) 총 ${total}일 중 ${fullDays}일 완전 복용, 미복용 없음. 복용률 100%입니다.`
+      : `${medSummary}이번 달(${KR_MONTHS[calMonth]}) 총 ${total}일 중 완전 복용 ${fullDays}일, 부분 복용 ${partialDays}일, 미복용 ${missedDays}일. 복용률 ${rate}%. 미복용 날짜: ${missedList.join(', ')}.`;
+    document.getElementById('doctorSummary').textContent = summary;
+  }
+
+  // ── Day Edit ──
+  let editingDateKey = null;
+  let editState = { morning: false, lunch: false, evening: false };
+
+  function openDayEdit(dateKey) {
+    editingDateKey = dateKey;
+    const d = getDayData(dateKey);
+    editState = { morning: d.morning, lunch: d.lunch, evening: d.evening };
+    const [y, m, day] = dateKey.split('-').map(Number);
+    document.getElementById('dayEditTitle').textContent =
+      `${m}월 ${day}일 (${KR_DAYS[new Date(y, m-1, day).getDay()]})`;
+    renderEditRows();
+    document.getElementById('dayEditOverlay').classList.add('show');
+  }
+
+  function renderEditRows() {
+    ['morning','lunch','evening'].forEach(p => {
+      document.getElementById(`edit-row-${p}`).classList.toggle('checked', editState[p]);
+    });
+  }
+
+  function toggleEditRow(period) {
+    editState[period] = !editState[period];
+    renderEditRows();
+  }
+
+  function saveDayEdit() {
+    if (!editingDateKey) return;
+    const data = getMedData();
+    data[editingDateKey] = {
+      morning: editState.morning,
+      lunch: editState.lunch,
+      evening: editState.evening,
+      edited: true
+    };
+    saveMedData(data);
+    closeDayEdit();
+    renderCalendar();
+    renderStats();
+  }
+
+  function closeDayEdit() {
+    document.getElementById('dayEditOverlay').classList.remove('show');
+    editingDateKey = null;
+  }
+
+  // ── Tab Switch ──
+  function switchTab(name) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(`tab-${name}`).classList.add('active');
+    event.target.classList.add('active');
+    if (name === 'calendar') renderCalendar();
+    if (name === 'stats') renderStats();
+  }
+
+  // ── Midnight Reset ──
+  function scheduleMidnightReset() {
+    const now = new Date();
+    const midnight = new Date(now);
+    midnight.setHours(24,0,0,0);
+    setTimeout(() => { init(); scheduleMidnightReset(); }, midnight - now);
+  }
+
+  init();
+  scheduleMidnightReset();
+</script>
+</body>
+</html>
