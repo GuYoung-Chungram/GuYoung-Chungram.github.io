@@ -1,0 +1,1910 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>고양시 퇴직예정자를 위한 생성형AI 활용법 실습교재</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ── 청람M&C BRAND TOKENS ── */
+:root {
+  --cr-accent:   #1652D8;
+  --cr-accent2:  #0F3D99;
+  --cr-bg:       #FFFFFF;
+  --cr-surface:  #F8FAFF;
+  --cr-light:    #EEF3FD;
+  --cr-text:     #1A1A1A;
+  --cr-gray:     #666666;
+  --cr-dark:     #0F0F0F;
+  --cr-border:   #D0D9F5;
+  --cr-radius:   4px;
+  --cr-shadow-sm: 0 2px 8px rgba(22,82,216,0.08);
+  --cr-shadow-md: 0 4px 16px rgba(22,82,216,0.12);
+  --cr-font: 'Noto Sans KR', 'Inter', sans-serif;
+  --teal: #2EC4B6;
+  --teal-bg: #E8F8F7;
+  --teal-border: #A3DDD8;
+  --green: #1B7A4E;
+  --green-bg: #E8F5EE;
+  --green-border: #A3D5BC;
+  --amber: #D97706;
+  --amber-bg: #FEF3C7;
+  --amber-border: #FCD34D;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--cr-font);
+  background: var(--cr-surface);
+  color: var(--cr-text);
+  min-height: 100vh;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* ── HEADER ── */
+.header {
+  background: var(--cr-dark);
+  color: #fff;
+  height: 64px;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  border-bottom: 1px solid rgba(46,196,182,0.3);
+  overflow: hidden;
+}
+.header::after {
+  content: '';
+  position: absolute;
+  right: 0; top: 0; bottom: 0; width: 180px;
+  background-image: radial-gradient(circle, rgba(46,196,182,0.2) 1.5px, transparent 1.5px);
+  background-size: 18px 18px;
+  pointer-events: none;
+}
+.header-left { display: flex; align-items: center; gap: 14px; z-index: 1; }
+.header-logo-mark {
+  width: 32px; height: 32px;
+  background: var(--teal);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  border-radius: var(--cr-radius);
+}
+.header-logo-mark span { color: #fff; font-weight: 800; font-size: 12px; font-family: 'Inter', sans-serif; }
+.header-title { font-size: 13.5px; font-weight: 700; color: #fff; letter-spacing: -0.01em; line-height: 1.2; }
+.header-sub { font-size: 11px; color: rgba(255,255,255,0.45); font-weight: 400; margin-top: 1px; }
+.header-right { display: flex; align-items: center; gap: 16px; z-index: 1; }
+.progress-wrap { display: flex; align-items: center; gap: 10px; }
+.progress-label { font-size: 12px; color: rgba(255,255,255,0.6); font-weight: 500; white-space: nowrap; }
+.progress-track { width: 110px; height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--teal); border-radius: 2px; transition: width 0.5s ease; }
+.header-badge {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.06em;
+  color: var(--teal); background: rgba(46,196,182,0.15);
+  border: 1px solid rgba(46,196,182,0.4);
+  padding: 3px 10px; border-radius: var(--cr-radius); text-transform: uppercase; white-space: nowrap;
+}
+
+/* ── LAYOUT ── */
+.layout { display: grid; grid-template-columns: 268px 1fr; min-height: calc(100vh - 64px); }
+
+/* ── SIDEBAR ── */
+.sidebar { background: var(--cr-bg); border-right: 1px solid var(--cr-border); overflow-y: auto; padding-bottom: 24px; }
+.sidebar-head { padding: 18px 20px 14px; border-bottom: 1px solid var(--cr-border); background: var(--cr-surface); }
+.sidebar-head-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); margin-bottom: 4px; }
+.sidebar-head-title { font-size: 13px; font-weight: 700; color: var(--cr-text); }
+.sidebar-group-label { font-size: 10px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--cr-gray); padding: 16px 20px 6px; }
+.report-item {
+  display: flex; align-items: center; gap: 11px; padding: 11px 20px;
+  cursor: pointer; border-left: 3px solid transparent;
+  transition: background 0.12s, border-color 0.12s, transform 0.18s;
+}
+.report-item:hover { background: var(--cr-surface); transform: translateX(3px); }
+.report-item.active { background: var(--teal-bg); border-left-color: var(--teal); }
+.report-item.done { border-left-color: var(--green); }
+.report-item .ri-num {
+  width: 26px; height: 26px; border-radius: var(--cr-radius);
+  background: var(--cr-surface); border: 1px solid var(--cr-border);
+  color: var(--cr-gray); font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  transition: all 0.15s; font-family: 'Inter', sans-serif;
+}
+.report-item.active .ri-num { background: var(--teal); border-color: var(--teal); color: #fff; }
+.report-item.done .ri-num { background: var(--green); border-color: var(--green); color: #fff; }
+.report-item .ri-text { flex: 1; min-width: 0; }
+.report-item .ri-title { font-size: 13px; font-weight: 600; color: var(--cr-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.report-item .ri-sub { font-size: 11px; color: var(--cr-gray); margin-top: 1px; }
+.done-chip { font-size: 10px; font-weight: 700; background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); padding: 2px 7px; border-radius: var(--cr-radius); flex-shrink: 0; }
+
+/* ── MAIN ── */
+.main { padding: 32px 40px 48px; overflow-y: auto; max-width: 880px; }
+
+/* PAGE HEADER */
+.page-header { margin-bottom: 28px; padding-bottom: 20px; border-bottom: 2px solid var(--teal); }
+.page-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); margin-bottom: 6px; }
+.page-title { font-size: 24px; font-weight: 800; color: var(--cr-text); letter-spacing: -0.02em; line-height: 1.2; }
+.page-sub { font-size: 13.5px; color: var(--cr-gray); margin-top: 4px; }
+.tag-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+.tag { background: var(--teal-bg); color: #0F7A74; border: 1px solid var(--teal-border); border-radius: var(--cr-radius); padding: 3px 10px; font-size: 11px; font-weight: 600; }
+.tag.num-tag { background: var(--teal); color: #fff; border-color: var(--teal); }
+.tag.blue-tag { background: var(--cr-light); color: var(--cr-accent2); border: 1px solid var(--cr-border); }
+
+/* CARD */
+.card { background: var(--cr-bg); border: 1px solid var(--cr-border); border-radius: var(--cr-radius); box-shadow: var(--cr-shadow-sm); margin-bottom: 18px; overflow: hidden; transition: box-shadow 0.22s, transform 0.22s; }
+.card:hover { box-shadow: var(--cr-shadow-md); transform: translateY(-2px); }
+.card-head { display: flex; align-items: center; gap: 10px; padding: 13px 20px 12px; border-bottom: 1px solid var(--cr-border); background: var(--cr-surface); }
+.card-head-stripe { width: 3px; height: 18px; background: var(--teal); border-radius: 2px; flex-shrink: 0; }
+.card-head-stripe.blue { background: var(--cr-accent); }
+.card-head-stripe.amber { background: var(--amber); }
+.card-head-stripe.green { background: var(--green); }
+.card-head-title { font-size: 13px; font-weight: 700; color: var(--cr-text); letter-spacing: -0.01em; }
+.card-head-icon { margin-left: auto; font-size: 16px; }
+.card-body { padding: 18px 20px; }
+
+/* DESC */
+.desc-text { font-size: 14px; line-height: 1.85; color: var(--cr-text); }
+.desc-text strong { color: var(--cr-accent2); font-weight: 700; }
+
+/* STRUCT LIST */
+.struct-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.struct-item { display: flex; align-items: flex-start; gap: 12px; padding: 10px 14px; background: var(--cr-surface); border: 1px solid var(--cr-border); border-radius: var(--cr-radius); transition: background 0.15s, border-color 0.15s, transform 0.15s; }
+.struct-item:hover { background: var(--teal-bg); border-color: var(--teal-border); transform: translateX(4px); }
+.struct-num { min-width: 22px; height: 22px; background: var(--teal); color: #fff; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; border-radius: var(--cr-radius); flex-shrink: 0; margin-top: 1px; font-family: 'Inter', sans-serif; }
+.struct-num.blue { background: var(--cr-accent); }
+.struct-num.amber { background: var(--amber); }
+.struct-text { flex: 1; }
+.struct-title { font-size: 13px; font-weight: 700; color: var(--cr-text); }
+.struct-desc { font-size: 12px; color: var(--cr-gray); margin-top: 1px; line-height: 1.5; }
+
+/* TWO COL */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+
+/* PROMPT BOX */
+.prompt-box { background: var(--cr-dark); border-radius: var(--cr-radius); padding: 16px; position: relative; }
+.prompt-label-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.prompt-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.4); }
+.copy-btn { background: rgba(46,196,182,0.2); color: rgba(255,255,255,0.75); border: 1px solid rgba(46,196,182,0.45); border-radius: var(--cr-radius); padding: 4px 12px; font-size: 11px; font-weight: 600; cursor: pointer; transition: background 0.15s; font-family: var(--cr-font); }
+.copy-btn:hover { background: rgba(46,196,182,0.4); color: #fff; }
+.prompt-text { font-size: 12.5px; line-height: 1.85; color: rgba(255,255,255,0.82); font-family: 'Inter', monospace; white-space: pre-line; }
+.prompt-text .var { color: #7EB3FF; font-style: italic; }
+.prompt-text .ctx { color: #A8D8A8; }
+
+/* TIP */
+.tip-box { display: flex; gap: 10px; background: #FFFBE8; border: 1px solid #E8D96A; border-radius: var(--cr-radius); padding: 12px 14px; margin-top: 12px; }
+.tip-box.teal { background: var(--teal-bg); border-color: var(--teal-border); }
+.tip-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.tip-text { font-size: 12.5px; color: #5A4800; line-height: 1.65; }
+.tip-box.teal .tip-text { color: #0F5A56; }
+.tip-text strong { font-weight: 700; }
+
+/* CHECKLIST */
+.checklist { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.check-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: var(--cr-radius); cursor: pointer; transition: background 0.1s, transform 0.12s; user-select: none; font-size: 13.5px; color: var(--cr-text); }
+.check-item:hover { background: var(--cr-surface); }
+.check-item:active { transform: scale(0.98); }
+.check-box { width: 18px; height: 18px; border: 1.5px solid var(--cr-border); border-radius: var(--cr-radius); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #fff; font-size: 11px; transition: background 0.2s, border-color 0.2s, transform 0.2s; }
+.check-item.checked .check-box { background: var(--green); border-color: var(--green); transform: scale(1.15); }
+
+/* WRITE AREA */
+.write-area { background: var(--cr-bg); border: 1px solid var(--cr-border); border-radius: var(--cr-radius); box-shadow: var(--cr-shadow-sm); padding: 20px; margin-top: 4px; }
+.write-label { font-size: 12px; font-weight: 600; color: var(--cr-gray); margin-bottom: 10px; }
+.write-input { width: 100%; border: 1px solid var(--cr-border); border-radius: var(--cr-radius); padding: 12px 14px; font-size: 13px; font-family: var(--cr-font); line-height: 1.7; color: var(--cr-text); background: var(--cr-surface); resize: vertical; min-height: 110px; outline: none; transition: border-color 0.15s; }
+.write-input:focus { border-color: var(--teal); background: #fff; }
+.write-actions { display: flex; gap: 8px; margin-top: 10px; justify-content: flex-end; }
+.btn { padding: 8px 20px; border-radius: var(--cr-radius); font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: background 0.15s, transform 0.12s, box-shadow 0.18s; font-family: var(--cr-font); }
+.btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(46,196,182,0.2); }
+.btn:active { transform: translateY(0) scale(0.98); }
+.btn-primary { background: var(--teal); color: #fff; }
+.btn-primary:hover { background: #26A99D; }
+.btn-outline { background: #fff; color: var(--teal); border: 1px solid var(--cr-border); }
+
+/* FEEDBACK */
+.feedback-area { display: none; margin-top: 12px; padding: 14px 16px; background: var(--green-bg); border: 1px solid var(--green-border); border-radius: var(--cr-radius); }
+.feedback-area.show { display: block; }
+.feedback-title { font-size: 13px; font-weight: 700; color: var(--green); margin-bottom: 4px; }
+.feedback-text { font-size: 12.5px; color: #1A4038; line-height: 1.65; }
+
+/* PANEL */
+.report-panel { display: none; }
+.report-panel.active { display: block; }
+
+/* STEP LIST */
+.step-list { display: flex; flex-direction: column; gap: 0; margin-top: 4px; }
+.step-item { display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px dashed var(--cr-border); position: relative; }
+.step-item:last-child { border-bottom: none; }
+.step-left { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 0; }
+.step-num { width: 32px; height: 32px; background: var(--teal); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+.step-num.blue { background: var(--cr-accent); }
+.step-num.amber { background: var(--amber); }
+.step-line { width: 2px; flex: 1; background: var(--cr-border); margin-top: 4px; min-height: 20px; }
+.step-item:last-child .step-line { display: none; }
+.step-right { flex: 1; padding-top: 4px; }
+.step-title { font-size: 14px; font-weight: 700; color: var(--cr-text); margin-bottom: 6px; }
+.step-desc { font-size: 13px; color: var(--cr-gray); line-height: 1.7; }
+.step-desc strong { color: var(--cr-text); font-weight: 600; }
+.step-tag { display: inline-block; padding: 1px 7px; background: var(--teal-bg); color: #0F7A74; border-radius: 3px; font-size: 11px; font-weight: 600; margin-right: 4px; margin-top: 4px; }
+
+/* INSTRUCTION BOX */
+.instruction-box { background: #0F0F0F; border: 1px solid rgba(46,196,182,0.3); border-radius: var(--cr-radius); padding: 20px; margin-top: 4px; }
+.instruction-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.instruction-label { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(46,196,182,0.7); }
+.instruction-text { font-size: 12.5px; color: rgba(255,255,255,0.82); line-height: 1.85; font-family: 'Inter', monospace; white-space: pre-line; }
+.instruction-text .var { color: #7EB3FF; font-style: italic; }
+.instruction-text .section { color: #A8D8A8; font-weight: 700; }
+
+/* COMPARE TABLE */
+.compare-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 4px; }
+.compare-table th { background: var(--cr-dark); color: rgba(255,255,255,0.85); font-weight: 600; padding: 10px 14px; text-align: left; font-size: 12px; }
+.compare-table th:first-child { border-radius: 4px 0 0 0; }
+.compare-table th:last-child { border-radius: 0 4px 0 0; }
+.compare-table td { padding: 10px 14px; border-bottom: 1px solid var(--cr-border); vertical-align: top; line-height: 1.65; }
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table tr:nth-child(even) td { background: var(--cr-surface); }
+
+/* HIGHLIGHT BOX */
+.highlight-box { background: var(--teal-bg); border: 1.5px solid var(--teal-border); border-left: 4px solid var(--teal); border-radius: var(--cr-radius); padding: 16px 18px; margin: 12px 0; }
+.highlight-box.blue { background: var(--cr-light); border-color: var(--cr-border); border-left-color: var(--cr-accent); }
+.highlight-box.amber { background: var(--amber-bg); border-color: var(--amber-border); border-left-color: var(--amber); }
+.highlight-title { font-size: 12px; font-weight: 700; color: #0F7A74; margin-bottom: 6px; letter-spacing: 0.03em; }
+.highlight-box.blue .highlight-title { color: var(--cr-accent2); }
+.highlight-box.amber .highlight-title { color: var(--amber); }
+.highlight-body { font-size: 13px; color: var(--cr-text); line-height: 1.75; }
+
+/* GEMS CARD */
+.gems-card { background: var(--cr-dark); border: 1px solid rgba(46,196,182,0.25); border-radius: var(--cr-radius); padding: 24px; margin-bottom: 16px; }
+.gems-card-title { font-size: 15px; font-weight: 800; color: #fff; margin-bottom: 8px; letter-spacing: -0.01em; }
+.gems-card-sub { font-size: 12.5px; color: rgba(255,255,255,0.55); margin-bottom: 16px; line-height: 1.6; }
+.gems-steps { display: flex; flex-direction: column; gap: 10px; }
+.gems-step { display: flex; gap: 12px; align-items: flex-start; }
+.gems-step-num { width: 24px; height: 24px; background: var(--teal); color: #fff; border-radius: 50%; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.gems-step-text { font-size: 12.5px; color: rgba(255,255,255,0.78); line-height: 1.65; }
+.gems-step-text strong { color: var(--teal); }
+
+/* MOBILE NAV */
+.mobile-nav { display: none; background: var(--cr-bg); border-bottom: 1px solid var(--cr-border); padding: 10px 16px; position: sticky; top: 64px; z-index: 150; gap: 8px; align-items: center; }
+.mobile-nav-label { font-size: 11px; font-weight: 700; color: var(--cr-gray); white-space: nowrap; }
+.mobile-nav-select { flex: 1; padding: 8px 12px; border: 1.5px solid var(--cr-border); border-radius: var(--cr-radius); font-size: 13px; font-weight: 600; font-family: var(--cr-font); color: var(--cr-text); background: var(--cr-surface); outline: none; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%232EC4B6' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+.mobile-progress-wrap { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+.mobile-progress-text { font-size: 11px; font-weight: 600; color: var(--teal); }
+.mobile-progress-track { width: 48px; height: 4px; background: var(--cr-border); border-radius: 2px; overflow: hidden; }
+.mobile-progress-fill { height: 100%; background: var(--teal); border-radius: 2px; transition: width 0.4s ease; }
+
+/* FOOTER */
+.site-footer { background: var(--cr-dark); border-top: 1px solid rgba(46,196,182,0.2); padding: 20px 40px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.footer-logo-mark { width: 24px; height: 24px; background: var(--teal); border-radius: 3px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.footer-logo-mark span { color: #fff; font-size: 9px; font-weight: 800; font-family: 'Inter', sans-serif; }
+.footer-copy { font-size: 11.5px; color: rgba(255,255,255,0.4); line-height: 1.5; }
+.footer-link { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.7); text-decoration: none; border: 1px solid rgba(46,196,182,0.4); background: rgba(46,196,182,0.1); padding: 6px 14px; border-radius: 4px; transition: all 0.18s; }
+.footer-link:hover { background: rgba(46,196,182,0.25); color: #fff; }
+
+/* ANIMATIONS */
+@keyframes fadeSlideUp { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeSlideIn { from { opacity: 0; transform: translateX(-16px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes bounceIn { 0% { transform: scale(0.3); opacity: 0; } 50% { transform: scale(1.08); } 70% { transform: scale(0.96); } 100% { transform: scale(1); opacity: 1; } }
+@keyframes floatUp { 0% { transform: translateY(0) scale(1); opacity: 1; } 100% { transform: translateY(-80px) scale(0.5); opacity: 0; } }
+@keyframes confettiFall { 0% { transform: translateY(-10px) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+@keyframes shimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
+@keyframes toastBar { from { width: 100%; } to { width: 0%; } }
+
+.report-panel.active .card,
+.report-panel.active .write-area,
+.report-panel.active .two-col { animation: fadeSlideUp 0.38s cubic-bezier(0.22,1,0.36,1) both; }
+.report-panel.active .card:nth-child(1) { animation-delay: 0.04s; }
+.report-panel.active .card:nth-child(2) { animation-delay: 0.10s; }
+.report-panel.active .card:nth-child(3) { animation-delay: 0.16s; }
+.report-panel.active .card:nth-child(4) { animation-delay: 0.22s; }
+.report-panel.active .write-area { animation-delay: 0.28s; }
+.report-panel.active .page-header { animation: fadeSlideIn 0.4s cubic-bezier(0.22,1,0.36,1) both; }
+
+/* COMPLETE TOAST */
+.float-emoji { position: fixed; font-size: 28px; pointer-events: none; z-index: 9999; animation: floatUp 1.2s ease-out forwards; }
+.confetti-piece { position: fixed; width: 10px; height: 10px; border-radius: 2px; pointer-events: none; z-index: 9998; animation: confettiFall linear forwards; }
+.complete-toast { position: fixed; bottom: 32px; right: 32px; background: var(--cr-dark); color: #fff; border: 1px solid rgba(46,196,182,0.5); border-radius: 10px; padding: 16px 20px; display: flex; align-items: center; gap: 14px; z-index: 9000; transform: translateY(80px); opacity: 0; transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), opacity 0.3s; min-width: 260px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+.complete-toast.show { transform: translateY(0); opacity: 1; }
+.toast-icon { font-size: 26px; flex-shrink: 0; }
+.toast-title { font-size: 13px; font-weight: 700; color: #fff; }
+.toast-msg { font-size: 11.5px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+.toast-bar { position: absolute; bottom: 0; left: 0; height: 3px; background: var(--teal); border-radius: 0 0 0 10px; animation: toastBar 2.8s linear forwards; }
+
+/* ALL DONE */
+.all-done-overlay { position: fixed; inset: 0; background: rgba(15,15,15,0.75); backdrop-filter: blur(6px); z-index: 8000; display: none; align-items: center; justify-content: center; }
+.all-done-overlay.show { display: flex; }
+.all-done-box { background: #fff; border-radius: 16px; padding: 48px 44px 40px; text-align: center; max-width: 400px; width: 90%; animation: bounceIn 0.5s cubic-bezier(0.22,1,0.36,1) both; position: relative; overflow: hidden; }
+.all-done-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg, var(--teal), #1652D8, var(--teal)); background-size: 200%; animation: shimmer 2s infinite linear; }
+.all-done-trophy { font-size: 56px; margin-bottom: 16px; }
+.all-done-title { font-size: 22px; font-weight: 800; color: var(--cr-text); letter-spacing: -0.02em; margin-bottom: 8px; }
+.all-done-sub { font-size: 13.5px; color: var(--cr-gray); line-height: 1.7; margin-bottom: 24px; }
+.all-done-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--teal-bg); border: 2px solid var(--teal); border-radius: 100px; padding: 8px 20px; font-size: 13px; font-weight: 700; color: #0F7A74; margin-bottom: 24px; }
+.all-done-actions { display: flex; gap: 10px; justify-content: center; }
+.all-done-btn { padding: 10px 22px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; font-family: var(--cr-font); transition: all 0.18s; }
+.all-done-btn.primary { background: var(--teal); color: #fff; }
+.all-done-btn.secondary { background: var(--cr-surface); color: var(--cr-text); border: 1px solid var(--cr-border); }
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .main { padding: 20px 16px 40px; }
+  .mobile-nav { display: flex; }
+  .two-col { grid-template-columns: 1fr; }
+}
+
+/* ── M2-1b 심화 패널 전용 — 큰 글씨 오버라이드 ── */
+#panel-m2-1b .prompt-text     { font-size: 15px; line-height: 2; }
+#panel-m2-1b .step-title      { font-size: 16px; }
+#panel-m2-1b .step-desc       { font-size: 15px; line-height: 1.85; color: var(--cr-text); }
+#panel-m2-1b .struct-title    { font-size: 15px; }
+#panel-m2-1b .struct-desc     { font-size: 14px; line-height: 1.7; }
+#panel-m2-1b .desc-text       { font-size: 15px; }
+#panel-m2-1b .highlight-body  { font-size: 15px; line-height: 1.85; }
+#panel-m2-1b .tip-text        { font-size: 14px; line-height: 1.75; }
+#panel-m2-1b .check-item      { font-size: 15px; padding: 10px 14px; }
+#panel-m2-1b .card-head-title { font-size: 15px; }
+#panel-m2-1b .copy-btn        { font-size: 13px; padding: 6px 16px; }
+#panel-m2-1b .step-tag        { font-size: 13px; }
+</style>
+</head>
+<body>
+
+<!-- ALL DONE OVERLAY -->
+<div class="all-done-overlay" id="allDoneOverlay">
+  <div class="all-done-box">
+    <div class="all-done-trophy">🎉</div>
+    <div class="all-done-title">모든 실습 완료!</div>
+    <div class="all-done-sub">수고하셨습니다.<br>오늘 배운 AI 도구들을 퇴직 이후 삶에서도 꾸준히 활용해보세요.</div>
+    <div class="all-done-badge">🤖 AI 활용 수료 완료</div>
+    <div class="all-done-actions">
+      <button class="all-done-btn secondary" onclick="document.getElementById('allDoneOverlay').classList.remove('show')">계속 보기</button>
+      <button class="all-done-btn primary" onclick="location.reload()">처음으로</button>
+    </div>
+  </div>
+</div>
+
+<!-- COMPLETE TOAST -->
+<div class="complete-toast" id="completeToast">
+  <div class="toast-icon">✅</div>
+  <div>
+    <div class="toast-title" id="toastTitle">실습 완료!</div>
+    <div class="toast-msg" id="toastMsg">다음 실습으로 이동해보세요.</div>
+  </div>
+  <div class="toast-bar"></div>
+</div>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-left">
+    <div class="header-logo-mark"><span>청람</span></div>
+    <div>
+      <div class="header-title">고양시 퇴직예정자를 위한 생성형AI 활용법</div>
+      <div class="header-sub">청람M&amp;C · 오프보딩 AI 교육과정 실습교재</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="progress-wrap">
+      <span class="progress-label" id="progress-text">0 / 9 완료</span>
+      <div class="progress-track"><div class="progress-fill" id="progress-bar" style="width:0%"></div></div>
+    </div>
+    <div class="header-badge">2026 오프보딩</div>
+  </div>
+</header>
+
+<!-- MOBILE NAV -->
+<nav class="mobile-nav" id="mobile-nav">
+  <span class="mobile-nav-label">메뉴</span>
+  <select class="mobile-nav-select" id="mobile-select" onchange="onMobileSelect(this.value)">
+    <option value="m1-1">M1-1 · AI가 뭔지 알자</option>
+    <option value="m1-2">M1-2 · 개인 맞춤 설정</option>
+    <option value="m1-3">M1-3 · 좋은 질문 vs 애매한 질문</option>
+    <option value="m2-1">M2-1 · 건강·병원 정보</option>
+    <option value="m2-1b">M2-★ · 약 복용 앱 만들기(심화)</option>
+    <option value="m2-2">M2-2 · 여행·취미 계획</option>
+    <option value="m2-3">M2-3 · 민원서류 이해하기</option>
+    <option value="m2-4">M2-4 · 명함사진 만들기</option>
+    <option value="m3-1">M3-1 · 잘 물어보는 법 3가지</option>
+    <option value="m3-2">M3-2 · Gems 멘탈코치 만들기</option>
+  </select>
+  <div class="mobile-progress-wrap">
+    <span class="mobile-progress-text" id="m-prog-text">0/9</span>
+    <div class="mobile-progress-track"><div class="mobile-progress-fill" id="m-prog-bar" style="width:0%"></div></div>
+  </div>
+</nav>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-head">
+      <div class="sidebar-head-label">실습 과정</div>
+      <div class="sidebar-head-title">모듈별 AI 실습</div>
+    </div>
+    <div class="sidebar-group-label">모듈1 — AI가 뭔지 알자</div>
+    <div class="report-item active" id="si-m1-1" onclick="showPanel('m1-1')">
+      <div class="ri-num">1</div>
+      <div class="ri-text">
+        <div class="ri-title">AI란 무엇인가</div>
+        <div class="ri-sub">왜 지금 AI인가 · 1분 개념</div>
+      </div>
+    </div>
+    <div class="report-item" id="si-m1-2" onclick="showPanel('m1-2')">
+      <div class="ri-num">2</div>
+      <div class="ri-text">
+        <div class="ri-title">개인 맞춤설정 실습</div>
+        <div class="ri-sub">캐릭터 설정 · 작동 설계</div>
+      </div>
+    </div>
+    <div class="report-item" id="si-m1-3" onclick="showPanel('m1-3')">
+      <div class="ri-num">3</div>
+      <div class="ri-text">
+        <div class="ri-title">좋은 질문 체감하기</div>
+        <div class="ri-sub">가짜정보 · 개인정보 보호</div>
+      </div>
+    </div>
+    <div class="sidebar-group-label">모듈2 — 일상에서 바로 쓴다</div>
+    <div class="report-item" id="si-m2-1" onclick="showPanel('m2-1')">
+      <div class="ri-num">4</div>
+      <div class="ri-text">
+        <div class="ri-title">건강·병원 정보</div>
+        <div class="ri-sub">고양시 보건소 · 약 정보</div>
+      </div>
+    </div>
+    <div class="report-item" id="si-m2-1b" onclick="showPanel('m2-1b')">
+      <div class="ri-num" style="background:var(--amber);border-color:var(--amber);color:#fff;">💊</div>
+      <div class="ri-text">
+        <div class="ri-title">약 복용 앱 만들기 ★심화</div>
+        <div class="ri-sub">Canvas · HTML 자동화 도구 제작</div>
+      </div>
+      <span class="done-chip" style="background:var(--amber-bg);color:var(--amber);border-color:var(--amber-border);">NEW</span>
+    </div>
+    <div class="report-item" id="si-m2-2" onclick="showPanel('m2-2')">
+      <div class="ri-num">5</div>
+      <div class="ri-text">
+        <div class="ri-title">여행·취미 계획 짜기</div>
+        <div class="ri-sub">일산호수공원 · 꽃박람회</div>
+      </div>
+    </div>
+    <div class="report-item" id="si-m2-3" onclick="showPanel('m2-3')">
+      <div class="ri-num">6</div>
+      <div class="ri-text">
+        <div class="ri-title">공문서·민원서류 이해</div>
+        <div class="ri-sub">고양페이 · 민원 AI 해석</div>
+      </div>
+    </div>
+    <div class="report-item" id="si-m2-4" onclick="showPanel('m2-4')">
+      <div class="ri-num">7</div>
+      <div class="ri-text">
+        <div class="ri-title">명함사진 만들기</div>
+        <div class="ri-sub">AI 이미지 · 명함 문구</div>
+      </div>
+    </div>
+    <div class="sidebar-group-label">모듈3 — 더 잘 쓰는 법</div>
+    <div class="report-item" id="si-m3-1" onclick="showPanel('m3-1')">
+      <div class="ri-num">8</div>
+      <div class="ri-text">
+        <div class="ri-title">잘 물어보는 법 3가지</div>
+        <div class="ri-sub">역할·구체적·예시</div>
+      </div>
+    </div>
+    <div class="report-item" id="si-m3-2" onclick="showPanel('m3-2')">
+      <div class="ri-num">9</div>
+      <div class="ri-text">
+        <div class="ri-title">Gems 멘탈코치 만들기</div>
+        <div class="ri-sub">이메일봇 · 포트폴리오봇</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- ══ M1-1: AI란 무엇인가 ══ -->
+    <div class="report-panel active" id="panel-m1-1">
+      <div class="page-header">
+        <div class="page-eyebrow">모듈1 · 오프닝 — AI가 뭔지 알자</div>
+        <div class="page-title">AI, 퇴직 후 나와 무슨 상관?</div>
+        <div class="page-sub">왜 지금 AI인가 — 생성형 AI 1분 개념 정리</div>
+        <div class="tag-row">
+          <span class="tag num-tag">20분</span>
+          <span class="tag">강의+실습</span>
+          <span class="tag">ChatGPT · Gemini · Claude</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-stripe"></div>
+          <div class="card-head-title">퇴직 후 AI가 필요한 3가지 이유</div>
+          <div class="card-head-icon">💡</div>
+        </div>
+        <div class="card-body">
+          <ul class="struct-list">
+            <li class="struct-item">
+              <div class="struct-num">1</div>
+              <div class="struct-text">
+                <div class="struct-title">정보 격차를 줄여준다</div>
+                <div class="struct-desc">건강 정보, 복지 혜택, 민원 처리 방법 — AI에게 물으면 24시간 즉시 답해줍니다. 공공기관 찾아다닐 필요가 줄어듭니다.</div>
+              </div>
+            </li>
+            <li class="struct-item">
+              <div class="struct-num">2</div>
+              <div class="struct-text">
+                <div class="struct-title">새 출발을 도와준다</div>
+                <div class="struct-desc">이력서, 자기소개서, 이메일 작성을 AI가 도와줍니다. 22년 경력을 AI가 정리해 새로운 기회를 만드는 데 활용할 수 있습니다.</div>
+              </div>
+            </li>
+            <li class="struct-item">
+              <div class="struct-num">3</div>
+              <div class="struct-text">
+                <div class="struct-title">생각을 정리해준다</div>
+                <div class="struct-desc">감정, 고민, 계획을 AI와 대화하며 명료하게 정리할 수 있습니다. 24시간 곁에 있는 대화 상대가 생기는 셈입니다.</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-stripe blue"></div>
+          <div class="card-head-title">생성형 AI 3종 한눈에 보기</div>
+          <div class="card-head-icon">🤖</div>
+        </div>
+        <div class="card-body">
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th>AI</th>
+                <th>만든 곳</th>
+                <th>특징</th>
+                <th>오늘 실습</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>ChatGPT</strong></td>
+                <td>OpenAI (미국)</td>
+                <td>가장 널리 쓰임. 한국어 매우 우수</td>
+                <td>✅ 주 실습 도구</td>
+              </tr>
+              <tr>
+                <td><strong>Gemini</strong></td>
+                <td>Google (미국)</td>
+                <td>Google 검색 연동. 무료 계정 생성 가능</td>
+                <td>✅ 스마트폰 앱 실습</td>
+              </tr>
+              <tr>
+                <td><strong>Claude</strong></td>
+                <td>Anthropic (미국)</td>
+                <td>긴 글 처리 탁월. 감성적 대화에 강함</td>
+                <td>참고용</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="tip-box teal" style="margin-top:14px;">
+            <div class="tip-icon">💡</div>
+            <div class="tip-text teal"><strong>오늘 핵심:</strong> 어떤 AI를 쓰든 방법은 같습니다. <strong>"잘 물어보는 것"</strong>이 전부입니다. AI는 도구이고, 판단은 내가 합니다.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-stripe amber"></div>
+          <div class="card-head-title">AI 주의사항 — 반드시 알고 써야 할 것</div>
+          <div class="card-head-icon">⚠️</div>
+        </div>
+        <div class="card-body">
+          <div class="two-col">
+            <div class="highlight-box amber">
+              <div class="highlight-title">⚠️ 가짜정보 주의</div>
+              <div class="highlight-body">AI는 자신 있게 틀린 정보를 말하기도 합니다. <strong>의료·법률·금융 정보는 반드시 전문가에게 재확인</strong>하세요. AI는 참고용입니다.</div>
+            </div>
+            <div class="highlight-box amber">
+              <div class="highlight-title">🔒 개인정보 보호</div>
+              <div class="highlight-body">주민등록번호, 계좌번호, 비밀번호는 절대 입력하지 마세요. <strong>이름+전화번호 조합도 가능하면 피하세요.</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="write-area">
+        <div class="write-label">✍️ 체크리스트 — AI 첫 접속 완료 확인</div>
+        <ul class="checklist" id="cl-m1-1">
+          <li class="check-item" onclick="toggleCheck(this,'cl-m1-1')"><div class="check-box">✓</div>ChatGPT 또는 Gemini 앱을 스마트폰에 열었다</li>
+          <li class="check-item" onclick="toggleCheck(this,'cl-m1-1')"><div class="check-box">✓</div>AI 3종(ChatGPT·Gemini·Claude)의 차이를 설명할 수 있다</li>
+          <li class="check-item" onclick="toggleCheck(this,'cl-m1-1')"><div class="check-box">✓</div>가짜정보와 개인정보 보호 주의사항을 이해했다</li>
+        </ul>
+        <div class="write-actions">
+          <button class="btn btn-outline" onclick="clearChecks('cl-m1-1')">초기화</button>
+          <button class="btn btn-primary" onclick="completePanel('m1-1', 'AI 기본 개념 완료!', 'AI가 뭔지 알았으니 이제 직접 설정해봅시다.')">완료 ✓</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ M1-2: 개인 맞춤설정 ══ -->
+    <div class="report-panel" id="panel-m1-2">
+      <div class="page-header">
+        <div class="page-eyebrow">모듈1 · 실습 02</div>
+        <div class="page-title">시스템 셋팅 & 개인 맞춤설정</div>
+        <div class="page-sub">캐릭터 설정 및 작동 설계 — 나만의 AI 비서 만들기</div>
+        <div class="tag-row">
+          <span class="tag num-tag">실습</span>
+          <span class="tag">ChatGPT 맞춤 설정</span>
+          <span class="tag">스마트폰 직접 실습</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-stripe"></div>
+          <div class="card-head-title">ChatGPT 맞춤 설정이란?</div>
+          <div class="card-head-icon">⚙️</div>
+        </div>
+        <div class="card-body">
+          <p class="desc-text">ChatGPT에 <strong>"나는 이런 사람이고, 이렇게 대답해줘"</strong>를 미리 저장해두면 매번 설명하지 않아도 됩니다. 마치 오랫동안 나를 알아온 비서처럼 행동합니다.</p>
+          <div class="highlight-box" style="margin-top:14px;">
+            <div class="highlight-title">📍 설정 방법 (ChatGPT 앱)</div>
+            <div class="highlight-body">오른쪽 상단 프로필 → <strong>맞춤 설정</strong> → <strong>ChatGPT 맞춤 설정</strong> → 두 가지 항목 입력</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-stripe blue"></div>
+          <div class="card-head-title">맞춤 설정 작성 예시 — 직접 따라 입력해보세요</div>
+          <div class="card-head-icon">✏️</div>
+        </div>
+        <div class="card-body">
+          <div class="two-col">
+            <div>
+              <div class="write-label" style="margin-bottom:8px;">① ChatGPT에게 나에 대해 알려주기</div>
+              <div class="prompt-box">
+                <div class="prompt-label-bar">
+                  <span class="prompt-label">나에 대한 정보</span>
+                  <button class="copy-btn" onclick="copyText(this, '저는 고양시청에서 22년간 근무하고 곧 퇴직을 앞두고 있습니다. AI는 처음 사용해보는 초보입니다. 건강, 여행, 취미 정보를 자주 찾습니다.')">복사</button>
+                </div>
+                <div class="prompt-text">저는 고양시청에서 22년간 근무하고
+곧 퇴직을 앞두고 있습니다.
+AI는 처음 사용해보는 초보입니다.
+건강, 여행, 취미 정보를 자주 찾습니다.</div>
+              </div>
+            </div>
+            <div>
+              <div class="write-label" style="margin-bottom:8px;">② ChatGPT가 어떻게 대답하면 좋을지</div>
+              <div class="prompt-box">
+                <div class="prompt-label-bar">
+                  <span class="prompt-label">원하는 대답 방식</span>
+                  <button class="copy-btn" onclick="copyText(this, '어렵고 전문적인 단어 없이 쉽게 설명해주세요. 결론을 먼저 말하고, 이유를 설명해주세요. 답변은 짧고 명확하게 해주세요.')">복사</button>
+                </div>
+                <div class="prompt-text">어렵고 전문적인 단어 없이 쉽게 설명해주세요.
+결론을 먼저 말하고, 이유를 설명해주세요.
+답변은 짧고 명확하게 해주세요.</div>
+              </div>
+            </div>
+          </div>
+          <div class="tip-box" style="margin-top:14px;">
+            <div class="tip-icon">✏️</div>
+            <div class="tip-text"><strong>직접 바꿔보세요:</strong> 직업, 관심사, 원하는 말투를 나에게 맞게 수정해서 입력하면 훨씬 개인화된 AI 비서가 됩니다.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="write-area">
+        <div class="write-label">✍️ 나만의 맞춤 설정 작성해보기</div>
+        <textarea class="write-input" id="wi-m1-2" placeholder="나에 대해 ChatGPT에게 알려주고 싶은 것을 자유롭게 써보세요.&#10;예) 저는 ___년간 ___에서 근무했고, 퇴직 후 ___에 관심이 있습니다..."></textarea>
+        <div class="write-actions">
+          <button class="btn btn-outline" onclick="document.getElementById('wi-m1-2').value=''">지우기</button>
+          <button class="btn btn-primary" onclick="completePanel('m1-2', '맞춤 설정 완료!', '이제 AI가 당신을 알아볼 준비가 됐습니다.')">완료 ✓</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ M1-3: 좋은 질문 체감하기 ══ -->
+    <div class="report-panel" id="panel-m1-3">
+      <div class="page-header">
+        <div class="page-eyebrow">모듈1 · 실습 03</div>
+        <div class="page-title">"좋은 질문"과 "애매한 질문"의 차이 체감</div>
+        <div class="page-sub">같은 주제, 다른 결과 — 질문을 바꾸면 답이 바뀐다</div>
+        <div class="tag-row">
+          <span class="tag num-tag">실습</span>
+          <span class="tag">비교 체험</span>
+          <span class="tag">프롬프트 기초</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-stripe"></div>
+          <div class="card-head-title">직접 비교해보세요 — 아래 두 질문을 ChatGPT에 각각 입력해보기</div>
+          <div class="card-head-icon">⚡</div>
+        </div>
+        <div class="card-body">
+          <div class="two-col">
+            <div>
+              <div class="write-label" style="color:#B91C1C; margin-bottom:8px;">❌ 애매한 질문</div>
+              <div class="prompt-box">
+                <div class="prompt-label-bar">
+                  <span class="prompt-label">이렇게 물으면?</span>
+                  <button class="copy-btn" onclick="copyText(this, '건강에 좋은 음식 알려줘')">복사</button>
+                </div>
+                <div class="prompt-text">건강에 좋은 음식 알려줘</div>
+              </div>
+              <div class="tip-box" style="margin-top:8px; background:#FFF5F5; border-color:#FECACA;">
+                <div class="tip-icon">😐</div>
+                <div class="tip-text" style="color:#7F1D1D;">너무 일반적인 답이 나옵니다. 내 상황과 맞지 않을 수 있습니다.</div>
+              </div>
+            </div>
+            <div>
+              <div class="write-label" style="color:#1B7A4E; margin-bottom:8px;">✅ 좋은 질문</div>
+              <div class="prompt-box">
+                <div class="prompt-label-bar">
+                  <span class="prompt-label">이렇게 바꾸면?</span>
+                  <button class="copy-btn" onclick="copyText(this, '저는 65세 남성이고 고혈압 약을 복용 중입니다. 혈압 관리에 도움이 되는 식품 5가지를 알려주세요. 각각 왜 좋은지도 간단히 설명해주세요.')">복사</button>
+                </div>
+                <div class="prompt-text">저는 65세 남성이고
+고혈압 약을 복용 중입니다.
+혈압 관리에 도움이 되는 식품 5가지를 알려주세요.
+각각 왜 좋은지도 간단히 설명해주세요.</div>
+              </div>
+              <div class="tip-box teal" style="margin-top:8px;">
+                <div class="tip-icon">✨</div>
+                <div class="tip-text teal">나이, 상황, 원하는 형식을 넣으니 훨씬 정확하고 유용한 답이 나옵니다!</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-stripe blue"></div>
+          <div class="card-head-title">좋은 질문의 3가지 재료</div>
+          <div class="card-head-icon">🧩</div>
+        </div>
+        <div class="card-body">
+          <ul class="struct-list">
+            <li class="struct-item">
+              <div class="struct-num blue">나</div>
+              <div class="struct-text">
+                <div class="struct-title">나에 대한 정보</div>
+                <div class="struct-desc">나이, 상황, 건강상태, 직업 — 내 상황을 알아야 맞춤 답을 줄 수 있습니다</div>
+              </div>
+            </li>
+            <li class="struct-item">
+              <div class="struct-num blue">원</div>
+              <div class="struct-text">
+                <div class="struct-title">원하는 것을 구체적으로</div>
+                <div class="struct-desc">"알려줘" 대신 "5가지 알려줘", "표로 만들어줘", "쉽게 설명해줘"처럼 구체적으로 요청합니다</div>
+              </div>
+            </li>
+            <li class="struct-item">
+              <div class="struct-num blue">예</div>
+              <div class="struct-text">
+                <div class="struct-title">예시나 조건 추가</div>
+                <div class="struct-desc">"고양시 기준으로", "65세 부부 기준", "예산 3만원 이내"처럼 조건을 주면 훨씬 실용적인 답이 나옵니다</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="write-area">
+        <div class="write-label">✍️ 나만의 질문으로 바꿔써보기 — 위 공식대로 한 번 만들어보세요</div>
+        <textarea class="write-input" id="wi-m1-3" placeholder="예) 저는 [나이/상황]이고, [원하는 것]을 알려주세요. [조건/형식]으로 부탁드립니다."></textarea>
+        <div class="write-actions">
+          <button class="btn btn-outline" onclick="document.getElementById('wi-m1-3').value=''">지우기</button>
+          <button class="btn btn-primary" onclick="completePanel('m1-3', '질문법 이해 완료!', '모듈2 실생활 실습으로 넘어갑니다.')">완료 ✓</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ M2-1: 건강·병원 정보 ══ -->
+    <div class="report-panel" id="panel-m2-1">
+      <div class="page-header">
+        <div class="page-eyebrow">모듈2 · 실습 04 — 일상에서 바로 쓴다</div>
+        <div class="page-title">건강·병원 정보 물어보기</div>
+        <div class="page-sub">고양시 맞춤 건강 정보 실습 — 강사 시연 후 따라하기</div>
+        <div class="tag-row">
+          <span class="tag num-tag">실습 100%</span>
+          <span class="tag">건강 정보</span>
+          <span class="tag">고양시 보건소</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-stripe"></div>
+          <div class="card-head-title">실습 프롬프트 3가지 — 복사 후 ChatGPT에 붙여넣기</div>
+          <div class="card-head-icon">💊</div>
+        </div>
+        <div class="card-body">
+          <div class="step-list">
+            <div class="step-item">
+              <div class="step-left">
+                <div class="step-num">1</div>
+                <div class="step-line"></div>
+              </div>
+              <div class="step-right">
+                <div class="step-title">고양시 보건소 검진 정보 찾기</div>
+                <div class="prompt-box" style="margin-top:8px;">
+                  <div class="prompt-label-bar">
+                    <span class="prompt-label">프롬프트 복사</span>
+                    <button class="copy-btn" onclick="copyText(this, '고양특례시에 사는 65세입니다. 고양시 보건소에서 받을 수 있는 무료 건강검진 항목과 신청 방법을 알려주세요. 간단하게 표로 정리해주세요.')">복사</button>
+                  </div>
+                  <div class="prompt-text">고양특례시에 사는 65세입니다.
+고양시 보건소에서 받을 수 있는
+무료 건강검진 항목과 신청 방법을 알려주세요.
+간단하게 표로 정리해주세요.</div>
+                </div>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-left">
+                <div class="step-num">2</div>
+                <div class="step-line"></div>
+              </div>
+              <div class="step-right">
+                <div class="step-title">약 복용 중 주의사항 질문하기</div>
+                <div class="prompt-box" style="margin-top:8px;">
+                  <div class="prompt-label-bar">
+                    <span class="prompt-label">프롬프트 복사</span>
+                    <button class="copy-btn" onclick="copyText(this, '저는 고혈압 약(암로디핀)과 고지혈증 약(아토르바스타틴)을 함께 복용 중입니다. 이 약들을 먹을 때 피해야 할 음식이나 행동이 있으면 알려주세요. 쉬운 말로 설명해주세요.')">복사</button>
+                  </div>
+                  <div class="prompt-text">저는 고혈압 약(암로디핀)과
+고지혈증 약(아토르바스타틴)을 함께 복용 중입니다.
+이 약들을 먹을 때 피해야 할 음식이나 행동이 있으면
+알려주세요. 쉬운 말로 설명해주세요.</div>
+                </div>
+                <div class="tip-box" style="margin-top:8px;">
+                  <div class="tip-icon">⚠️</div>
+                  <div class="tip-text"><strong>주의:</strong> AI 답변은 참고용입니다. 실제 복약 여부는 담당 의사나 약사에게 반드시 확인하세요.</div>
+                </div>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-left">
+                <div class="step-num">3</div>
+              </div>
+              <div class="step-right">
+                <div class="step-title">퇴직 후 건강보험 확인하기</div>
+                <div class="prompt-box" style="margin-top:8px;">
+                  <div class="prompt-label-bar">
+                    <span class="prompt-label">프롬프트 복사</span>
+                    <button class="copy-btn" onclick="copyText(this, '공무원으로 퇴직하면 건강보험이 어떻게 바뀌나요? 지역가입자로 전환되는 건지, 계속 직장가입자로 유지되는 건지, 선택지와 각각의 장단점을 알려주세요.')">복사</button>
+                  </div>
+                  <div class="prompt-text">공무원으로 퇴직하면 건강보험이 어떻게 바뀌나요?
+지역가입자로 전환되는 건지,
+계속 직장가입자로 유지되는 건지,
+선택지와 각각의 장단점을 알려주세요.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="write-area">
+        <div class="write-label">✍️ 나에게 필요한 건강 정보 질문 만들어보기</div>
+        <textarea class="write-input" id="wi-m2-1" placeholder="평소 궁금했던 건강 정보를 AI에게 질문해보세요.&#10;예) 저는 당뇨 전단계입니다. 퇴직 후 혼자 관리할 수 있는 식단 계획을 짜주세요..."></textarea>
+        <div class="write-actions">
+          <button class="btn btn-outline" onclick="document.getElementById('wi-m2-1').value=''">지우기</button>
+          <button class="btn btn-primary" onclick="completePanel('m2-1', '건강 정보 실습 완료!', '이제 여행·취미 계획으로 넘어갑니다.')">완료 ✓</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ M2-1b: 약 복용 자동화 심화 ══ -->
+    <div class="report-panel" id="panel-m2-1b">
+      <div class="page-header">
+        <div class="page-eyebrow">모듈2 · 심화 실습 ★ — 나만의 AI 도구 만들기</div>
+        <div class="page-title">약 복용 도우미 앱 직접 만들기</div>
+        <div class="page-sub">ChatGPT Canvas · Gemini Canvas로 스마트폰용 HTML 앱을 5분 만에 완성합니다</div>
+        <div class="tag-row">
+          <span class="tag num-tag">심화 실습</span>
+          <span class="tag">ChatGPT Canvas</span>
+          <span class="tag">Gemini Canvas</span>
+          <span class="tag">HTML 앱 제작</span>
+        </div>
+      </div>
+
+      <!-- 오늘 만들 것 미리보기 -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-stripe amber"></div>
+          <div class="card-head-title">오늘 만들 것 — 완성 미리보기</div>
+          <div class="card-head-icon">🎯</div>
+        </div>
+        <div class="card-body">
+          <div class="highlight-box amber" style="margin-bottom:14px;">
+            <div class="highlight-title">📱 완성품 기능 3가지</div>
+            <div class="highlight-body">
+              ① <strong>약 이름·시간·주의사항 입력</strong> → 보기 좋은 복약표 자동 생성<br>
+              ② <strong>알림 메시지</strong> 자동 생성 → 카카오톡·문자로 가족 공유 가능<br>
+              ③ <strong>스마트폰 홈화면 저장</strong> → 앱처럼 매일 꺼내 쓰기
+            </div>
+          </div>
+          <div class="two-col">
+            <div class="struct-item" style="flex-direction:column; align-items:flex-start; gap:6px;">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div class="struct-num amber">전</div>
+                <div class="struct-title">지금까지 했던 것</div>
+              </div>
+              <div class="struct-desc">AI에게 <strong>물어보기</strong> — ChatGPT가 글로 답해줌<br>결과가 채팅창 안에만 있음</div>
+            </div>
+            <div class="struct-item" style="flex-direction:column; align-items:flex-start; gap:6px;">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div class="struct-num" style="background:var(--teal);">후</div>
+                <div class="struct-title">오늘 하는 것</div>
+              </div>
+              <div class="struct-desc">AI에게 <strong>앱 만들어달라고</strong> 요청 — 실제로 동작하는 페이지 완성<br>저장·공유·재활용 가능</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Canvas란? -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-stripe blue"></div>
+          <div class="card-head-title">Canvas란? — 1분 개념</div>
+          <div class="card-head-icon">🖼️</div>
+        </div>
+        <div class="card-body">
+          <ul class="struct-list">
+            <li class="struct-item">
+              <div class="struct-num blue">1</div>
+              <div class="struct-text">
+                <div class="struct-title">ChatGPT Canvas</div>
+                <div class="struct-desc">채팅 옆에 <strong>편집 창</strong>이 열림 → AI가 글·코드를 바로 작성·수정해줌. 글쓰기·HTML 제작에 최적.</div>
+              </div>
+            </li>
+            <li class="struct-item">
+              <div class="struct-num blue">2</div>
+              <div class="struct-text">
+                <div class="struct-title">Gemini Canvas (아티팩트)</div>
+                <div class="struct-desc">대화 옆 오른쪽 창에 <strong>미리보기 화면</strong>이 뜸 → HTML을 만들면 바로 화면에서 동작하는 모습 확인 가능.</div>
+              </div>
+            </li>
+            <li class="struct-item">
+              <div class="struct-num blue">3</div>
+              <div class="struct-text">
+                <div class="struct-title">HTML이란?</div>
+                <div class="struct-desc">웹페이지를 만드는 언어. 컴퓨터에 저장하면 <strong>앱처럼 스마트폰에서 열림</strong>. 인터넷 없어도 동작.</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- STEP 1 -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-stripe"></div>
+          <div class="card-head-title">STEP 1 — 내 복약 정보를 AI에게 알려주기</div>
+          <div class="card-head-icon">💬</div>
+        </div>
+        <div class="card-body">
+          <div class="tip-box teal" style="margin-bottom:14px;">
+            <div class="tip-icon">💡</div>
+            <div class="tip-text teal"><strong>먼저 이렇게 시작합니다</strong> — ChatGPT 또는 Gemini를 열고, 아래 프롬프트를 복사해서 붙여넣으세요.</div>
+          </div>
+          <div class="prompt-box">
+            <div class="prompt-label-bar">
+              <span class="prompt-label">기본 프롬프트 — 복사 후 내 약 이름으로 바꾸세요</span>
+              <button class="copy-btn" onclick="copyText(this, '나는 다음 약을 매일 복용합니다.\n\n- 암로디핀 5mg: 아침 식후\n- 아토르바스타틴 10mg: 저녁 식후\n- 아스피린 100mg: 아침 식전 (위장약과 함께)\n\n이 복약 정보를 보기 좋은 표로 만들어줘.\n각 약마다 복용 시간, 주의사항(술·자몽 금지 등)을 포함해서\n보기 쉽게 글씨 크게, 색깔 구분해서 만들어줘.')">복사</button>
+            </div>
+            <div class="prompt-text">나는 다음 약을 매일 복용합니다.
+
+- 암로디핀 5mg: 아침 식후
+- 아토르바스타틴 10mg: 저녁 식후
+- 아스피린 100mg: 아침 식전 (위장약과 함께)
+
+이 복약 정보를 보기 좋은 표로 만들어줘.
+각 약마다 복용 시간, 주의사항(술·자몽 금지 등)을 포함해서
+보기 쉽게 글씨 크게, 색깔 구분해서 만들어줘.</div>
+          </div>
+          <div class="tip-box" style="margin-top:10px;">
+            <div class="tip-icon">✏️</div>
+            <div class="tip-text"><strong>약 이름은 내 것으로 바꾸세요!</strong> 암로디핀, 아스피린 대신 실제 복용 중인 약 이름을 넣으면 됩니다. 모르면 약봉투에서 확인!</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-stripe"></div>
+          <div class="card-head-title">STEP 2 — 앱으로 만들어달라고 요청하기 (핵심!)</div>
+          <div class="card-head-icon">🛠️</div>
+        </div>
+        <div class="card-body">
+          <div class="tip-box teal" style="margin-bottom:14px;">
+            <div class="tip-icon">⭐</div>
+            <div class="tip-text teal"><strong>이게 핵심입니다!</strong> STEP 1에서 표를 받은 뒤, 바로 이어서 아래 프롬프트를 보내세요. AI가 실제로 동작하는 HTML 앱을 만들어줍니다.</div>
+          </div>
+
+          <div class="step-list">
+            <div class="step-item">
+              <div class="step-left"><div class="step-num amber">A</div><div class="step-line"></div></div>
+              <div class="step-right">
+                <div class="step-title">ChatGPT Canvas용 프롬프트</div>
+                <div class="prompt-box" style="margin-top:8px;">
+                  <div class="prompt-label-bar">
+                    <span class="prompt-label">ChatGPT에 붙여넣기</span>
+                    <button class="copy-btn" onclick="copyText(this, '위 복약 정보를 스마트폰에서 쓸 수 있는 HTML 페이지로 만들어줘.\n\n기능:\n1. 아침/점심/저녁으로 구분된 복약 카드\n2. 각 칸마다 체크박스 (오늘 먹었는지 표시)\n3. 글씨는 크게, 배경은 흰색, 색깔로 시간대 구분\n4. 맨 위에 오늘 날짜 자동 표시\n5. 인쇄 버튼\n\nCanvas에서 HTML로 만들어줘.')">복사</button>
+                  </div>
+                  <div class="prompt-text">위 복약 정보를 스마트폰에서 쓸 수 있는 HTML 페이지로 만들어줘.
+
+기능:
+1. 아침/점심/저녁으로 구분된 복약 카드
+2. 각 칸마다 체크박스 (오늘 먹었는지 표시)
+3. 글씨는 크게, 배경은 흰색, 색깔로 시간대 구분
+4. 맨 위에 오늘 날짜 자동 표시
+5. 인쇄 버튼
+
+Canvas에서 HTML로 만들어줘.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-left"><div class="step-num" style="background:#4285F4;">G</div><div class="step-line"></div></div>
+              <div class="step-right">
+                <div class="step-title">Gemini Canvas(아티팩트)용 프롬프트</div>
+                <div class="prompt-box" style="margin-top:8px;">
+                  <div class="prompt-label-bar">
+                    <span class="prompt-label">Gemini에 붙여넣기</span>
+                    <button class="copy-btn" onclick="copyText(this, '위 복약 정보로 스마트폰 친화적인 HTML 복약 도우미를 만들어줘.\n\n조건:\n- 아침/저녁 시간대 카드형 레이아웃\n- 각 약 이름, 용량, 주의사항 표시\n- 복용 체크박스 (클릭하면 색 바뀜)\n- 오늘 날짜 표시\n- 쓰기 편하게: 버튼 크게, 글씨 크게\n\n오른쪽 미리보기 창에서 바로 확인할 수 있게 만들어줘.')">복사</button>
+                  </div>
+                  <div class="prompt-text">위 복약 정보로 스마트폰 친화적인 HTML 복약 도우미를 만들어줘.
+
+조건:
+- 아침/저녁 시간대 카드형 레이아웃
+- 각 약 이름, 용량, 주의사항 표시
+- 복용 체크박스 (클릭하면 색 바뀜)
+- 오늘 날짜 표시
+- 쓰기 편하게: 버튼 크게, 글씨 크게
+
+오른쪽 미리보기 창에서 바로 확인할 수 있게 만들어줘.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-left"><div class="step-num green">+</div></div>
+              <div class="step-right">
+                <div class="step-title">추가 요청 — 마음에 안 들면 이렇게 수정 요청</div>
+                <div class="two-col" style="margin-top:8px; gap:10px;">
+                  <div class="prompt-box">
+                    <div class="prompt-label-bar">
+                      <span class="prompt-label">글씨 더 크게</span>
+                      <button class="copy-btn" onclick="copyText(this, '글씨를 더 크게 해줘. 최소 18px 이상으로.')">복사</button>
+                    </div>
+                    <div class="prompt-text" style="font-size:11.5px;">글씨를 더 크게 해줘. 최소 18px 이상으로.</div>
+                  </div>
+                  <div class="prompt-box">
+                    <div class="prompt-label-bar">
+                      <span class="prompt-label">약 추가</span>
+                      <button class="copy-btn" onclick="copyText(this, '메트포르민 500mg 저녁 식후 약을 추가해줘.')">복사</button>
+                    </div>
+                    <div class="prompt-text" style="font-size:11.5px;">메트포르민 500mg 저녁 식후 약을 추가해줘.</div>
+                  </div>
+                  <div class="prompt-box">
+                    <div class="prompt-label-bar">
+                      <span class="prompt-label">색상 변경</span>
+                      <button class="copy-btn" onclick="copyText(this, '아침은 노란색, 저녁은 파란색으로 카드 색을 바꿔줘.')">복사</button>
+                    </div>
+                    <div class="prompt-text" style="font-size:11.5px;">아침은 노란색, 저녁은 파란색으로 카드 색을 바꿔줘.</div>
+                  </div>
+                  <div class="prompt-box">
+                    <div class="prompt-label-bar">
+                      <span class="prompt-label">메모 기능 추가</span>
+                      <button class="copy-btn" onclick="copyText(this, '각 약마다 오늘 특이사항 메모를 입력할 수 있는 칸을 추가해줘.')">복사</button>
+                    </div>
+                    <div class="prompt-text" style="font-size:11.5px;">각 약마다 오늘 특이사항 메모를 입력할 수 있는 칸을 추가해줘.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-stripe green"></div>
+          <div class="card-head-title">STEP 3 — 저장하고 스마트폰에서 쓰기</div>
+          <div class="card-head-icon">📱</div>
+        </div>
+        <div class="card-body">
+          <div class="step-list">
+            <div class="step-item">
+              <div class="step-left"><div class="step-num green">1</div><div class="step-line"></div></div>
+              <div class="step-right">
+                <div class="step-title">HTML 코드 복사</div>
+                <div class="step-desc">Canvas 창에서 만들어진 코드를 <strong>전체 선택(Ctrl+A)</strong> → <strong>복사(Ctrl+C)</strong></div>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-left"><div class="step-num green">2</div><div class="step-line"></div></div>
+              <div class="step-right">
+                <div class="step-title">메모장에 붙여넣기 → 파일로 저장</div>
+                <div class="step-desc">윈도우 <strong>메모장 열기</strong> → 붙여넣기 → 파일명: <strong>나의복약표.html</strong> 로 저장<br><span class="step-tag">⚠️ 저장할 때 '모든 파일'로 형식 변경 필수</span></div>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-left"><div class="step-num green">3</div><div class="step-line"></div></div>
+              <div class="step-right">
+                <div class="step-title">스마트폰으로 전송</div>
+                <div class="step-desc"><strong>카카오톡 나에게 보내기</strong> → 파일 첨부 → 스마트폰에서 다운로드 → 크롬으로 열기</div>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-left"><div class="step-num green">4</div></div>
+              <div class="step-right">
+                <div class="step-title">홈화면에 저장 (선택)</div>
+                <div class="step-desc">크롬에서 열린 후 → <strong>우상단 ⋮ 메뉴</strong> → <strong>홈 화면에 추가</strong> → 앱처럼 사용 가능!</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="highlight-box" style="margin-top:12px;">
+            <div class="highlight-title">💡 가족 공유 팁</div>
+            <div class="highlight-body">
+              만든 HTML 파일을 카카오톡으로 <strong>가족에게 전송</strong>하면 부모님, 배우자도 같은 복약표를 쓸 수 있습니다.<br>
+              한 번만 만들면 <strong>인터넷 없이도</strong> 스마트폰에서 열립니다.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 심화: 알림 자동화 -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-stripe amber"></div>
+          <div class="card-head-title">★ 더 나아가기 — 알림 메시지 자동 생성</div>
+          <div class="card-head-icon">🔔</div>
+        </div>
+        <div class="card-body">
+          <div class="desc-text" style="margin-bottom:12px;">앱을 만든 뒤, AI에게 <strong>카카오톡 알림 메시지</strong>도 만들어달라고 요청할 수 있습니다.</div>
+          <div class="prompt-box">
+            <div class="prompt-label-bar">
+              <span class="prompt-label">알림 메시지 생성 프롬프트</span>
+              <button class="copy-btn" onclick="copyText(this, '위에서 만든 복약 정보를 바탕으로\n매일 아침 8시, 저녁 8시에 보낼\n카카오톡 알림 메시지를 만들어줘.\n\n조건:\n- 따뜻하고 다정한 말투\n- 이모지 포함\n- 어떤 약을 먹어야 하는지 명확하게\n- 2줄 이내로 짧게\n\n아침용과 저녁용 각각 3가지씩 만들어줘.')">복사</button>
+            </div>
+            <div class="prompt-text">위에서 만든 복약 정보를 바탕으로
+매일 아침 8시, 저녁 8시에 보낼
+카카오톡 알림 메시지를 만들어줘.
+
+조건:
+- 따뜻하고 다정한 말투
+- 이모지 포함
+- 어떤 약을 먹어야 하는지 명확하게
+- 2줄 이내로 짧게
+
+아침용과 저녁용 각각 3가지씩 만들어줘.</div>
+          </div>
+          <div class="tip-box teal" style="margin-top:10px;">
+            <div class="tip-icon">📲</div>
+            <div class="tip-text teal">만들어진 메시지를 <strong>스마트폰 알람 메모</strong>에 저장하거나, 가족 단톡방에 매일 직접 보내면 서로 챙겨줄 수 있습니다!</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 주의사항 -->
+      <div class="highlight-box amber" style="margin-bottom:18px;">
+        <div class="highlight-title">⚠️ 꼭 기억하세요</div>
+        <div class="highlight-body">
+          AI가 만든 복약 도우미는 <strong>편의 도구</strong>입니다. 실제 복약 방법·용량·부작용은 반드시 <strong>담당 의사·약사에게 확인</strong>하세요.<br>
+          AI는 기억력 보조, 정리, 시각화를 도와주는 역할입니다.
+        </div>
+      </div>
+
+      <!-- 체크리스트 -->
+      <div class="write-area">
+        <div class="write-label">✍️ 체크리스트 — 실습 완료 확인</div>
+        <ul class="checklist" id="cl-m2-1b">
+          <li class="check-item" onclick="toggleCheck(this,'cl-m2-1b')"><div class="check-box">✓</div>내 약 이름으로 STEP 1 프롬프트를 수정해서 복약표를 받았다</li>
+          <li class="check-item" onclick="toggleCheck(this,'cl-m2-1b')"><div class="check-box">✓</div>STEP 2로 HTML 앱을 만들어달라고 요청했다</li>
+          <li class="check-item" onclick="toggleCheck(this,'cl-m2-1b')"><div class="check-box">✓</div>추가 수정 요청(글씨 크기, 색상 등)을 한 번 이상 해봤다</li>
+          <li class="check-item" onclick="toggleCheck(this,'cl-m2-1b')"><div class="check-box">✓</div>HTML 파일을 저장하거나 스마트폰으로 전송해봤다</li>
+          <li class="check-item" onclick="toggleCheck(this,'cl-m2-1b')"><div class="check-box">✓</div>알림 메시지 프롬프트도 실행해봤다</li>
+        </ul>
+        <div class="write-actions">
+          <button class="btn btn-outline" onclick="clearChecks('cl-m2-1b')">초기화</button>
+          <button class="btn btn-primary" onclick="completePanel('m2-1b', '🎉 나만의 복약 도우미 완성!', '이제 진짜 앱 개발자입니다. 다음 실습으로 넘어가볼게요!')">완료! 내 앱 완성 🎉</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ M2-2: 여행·취미 계획 ══ -->
+    <div class="report-panel" id="panel-m2-2">
+      <div class="page-header">
+        <div class="page-eyebrow">모듈2 · 실습 05</div>
+        <div class="page-title">여행·취미 계획 짜기 실습</div>
+        <div class="page-sub">일산호수공원 꽃박람회 하루 코스 — AI로 여행 계획 완성하기</div>
+        <div class="tag-row">
+          <span class="tag num-tag">실습 100%</span>
+          <span class="tag">일산호수공원</span>
+          <span class="tag">2026 꽃박람회</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-stripe"></div>
+          <div class="card-head-title">실습 프롬프트 3가지</div>
+          <div class="card-head-icon">🌸</div>
+        </div>
+        <div class="card-body">
+          <div class="step-list">
+            <div class="step-item">
+              <div class="step-left"><div class="step-num">1</div><div class="step-line"></div></div>
+              <div class="step-right">
+                <div class="step-title">꽃박람회 하루 코스 짜기</div>
+                <div class="prompt-box" style="margin-top:8px;">
+                  <div class="prompt-label-bar">
+                    <span class="prompt-label">프롬프트 복사</span>
+                    <button class="copy-btn" onclick="copyText(this, '2026 고양국제꽃박람회(4월 24일~5월 10일, 일산호수공원)를 구경하러 갑니다. 65세 부부 기준으로 오전 10시부터 오후 4시까지 하루 코스를 짜주세요. 점심 식사 장소와 편의시설도 포함해주세요.')">복사</button>
+                  </div>
+                  <div class="prompt-text">2026 고양국제꽃박람회
+(4월 24일~5월 10일, 일산호수공원)를 구경하러 갑니다.
+65세 부부 기준으로
+오전 10시부터 오후 4시까지 하루 코스를 짜주세요.
+점심 식사 장소와 편의시설도 포함해주세요.</div>
+                </div>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-left"><div class="step-num">2</div><div class="step-line"></div></div>
+              <div class="step-right">
+                <div class="step-title">퇴직 후 새 취미 찾기</div>
+                <div class="prompt-box" style="margin-top:8px;">
+                  <div class="prompt-label-bar">
+                    <span class="prompt-label">프롬프트 복사</span>
+                    <button class="copy-btn" onclick="copyText(this, '22년간 공무원으로 일하고 퇴직합니다. 혼자서도 즐길 수 있고, 건강에도 좋고, 고양시에서 할 수 있는 취미 활동 5가지를 추천해주세요. 각각 어떻게 시작하면 좋은지도 알려주세요.')">복사</button>
+                  </div>
+                  <div class="prompt-text">22년간 공무원으로 일하고 퇴직합니다.
+혼자서도 즐길 수 있고, 건강에도 좋고,
+고양시에서 할 수 있는 취미 활동 5가지를 추천해주세요.
+각각 어떻게 시작하면 좋은지도 알려주세요.</div>
+                </div>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-left"><div class="step-num">3</div></div>
+              <div class="step-right">
+                <div class="step-title">한 달 생활 루틴 계획 세우기</div>
+                <div class="prompt-box" style="margin-top:8px;">
+                  <div class="prompt-label-bar">
+                    <span class="prompt-label">프롬프트 복사</span>
+                    <button class="copy-btn" onclick="copyText(this, '다음 달부터 퇴직합니다. 건강 관리, 취미 활동, 사회적 관계 유지를 포함한 한 달 생활 루틴을 짜주세요. 주 5일 기준으로 오전과 오후로 나눠서 표로 만들어주세요.')">복사</button>
+                  </div>
+                  <div class="prompt-text">다음 달부터 퇴직합니다.
+건강 관리, 취미 활동, 사회적 관계 유지를 포함한
+한 달 생활 루틴을 짜주세요.
+주 5일 기준으로 오전과 오후로 나눠서 표로 만들어주세요.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="write-area">
+        <div class="write-label">✍️ 내가 원하는 여행 또는 취미 계획 질문 만들기</div>
+        <textarea class="write-input" id="wi-m2-2" placeholder="가고 싶은 여행지나 해보고 싶은 취미가 있으면 AI에게 질문해보세요.&#10;예) 제주도 3박4일 여행 계획을 짜주세요. 65세 혼자 여행 기준으로..."></textarea>
+        <div class="write-actions">
+          <button class="btn btn-outline" onclick="document.getElementById('wi-m2-2').value=''">지우기</button>
+          <button class="btn btn-primary" onclick="completePanel('m2-2', '여행 계획 실습 완료!', '민원서류 이해하기로 넘어갑니다.')">완료 ✓</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ M2-3: 민원서류 이해하기 ══ -->
+    <div class="report-panel" id="panel-m2-3">
+      <div class="page-header">
+        <div class="page-eyebrow">모듈2 · 실습 06</div>
+        <div class="page-title">공문서·민원서류 AI로 이해하기</div>
+        <div class="page-sub">고양페이·민원서류·퇴직 서류를 AI가 쉽게 설명해줍니다</div>
+        <div class="tag-row">
+          <span class="tag num-tag">실습 100%</span>
+          <span class="tag">고양페이</span>
+          <span class="tag">민원 AI 해석</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-stripe"></div>
+          <div class="card-head-title">실습 프롬프트 3가지</div>
+          <div class="card-head-icon">📋</div>
+        </div>
+        <div class="card-body">
+          <div class="step-list">
+            <div class="step-item">
+              <div class="step-left"><div class="step-num">1</div><div class="step-line"></div></div>
+              <div class="step-right">
+                <div class="step-title">고양페이 신청 방법 알아보기</div>
+                <div class="prompt-box" style="margin-top:8px;">
+                  <div class="prompt-label-bar">
+                    <span class="prompt-label">프롬프트 복사</span>
+                    <button class="copy-btn" onclick="copyText(this, '고양페이가 뭔지 처음 듣는 사람에게 설명하듯이 알려주세요. 어떻게 신청하고, 어디서 쓸 수 있는지, 혜택은 무엇인지 단계별로 설명해주세요.')">복사</button>
+                  </div>
+                  <div class="prompt-text">고양페이가 뭔지 처음 듣는 사람에게 설명하듯이 알려주세요.
+어떻게 신청하고, 어디서 쓸 수 있는지,
+혜택은 무엇인지 단계별로 설명해주세요.</div>
+                </div>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-left"><div class="step-num">2</div><div class="step-line"></div></div>
+              <div class="step-right">
+                <div class="step-title">어려운 공문서 쉽게 이해하기</div>
+                <div class="prompt-box" style="margin-top:8px;">
+                  <div class="prompt-label-bar">
+                    <span class="prompt-label">프롬프트 복사</span>
+                    <button class="copy-btn" onclick="copyText(this, '아래 공문서 내용을 60대 비전문가도 이해할 수 있도록 쉽게 풀어서 설명해주세요. 핵심 내용 3가지로 요약해주세요.\n\n[공문서 내용을 여기에 붙여넣기]')">복사</button>
+                  </div>
+                  <div class="prompt-text">아래 공문서 내용을 60대 비전문가도 이해할 수 있도록
+쉽게 풀어서 설명해주세요.
+핵심 내용 3가지로 요약해주세요.
+
+<span class="var">[공문서 내용을 여기에 붙여넣기]</span></div>
+                </div>
+                <div class="tip-box teal" style="margin-top:8px;">
+                  <div class="tip-icon">💡</div>
+                  <div class="tip-text teal">공문서나 안내문을 사진으로 찍어서 ChatGPT에 올리면 바로 해석해줍니다!</div>
+                </div>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-left"><div class="step-num">3</div></div>
+              <div class="step-right">
+                <div class="step-title">퇴직 후 받을 수 있는 지원 찾기</div>
+                <div class="prompt-box" style="margin-top:8px;">
+                  <div class="prompt-label-bar">
+                    <span class="prompt-label">프롬프트 복사</span>
+                    <button class="copy-btn" onclick="copyText(this, '고양특례시에 거주하는 62세 퇴직자입니다. 퇴직 후 신청할 수 있는 고양시 복지 지원이나 프로그램을 알려주세요. 재취업 지원, 문화 프로그램, 건강 지원 항목으로 나눠서 설명해주세요.')">복사</button>
+                  </div>
+                  <div class="prompt-text">고양특례시에 거주하는 62세 퇴직자입니다.
+퇴직 후 신청할 수 있는 고양시 복지 지원이나
+프로그램을 알려주세요.
+재취업 지원, 문화 프로그램, 건강 지원 항목으로
+나눠서 설명해주세요.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="write-area">
+        <div class="write-label">✍️ 궁금한 민원·서류 질문 만들어보기</div>
+        <textarea class="write-input" id="wi-m2-3" placeholder="퇴직 후 처리해야 할 행정 업무나 궁금한 민원 내용을 AI에게 질문해보세요.&#10;예) 공무원연금 수령 신청은 어떻게 하나요? 단계별로 알려주세요..."></textarea>
+        <div class="write-actions">
+          <button class="btn btn-outline" onclick="document.getElementById('wi-m2-3').value=''">지우기</button>
+          <button class="btn btn-primary" onclick="completePanel('m2-3', '민원 정보 실습 완료!', '명함사진 만들기로 넘어갑니다.')">완료 ✓</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ M2-4: 명함사진 만들기 ══ -->
+    <div class="report-panel" id="panel-m2-4">
+      <div class="page-header">
+        <div class="page-eyebrow">모듈2 · 실습 07</div>
+        <div class="page-title">명함사진 만들기</div>
+        <div class="page-sub">AI로 나를 소개하는 명함 문구 + 프로필 이미지 만들기</div>
+        <div class="tag-row">
+          <span class="tag num-tag">실습</span>
+          <span class="tag">AI 이미지</span>
+          <span class="tag">명함 문구</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-stripe"></div>
+          <div class="card-head-title">명함 문구 만들기 — 퇴직 후 새 명함이 필요할 때</div>
+          <div class="card-head-icon">🪪</div>
+        </div>
+        <div class="card-body">
+          <div class="step-list">
+            <div class="step-item">
+              <div class="step-left"><div class="step-num">1</div><div class="step-line"></div></div>
+              <div class="step-right">
+                <div class="step-title">퇴직 후 명함 문구 만들기</div>
+                <div class="prompt-box" style="margin-top:8px;">
+                  <div class="prompt-label-bar">
+                    <span class="prompt-label">프롬프트 복사</span>
+                    <button class="copy-btn" onclick="copyText(this, '저는 고양시청 도시계획과에서 22년 근무하고 퇴직합니다. 앞으로 도시계획 컨설팅 프리랜서로 활동하려 합니다. 명함에 들어갈 자기소개 한 줄 문구를 5가지 스타일로 만들어주세요. 전문적이면서도 친근한 느낌으로요.')">복사</button>
+                  </div>
+                  <div class="prompt-text">저는 고양시청 도시계획과에서 22년 근무하고 퇴직합니다.
+앞으로 도시계획 컨설팅 프리랜서로 활동하려 합니다.
+명함에 들어갈 자기소개 한 줄 문구를 5가지 스타일로 만들어주세요.
+전문적이면서도 친근한 느낌으로요.</div>
+                </div>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-left"><div class="step-num">2</div><div class="step-line"></div></div>
+              <div class="step-right">
+                <div class="step-title">AI 프로필 사진 만들기 (ChatGPT 이미지 생성)</div>
+                <div class="prompt-box" style="margin-top:8px;">
+                  <div class="prompt-label-bar">
+                    <span class="prompt-label">이미지 생성 프롬프트</span>
+                    <button class="copy-btn" onclick="copyText(this, 'Professional profile photo of a 60-year-old Korean man, clean background, business casual attire, warm and confident smile, high quality, studio lighting, suitable for business card')">복사</button>
+                  </div>
+                  <div class="prompt-text"><span class="ctx">// ChatGPT 이미지 생성 기능 사용</span>
+Professional profile photo of a 60-year-old Korean man,
+clean background, business casual attire,
+warm and confident smile, high quality,
+studio lighting, suitable for business card</div>
+                </div>
+                <div class="tip-box teal" style="margin-top:8px;">
+                  <div class="tip-icon">💡</div>
+                  <div class="tip-text teal">ChatGPT Plus(유료)에서 이미지 생성이 가능합니다. 무료 계정은 <strong>Adobe Firefly</strong> 또는 <strong>Microsoft Bing Image Creator</strong>를 무료로 이용할 수 있습니다.</div>
+                </div>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-left"><div class="step-num">3</div></div>
+              <div class="step-right">
+                <div class="step-title">SNS 자기소개 프로필 만들기</div>
+                <div class="prompt-box" style="margin-top:8px;">
+                  <div class="prompt-label-bar">
+                    <span class="prompt-label">프롬프트 복사</span>
+                    <button class="copy-btn" onclick="copyText(this, '카카오스토리나 인스타그램에 올릴 자기소개 프로필을 써주세요. 22년 공무원 경력, 퇴직 후 새 시작, 가족 사랑, 취미(등산, 독서) 내용을 자연스럽게 담아서 3~4줄로 써주세요.')">복사</button>
+                  </div>
+                  <div class="prompt-text">카카오스토리나 인스타그램에 올릴 자기소개 프로필을 써주세요.
+22년 공무원 경력, 퇴직 후 새 시작,
+가족 사랑, 취미(등산, 독서) 내용을 자연스럽게 담아서
+3~4줄로 써주세요.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="write-area">
+        <div class="write-label">✍️ 나만의 명함 문구 직접 만들어보기</div>
+        <textarea class="write-input" id="wi-m2-4" placeholder="나의 경력, 앞으로 하고 싶은 일, 강점을 입력하고 AI에게 명함 문구를 요청해보세요.&#10;예) 저는 ___년간 ___으로 일했고, 퇴직 후 ___를 하려 합니다. 명함 문구를 만들어주세요..."></textarea>
+        <div class="write-actions">
+          <button class="btn btn-outline" onclick="document.getElementById('wi-m2-4').value=''">지우기</button>
+          <button class="btn btn-primary" onclick="completePanel('m2-4', '명함 실습 완료!', '모듈3 심화 학습으로 넘어갑니다.')">완료 ✓</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ M3-1: 잘 물어보는 법 3가지 ══ -->
+    <div class="report-panel" id="panel-m3-1">
+      <div class="page-header">
+        <div class="page-eyebrow">모듈3 · 실습 08 — 더 잘 쓰는 법</div>
+        <div class="page-title">잘 물어보는 법 3가지</div>
+        <div class="page-sub">역할 부여 · 구체적 요청 · 예시 제공 — 프롬프트 3원칙</div>
+        <div class="tag-row">
+          <span class="tag num-tag">강의+데모</span>
+          <span class="tag">프롬프트 심화</span>
+          <span class="tag">역할·구체·예시</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-stripe"></div>
+          <div class="card-head-title">프롬프트 3원칙 — 이것만 알면 AI 대화가 달라집니다</div>
+          <div class="card-head-icon">🎯</div>
+        </div>
+        <div class="card-body">
+          <ul class="struct-list">
+            <li class="struct-item">
+              <div class="struct-num">역</div>
+              <div class="struct-text">
+                <div class="struct-title">역할 부여 — "너는 ○○○이야"</div>
+                <div class="struct-desc">AI에게 전문가 역할을 주면 그 분야 전문가처럼 답합니다.<br>예) "너는 20년 경력의 건강 영양사야. 내 식단을 점검해줘."</div>
+              </div>
+            </li>
+            <li class="struct-item">
+              <div class="struct-num">구</div>
+              <div class="struct-text">
+                <div class="struct-title">구체적 요청 — 숫자, 형식, 조건 명시</div>
+                <div class="struct-desc">"알려줘" 대신 "5가지로", "표로", "한 페이지로", "초등학생도 이해하게" 등 구체적으로 요청합니다.<br>예) "3가지만", "단계별로", "장단점 비교표로"</div>
+              </div>
+            </li>
+            <li class="struct-item">
+              <div class="struct-num">예</div>
+              <div class="struct-text">
+                <div class="struct-title">예시 제공 — "이런 식으로 해줘"</div>
+                <div class="struct-desc">원하는 결과의 예시를 보여주면 AI가 그 스타일을 따라합니다.<br>예) "이렇게 써줘: '안녕하세요, 저는 ○○입니다. 오늘 말씀드릴 내용은...'"</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-stripe blue"></div>
+          <div class="card-head-title">3원칙 조합 실습 — 퇴직예정자 맞춤 예시</div>
+          <div class="card-head-icon">⚡</div>
+        </div>
+        <div class="card-body">
+          <div class="prompt-box">
+            <div class="prompt-label-bar">
+              <span class="prompt-label">역할+구체+예시 모두 담은 프롬프트</span>
+              <button class="copy-btn" onclick="copyText(this, '너는 퇴직 후 재취업을 전문으로 돕는 커리어 코치야.\n나는 고양시청에서 22년간 총무 행정을 담당하다 퇴직하는 62세야.\n앞으로 중소기업 총무 파트타임이나 컨설팅을 하고 싶어.\n이력서 자기소개서 첫 줄을 5가지 버전으로 써줘.\n예시처럼: \"22년 공공기관 총무 행정 전문가, 현장에서 검증된 실행력을 제공합니다.\"')">복사</button>
+            </div>
+            <div class="prompt-text"><span class="ctx">// 역할 부여</span>
+너는 퇴직 후 재취업을 전문으로 돕는 커리어 코치야.
+
+<span class="ctx">// 내 상황 (구체적)</span>
+나는 고양시청에서 22년간 총무 행정을 담당하다 퇴직하는 62세야.
+앞으로 중소기업 총무 파트타임이나 컨설팅을 하고 싶어.
+
+<span class="ctx">// 요청 (구체적)</span>
+이력서 자기소개서 첫 줄을 5가지 버전으로 써줘.
+
+<span class="ctx">// 예시 제공</span>
+예시처럼: <span class="var">"22년 공공기관 총무 행정 전문가,
+현장에서 검증된 실행력을 제공합니다."</span></div>
+          </div>
+          <div class="tip-box teal" style="margin-top:12px;">
+            <div class="tip-icon">✨</div>
+            <div class="tip-text teal">위 3가지 원칙을 다 담지 않아도 됩니다. 하나씩 추가할 때마다 답변이 얼마나 달라지는지 직접 비교해보세요!</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="write-area">
+        <div class="write-label">✍️ 3원칙 적용 나만의 프롬프트 만들기</div>
+        <textarea class="write-input" id="wi-m3-1" placeholder="역할 + 구체적 요청 + 예시를 포함해서 내 상황에 맞는 프롬프트를 만들어보세요.&#10;&#10;너는 [역할]야.&#10;나는 [내 상황]이야.&#10;[원하는 것]을 [형식]으로 해줘.&#10;예시처럼: [예시]"></textarea>
+        <div class="write-actions">
+          <button class="btn btn-outline" onclick="document.getElementById('wi-m3-1').value=''">지우기</button>
+          <button class="btn btn-primary" onclick="completePanel('m3-1', '프롬프트 심화 완료!', '마지막 Gems 만들기로 넘어갑니다.')">완료 ✓</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ M3-2: Gems 멘탈코치 만들기 ══ -->
+    <div class="report-panel" id="panel-m3-2">
+      <div class="page-header">
+        <div class="page-eyebrow">모듈3 · 실습 09 — Gems로 자동화하기</div>
+        <div class="page-title">Gems로 나만의 AI 도우미 만들기</div>
+        <div class="page-sub">멘탈코치 · 이메일봇 · 포트폴리오 자동작성 — 내 AI 비서를 직접 만들어가져가기</div>
+        <div class="tag-row">
+          <span class="tag num-tag">강의+데모</span>
+          <span class="tag">Gemini Gems</span>
+          <span class="tag">멘탈코치</span>
+          <span class="tag">이메일봇</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-stripe"></div>
+          <div class="card-head-title">Gems란? — 나만의 AI 비서를 저장해두는 기능</div>
+          <div class="card-head-icon">💎</div>
+        </div>
+        <div class="card-body">
+          <p class="desc-text" style="margin-bottom:14px;">Gemini Gems는 <strong>내가 원하는 역할과 방식을 AI에게 미리 저장</strong>해두는 기능입니다. 한 번 만들어두면 언제든지 같은 AI 비서를 다시 불러쓸 수 있습니다.</p>
+          <div class="two-col">
+            <div class="highlight-box">
+              <div class="highlight-title">✅ Gems의 장점</div>
+              <div class="highlight-body">• <strong>무료</strong>로 만들고 사용 가능<br>• 매번 긴 설명 반복 불필요<br>• 나만의 AI 비서가 생김<br>• 구글 계정만 있으면 OK</div>
+            </div>
+            <div class="highlight-box blue">
+              <div class="highlight-title">📍 만드는 방법</div>
+              <div class="highlight-body">① gemini.google.com 접속<br>② 왼쪽 메뉴 → <strong>Gems 탐색</strong><br>③ <strong>새 Gem 만들기</strong> 클릭<br>④ 이름 + 지침 입력 → 저장</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-stripe green"></div>
+          <div class="card-head-title">Gem 1 — 멘탈코치 (강사 시연 후 직접 만들기)</div>
+          <div class="card-head-icon">🧠</div>
+        </div>
+        <div class="card-body">
+          <div class="gems-card">
+            <div class="gems-card-title">💎 자기인식 리더십 챗봇</div>
+            <div class="gems-card-sub">퇴직 후 감정을 함께 들여다보고, 작게 다시 움직일 수 있도록 돕는 AI 인생코치</div>
+            <div style="margin-bottom:12px;">
+              <div class="instruction-toolbar">
+                <span class="instruction-label">Gems 지침 — 복사 후 붙여넣기</span>
+                <button class="copy-btn" onclick="copyText(this, '당신은 사용자의 감정에 공감하고, 감정 뒤 동기와 패턴을 탐색하며, 작고 실현 가능한 행동으로 다시 움직이도록 돕는 코칭형 AI 인생코치입니다.\n\n# 대화 시작\n접속 시 반드시 아래 인사말로 시작하세요.\n\n안녕하세요 😊\n저는 당신의 감정을 함께 들여다보고,\n다시 작게 움직일 수 있도록 돕는 AI 인생코치입니다.\n이곳은 안전한 대화 공간이에요. 마음 편히 이야기해 주세요.\n\n아래 번호 중 하나를 입력해 주세요.\n1 — 요즘 자꾸 미루게 되는 일이 있어요\n2 — 하루가 텅 빈 느낌이에요\n3 — 마음이 크게 흔들린 순간이 있었어요\n4 — 오늘 감사한 마음이 올라왔어요\n5 — 뭔가를 시작하려는데 두려움이 앞서요\n6 — 오랫동안 해온 일을 놓아야 한다는 게 실감이 안 나요\n7 — 퇴직 후 내가 누구인지 솔직히 잘 모르겠어요')">지침 복사</button>
+              </div>
+              <div class="instruction-box">
+                <div class="instruction-text"><span class="section"># 역할</span>
+당신은 사용자의 감정에 공감하고,
+감정 뒤 동기와 패턴을 탐색하며,
+작고 실현 가능한 행동으로 다시 움직이도록 돕는
+코칭형 AI 인생코치입니다.
+
+<span class="section"># 대화 시작 — 접속 시 반드시 이 인사말로 시작</span>
+안녕하세요 😊
+저는 당신의 감정을 함께 들여다보고,
+다시 작게 움직일 수 있도록 돕는 AI 인생코치입니다.
+이곳은 안전한 대화 공간이에요. 마음 편히 이야기해 주세요.
+
+아래 번호 중 하나를 입력해 주세요.
+1 — 요즘 자꾸 미루게 되는 일이 있어요
+2 — 하루가 텅 빈 느낌이에요
+3 — 마음이 크게 흔들린 순간이 있었어요
+4 — 오늘 감사한 마음이 올라왔어요
+5 — 뭔가를 시작하려는데 두려움이 앞서요
+6 — 오랫동안 해온 일을 놓아야 한다는 게 실감이 안 나요
+7 — 퇴직 후 내가 누구인지 솔직히 잘 모르겠어요</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-stripe blue"></div>
+          <div class="card-head-title">Gem 2 — 이메일 작성봇</div>
+          <div class="card-head-icon">✉️</div>
+        </div>
+        <div class="card-body">
+          <div class="gems-card">
+            <div class="gems-card-title">✉️ 이메일 자동 작성봇</div>
+            <div class="gems-card-sub">상황을 입력하면 정중하고 깔끔한 이메일을 바로 완성해주는 AI</div>
+            <div>
+              <div class="instruction-toolbar">
+                <span class="instruction-label">Gems 지침</span>
+                <button class="copy-btn" onclick="copyText(this, '당신은 이메일 작성 전문가입니다.\n사용자가 상황을 설명하면 즉시 완성된 이메일을 작성해줍니다.\n\n작성 원칙:\n- 제목과 본문을 함께 작성합니다\n- 정중하고 명확한 한국어 문체를 사용합니다\n- 요청 사항과 기대 행동을 명확히 포함합니다\n- 마지막에 수정이 필요한 부분을 [  ] 표시로 안내합니다\n\n지원하는 이메일 유형:\n- 재취업 지원 이메일\n- 지인·동료 안부 연락\n- 민원·항의 이메일\n- 감사·인사 이메일\n- 일정·약속 조율 이메일')">지침 복사</button>
+              </div>
+              <div class="instruction-box">
+                <div class="instruction-text"><span class="section"># 역할</span>
+당신은 이메일 작성 전문가입니다.
+사용자가 상황을 설명하면 즉시 완성된 이메일을 작성합니다.
+
+<span class="section"># 작성 원칙</span>
+- 제목과 본문을 함께 작성합니다
+- 정중하고 명확한 한국어 문체 사용
+- 요청 사항과 기대 행동을 명확히 포함
+- 수정 필요 부분은 <span class="var">[  ]</span> 표시로 안내
+
+<span class="section"># 지원 유형</span>
+재취업 지원 / 지인 안부 연락 / 민원·항의
+감사·인사 / 일정 조율</div>
+              </div>
+            </div>
+          </div>
+          <div class="tip-box" style="margin-top:12px;">
+            <div class="tip-icon">💡</div>
+            <div class="tip-text"><strong>사용 예시:</strong> "예전 직장 동료에게 퇴직 인사 이메일을 보내야 해. 따뜻하고 진심이 담긴 느낌으로 써줘." → 바로 완성된 이메일이 나옵니다!</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-stripe amber"></div>
+          <div class="card-head-title">Gem 3 — 포트폴리오·이력서 자동작성봇</div>
+          <div class="card-head-icon">📄</div>
+        </div>
+        <div class="card-body">
+          <div class="gems-card">
+            <div class="gems-card-title">📄 포트폴리오 자동작성봇</div>
+            <div class="gems-card-sub">22년 경력을 입력하면 이력서와 자기소개서 초안을 바로 만들어주는 AI</div>
+            <div>
+              <div class="instruction-toolbar">
+                <span class="instruction-label">사용 방법</span>
+              </div>
+              <div class="step-list" style="margin-top:0;">
+                <div class="step-item" style="padding:12px 0;">
+                  <div class="step-left"><div class="step-num amber" style="background:var(--amber);">1</div><div class="step-line"></div></div>
+                  <div class="step-right">
+                    <div class="step-title">경력 정보 입력하기</div>
+                    <div class="prompt-box" style="margin-top:8px;">
+                      <div class="prompt-label-bar">
+                        <span class="prompt-label">이 형식으로 말해주세요</span>
+                        <button class="copy-btn" onclick="copyText(this, '이름: 홍길동\n나이: 62세\n근무 기관: 고양시청\n근무 부서: 총무과 → 도시계획과 → 기획예산과\n근무 기간: 22년 (2002~2024)\n주요 업무: 예산 편성, 조직 관리, 지역개발 프로젝트 총괄\n자격증: 행정사, 도시계획기사\n희망 직종: 중소기업 총무 컨설턴트 또는 공공기관 파트타임')">복사</button>
+                      </div>
+                      <div class="prompt-text">이름: <span class="var">[홍길동]</span>
+나이: <span class="var">[62세]</span>
+근무 기관: <span class="var">[고양시청]</span>
+주요 부서: <span class="var">[총무과→도시계획과]</span>
+근무 기간: <span class="var">[22년]</span>
+주요 업무: <span class="var">[예산편성, 조직관리, 프로젝트 총괄]</span>
+자격증: <span class="var">[행정사, 도시계획기사]</span>
+희망 직종: <span class="var">[중소기업 총무 컨설턴트]</span></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="step-item" style="padding:12px 0;">
+                  <div class="step-left"><div class="step-num amber" style="background:var(--amber);">2</div></div>
+                  <div class="step-right">
+                    <div class="step-title">원하는 것 요청하기</div>
+                    <div class="prompt-box" style="margin-top:8px;">
+                      <div class="prompt-label-bar">
+                        <span class="prompt-label">요청 예시</span>
+                        <button class="copy-btn" onclick="copyText(this, '위 정보로 이력서 자기소개서 첫 단락을 써줘.\n강점을 부각시키고, 퇴직 후 새 출발의 의지가 느껴지도록 해줘.\n500자 이내로 써줘.')">복사</button>
+                      </div>
+                      <div class="prompt-text">위 정보로 이력서 자기소개서 첫 단락을 써줘.
+강점을 부각시키고,
+퇴직 후 새 출발의 의지가 느껴지도록 해줘.
+500자 이내로 써줘.</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-head-stripe"></div>
+          <div class="card-head-title">Gems 직접 만들기 — 순서 따라해보기</div>
+          <div class="card-head-icon">🛠️</div>
+        </div>
+        <div class="card-body">
+          <div class="step-list">
+            <div class="step-item">
+              <div class="step-left"><div class="step-num">1</div><div class="step-line"></div></div>
+              <div class="step-right">
+                <div class="step-title">Gemini 접속</div>
+                <div class="step-desc">스마트폰에서 <strong>gemini.google.com</strong> 접속 또는 Gemini 앱 실행 (구글 계정으로 로그인)</div>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-left"><div class="step-num">2</div><div class="step-line"></div></div>
+              <div class="step-right">
+                <div class="step-title">Gems 탐색 → 새 Gem 만들기</div>
+                <div class="step-desc">왼쪽 메뉴 → <strong>Gems 탐색</strong> → 오른쪽 상단 <strong>새 Gem 만들기</strong> 클릭</div>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-left"><div class="step-num">3</div><div class="step-line"></div></div>
+              <div class="step-right">
+                <div class="step-title">이름과 지침 입력</div>
+                <div class="step-desc"><strong>이름:</strong> 자기인식 리더십 챗봇<br><strong>지침:</strong> 위 멘탈코치 지침 복사 후 붙여넣기</div>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-left"><div class="step-num">4</div></div>
+              <div class="step-right">
+                <div class="step-title">저장 후 바로 대화 시작</div>
+                <div class="step-desc"><strong>저장</strong> 클릭 → 숫자 1~7 중 하나 입력 → 나만의 멘탈코치와 대화 시작!</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="write-area">
+        <div class="write-label">✍️ 체크리스트 — Gems 실습 완료 확인</div>
+        <ul class="checklist" id="cl-m3-2">
+          <li class="check-item" onclick="toggleCheck(this,'cl-m3-2')"><div class="check-box">✓</div>Gemini 앱에 접속했다</li>
+          <li class="check-item" onclick="toggleCheck(this,'cl-m3-2')"><div class="check-box">✓</div>멘탈코치 Gem을 만들거나 강사 시연을 봤다</li>
+          <li class="check-item" onclick="toggleCheck(this,'cl-m3-2')"><div class="check-box">✓</div>숫자를 입력해서 멘탈코치와 대화해봤다</li>
+          <li class="check-item" onclick="toggleCheck(this,'cl-m3-2')"><div class="check-box">✓</div>이메일봇 또는 포트폴리오봇 중 하나를 써봤다</li>
+        </ul>
+        <div class="write-actions">
+          <button class="btn btn-outline" onclick="clearChecks('cl-m3-2')">초기화</button>
+          <button class="btn btn-primary" onclick="completePanel('m3-2', '🎉 모든 실습 완료!', '오늘 배운 AI 도구들을 퇴직 이후 삶에 꾸준히 활용해보세요.')">전체 완료! 🎉</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div class="footer-logo-mark"><span>청람</span></div>
+    <div class="footer-copy">청람M&amp;C · 고양특례시 퇴직예정자 오프보딩 AI 교육과정 · 2026.04<br>강사: 정구영 Ph.D. | crmc.co.kr</div>
+  </div>
+  <a class="footer-link" href="https://betweenworld.org" target="_blank">betweenworld.org →</a>
+</footer>
+
+<script>
+var TOTAL = 9;
+var completedSet = {};
+
+var PANELS = ['m1-1','m1-2','m1-3','m2-1','m2-1b','m2-2','m2-3','m2-4','m3-1','m3-2'];
+
+function showPanel(id) {
+  PANELS.forEach(function(p) {
+    document.getElementById('panel-' + p).classList.remove('active');
+    var si = document.getElementById('si-' + p);
+    if (si) { si.classList.remove('active'); }
+  });
+  document.getElementById('panel-' + id).classList.add('active');
+  var si = document.getElementById('si-' + id);
+  if (si) { si.classList.add('active'); }
+  document.getElementById('mobile-select').value = id;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function onMobileSelect(val) { showPanel(val); }
+
+function toggleCheck(el, group) {
+  el.classList.toggle('checked');
+}
+
+function clearChecks(group) {
+  var items = document.getElementById(group) ? document.getElementById(group).querySelectorAll('.check-item') : document.querySelectorAll('#cl-' + group + ' .check-item');
+  items.forEach(function(i) { i.classList.remove('checked'); });
+}
+
+function completePanel(id, title, msg) {
+  completedSet[id] = true;
+  var si = document.getElementById('si-' + id);
+  if (si) { si.classList.add('done'); }
+  var count = Object.keys(completedSet).length;
+  var pct = Math.round(count / TOTAL * 100);
+  document.getElementById('progress-text').textContent = count + ' / ' + TOTAL + ' 완료';
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('m-prog-text').textContent = count + '/' + TOTAL;
+  document.getElementById('m-prog-bar').style.width = pct + '%';
+
+  // Toast
+  var toast = document.getElementById('completeToast');
+  document.getElementById('toastTitle').textContent = title;
+  document.getElementById('toastMsg').textContent = msg;
+  toast.classList.add('show');
+  // Re-trigger toast bar animation
+  var bar = toast.querySelector('.toast-bar');
+  bar.style.animation = 'none';
+  bar.offsetHeight;
+  bar.style.animation = '';
+  setTimeout(function() { toast.classList.remove('show'); }, 3200);
+
+  // Float emoji
+  for (var i = 0; i < 5; i++) {
+    (function(i) {
+      setTimeout(function() {
+        var el = document.createElement('div');
+        el.className = 'float-emoji';
+        el.textContent = ['✨','🎉','⭐','💫','🌟'][i % 5];
+        el.style.left = (30 + Math.random() * 40) + '%';
+        el.style.top = '60%';
+        document.body.appendChild(el);
+        setTimeout(function() { el.remove(); }, 1300);
+      }, i * 120);
+    })(i);
+  }
+
+  if (count >= TOTAL) {
+    setTimeout(function() {
+      document.getElementById('allDoneOverlay').classList.add('show');
+    }, 1000);
+  }
+}
+
+function copyText(btn, text) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(function() {
+      btn.textContent = '복사됨 ✓';
+      setTimeout(function() { btn.textContent = '복사'; }, 1800);
+    });
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = '복사됨 ✓';
+    setTimeout(function() { btn.textContent = '복사'; }, 1800);
+  }
+}
+
+// Init
+showPanel('m1-1');
+</script>
+</body>
+</html>
