@@ -1,8 +1,3 @@
-// Google Cloud Console에서 HTTP 참조자 제한 설정 필수: crmc.co.kr/*
-const GEMINI_API_KEY = 'AIzaSyBDEZloySOoxx4nVH11ll4bHi2Qv3PHGUo';
-const GEMINI_MODEL = 'gemini-2.5-flash';
-const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:streamGenerateContent?alt=sse&key=${GEMINI_API_KEY}`;
-
 const SYSTEM_PROMPT = `당신은 따뜻하고 세련된 감정 상담가예요.
 사용자가 선택한 감정들을 기반으로, 그들의 마음을 보듬어주고
 구체적인 처방(음식, 차/음료, 활동, 음악, 책, 여행지)을 제시해줘요.
@@ -67,7 +62,26 @@ const moods = [
   { label: '혼란스러운', emoji: '😵' },
   { label: '긴장되는', emoji: '😳' },
   { label: '두려운', emoji: '😨' },
-  { label: '억울한', emoji: '😤' }
+  { label: '억울한', emoji: '😤' },
+  { label: '뿌듯한', emoji: '😌' },
+  { label: '즐거운', emoji: '😄' },
+  { label: '유쾌한', emoji: '😆' },
+  { label: '자신있는', emoji: '💪' },
+  { label: '여유로운', emoji: '🌸' },
+  { label: '평화로운', emoji: '🕊️' },
+  { label: '포근한', emoji: '🤍' },
+  { label: '그리운', emoji: '🌃' },
+  { label: '무기력한', emoji: '😮‍💨' },
+  { label: '공허한', emoji: '🕳️' },
+  { label: '씁쓸한', emoji: '😕' },
+  { label: '속상한', emoji: '💔' },
+  { label: '부끄러운', emoji: '😳' },
+  { label: '당혹스러운', emoji: '😵‍💫' },
+  { label: '짜증나는', emoji: '😤' },
+  { label: '무거운', emoji: '🪨' },
+  { label: '덤덤한', emoji: '😐' },
+  { label: '복잡한', emoji: '🌀' },
+  { label: '나른한', emoji: '🍂' }
 ];
 
 function shuffleArray(arr) {
@@ -144,14 +158,16 @@ function openResult() {
   generatePrescription();
 }
 
+const GEMINI_API_KEY = 'AIzaSyDM9FWvT7-EC1e0N0KzuWQ2ZedCGajknWE';
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:streamGenerateContent?key=${GEMINI_API_KEY}&alt=sse`;
+
 async function generatePrescription() {
   const prescriptionsContainer = document.getElementById('prescriptions');
   const moodList = Array.from(selectedMoods);
 
   const userPrompt = `사용자의 현재 감정: ${moodList.join(', ')}
 
-이 감정들을 종합적으로 이해하고,
-따뜻하고 구체적인 처방을 6가지 카테고리(음식, 차/음료, 활동, 음악, 책, 여행지)로 제시해주세요.
+이 감정들을 종합적으로 이해하고, 따뜻하고 구체적인 처방을 6가지 카테고리(음식, 차/음료, 활동, 음악, 책, 여행지)로 제시해주세요.
 각 처방에는 왜 이것이 도움이 되는지 이유를 포함시켜주세요.`;
 
   try {
@@ -160,7 +176,7 @@ async function generatePrescription() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-        contents: [{ role: 'user', parts: [{ text: userPrompt }] }]
+        contents: [{ parts: [{ text: userPrompt }] }]
       })
     });
 
@@ -179,8 +195,9 @@ async function generatePrescription() {
       const chunk = decoder.decode(value);
       for (const line of chunk.split('\n')) {
         if (!line.startsWith('data: ')) continue;
+        const payload = line.slice(6).trim();
         try {
-          const json = JSON.parse(line.slice(6));
+          const json = JSON.parse(payload);
           const text = json?.candidates?.[0]?.content?.parts?.[0]?.text;
           if (text) fullText += text;
         } catch (e) {
@@ -284,7 +301,6 @@ function renderPrescriptions(text) {
 async function shareResult() {
   const prescriptionText = document.getElementById('prescriptions').innerText;
   const shareText = `${buildSummary()}\n\n${prescriptionText}`;
-
 
   if (navigator.share) {
     try {
