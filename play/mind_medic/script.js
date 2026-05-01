@@ -159,7 +159,7 @@ function openResult() {
 }
 
 const GEMINI_API_KEY = 'AIzaSyDM9FWvT7-EC1e0N0KzuWQ2ZedCGajknWE';
-const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:streamGenerateContent?key=${GEMINI_API_KEY}&alt=sse`;
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:streamGenerateContent?key=${GEMINI_API_KEY}&alt=sse`;
 
 async function generatePrescription() {
   const prescriptionsContainer = document.getElementById('prescriptions');
