@@ -70,6 +70,13 @@
         <div class="result-actions">
           <button class="secondary-button" id="backButton">다른 기분 선택하기</button>
           <button class="share-button" id="shareButton">저장하기 / 공유하기</button>
+          <div class="calendar-wrap">
+            <button class="secondary-button" id="calendarButton">📅 캘린더에 추가</button>
+            <div class="calendar-options hidden" id="calendarOptions">
+              <button onclick="addToGoogleCalendar()">Google 캘린더</button>
+              <button onclick="downloadIcs()">내 캘린더 (.ics)</button>
+            </div>
+          </div>
         </div>
         <p class="share-note text-secondary" id="shareNote"></p>
       </section>

@@ -158,7 +158,7 @@ function openResult() {
   generatePrescription();
 }
 
-const GEMINI_API_KEY = 'AIzaSyCU5a__axN9wQhNnvX4JPISx4JUmm-BU5w';
+const GEMINI_API_KEY = 'AIzaSyDM9FWvT7-EC1e0N0KzuWQ2ZedCGajknWE';
 const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:streamGenerateContent?key=${GEMINI_API_KEY}&alt=sse`;
 
 async function generatePrescription() {
@@ -320,6 +320,51 @@ async function shareResult() {
   }
 }
 
+function buildCalendarText() {
+  const moods = Array.from(selectedMoods).join(', ');
+  const prescriptions = document.getElementById('prescriptions').innerText;
+  return `선택한 감정: ${moods}\n\n${prescriptions}`;
+}
+
+function getDateStrings() {
+  const d = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  const start = `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}`;
+  const next = new Date(d);
+  next.setDate(d.getDate() + 1);
+  const end = `${next.getFullYear()}${pad(next.getMonth() + 1)}${pad(next.getDate())}`;
+  return { start, end };
+}
+
+function addToGoogleCalendar() {
+  const { start, end } = getDateStrings();
+  const title = encodeURIComponent('오늘의 마음 처방전');
+  const details = encodeURIComponent(buildCalendarText());
+  const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&dates=${start}/${end}`;
+  window.open(url, '_blank');
+}
+
+function downloadIcs() {
+  const { start, end } = getDateStrings();
+  const text = buildCalendarText().replace(/\n/g, '\\n');
+  const dateLabel = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+  const ics = [
+    'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//마음처방전//KR',
+    'BEGIN:VEVENT',
+    `SUMMARY:오늘의 마음 처방전 — ${dateLabel}`,
+    `DESCRIPTION:${text}`,
+    `DTSTART;VALUE=DATE:${start}`,
+    `DTEND;VALUE=DATE:${end}`,
+    'END:VEVENT', 'END:VCALENDAR'
+  ].join('\r\n');
+  const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = '마음처방전.ics';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
 async function copyToClipboard(text) {
   try {
     await navigator.clipboard.writeText(text);
@@ -340,10 +385,19 @@ function resetSurvey() {
   surveySection.classList.remove('hidden');
   resultSection.classList.add('hidden');
   shareNote.textContent = '';
+  document.getElementById('calendarOptions').classList.add('hidden');
 }
 
 diagnoseButton.addEventListener('click', openResult);
 shareButton.addEventListener('click', shareResult);
 backButton.addEventListener('click', resetSurvey);
+document.getElementById('calendarButton').addEventListener('click', () => {
+  document.getElementById('calendarOptions').classList.toggle('hidden');
+});
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.calendar-wrap')) {
+    document.getElementById('calendarOptions').classList.add('hidden');
+  }
+});
 
 renderMoodCards();
