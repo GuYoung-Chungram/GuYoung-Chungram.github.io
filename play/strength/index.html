@@ -484,6 +484,12 @@ let cpIntervalId  = null;
 let cdIntervalId  = null;
 
 // ══════════════════════════════════════
+// [Blaze] 리스너 중복 실행 방지 플래그
+// ══════════════════════════════════════
+let watchAllReadyActive     = false;  // playing → advanceDeal 감시 중 여부
+let watchAllReadyNextActive = false;  // roundResult → next 감시 중 여부
+
+// ══════════════════════════════════════
 // Firebase 배열 우회 (빈 배열 버그)
 // ══════════════════════════════════════
 function toObj(arr){
@@ -594,44 +600,56 @@ async function hostCreateGroups(){
   msg.textContent='방 생성 중...';
 
   const n=selGroups;
-  const upd={'config/totalGroups':n,'config/createdAt':Date.now()};
 
-  for(let g=1;g<=n;g++){
-    const gk='groups/group_'+g;
-    upd[gk+'/name']=g+'조';
-    upd[gk+'/phase']='lobby';
-    upd[gk+'/round']=0;
-    upd[gk+'/deckIndex']=0;
-    upd[gk+'/masterDecks/round1']=toObj(cryptoShuffle(CARDS.map(c=>c.id)));
-    upd[gk+'/masterDecks/round2']=toObj(cryptoShuffle(CARDS.map(c=>c.id)));
-    upd[gk+'/masterDecks/round3']=toObj(cryptoShuffle(CARDS.map(c=>c.id)));
-    // players/currentDeck/gifts/keptByRound/giftReceived 초기화
-    upd[gk+'/players']=null;
-    upd[gk+'/currentDeck']=null;
-    upd[gk+'/gifts']=null;
-    upd[gk+'/keptByRound']=null;
-    upd[gk+'/giftReceived']=null;
-    upd[gk+'/commonPool']=null;
-    upd[gk+'/poolCards']=null;
-    upd[gk+'/opCount']=0;
+  // [Blaze] config 먼저 저장
+  try{
+    await db.ref('config').update({totalGroups:n, createdAt:Date.now()});
+  }catch(e){ msg.textContent='오류: '+e.message; return; }
+
+  // [Blaze] 5조씩 청크 분할 update → 단일 write 페이로드 과부하 방지
+  const CHUNK=5;
+  for(let start=1;start<=n;start+=CHUNK){
+    const upd={};
+    for(let g=start;g<=Math.min(start+CHUNK-1,n);g++){
+      const gk='groups/group_'+g;
+      upd[gk+'/name']=g+'조';
+      upd[gk+'/phase']='lobby';
+      upd[gk+'/round']=0;
+      upd[gk+'/deckIndex']=0;
+      upd[gk+'/masterDecks/round1']=toObj(cryptoShuffle(CARDS.map(c=>c.id)));
+      upd[gk+'/masterDecks/round2']=toObj(cryptoShuffle(CARDS.map(c=>c.id)));
+      upd[gk+'/masterDecks/round3']=toObj(cryptoShuffle(CARDS.map(c=>c.id)));
+      upd[gk+'/players']=null;
+      upd[gk+'/currentDeck']=null;
+      upd[gk+'/gifts']=null;
+      upd[gk+'/keptByRound']=null;
+      upd[gk+'/giftReceived']=null;
+      upd[gk+'/commonPool']=null;
+      upd[gk+'/poolCards']=null;
+      upd[gk+'/opCount']=0;
+    }
+    try{
+      await db.ref().update(upd);
+      msg.textContent=`방 생성 중... (${Math.min(start+CHUNK-1,n)}/${n}조)`;
+    }catch(e){ msg.textContent='오류: '+e.message; return; }
   }
 
-  try{
-    await db.ref().update(upd);
-    msg.textContent='';
-    alert(`✅ ${n}개 조 생성 완료!\n참가자에게 이 URL을 공유하세요.`);
-    loadGroupSelect(n);
-  }catch(e){ msg.textContent='오류: '+e.message; }
+  msg.textContent='';
+  alert(`✅ ${n}개 조 생성 완료!\n참가자에게 이 URL을 공유하세요.`);
+  loadGroupSelect(n);
 }
 
 // ══════════════════════════════════════
 // 참가자: 조 선택
 // ══════════════════════════════════════
+// [Blaze] 조 그리드 리스너 추적 (실제 구독 조수만 해제)
+let groupListenerCount = 0;
 function loadGroupSelect(total){
   const grid=document.getElementById('groupGrid');
   grid.innerHTML='';
-  // 기존 리스너 해제
-  for(let g=1;g<=50;g++) db.ref('groups/group_'+g+'/players').off();
+  // 기존 리스너 해제 — 이전 total 범위까지만 정확히 off
+  for(let g=1;g<=groupListenerCount;g++) db.ref('groups/group_'+g+'/players').off();
+  groupListenerCount=total;
 
   for(let g=1;g<=total;g++){
     const btn=document.createElement('div');
@@ -683,7 +701,12 @@ async function joinGroup(){
 
   myName=name; myId=pid;
   const joinedAt=players[pid]?.joinedAt||Date.now();
-  await db.ref('groups/'+GC+'/players/'+myId).update({name,joinedAt,ready:players[pid]?.ready||false});
+  const playerRef=db.ref('groups/'+GC+'/players/'+myId);
+  await playerRef.update({name,joinedAt,ready:players[pid]?.ready||false});
+
+  // [Blaze] 연결 끊김 시 플레이어 자동 제거 → 조장 재선정 트리거
+  playerRef.onDisconnect().remove();
+
   saveSession();
   gRef=db.ref('groups/'+GC);
   startListener();
@@ -989,21 +1012,26 @@ function showWait(data){
 
 // ══════════════════════════════════════
 // 조장: 전원 ready 감시 (Firebase 리스너)
+// [Blaze] watchAllReadyActive 플래그로 중복 실행 방지
 // ══════════════════════════════════════
 function watchAllReady(dataAtSend){
+  if(watchAllReadyActive) return;  // 이미 감시 중이면 중복 등록 차단
+  watchAllReadyActive=true;
+
   const round=dataAtSend.round||1;
   const di=dataAtSend.deckIndex||0;
   const opCnt=dataAtSend.opCount||1;
 
-  // players 변화 감시
-  gRef.child('players').on('value',async snap=>{
+  const playersRef=gRef.child('players');
+  const handler=async snap=>{
     const players=snap.val();
     if(!players) return;
     const allReady=Object.values(players).every(p=>p.ready);
     if(!allReady) return;
 
-    // 한 번만 실행되도록 off
-    gRef.child('players').off('value');
+    // 한 번만 실행되도록 off 후 플래그 해제
+    playersRef.off('value',handler);
+    watchAllReadyActive=false;
 
     // 전원 ready → 10초 카운트다운 신호
     await gRef.update({phase_cd: Date.now()});
@@ -1012,7 +1040,8 @@ function watchAllReady(dataAtSend){
     // 다음 선택기회 or 공통풀 or 라운드결과
     const snap2=await gRef.once('value');
     await advanceDeal(snap2.val(), round, di, opCnt);
-  });
+  };
+  playersRef.on('value',handler);
 }
 
 // ══════════════════════════════════════
@@ -1181,9 +1210,16 @@ function renderPoolCards(poolData,round){
 async function takePool(cid,round){
   if(cpMyTook>=2) return;
   const ref=gRef.child('commonPool/round'+round+'/'+cid+'/takenBy');
-  const snap=await ref.once('value');
-  if(snap.val()) return;
-  await ref.set(myId);
+
+  // [Blaze] Transaction으로 경쟁 조건(동시 탭) 완벽 방지
+  // 여러 명이 동시에 같은 카드를 탭해도 한 명만 성공
+  const result=await ref.transaction(current=>{
+    if(current!==null) return; // 이미 누군가 가져감 → 중단
+    return myId;
+  });
+
+  if(!result.committed) return; // 트랜잭션 실패(선점됨)
+
   // giftReceived에도 추가
   const snap2=await gRef.once('value');
   const data=snap2.val();
@@ -1291,13 +1327,19 @@ function renderRoundWait(data){
   document.getElementById('rwWaitMsg').textContent=isLeader?'':'조장이 다음 라운드를 시작할 때까지 기다려주세요...';
 }
 
+// [Blaze] watchAllReadyNextActive 플래그로 중복 감시 방지
 function watchAllReadyForNext(dataAtSave){
+  if(watchAllReadyNextActive) return;
+  watchAllReadyNextActive=true;
+
   const round=dataAtSave.round||1;
-  gRef.child('players').on('value',async snap=>{
+  const playersRef=gRef.child('players');
+  const handler=async snap=>{
     const players=snap.val(); if(!players) return;
     const allReady=Object.values(players).every(p=>p.ready);
     if(!allReady) return;
-    gRef.child('players').off('value');
+    playersRef.off('value',handler);
+    watchAllReadyNextActive=false;
 
     const next=round+1;
     if(next>TOTAL_RNDS){
@@ -1307,7 +1349,8 @@ function watchAllReadyForNext(dataAtSave){
       Object.keys(players).forEach(pid=>{ upd['players/'+pid+'/ready']=false; });
       await gRef.update(upd);
     }
-  });
+  };
+  playersRef.on('value',handler);
 }
 
 // ══════════════════════════════════════
@@ -1419,6 +1462,31 @@ function closeModalOutside(e){ if(e.target===document.getElementById('modalBackd
 // ══════════════════════════════════════
 // 앱 시작
 // ══════════════════════════════════════
+
+/* ──────────────────────────────────────────────────────────────────
+   [Blaze 플랜] Firebase Realtime Database Security Rules 권장 설정
+   Firebase 콘솔 → Realtime Database → Rules 탭에 붙여넣기 하세요.
+   무제한 읽기/쓰기를 막아 비용 폭증을 방지합니다.
+   ──────────────────────────────────────────────────────────────────
+   {
+     "rules": {
+       "config": {
+         ".read": true,
+         ".write": true
+       },
+       "groups": {
+         "$groupId": {
+           ".read": true,
+           ".write": true
+         }
+       }
+     }
+   }
+   ──────────────────────────────────────────────────────────────────
+   운영 후 필요에 따라 auth 조건을 추가해 보안을 강화하세요.
+   현재 규칙은 "인증 없이 groupId 단위 읽기/쓰기 허용" 수준입니다.
+*/
+
 tryResume();
 </script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
