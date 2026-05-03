@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>✦ 강점 슬라이딩</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Orbitron:wght@400;700;900&display=swap');
@@ -14,6 +14,7 @@
     --feel:#f472b6;--think:#60a5fa;--do:#4ade80;
     --red:#f87171;--green:#4ade80;--yellow:#fbbf24;--purple:#a78bfa;
   }
+  html,body{height:100%;overscroll-behavior:none;}
   body{background:var(--bg);font-family:'Noto Sans KR',sans-serif;color:var(--text);min-height:100vh;overflow-x:hidden;}
   body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
     background:radial-gradient(ellipse at 20% 20%,rgba(255,154,86,.07) 0%,transparent 55%),
@@ -21,123 +22,108 @@
   .stars{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
   .star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--dur,3s) ease-in-out infinite;opacity:0;}
   @keyframes twinkle{0%,100%{opacity:0;transform:scale(.5)}50%{opacity:var(--op,.7);transform:scale(1)}}
-  @keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
+  @keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
   @keyframes pFly{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(0)}}
 
   /* ── 공통 ── */
-  .screen{position:relative;z-index:1;min-height:100vh;display:none;flex-direction:column;align-items:center;padding:28px 16px 60px;isolation:auto;}
+  .screen{position:relative;z-index:1;min-height:100vh;display:none;flex-direction:column;align-items:center;padding:24px 16px 80px;}
   .screen.active{display:flex;}
-  .logo{font-family:'Orbitron',monospace;font-size:1rem;font-weight:700;letter-spacing:5px;color:var(--w2);margin-bottom:6px;filter:drop-shadow(0 0 10px rgba(255,180,71,.4));text-align:center;}
-  .sub{color:var(--dim);font-size:.83rem;letter-spacing:1px;text-align:center;}
-  .card-box{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:22px 26px;width:100%;max-width:560px;backdrop-filter:blur(12px);}
-  .card-box+.card-box{margin-top:14px;}
-  .card-ttl{font-size:.7rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--w2);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+  .logo{font-family:'Orbitron',monospace;font-size:.92rem;font-weight:700;letter-spacing:5px;color:var(--w2);margin-bottom:6px;filter:drop-shadow(0 0 10px rgba(255,180,71,.4));text-align:center;}
+  .sub{color:var(--dim);font-size:.82rem;letter-spacing:1px;text-align:center;}
+  .card-box{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:20px 22px;width:100%;max-width:560px;backdrop-filter:blur(12px);}
+  .card-box+.card-box{margin-top:12px;}
+  .card-ttl{font-size:.67rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--w2);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
   .card-ttl::before{content:'';display:inline-block;width:14px;height:2px;background:linear-gradient(90deg,var(--w1),var(--w2));border-radius:2px;}
-  input[type=text]{width:100%;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,154,86,.2);border-radius:12px;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:.92rem;padding:11px 15px;outline:none;transition:border-color .2s,box-shadow .2s;}
-  input[type=text]:focus{border-color:var(--w1);box-shadow:0 0 14px rgba(255,154,86,.2);}
-  input[type=text]::placeholder{color:rgba(255,243,232,.25);}
-  .btn{padding:12px 32px;font-family:'Orbitron',monospace;font-size:.82rem;font-weight:700;letter-spacing:2px;color:#fff;background:linear-gradient(135deg,var(--w1),var(--w3));border:none;border-radius:50px;cursor:pointer;transition:all .25s;box-shadow:0 6px 28px rgba(255,107,157,.35);}
+  input[type=text],input[type=password]{width:100%;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,154,86,.2);border-radius:12px;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:.92rem;padding:11px 15px;outline:none;transition:border-color .2s,box-shadow .2s;}
+  input[type=text]:focus,input[type=password]:focus{border-color:var(--w1);box-shadow:0 0 14px rgba(255,154,86,.2);}
+  input::placeholder{color:rgba(255,243,232,.25);}
+  .btn{padding:12px 28px;font-family:'Orbitron',monospace;font-size:.77rem;font-weight:700;letter-spacing:2px;color:#fff;background:linear-gradient(135deg,var(--w1),var(--w3));border:none;border-radius:50px;cursor:pointer;transition:all .25s;box-shadow:0 6px 28px rgba(255,107,157,.35);}
   .btn:hover{transform:translateY(-2px) scale(1.03);}
   .btn:active{transform:scale(.97);}
   .btn:disabled{opacity:.35;cursor:not-allowed;transform:none;}
   .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--dim);box-shadow:none;font-family:'Noto Sans KR',sans-serif;font-size:.8rem;letter-spacing:0;padding:9px 18px;}
   .btn-ghost:hover{border-color:var(--w2);color:var(--w2);background:rgba(255,180,71,.08);}
-  .btn-teal{background:linear-gradient(135deg,#0d9488,#0891b2);}
-  .btn-purple{background:linear-gradient(135deg,#7c3aed,#6d28d9);}
-  .room-code{font-family:'Orbitron',monospace;font-size:2.2rem;font-weight:900;color:var(--w1);letter-spacing:6px;text-align:center;filter:drop-shadow(0 0 14px rgba(255,154,86,.5));margin:8px 0;}
+  .btn-green{background:linear-gradient(135deg,#059669,#0d9488);}
   .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:.7rem;font-weight:500;}
   .badge-g{background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.3);color:var(--green);}
   .badge-y{background:rgba(255,180,71,.12);border:1px solid rgba(255,180,71,.3);color:var(--w2);}
   .badge-r{background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);color:var(--red);}
-  .badge-p{background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.3);color:var(--purple);}
-  .badge-feel{background:rgba(244,114,182,.12);border:1px solid rgba(244,114,182,.3);color:var(--feel);}
-  .badge-think{background:rgba(96,165,250,.12);border:1px solid rgba(96,165,250,.3);color:var(--think);}
-  .badge-do{background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.3);color:var(--do);}
 
-  /* ── 강점카드 그리드 ── */
-  .cards-grid{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;}
-  .str-card{
-    width:86px;height:86px;border-radius:14px;
-    border:1.5px solid rgba(255,180,100,.15);
-    background:rgba(255,255,255,.04);
-    color:var(--dim);font-size:.68rem;font-weight:500;
-    cursor:pointer;transition:all .18s;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
-    gap:3px;text-align:center;padding:6px;position:relative;overflow:visible;
-    line-height:1.3;
-  }
-  .str-card .ce{font-size:1.25rem;}
+  /* ── 조 선택 그리드 ── */
+  .group-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;width:100%;max-width:460px;}
+  .group-btn{aspect-ratio:1;border-radius:14px;border:1.5px solid rgba(255,180,100,.2);background:rgba(255,255,255,.04);color:var(--text);font-family:'Orbitron',monospace;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .18s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;}
+  .group-btn:hover:not(.full){border-color:var(--w1);background:rgba(255,154,86,.1);transform:scale(1.05);}
+  .group-btn.full{opacity:.4;cursor:not-allowed;}
+  .group-btn .gb-cnt{font-size:.58rem;color:var(--dim);font-family:'Noto Sans KR',sans-serif;font-weight:400;}
+
+  /* ── 강점카드 ── */
+  .str-card{width:82px;height:82px;border-radius:14px;border:1.5px solid rgba(255,180,100,.15);background:rgba(255,255,255,.04);color:var(--dim);font-size:.68rem;font-weight:500;cursor:pointer;transition:all .18s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-align:center;padding:6px;position:relative;overflow:visible;line-height:1.3;}
+  .str-card .ce{font-size:1.2rem;}
   .str-card .cn{font-size:.68rem;line-height:1.2;}
   .str-card .ccat{font-size:.55rem;opacity:.5;margin-top:1px;}
-  .str-card:hover:not(.disabled):not(.passed){
-    border-color:rgba(255,154,86,.5);color:var(--text);
-    transform:translateY(-3px);box-shadow:0 6px 20px rgba(255,154,86,.2);
-  }
+  .str-card:hover:not(.disabled):not(.no-hover){border-color:rgba(255,154,86,.5);color:var(--text);transform:translateY(-3px);box-shadow:0 6px 20px rgba(255,154,86,.2);}
   .str-card.kept{border-color:var(--glow);color:#fff;box-shadow:0 0 20px rgba(255,215,0,.4);}
   .str-card.kept::before{content:'';position:absolute;inset:0;background:rgba(255,215,0,.08);border-radius:12px;}
   .str-card.kept::after{content:'✦';position:absolute;top:3px;right:5px;font-size:.58rem;color:var(--glow);}
-  .str-card.passed{opacity:.2;cursor:default;pointer-events:none;}
-  .str-card.disabled{opacity:.4;cursor:default;pointer-events:none;}
   .str-card.feel-card{border-color:rgba(244,114,182,.2);}
   .str-card.think-card{border-color:rgba(96,165,250,.2);}
   .str-card.do-card{border-color:rgba(74,222,128,.2);}
   .str-card.kept.feel-card{border-color:var(--feel);box-shadow:0 0 18px rgba(244,114,182,.4);}
   .str-card.kept.think-card{border-color:var(--think);box-shadow:0 0 18px rgba(96,165,250,.4);}
   .str-card.kept.do-card{border-color:var(--do);box-shadow:0 0 18px rgba(74,222,128,.4);}
+  /* 공통 풀 */
+  .str-card.pool-avail{border-color:var(--glow);animation:poolGlow 1.2s ease-in-out infinite;}
+  @keyframes poolGlow{0%,100%{box-shadow:0 0 6px rgba(255,215,0,.3)}50%{box-shadow:0 0 22px rgba(255,215,0,.8)}}
+  .str-card.pool-taken{opacity:.28;pointer-events:none;}
+  .str-card.pool-mine{border-color:var(--glow);background:rgba(255,215,0,.08);}
+  .str-card.pool-mine::after{content:'내꺼✦';position:absolute;bottom:2px;left:0;right:0;text-align:center;font-size:.5rem;color:var(--glow);}
 
   /* 툴팁 */
-  .str-card .tooltip{
-    position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);
-    background:rgba(13,13,26,.97);border:1px solid var(--border);
-    border-radius:10px;padding:8px 12px;width:180px;
-    font-size:.72rem;color:var(--text);line-height:1.5;
-    pointer-events:none;opacity:0;transition:opacity .15s;
-    z-index:100;text-align:left;font-weight:400;
-    box-shadow:0 4px 20px rgba(0,0,0,.5);
-    white-space:normal;
-  }
+  .str-card .tooltip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:rgba(13,13,26,.97);border:1px solid var(--border);border-radius:10px;padding:8px 12px;width:180px;font-size:.72rem;color:var(--text);line-height:1.5;pointer-events:none;opacity:0;transition:opacity .15s;z-index:200;text-align:left;font-weight:400;box-shadow:0 4px 20px rgba(0,0,0,.5);white-space:normal;}
   .str-card:hover .tooltip{opacity:1;}
   .str-card .tooltip .tt-name{font-weight:700;color:var(--w2);margin-bottom:3px;font-size:.75rem;}
+  .cards-grid{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;}
 
-  /* ── 플레이어 행 ── */
-  .player-row{display:flex;align-items:center;gap:10px;padding:9px 13px;background:rgba(255,255,255,.03);border-radius:10px;border:1px solid rgba(255,255,255,.05);margin-bottom:6px;}
+  /* 플레이어 행 */
+  .player-row{display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(255,255,255,.03);border-radius:10px;border:1px solid rgba(255,255,255,.05);margin-bottom:6px;}
   .avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;flex-shrink:0;}
   .player-name{flex:1;font-size:.86rem;font-weight:500;}
 
-  /* ── 킵 카드 누적 표시 ── */
-  .kept-bar{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;}
+  /* 킵 칩 */
   .kept-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:16px;font-size:.72rem;font-weight:500;}
   .kept-chip.feel{background:rgba(244,114,182,.12);border:1px solid rgba(244,114,182,.3);color:var(--feel);}
   .kept-chip.think{background:rgba(96,165,250,.12);border:1px solid rgba(96,165,250,.3);color:var(--think);}
   .kept-chip.do{background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.3);color:var(--do);}
 
-  /* ── 라운드 배너 ── */
-  .round-banner{text-align:center;margin-bottom:18px;}
-  .round-num{font-family:'Orbitron',monospace;font-size:.9rem;color:var(--w2);letter-spacing:4px;margin-bottom:3px;}
-  .round-desc{font-size:.83rem;color:var(--dim);line-height:1.6;}
+  /* 라운드 배너 */
+  .round-banner{text-align:center;margin-bottom:16px;}
+  .round-num{font-family:'Orbitron',monospace;font-size:.88rem;color:var(--w2);letter-spacing:4px;margin-bottom:3px;}
+  .round-desc{font-size:.82rem;color:var(--dim);line-height:1.6;}
 
-  /* ── 동시공개 오버레이 ── */
-  .overlay{position:fixed;inset:0;background:rgba(13,13,26,.95);backdrop-filter:blur(8px);z-index:500;display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:20px;}
-  .overlay.active{display:flex;}
-  .countdown-big{font-family:'Orbitron',monospace;font-size:7rem;font-weight:900;background:linear-gradient(135deg,var(--w1),var(--glow),var(--w3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 30px rgba(255,154,86,.7));animation:cPop .9s ease-out forwards;}
-  @keyframes cPop{0%{transform:scale(2);opacity:0}40%{transform:scale(.9);opacity:1}70%{transform:scale(1.05)}100%{transform:scale(1);opacity:.3}}
-  .reveal-grid{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:720px;}
-  .reveal-item{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;text-align:center;min-width:110px;}
-  .reveal-item .rn{font-size:.72rem;color:var(--dim);margin-bottom:6px;}
-  .reveal-item .re{font-size:1.5rem;margin-bottom:3px;}
-  .reveal-item .rc{font-size:.88rem;font-weight:700;color:var(--text);}
+  /* 킵 토글 버튼 */
+  .keep-toggle{display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);cursor:pointer;transition:all .2s;font-size:.8rem;color:var(--dim);user-select:none;}
+  .keep-toggle.on{background:rgba(255,215,0,.1);border-color:var(--glow);color:var(--glow);}
 
-  /* ── 결과 화면 ── */
-  .result-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:22px 26px;width:100%;max-width:560px;}
-  .domain-bar{display:flex;gap:8px;margin-bottom:16px;}
+  /* 선물 선택 드롭다운 */
+  select.gift-select{background:rgba(13,13,26,.9);border:1.5px solid rgba(167,139,250,.3);border-radius:10px;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:.82rem;padding:7px 10px;outline:none;width:100%;cursor:pointer;transition:border-color .2s;}
+  select.gift-select:focus{border-color:var(--purple);}
+  select.gift-select option{background:#12122a;}
+
+  /* 타이머 바 */
+  .timer-bar-wrap{width:100%;max-width:480px;height:6px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden;margin-bottom:8px;}
+  .timer-bar{height:100%;background:linear-gradient(90deg,var(--w1),var(--w3));border-radius:3px;transition:width .9s linear;}
+
+  /* 결과 카드 */
+  .result-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:22px 24px;width:100%;max-width:560px;}
+  .domain-bar{display:flex;gap:8px;margin-bottom:14px;}
   .domain-badge{flex:1;padding:10px 8px;border-radius:12px;text-align:center;}
-  .domain-badge .db-num{font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:900;}
-  .domain-badge .db-lbl{font-size:.68rem;margin-top:2px;opacity:.8;}
+  .domain-badge .db-num{font-family:'Orbitron',monospace;font-size:1.3rem;font-weight:900;}
+  .domain-badge .db-lbl{font-size:.65rem;margin-top:2px;opacity:.8;}
   .db-feel{background:rgba(244,114,182,.12);border:1px solid rgba(244,114,182,.25);color:var(--feel);}
   .db-think{background:rgba(96,165,250,.12);border:1px solid rgba(96,165,250,.25);color:var(--think);}
   .db-do{background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.25);color:var(--do);}
 
-  .scrollable{max-height:55vh;overflow-y:auto;padding-right:4px;}
+  .scrollable{max-height:50vh;overflow-y:auto;padding-right:4px;}
   .scrollable::-webkit-scrollbar{width:4px;}
   .scrollable::-webkit-scrollbar-thumb{background:rgba(255,154,86,.3);border-radius:2px;}
 
@@ -147,254 +133,254 @@
 
   .particle{position:fixed;pointer-events:none;border-radius:50%;z-index:999;animation:pFly var(--pd,1s) ease-out forwards;}
 
-  @media(max-width:480px){
-    .str-card{width:72px;height:72px;}
-    .str-card .ce{font-size:1.1rem;}
-    .countdown-big{font-size:5rem;}
-  }
-
-  /* ── 설명 모달 ── */
-  .modal-backdrop{
-    position:fixed;inset:0;background:rgba(0,0,0,.7);
-    backdrop-filter:blur(6px);z-index:900;
-    display:flex;align-items:center;justify-content:center;
-    padding:20px;opacity:0;pointer-events:none;
-    transition:opacity .25s;
-  }
+  /* 모달 */
+  .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(6px);z-index:900;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .25s;}
   .modal-backdrop.open{opacity:1;pointer-events:all;}
-  .modal{
-    background:#0f0f22;border:1px solid var(--border);
-    border-radius:24px;padding:32px 28px;
-    width:100%;max-width:480px;max-height:85vh;
-    overflow-y:auto;position:relative;
-    transform:translateY(16px);transition:transform .25s;
-    box-shadow:0 20px 60px rgba(0,0,0,.6);
-  }
+  .modal{background:#0f0f22;border:1px solid var(--border);border-radius:24px;padding:30px 26px;width:100%;max-width:460px;max-height:84vh;overflow-y:auto;position:relative;transform:translateY(16px);transition:transform .25s;box-shadow:0 20px 60px rgba(0,0,0,.6);}
   .modal-backdrop.open .modal{transform:translateY(0);}
   .modal::-webkit-scrollbar{width:4px;}
   .modal::-webkit-scrollbar-thumb{background:rgba(255,154,86,.3);border-radius:2px;}
-  .modal-close{
-    position:absolute;top:16px;right:16px;
-    width:32px;height:32px;border-radius:50%;
-    background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
-    color:var(--dim);font-size:1rem;cursor:pointer;
-    display:flex;align-items:center;justify-content:center;
-    transition:all .2s;
-  }
+  .modal-close{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:var(--dim);font-size:.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
   .modal-close:hover{background:rgba(255,154,86,.15);border-color:var(--w1);color:var(--w1);}
-  .modal-icon{font-size:2rem;margin-bottom:10px;text-align:center;}
-  .modal-title{
-    font-family:'Orbitron',monospace;font-size:.9rem;font-weight:700;
-    letter-spacing:3px;color:var(--w2);text-align:center;
-    margin-bottom:6px;
-  }
-  .modal-sub{font-size:.78rem;color:var(--dim);text-align:center;margin-bottom:20px;letter-spacing:.5px;}
-  .modal-section{margin-bottom:18px;}
-  .modal-section-title{
-    font-size:.68rem;font-weight:700;letter-spacing:3px;
-    text-transform:uppercase;color:var(--w1);
-    margin-bottom:10px;display:flex;align-items:center;gap:8px;
-  }
-  .modal-section-title::before{content:'';display:inline-block;width:12px;height:2px;background:var(--w1);border-radius:2px;}
-  .modal-step{
-    display:flex;gap:12px;align-items:flex-start;
-    padding:10px 12px;border-radius:12px;
-    background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);
-    margin-bottom:8px;
-  }
-  .modal-step-num{
-    width:22px;height:22px;border-radius:50%;flex-shrink:0;
-    background:rgba(255,154,86,.15);border:1px solid rgba(255,154,86,.3);
-    color:var(--w1);font-size:.7rem;font-weight:700;
-    display:flex;align-items:center;justify-content:center;
-    margin-top:1px;
-  }
-  .modal-step-text{font-size:.82rem;color:var(--text);line-height:1.6;}
+  .modal-icon{font-size:1.8rem;margin-bottom:8px;text-align:center;}
+  .modal-title{font-family:'Orbitron',monospace;font-size:.88rem;font-weight:700;letter-spacing:3px;color:var(--w2);text-align:center;margin-bottom:5px;}
+  .modal-sub{font-size:.76rem;color:var(--dim);text-align:center;margin-bottom:18px;}
+  .modal-step{display:flex;gap:10px;align-items:flex-start;padding:9px 11px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);margin-bottom:7px;}
+  .modal-step-num{width:20px;height:20px;border-radius:50%;flex-shrink:0;background:rgba(255,154,86,.15);border:1px solid rgba(255,154,86,.3);color:var(--w1);font-size:.65rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px;}
+  .modal-step-text{font-size:.8rem;color:var(--text);line-height:1.6;}
   .modal-step-text strong{color:var(--w2);}
-  .modal-tip{
-    background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.2);
-    border-radius:12px;padding:12px 14px;
-    font-size:.8rem;color:rgba(255,243,232,.8);line-height:1.6;
+  .modal-tip{background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.2);border-radius:10px;padding:10px 12px;font-size:.77rem;color:rgba(255,243,232,.8);line-height:1.6;margin-top:8px;}
+  .modal-tip::before{content:'💡 ';}
+  .modal-section-title{font-size:.66rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--w1);margin:14px 0 8px;display:flex;align-items:center;gap:7px;}
+  .modal-section-title::before{content:'';display:inline-block;width:10px;height:2px;background:var(--w1);border-radius:2px;}
+
+  /* 조 수 선택 버튼 */
+  .num-btn-wrap{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:12px 0;}
+  .num-btn{width:50px;height:38px;border-radius:10px;border:1.5px solid rgba(255,180,100,.2);background:rgba(255,255,255,.04);color:var(--dim);font-family:'Orbitron',monospace;font-size:.78rem;cursor:pointer;transition:all .18s;}
+  .num-btn:hover{border-color:var(--w1);color:var(--w1);}
+  .num-btn.sel{border-color:var(--w2);background:rgba(255,180,71,.12);color:var(--w2);}
+
+  @media(max-width:400px){
+    .str-card{width:68px;height:68px;}
+    .str-card .ce{font-size:1rem;}
+    .group-grid{gap:6px;}
   }
-  .modal-tip::before{content:'💡 ';font-size:.85rem;}
-  .modal-domain-row{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
-  .modal-domain{flex:1;min-width:80px;padding:10px 8px;border-radius:12px;text-align:center;}
-  .modal-domain .md-ico{font-size:1.1rem;margin-bottom:3px;}
-  .modal-domain .md-name{font-size:.75rem;font-weight:700;}
-  .modal-domain .md-desc{font-size:.65rem;opacity:.75;margin-top:2px;line-height:1.3;}
-  .md-feel{background:rgba(244,114,182,.1);border:1px solid rgba(244,114,182,.25);color:var(--feel);}
-  .md-think{background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.25);color:var(--think);}
-  .md-do{background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);color:var(--do);}
-  .help-btn{
-    display:inline-flex;align-items:center;gap:5px;
-    padding:5px 14px;border-radius:20px;
-    border:1px solid rgba(255,180,100,.25);background:transparent;
-    color:var(--dim);font-size:.74rem;cursor:pointer;
-    transition:all .2s;font-family:'Noto Sans KR',sans-serif;
-  }
-  .help-btn:hover{border-color:var(--w2);color:var(--w2);background:rgba(255,180,71,.08);}
 </style>
 </head>
 <body>
 <div class="stars" id="starsEl"></div>
-<div class="overlay" id="overlay"></div>
 
-<!-- ══ 설명 모달 ══ -->
+<!-- 모달 -->
 <div class="modal-backdrop" id="modalBackdrop" onclick="closeModalOutside(event)">
-  <div class="modal" id="modalBox">
+  <div class="modal">
     <button class="modal-close" onclick="closeModal()">✕</button>
     <div id="modalContent"></div>
   </div>
 </div>
 
-<!-- ══ 홈 ══ -->
-<div class="screen active" id="homeScreen" style="justify-content:center;">
+<!-- ══ 화면 1: 강사 셋업 ══ -->
+<div class="screen active" id="sHostSetup" style="justify-content:center;">
   <div class="logo" style="margin-bottom:4px;">✦ STRENGTH SLIDING</div>
-  <div class="sub" style="margin-bottom:6px;">강점 슬라이딩 게임</div>
-  <button class="help-btn" onclick="showModal('home')" style="margin-bottom:22px;">❓ 이 게임은 무엇인가요?</button>
-  <div class="card-box">
-    <div class="card-ttl" style="justify-content:space-between;">
-      방 만들기 (강사)
-      <button class="help-btn" onclick="showModal('host')">❓ 강사 안내</button>
+  <div class="sub" style="margin-bottom:20px;">강점 슬라이딩 — 관리자 설정</div>
+  <div class="card-box" style="max-width:400px;">
+    <div class="card-ttl">강사 비밀번호</div>
+    <input type="password" id="hostPwInput" placeholder="비밀번호 입력" style="margin-bottom:8px;" onkeydown="if(event.key==='Enter')hostCreateGroups()">
+    <div id="hostPwMsg" style="font-size:.75rem;color:var(--red);min-height:16px;margin-bottom:10px;"></div>
+    <div class="card-ttl">조 수 선택 <span style="font-weight:400;color:var(--dim);font-size:.65rem;letter-spacing:0;text-transform:none;">(기본 30조)</span></div>
+    <div class="num-btn-wrap" id="numBtnWrap"></div>
+    <div style="font-size:.82rem;color:var(--text);text-align:center;margin-bottom:14px;">
+      선택: <span id="selGroupNum" style="color:var(--w2);font-family:'Orbitron',monospace;font-weight:700;">30</span>조
     </div>
-    <input type="text" id="hostName" placeholder="강사 이름" style="margin-bottom:10px;">
-    <button class="btn" onclick="createRoom()" style="width:100%;">🏠 방 만들기</button>
+    <button class="btn" onclick="hostCreateGroups()" style="width:100%;">🏠 방 생성</button>
   </div>
-  <div class="card-box">
-    <div class="card-ttl" style="justify-content:space-between;">
-      방 입장하기 (참가자)
-      <button class="help-btn" onclick="showModal('join')">❓ 참가자 안내</button>
+  <div style="margin-top:14px;">
+    <button class="btn-ghost btn" onclick="goJoin()">참가자로 입장 →</button>
+  </div>
+</div>
+
+<!-- ══ 화면 2: 조 선택 (참가자) ══ -->
+<div class="screen" id="sGroupSelect" style="align-items:center;padding-top:20px;">
+  <div class="logo" style="margin-bottom:4px;margin-top:4px;">✦ STRENGTH SLIDING</div>
+  <div class="sub" style="margin-bottom:16px;">참여할 조를 선택하세요</div>
+  <div class="group-grid" id="groupGrid"></div>
+  <div style="margin-top:16px;">
+    <button class="btn-ghost btn" onclick="showScreen('sHostSetup')" style="font-size:.72rem;">강사 설정으로</button>
+  </div>
+</div>
+
+<!-- ══ 화면 3: 이름 입력 ══ -->
+<div class="screen" id="sNameInput" style="justify-content:center;">
+  <div class="logo" style="margin-bottom:4px;">✦ STRENGTH SLIDING</div>
+  <div class="sub" id="nameGroupLabel" style="margin-bottom:18px;"></div>
+  <div class="card-box" style="max-width:360px;">
+    <div class="card-ttl">내 이름 입력</div>
+    <input type="text" id="playerNameInput" placeholder="이름 (최대 8자)" maxlength="8" style="margin-bottom:8px;" onkeydown="if(event.key==='Enter')joinGroup()">
+    <div id="nameInputMsg" style="font-size:.75rem;color:var(--red);min-height:16px;margin-bottom:8px;"></div>
+    <button class="btn" onclick="joinGroup()" style="width:100%;">🚀 입장하기</button>
+  </div>
+  <div style="margin-top:12px;">
+    <button class="btn-ghost btn" onclick="showScreen('sGroupSelect')">← 조 다시 선택</button>
+  </div>
+</div>
+
+<!-- ══ 화면 4: 로비 ══ -->
+<div class="screen" id="sLobby" style="justify-content:center;">
+  <div class="logo" style="margin-bottom:4px;">✦ 대기실</div>
+  <div class="sub" id="lobbyGroupLabel" style="margin-bottom:18px;"></div>
+  <div class="card-box" style="max-width:400px;">
+    <div class="card-ttl">조원 현황</div>
+    <div id="lobbyPlayerList" class="scrollable" style="max-height:38vh;"></div>
+    <div id="lobbyMsg" style="font-size:.78rem;color:var(--dim);margin-top:10px;text-align:center;min-height:18px;animation:pulse 2s infinite;"></div>
+    <div id="leaderStartWrap" style="margin-top:14px;display:none;">
+      <button class="btn btn-green" onclick="leaderStartRound()" style="width:100%;">▶ 1라운드 시작</button>
+      <div style="font-size:.7rem;color:var(--dim);text-align:center;margin-top:6px;">조장(첫 입장자)만 시작 가능</div>
     </div>
-    <input type="text" id="joinName" placeholder="내 이름" style="margin-bottom:8px;">
-    <input type="text" id="joinCode" placeholder="방 코드 (4자리)" style="margin-bottom:10px;text-transform:uppercase;letter-spacing:4px;font-family:'Orbitron',monospace;font-size:1rem;">
-    <button class="btn" onclick="joinRoom()" style="width:100%;">🚪 입장하기</button>
   </div>
-  <div id="homeMsg" style="margin-top:10px;font-size:.8rem;color:var(--red);min-height:18px;text-align:center;"></div>
-</div>
-
-<!-- ══ 대기실 (강사) ══ -->
-<div class="screen" id="hostLobby" style="justify-content:center;">
-  <div class="logo">✦ 대기실</div>
-  <div class="card-box" style="text-align:center;max-width:420px;">
-    <div class="card-ttl" style="justify-content:center;">방 코드 공유</div>
-    <div class="room-code" id="displayCode">----</div>
-    <div class="sub" style="margin-bottom:14px;">카톡으로 코드를 공유하세요</div>
-    <div id="playerListHost" class="scrollable" style="text-align:left;margin-bottom:12px;"></div>
-    <div id="playerCountHost" style="font-size:.78rem;color:var(--dim);margin-bottom:12px;"></div>
-    <button class="btn" id="startBtn" onclick="hostStartGame()" disabled style="width:100%;">🎮 게임 시작</button>
-    <div style="font-size:.72rem;color:var(--dim);margin-top:7px;">2명 이상 입장 시 시작 가능</div>
+  <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+    <button class="btn-ghost btn" onclick="showModal('guide')">❓ 게임 방법</button>
+    <button class="btn-ghost btn" onclick="doLeave()">나가기</button>
   </div>
 </div>
 
-<!-- ══ 대기실 (참가자) ══ -->
-<div class="screen" id="joinLobby" style="justify-content:center;">
-  <div class="logo">✦ 입장 완료</div>
-  <div class="card-box" style="max-width:420px;text-align:center;">
-    <div class="sub" style="margin-bottom:10px;">강사가 게임을 시작할 때까지 기다려주세요</div>
-    <div style="font-family:'Orbitron',monospace;font-size:.85rem;color:var(--w2);letter-spacing:2px;margin-bottom:16px;animation:pulse 2s ease-in-out infinite;">⏳ 대기 중...</div>
-    <button class="help-btn" onclick="showModal('player')" style="margin-bottom:14px;">❓ 게임 진행 방법 보기</button>
-    <div id="playerListJoin" class="scrollable" style="text-align:left;"></div>
-  </div>
-</div>
-
-<!-- ══ 게임 화면 (참가자) ══ -->
-<div class="screen" id="gameScreen">
+<!-- ══ 화면 5: 게임 카드 ══ -->
+<div class="screen" id="sGameCard">
   <div class="top-btns">
-    <button class="top-btn" onclick="showModal('player')" title="도움말">❓</button>
-    <button class="top-btn" onclick="toggleFS()" title="전체화면">⛶</button>
-  </div>
-  <div style="width:100%;max-width:640px;">
-    <div class="round-banner">
-      <div class="round-num" id="gameRoundNum">ROUND 1 / 4</div>
-      <div class="round-desc" id="gameRoundDesc">내 강점과 가장 잘 어울리는 카드를 선택하세요</div>
-    </div>
-
-    <!-- 킵 카드 누적 -->
-    <div class="card-box" id="keptAccumBox" style="margin-bottom:12px;display:none;">
-      <div class="card-ttl">지금까지 킵한 내 강점 카드</div>
-      <div class="kept-bar" id="keptAccumBar"></div>
-    </div>
-
-    <!-- 현재 덱 -->
-    <div class="card-box">
-      <div class="card-ttl">
-        현재 내 카드 덱
-        <span id="deckCount" style="color:var(--w1);font-size:.78rem;letter-spacing:0;font-weight:400;margin-left:4px;"></span>
-      </div>
-      <div class="cards-grid" id="gameGrid"></div>
-    </div>
-
-    <!-- 킵 제한 안내 -->
-    <div id="keepLimitMsg" style="text-align:center;font-size:.8rem;color:var(--yellow);margin-top:10px;min-height:18px;"></div>
-
-    <div style="text-align:center;margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-      <button class="btn" id="keepBtn" onclick="confirmKeep()" disabled>✦ 킵 확정 (대기)</button>
-    </div>
-    <div id="gameStatusMsg" style="text-align:center;font-size:.78rem;color:var(--dim);margin-top:8px;min-height:16px;"></div>
-  </div>
-</div>
-
-<!-- ══ 강사 컨트롤 ══ -->
-<div class="screen" id="hostControl">
-  <div class="top-btns">
-    <button class="top-btn" onclick="showModal('hostControl')" title="도움말">❓</button>
-    <button class="top-btn" onclick="toggleFS()" title="전체화면">⛶</button>
+    <button class="top-btn" onclick="showModal('guide')">❓</button>
   </div>
   <div style="width:100%;max-width:520px;">
     <div class="round-banner">
-      <div class="round-num" id="hostRoundNum">ROUND 1 / 4</div>
-      <div class="round-desc" id="hostRoundDesc">참가자 킵 현황을 확인하세요</div>
+      <div class="round-num" id="gcRoundNum">ROUND 1 / 3</div>
+      <div class="round-desc" id="gcRoundDesc">선택기회 1회</div>
+    </div>
+
+    <!-- 이번 라운드 누적 킵 -->
+    <div class="card-box" id="gcKeptBox" style="display:none;margin-bottom:12px;">
+      <div class="card-ttl">이번 라운드 누적 킵</div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;" id="gcKeptBar"></div>
+    </div>
+
+    <!-- 카드 선택 영역 -->
+    <div class="card-box" id="gcDealBox">
+      <div class="card-ttl">내 카드 <span id="gcOpLabel" style="font-weight:400;color:var(--dim);letter-spacing:0;font-size:.7rem;margin-left:4px;"></span></div>
+      <div id="gcDealArea"></div>
+
+      <!-- 선물 섹션 -->
+      <div id="gcGiftSection" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.06);">
+        <div style="font-size:.72rem;color:var(--dim);margin-bottom:8px;">💝 킵하지 않은 카드 → 조원에게 선물</div>
+        <div id="gcGiftList"></div>
+      </div>
+
+      <div style="text-align:center;margin-top:16px;">
+        <button class="btn" id="gcSendBtn" onclick="sendCards()" disabled>✦ 전송하기</button>
+        <div id="gcSendMsg" style="font-size:.75rem;color:var(--dim);margin-top:8px;min-height:16px;"></div>
+      </div>
+    </div>
+
+    <!-- 전송 후 대기 -->
+    <div class="card-box" id="gcWaitBox" style="display:none;text-align:center;">
+      <div style="font-size:.85rem;color:var(--w2);margin-bottom:8px;font-family:'Orbitron',monospace;animation:pulse 1.5s infinite;">전송 완료 ✅</div>
+      <div id="gcWaitMsg" style="font-size:.8rem;color:var(--dim);line-height:1.7;"></div>
+      <!-- 10초 카운트다운 -->
+      <div id="gcCdWrap" style="display:none;margin-top:14px;">
+        <div style="font-size:.72rem;color:var(--dim);margin-bottom:4px;">다음 선택까지</div>
+        <div style="font-family:'Orbitron',monospace;font-size:2.8rem;font-weight:900;color:var(--w2);" id="gcCdNum">10</div>
+      </div>
+      <!-- 받은 카드 -->
+      <div id="gcRecvWrap" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.06);">
+        <div style="font-size:.72rem;color:var(--feel);margin-bottom:8px;">💝 선물받은 카드</div>
+        <div class="cards-grid" id="gcRecvCards" style="justify-content:center;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 화면 6: 공통 풀 ══ -->
+<div class="screen" id="sCommonPool">
+  <div style="width:100%;max-width:500px;">
+    <div class="round-banner">
+      <div class="round-num" id="cpRoundNum" style="color:var(--yellow);">ROUND 1 공통 풀</div>
+      <div class="round-desc">남은 카드! 먼저 탭한 사람이 가져갑니다 (최대 2장)</div>
+    </div>
+    <div class="timer-bar-wrap">
+      <div class="timer-bar" id="cpTimerBar" style="width:100%;"></div>
+    </div>
+    <div style="text-align:center;margin-bottom:14px;">
+      <span style="font-family:'Orbitron',monospace;font-size:1.6rem;font-weight:900;color:var(--yellow);" id="cpTimerNum">30</span>
+      <span style="font-size:.75rem;color:var(--dim);margin-left:4px;">초</span>
+      <span style="margin-left:14px;font-size:.78rem;color:var(--dim);" id="cpMyCnt">내가 가져간: 0 / 2</span>
     </div>
     <div class="card-box">
-      <div class="card-ttl">참가자 준비 현황</div>
-      <div id="hostReadyList" class="scrollable"></div>
+      <div class="card-ttl">선착순 풀</div>
+      <div class="cards-grid" id="cpGrid"></div>
     </div>
-    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px;">
-      <button class="btn" id="revealBtn" onclick="doReveal()">🥁 하나둘셋!</button>
-      <button class="btn btn-teal" id="slideBtn" onclick="doSlide()" style="display:none;">🔄 슬라이딩!</button>
-      <button class="btn btn-purple" id="nextRoundBtn" onclick="nextRound()" style="display:none;">▶ 다음 라운드</button>
-      <button class="btn" id="finishBtn" onclick="finishGame()" style="display:none;background:linear-gradient(135deg,var(--glow),#ff9a00);">🏆 최종 결과</button>
-    </div>
-    <div id="hostMsg" style="text-align:center;font-size:.78rem;color:var(--dim);margin-top:10px;min-height:16px;"></div>
   </div>
 </div>
 
-<!-- ══ 결과 (개인) ══ -->
-<div class="screen" id="resultScreen">
+<!-- ══ 화면 7: 라운드 결과 — 핵심강점 선택 ══ -->
+<div class="screen" id="sRoundResult">
+  <div style="width:100%;max-width:520px;">
+    <div class="round-banner">
+      <div class="round-num" id="rrTitle" style="color:var(--glow);">✦ ROUND 1 종료 ✦</div>
+      <div class="round-desc">이번 라운드에서 모은 카드 중 핵심강점을 선택하세요 (개수 제한 없음)</div>
+    </div>
+    <div class="card-box" style="margin-bottom:14px;">
+      <div class="card-ttl">내 카드 모음</div>
+      <div class="cards-grid" id="rrGrid"></div>
+    </div>
+    <div style="text-align:center;">
+      <button class="btn btn-green" onclick="saveRoundResult()">저장하고 계속 →</button>
+      <div id="rrMsg" style="font-size:.76rem;color:var(--dim);margin-top:8px;min-height:16px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 화면 8: 라운드 간 대기 ══ -->
+<div class="screen" id="sRoundWait" style="justify-content:center;">
+  <div class="logo" style="margin-bottom:6px;">✦ 라운드 완료!</div>
+  <div class="card-box" style="max-width:380px;text-align:center;">
+    <div id="rwMsg" style="font-size:.85rem;color:var(--text);line-height:1.8;margin-bottom:14px;"></div>
+    <div id="rwLeaderWrap" style="display:none;">
+      <button class="btn btn-green" onclick="leaderStartRound()" style="width:100%;" id="rwStartBtn">▶ 다음 라운드 시작</button>
+      <div style="font-size:.7rem;color:var(--dim);margin-top:6px;">조장(첫 입장자)만 시작 가능</div>
+    </div>
+    <div id="rwWaitMsg" style="font-size:.78rem;color:var(--dim);animation:pulse 2s infinite;min-height:18px;margin-top:6px;"></div>
+  </div>
+</div>
+
+<!-- ══ 화면 9: 최종 결과 ══ -->
+<div class="screen" id="sFinalResult">
   <div style="width:100%;max-width:560px;">
     <div class="round-banner">
-      <div class="round-num" style="color:var(--glow);font-size:1rem;">✦ 나의 핵심 강점 ✦</div>
+      <div class="round-num" style="color:var(--glow);font-size:1rem;">✦ 나의 핵심 강점 프로파일 ✦</div>
     </div>
-    <div id="myResultBox"></div>
+    <div id="finalBox"></div>
     <div style="text-align:center;margin-top:18px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-      <button class="btn" onclick="saveResultImage()" style="background:linear-gradient(135deg,#7c3aed,#6d28d9);">📸 이미지 저장</button>
-      <button class="btn-ghost btn" onclick="showAllResults()">전체 결과 보기</button>
-      <button class="btn-ghost btn" onclick="location.reload()">새 게임</button>
+      <button class="btn" onclick="saveImg()" style="background:linear-gradient(135deg,#7c3aed,#6d28d9);">📸 이미지 저장</button>
+      <button class="btn-ghost btn" onclick="showGroupResult()">조원 결과 보기</button>
     </div>
   </div>
 </div>
 
-<!-- ══ 결과 (전체, 강사) ══ -->
-<div class="screen" id="allResultScreen">
-  <div style="width:100%;max-width:640px;">
+<!-- ══ 화면 10: 조원 전체 결과 ══ -->
+<div class="screen" id="sGroupResult">
+  <div style="width:100%;max-width:560px;">
     <div class="round-banner">
-      <div class="round-num" style="color:var(--glow);">✦ 전체 결과 ✦</div>
+      <div class="round-num" style="color:var(--glow);">✦ 우리 조 강점 프로파일 ✦</div>
     </div>
-    <div id="allResultBox" class="scrollable" style="max-height:70vh;"></div>
-    <div style="text-align:center;margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-      <button class="btn-ghost btn" onclick="showScreen('resultScreen')">내 결과로</button>
-      <button class="btn-ghost btn" onclick="location.reload()">새 게임</button>
+    <div id="grBox" class="scrollable" style="max-height:72vh;"></div>
+    <div style="text-align:center;margin-top:14px;">
+      <button class="btn-ghost btn" onclick="showScreen('sFinalResult')">← 내 결과</button>
     </div>
   </div>
 </div>
 
-<!-- ══ Firebase SDK ══ -->
+<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
-// ══════════════════════════════
-// ⚠️ Firebase 설정값 붙여넣기
-// ══════════════════════════════
+// ══════════════════════════════════════
+// Firebase 설정
+// ══════════════════════════════════════
 const firebaseConfig = {
   apiKey: "AIzaSyCgZedtOkdNcfxyBusCchAqL9UL_23UF1w",
   authDomain: "strength-card.firebaseapp.com",
@@ -404,19 +390,13 @@ const firebaseConfig = {
   messagingSenderId: "191034033959",
   appId: "1:191034033959:web:6a2f12eaa13a013cbe8b02"
 };
-// ══════════════════════════════
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 
-let db = null;
-try {
-  firebase.initializeApp(firebaseConfig);
-  db = firebase.database();
-} catch(e) {
-  console.warn('Firebase 미설정 상태입니다. 설정값을 입력해주세요.');
-}
-
-// ── BLOOM 54 강점카드 ──
+// ══════════════════════════════════════
+// 강점 카드 54장
+// ══════════════════════════════════════
 const CARDS = [
-  // 감성 (1~18)
   {id:'f01',e:'🙏',n:'감사',cat:'feel',def:'자신에게 주어진 현실은 물론 일상의 사소한 것에도 고마움을 느낀다.'},
   {id:'f02',e:'🌸',n:'감수성',cat:'feel',def:'외부에서 오는 자극을 오감을 통해 풍부하게 받아들인다.'},
   {id:'f03',e:'🤝',n:'공감',cat:'feel',def:'다른 사람의 선택과 감정, 의견을 이해하려 노력한다.'},
@@ -435,7 +415,6 @@ const CARDS = [
   {id:'f16',e:'🫂',n:'포용력',cat:'feel',def:'타인을 너그럽게 감싸 주거나 받아들인다.'},
   {id:'f17',e:'🔍',n:'호기심',cat:'feel',def:'사람이나 사물에 마음이 끌려 주의를 기울인다.'},
   {id:'f18',e:'🌈',n:'희망',cat:'feel',def:'앞으로 발생할 일에 대하여 긍정적인 시각으로 기대한다.'},
-  // 이성 (19~36)
   {id:'t01',e:'⚡',n:'논리성',cat:'think',def:'사물이나 상황 속의 이치나 법칙을 파악하는 능력이다.'},
   {id:'t02',e:'🗺️',n:'도식화',cat:'think',def:'사물이나 상황의 본질과 특성을 이해하고 틀을 만들 수 있다.'},
   {id:'t03',e:'🔬',n:'문제파악',cat:'think',def:'사물의 옳고 그름을 가리며 판단할 수 있는 능력이다.'},
@@ -454,7 +433,6 @@ const CARDS = [
   {id:'t16',e:'👁️',n:'통찰력',cat:'think',def:'예리한 관찰력으로 사물과 상황을 꿰뚫어 볼 수 있는 능력이다.'},
   {id:'t17',e:'🔗',n:'통합력',cat:'think',def:'여러 가지 상황과 지식을 관계 지어 하나로 모으는 능력이다.'},
   {id:'t18',e:'⚖️',n:'판단력',cat:'think',def:'어떤 상황이나 사물을 인식하여 논리나 기준에 따라 올바른 결정을 내리는 능력이다.'},
-  // 행동 (37~54)
   {id:'d01',e:'✍️',n:'글쓰기',cat:'do',def:'생각이나 사실을 글로 써서 표현하는 능력이다.'},
   {id:'d02',e:'🏋️',n:'끈기',cat:'do',def:'쉽게 단념하지 않고 시작한 일을 끝까지 마무리 해낸다.'},
   {id:'d03',e:'🚀',n:'도전',cat:'do',def:'새롭거나 어려운 일에 부딪혔을 때 이를 피하지 않고 임한다.'},
@@ -474,672 +452,975 @@ const CARDS = [
   {id:'d17',e:'📖',n:'학습',cat:'do',def:'배우는 과정 자체에 매력을 느끼고 즐기는 태도이다.'},
   {id:'d18',e:'🤜',n:'협력',cat:'do',def:'서로 돕고 힘을 합쳐 어떤 일을 이루어 내는 것을 즐긴다.'},
 ];
+const CM = {}; CARDS.forEach(c=>CM[c.id]=c);
 
-const CARD_MAP = {};
-CARDS.forEach(c => CARD_MAP[c.id] = c);
+// ══════════════════════════════════════
+// 상수
+// ══════════════════════════════════════
+const HOST_PW     = 'crmc2026';
+const TOTAL_RNDS  = 3;
+const POOL_SEC    = 30;
+const COLORS      = ['#ff9a56','#ff6b9d','#ffd700','#a78bfa','#2dd4bf','#4ade80','#f87171','#60a5fa'];
 
-const TOTAL_ROUNDS = 4;
-const COLORS = ['#ff9a56','#ff6b9d','#ffd700','#a78bfa','#2dd4bf','#4ade80','#f87171','#60a5fa'];
+// ══════════════════════════════════════
+// 앱 상태
+// ══════════════════════════════════════
+let GC        = '';      // "group_1"
+let myId      = '';      // "p_홍길동"
+let myName    = '';
+let gRef      = null;    // groupRef
+let gListener = null;    // Firebase listener ref
+let selGroups = 30;      // 강사가 선택한 조 수
 
-// ── 상태 ──
-let myId = null, myName = '', roomCode = '', isHost = false;
-let roomRef = null, state = null;
+// 로컬 게임 상태 (renderGameCard 호출마다 리셋)
+let deal      = [];      // 현재 배분된 2장
+let keptLocal = [];      // 킵 선택
+let giftMap   = {};      // { cardId: playerId }
+let rrSel     = [];      // 라운드결과 핵심강점 선택
+let cpMyTook  = 0;       // 공통풀에서 가져간 수
 
-// ── 별 ──
+// 타이머 핸들
+let cpIntervalId  = null;
+let cdIntervalId  = null;
+
+// ══════════════════════════════════════
+// Firebase 배열 우회 (빈 배열 버그)
+// ══════════════════════════════════════
+function toObj(arr){
+  if(!arr||!arr.length) return {'__empty':true};
+  const o={}; arr.forEach((v,i)=>o[i]=v); return o;
+}
+function toArr(obj){
+  if(!obj) return [];
+  if(Array.isArray(obj)) return obj;
+  if(obj.__empty) return [];
+  return Object.keys(obj).filter(k=>k!=='__empty').sort((a,b)=>+a-+b).map(k=>obj[k]);
+}
+
+// ══════════════════════════════════════
+// 별 생성
+// ══════════════════════════════════════
 (function(){
-  const c = document.getElementById('starsEl');
+  const c=document.getElementById('starsEl');
   for(let i=0;i<120;i++){
     const s=document.createElement('div'); s.className='star';
-    const sz=Math.random()*2.5+.5;
-    s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--dur:${Math.random()*4+2}s;--op:${Math.random()*.6+.2};animation-delay:${Math.random()*5}s;`;
+    const z=Math.random()*2.5+.5;
+    s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${z}px;height:${z}px;--dur:${Math.random()*4+2}s;--op:${Math.random()*.6+.2};animation-delay:${Math.random()*5}s;`;
     c.appendChild(s);
   }
 })();
 
-// ── 유틸 ──
-function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); window.scrollTo(0,0); }
-function genCode(){ const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let r=''; for(let i=0;i<4;i++) r+=c[Math.floor(Math.random()*c.length)]; return r; }
-function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
-function showMsg(msg){ document.getElementById('homeMsg').textContent=msg; }
-
-function catLabel(cat){ return cat==='feel'?'감성':cat==='think'?'이성':'행동'; }
-function catClass(cat){ return cat==='feel'?'feel':cat==='think'?'think':'do'; }
-
-// ── 카드 수에 따른 킵 제한 ──
-function getMaxKeep(deckSize){
-  if(deckSize >= 4) return 2;
-  if(deckSize === 3) return 1;
-  return deckSize; // 2장 이하: 전부 킵 가능
+// ══════════════════════════════════════
+// 유틸
+// ══════════════════════════════════════
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
 }
+function cl(cat){ return cat==='feel'?'feel':cat==='think'?'think':'do'; }
+function cl2(cat){ return cat==='feel'?'감성':cat==='think'?'이성':'행동'; }
 
-// ── 방 만들기 ──
-async function createRoom(){
-  const name = document.getElementById('hostName').value.trim();
-  if(!name){ showMsg('이름을 입력해주세요'); return; }
-  myName=name; isHost=true; myId='host';
-  roomCode=genCode();
-  roomRef=db.ref('rooms/'+roomCode);
-  // 54장을 랜덤 섞어서 준비
-  const shuffled = cryptoShuffle([...CARDS.map(c=>c.id)]);
-  await roomRef.set({
-    host:name, phase:'lobby', round:0,
-    players:{ host:{name,isHost:true,ready:false,keptAll:[]} },
-    masterDeck: shuffled,
-    decks:{}, reveals:{}, slideCount:0
-  });
-  roomRef.onDisconnect().remove();
-  document.getElementById('displayCode').textContent=roomCode;
-  showScreen('hostLobby');
-  listenRoom();
-}
-
-// ── 입장 ──
-async function joinRoom(){
-  const name=document.getElementById('joinName').value.trim();
-  const code=document.getElementById('joinCode').value.trim().toUpperCase();
-  if(!name){ showMsg('이름을 입력해주세요'); return; }
-  if(code.length!==4){ showMsg('방 코드 4자리를 입력해주세요'); return; }
-  const snap=await db.ref('rooms/'+code).once('value');
-  if(!snap.exists()){ showMsg('방을 찾을 수 없습니다'); return; }
-  const data=snap.val();
-  if(data.phase!=='lobby'){ showMsg('이미 시작된 방입니다'); return; }
-  const players=data.players||{};
-  if(Object.values(players).find(p=>p.name===name)){ showMsg('같은 이름이 이미 있습니다'); return; }
-  myName=name; myId='p_'+Date.now();
-  roomCode=code; roomRef=db.ref('rooms/'+roomCode);
-  await roomRef.child('players/'+myId).set({name,isHost:false,ready:false,keptAll:[]});
-  roomRef.child('players/'+myId).onDisconnect().remove();
-  showScreen('joinLobby');
-  listenRoom();
-}
-
-// ── 리스너 ──
-function listenRoom(){
-  roomRef.on('value', snap=>{
-    if(!snap.exists()) return;
-    state=snap.val();
-    updateUI(state);
-  });
-}
-
-function updateUI(data){
-  const phase=data.phase;
-  const players=data.players||{};
-  const pList=Object.entries(players);
-
-  if(isHost){
-    renderPlayerList('playerListHost', pList);
-    document.getElementById('playerCountHost').textContent=`현재 ${pList.length}명 입장`;
-    document.getElementById('startBtn').disabled=pList.length<2;
-  } else {
-    renderPlayerList('playerListJoin', pList);
-  }
-
-  if(phase==='lobby'){
-    if(isHost) showScreen('hostLobby');
-    else       showScreen('joinLobby');
-  }
-  else if(phase==='playing'){
-    if(isHost){ showScreen('hostControl'); updateHostControl(data); }
-    else      { showScreen('gameScreen');  updateGameScreen(data); }
-  }
-  else if(phase==='result'){
-    buildResult(data);
-  }
-}
-
-// ── 플레이어 목록 ──
-function renderPlayerList(elId, pList){
-  const el=document.getElementById(elId);
-  el.innerHTML=pList.map(([id,p],i)=>`
-    <div class="player-row">
-      <div class="avatar" style="background:${COLORS[i%COLORS.length]}22;color:${COLORS[i%COLORS.length]}">${p.name[0]}</div>
-      <div class="player-name">${p.name} ${p.isHost?'<span class="badge badge-y">강사</span>':''}</div>
-      <div>${p.ready?'<span class="badge badge-g">완료</span>':'<span style="font-size:.7rem;color:var(--dim)">대기중</span>'}</div>
-    </div>
-  `).join('');
-}
-
-// ── 게임 시작 ──
-async function hostStartGame(){
-  const players=state.players||{};
-  const pIds=Object.keys(players).filter(id=>id!=='host');
-  const n=pIds.length;
-  const deck=state.masterDeck||CARDS.map(c=>c.id);
-
-  // 각 참가자에게 카드 배분 (최대 9장씩, 남은 건 버림)
-  const cardsPerPerson=Math.floor(deck.length/n);
-  const updates={phase:'playing',round:1,'decks':{},'reveals':{}};
-  pIds.forEach((pid,i)=>{
-    updates['decks/'+pid]=deck.slice(i*cardsPerPerson,(i+1)*cardsPerPerson);
-  });
-  // ready 초기화
-  Object.keys(players).forEach(pid=>{ updates['players/'+pid+'/ready']=false; });
-  await roomRef.update(updates);
-}
-
-// ── 게임 화면 (참가자) ──
-function updateGameScreen(data){
-  const round=data.round||1;
-  document.getElementById('gameRoundNum').textContent=`ROUND ${round} / ${TOTAL_ROUNDS}`;
-  document.getElementById('gameRoundDesc').textContent=
-    round===1?'내 강점과 가장 잘 어울리는 카드를 선택하세요':
-    `슬라이딩된 카드 중 킵할 카드를 선택하세요 (라운드 ${round})`;
-
-  const myDeck=(data.decks&&data.decks[myId])||[];
-  const myKeptAll=(data.players&&data.players[myId]&&data.players[myId].keptAll)||[];
-  const maxKeep=getMaxKeep(myDeck.length);
-
-  // 덱 정보
-  document.getElementById('deckCount').textContent=`(${myDeck.length}장, 최대 ${maxKeep}장 킵 가능)`;
-
-  // 킵 제한 안내
-  const limitMsg=document.getElementById('keepLimitMsg');
-  if(myDeck.length>=4){
-    limitMsg.textContent=`💡 카드가 ${myDeck.length}장 → 최대 ${maxKeep}장만 킵할 수 있어요`;
-  } else {
-    limitMsg.textContent='';
-  }
-
-  // 누적 킵 표시
-  const accumBox=document.getElementById('keptAccumBox');
-  const accumBar=document.getElementById('keptAccumBar');
-  if(myKeptAll.length>0){
-    accumBox.style.display='block';
-    accumBar.innerHTML=myKeptAll.map(cid=>{
-      const c=CARD_MAP[cid]; if(!c) return '';
-      const cc=catClass(c.cat);
-      return `<span class="kept-chip ${cc}">${c.e} ${c.n}</span>`;
-    }).join('');
-  } else {
-    accumBox.style.display='none';
-  }
-
-  // 카드 그리드
-  const grid=document.getElementById('gameGrid');
-  // 현재 선택된 킵 카드
-  const myReveal=(data.reveals&&data.reveals[myId])||[];
-
-  grid.innerHTML=myDeck.map(cid=>{
-    const c=CARD_MAP[cid]; if(!c) return '';
-    const isKept=myReveal.includes(cid);
-    return `<div class="str-card ${c.cat}-card${isKept?' kept':''}" onclick="toggleKeep('${cid}')">
-      <div class="tooltip"><div class="tt-name">${c.e} ${c.n}</div>${c.def}</div>
-      <div class="ce">${c.e}</div>
-      <div class="cn">${c.n}</div>
-      <div class="ccat">${catLabel(c.cat)}</div>
-    </div>`;
-  }).join('');
-
-  // 버튼 상태
-  const myReady=data.players&&data.players[myId]&&data.players[myId].ready;
-  const btn=document.getElementById('keepBtn');
-  if(myReady){
-    btn.textContent='✅ 킵 확정됨';
-    btn.style.opacity='.7';
-    document.getElementById('gameStatusMsg').textContent='강사가 "하나둘셋!"을 누를 때까지 기다려주세요';
-  } else {
-    btn.textContent=`✦ 킵 확정 (${myReveal.length}장 선택)`;
-    btn.style.opacity='1';
-    btn.disabled=myReveal.length===0;
-    document.getElementById('gameStatusMsg').textContent='';
-  }
-}
-
-// ── 카드 킵 토글 ──
-async function toggleKeep(cardId){
-  if(!state||state.phase!=='playing') return;
-  const myReady=state.players&&state.players[myId]&&state.players[myId].ready;
-  if(myReady) return;
-
-  const myDeck=(state.decks&&state.decks[myId])||[];
-  const maxKeep=getMaxKeep(myDeck.length);
-  const myReveal=(state.reveals&&state.reveals[myId])||[];
-
-  let newReveal=[...myReveal];
-  if(newReveal.includes(cardId)){
-    newReveal=newReveal.filter(id=>id!==cardId);
-  } else {
-    if(newReveal.length>=maxKeep){
-      // 최대 초과 시 첫 번째 제거 후 추가
-      newReveal.shift();
-    }
-    newReveal.push(cardId);
-  }
-  await roomRef.child('reveals/'+myId).set(newReveal);
-}
-
-// ── 킵 확정 ──
-async function confirmKeep(){
-  const myReveal=(state.reveals&&state.reveals[myId])||[];
-  if(myReveal.length===0){ alert('카드를 선택해주세요!'); return; }
-  const myReady=state.players&&state.players[myId]&&state.players[myId].ready;
-  await roomRef.child('players/'+myId+'/ready').set(!myReady);
-}
-
-// ── 강사 컨트롤 ──
-function updateHostControl(data){
-  const round=data.round||1;
-  document.getElementById('hostRoundNum').textContent=`ROUND ${round} / ${TOTAL_ROUNDS}`;
-
-  const players=data.players||{};
-  const pList=Object.entries(players).filter(([,p])=>!p.isHost);
-  const readyCount=pList.filter(([,p])=>p.ready).length;
-
-  document.getElementById('hostReadyList').innerHTML=pList.map(([id,p])=>{
-    const keptAll=p.keptAll||[];
-    const keptBar=keptAll.map(cid=>{
-      const c=CARD_MAP[cid]; if(!c) return '';
-      return `<span class="kept-chip ${catClass(c.cat)}">${c.e} ${c.n}</span>`;
-    }).join('');
-    return `<div class="player-row" style="flex-direction:column;align-items:flex-start;gap:6px;">
-      <div style="display:flex;align-items:center;gap:10px;width:100%;">
-        <div class="player-name">${p.name}</div>
-        <div>${p.ready?'<span class="badge badge-g">완료</span>':'<span class="badge badge-r">선택 중</span>'}</div>
-      </div>
-      ${keptBar?`<div class="kept-bar">${keptBar}</div>`:''}
-    </div>`;
-  }).join('')+`<div style="margin-top:8px;font-size:.75rem;color:var(--dim);">${readyCount}/${pList.length}명 킵 확정</div>`;
-
-  // 버튼 제어
-  document.getElementById('revealBtn').style.display='inline-block';
-  document.getElementById('slideBtn').style.display='none';
-  document.getElementById('nextRoundBtn').style.display='none';
-  document.getElementById('finishBtn').style.display='none';
-  document.getElementById('hostMsg').textContent='모든 참가자 킵 확정 후 "하나둘셋!" 버튼을 누르세요';
-}
-
-// ── 하나둘셋 공개 ──
-async function doReveal(){
-  const data=state;
-  const round=data.round||1;
-  const players=data.players||{};
-  const reveals=data.reveals||{};
-  const overlay=document.getElementById('overlay');
-
-  overlay.style.display='flex';
-  overlay.classList.add('active');
-  for(const [n,sub] of [['3','READY'],['2','SET'],['1','GO!']]) {
-    overlay.innerHTML=`<div class="countdown-big">${n}</div><div style="color:var(--dim);letter-spacing:5px;font-size:.85rem;">${sub}</div>`;
-    await sleep(900);
-  }
-
-  const pList=Object.entries(players).filter(([,p])=>!p.isHost);
-  overlay.innerHTML=`<div style="font-family:'Orbitron',monospace;font-size:1rem;color:var(--glow);letter-spacing:4px;margin-bottom:20px;">✦ 라운드 ${round} 공개! ✦</div>
-  <div class="reveal-grid">${
-    pList.map(([pid,p])=>{
-      const kept=reveals[pid]||[];
-      const cards=kept.map((cid,i)=>{
-        const c=CARD_MAP[cid]; if(!c) return '';
-        return `<div class="reveal-item">
-          <div class="rn">${p.name}</div>
-          <div class="re">${c.e}</div>
-          <div class="rc">${c.n}</div>
-          <span class="badge badge-${catClass(c.cat)}" style="margin-top:4px;">${catLabel(c.cat)}</span>
-        </div>`;
-      }).join('');
-      return cards||`<div class="reveal-item"><div class="rn">${p.name}</div><div class="rc" style="color:var(--dim)">미선택</div></div>`;
-    }).join('')
-  }</div>
-  <div style="margin-top:24px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
-    ${round<TOTAL_ROUNDS
-      ? `<button class="btn btn-teal" onclick="closeRevealToSlide()">🔄 슬라이딩으로</button>`
-      : `<button class="btn" style="background:linear-gradient(135deg,var(--glow),#ff9a00);" onclick="closeRevealToResult()">🏆 최종 결과로</button>`
-    }
+function cardHTML(cid, extra=''){
+  const c=CM[cid]; if(!c) return '';
+  return `<div class="str-card ${c.cat}-card ${extra}">
+    <div class="tooltip"><div class="tt-name">${c.e} ${c.n}</div>${c.def}</div>
+    <div class="ce">${c.e}</div><div class="cn">${c.n}</div><div class="ccat">${cl2(c.cat)}</div>
   </div>`;
-
-  // Firebase에 킵 누적 저장
-  const updates={};
-  for(const [pid,p] of pList){
-    const kept=reveals[pid]||[];
-    const prevKept=p.keptAll||[];
-    updates['players/'+pid+'/keptAll']=[...prevKept,...kept];
-    updates['players/'+pid+'/ready']=false;
-  }
-  await roomRef.update(updates);
-  spawnParticles();
 }
 
-async function closeRevealToSlide(){
-  document.getElementById('overlay').classList.remove('active');
-  document.getElementById('overlay').style.display='none';
-  // 슬라이딩 버튼 표시
-  document.getElementById('revealBtn').style.display='none';
-  document.getElementById('slideBtn').style.display='inline-block';
-  document.getElementById('hostMsg').textContent='"슬라이딩!" 버튼을 눌러 카드를 옆 사람에게 이동시키세요';
-}
-
-async function closeRevealToResult(){
-  document.getElementById('overlay').classList.remove('active');
-  document.getElementById('overlay').style.display='none';
-  await roomRef.update({phase:'result'});
-}
-
-// ── 슬라이딩 ──
-async function doSlide(){
-  const data=state;
-  const players=data.players||{};
-  const pIds=Object.keys(players).filter(id=>id!=='host');
-  const reveals=data.reveals||{};
-  const decks=data.decks||{};
-
-  // 각 참가자의 킵하지 않은 카드(남은 카드)를 옆 사람에게 이동
-  const updates={'reveals':{}};
-  const newDecks={};
-
-  pIds.forEach((pid,i)=>{
-    const myDeck=decks[pid]||[];
-    const kept=reveals[pid]||[];
-    const remaining=myDeck.filter(cid=>!kept.includes(cid));
-    // 다음 사람 인덱스 (순환)
-    const nextIdx=(i+1)%pIds.length;
-    const nextPid=pIds[nextIdx];
-    newDecks[nextPid]=(newDecks[nextPid]||[]).concat(remaining);
-  });
-
-  // 덱 업데이트
-  Object.entries(newDecks).forEach(([pid,deck])=>{
-    updates['decks/'+pid]=deck;
-  });
-  // ready 초기화
-  pIds.forEach(pid=>{ updates['players/'+pid+'/ready']=false; });
-
-  await roomRef.update(updates);
-
-  // 버튼 상태 변경
-  document.getElementById('slideBtn').style.display='none';
-  document.getElementById('nextRoundBtn').style.display='inline-block';
-  document.getElementById('hostMsg').textContent='슬라이딩 완료! "다음 라운드" 버튼을 눌러주세요';
-}
-
-// ── 다음 라운드 ──
-async function nextRound(){
-  const round=(state.round||1)+1;
-  if(round>TOTAL_ROUNDS){
-    await roomRef.update({phase:'result'});
-    return;
-  }
-  const updates={round,reveals:{}};
-  const players=state.players||{};
-  Object.keys(players).forEach(pid=>{ updates['players/'+pid+'/ready']=false; });
-  await roomRef.update(updates);
-  document.getElementById('nextRoundBtn').style.display='none';
-  document.getElementById('revealBtn').style.display='inline-block';
-  document.getElementById('hostMsg').textContent='';
-}
-
-// ── 게임 종료 ──
-async function finishGame(){
-  await roomRef.update({phase:'result'});
-}
-
-// ── 결과 빌드 ──
-function buildResult(data){
-  const players=data.players||{};
-  const me=players[myId];
-
-  if(isHost){
-    buildAllResults(data);
-    return;
-  }
-
-  if(!me) return;
-  const keptAll=me.keptAll||[];
-  const myResultBox=document.getElementById('myResultBox');
-
-  // 영역 분류
-  const byDomain={feel:[],think:[],do:[]};
-  keptAll.forEach(cid=>{
-    const c=CARD_MAP[cid]; if(!c) return;
-    byDomain[c.cat].push(c);
-  });
-
-  myResultBox.innerHTML=`
-    <div class="result-card" id="resultCard">
-      <div style="text-align:center;margin-bottom:16px;">
-        <div style="font-size:.75rem;color:var(--dim);letter-spacing:2px;margin-bottom:4px;">✦ ${myName}님의 강점 프로파일 ✦</div>
-      </div>
-      <div class="domain-bar">
-        <div class="domain-badge db-feel"><div class="db-num">${byDomain.feel.length}</div><div class="db-lbl">😊 감성</div></div>
-        <div class="domain-badge db-think"><div class="db-num">${byDomain.think.length}</div><div class="db-lbl">🧠 이성</div></div>
-        <div class="domain-badge db-do"><div class="db-num">${byDomain.do.length}</div><div class="db-lbl">⚡ 행동</div></div>
-      </div>
-      ${['feel','think','do'].map(cat=>{
-        if(!byDomain[cat].length) return '';
-        const cc=catClass(cat);
-        return `<div style="margin-bottom:14px;">
-          <div style="font-size:.7rem;font-weight:700;letter-spacing:2px;color:var(--${cc});margin-bottom:8px;text-transform:uppercase;">${catLabel(cat)} 강점</div>
-          <div style="display:flex;flex-wrap:wrap;gap:6px;">
-            ${byDomain[cat].map(c=>`<span class="kept-chip ${cc}">${c.e} ${c.n}</span>`).join('')}
-          </div>
-        </div>`;
-      }).join('')}
-      ${keptAll.length===0?'<div style="text-align:center;color:var(--dim);font-size:.85rem;">킵한 카드가 없습니다</div>':''}
-    </div>
-  `;
-  showScreen('resultScreen');
-}
-
-function buildAllResults(data){
-  const players=data.players||{};
-  const box=document.getElementById('allResultBox');
-  box.innerHTML=Object.entries(players).filter(([,p])=>!p.isHost).map(([pid,p])=>{
-    const keptAll=p.keptAll||[];
-    const byDomain={feel:[],think:[],do:[]};
-    keptAll.forEach(cid=>{ const c=CARD_MAP[cid]; if(c) byDomain[c.cat].push(c); });
-    return `<div class="result-card" style="margin-bottom:14px;">
-      <div style="font-size:.95rem;font-weight:700;color:var(--text);margin-bottom:10px;">${p.name}</div>
-      <div class="domain-bar" style="margin-bottom:10px;">
-        <div class="domain-badge db-feel"><div class="db-num">${byDomain.feel.length}</div><div class="db-lbl">감성</div></div>
-        <div class="domain-badge db-think"><div class="db-num">${byDomain.think.length}</div><div class="db-lbl">이성</div></div>
-        <div class="domain-badge db-do"><div class="db-num">${byDomain.do.length}</div><div class="db-lbl">행동</div></div>
-      </div>
-      <div style="display:flex;flex-wrap:wrap;gap:5px;">
-        ${keptAll.map(cid=>{ const c=CARD_MAP[cid]; return c?`<span class="kept-chip ${catClass(c.cat)}">${c.e} ${c.n}</span>`:''; }).join('')}
-      </div>
-    </div>`;
-  }).join('');
-  showScreen('allResultScreen');
-}
-
-function showAllResults(){
-  if(!state) return;
-  buildAllResults(state);
-}
-
-// ── 이미지 저장 ──
-async function saveResultImage(){
-  // html2canvas 로드
-  if(!window.html2canvas){
-    await new Promise((res,rej)=>{
-      const s=document.createElement('script');
-      s.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-      s.onload=res; s.onerror=rej;
-      document.head.appendChild(s);
-    });
-  }
-  const el=document.getElementById('resultCard');
-  if(!el){ alert('결과 카드를 찾을 수 없습니다'); return; }
-  try {
-    const canvas=await html2canvas(el,{
-      backgroundColor:'#0d0d1a', scale:2,
-      useCORS:true, logging:false
-    });
-    const a=document.createElement('a');
-    a.download=`${myName}_강점프로파일.png`;
-    a.href=canvas.toDataURL('image/png');
-    a.click();
-  } catch(e){
-    alert('이미지 저장 중 오류가 발생했습니다.');
-  }
-}
-
-// ── 파티클 ──
-function spawnParticles(){
-  const cx=window.innerWidth/2, cy=window.innerHeight/2;
-  const colors=['#ff9a56','#ffd700','#ff6b9d','#a855f7','#2dd4bf','#4ade80'];
-  for(let i=0;i<36;i++){
-    const p=document.createElement('div'); p.className='particle';
-    const sz=Math.random()*12+4, angle=Math.random()*360, dist=Math.random()*200+80;
-    p.style.cssText=`left:${cx}px;top:${cy}px;width:${sz}px;height:${sz}px;background:${colors[Math.floor(Math.random()*colors.length)]};--dx:${Math.cos(angle*Math.PI/180)*dist}px;--dy:${Math.sin(angle*Math.PI/180)*dist-80}px;--pd:${Math.random()*.6+.9}s;animation-delay:${Math.random()*.12}s;`;
-    document.body.appendChild(p); setTimeout(()=>p.remove(),1600);
-  }
-}
-
-// ── 셔플 ──
 function cryptoShuffle(arr){
   const a=[...arr];
   for(let i=a.length-1;i>0;i--){
-    const range=i+1, limit=Math.floor(0x100000000/range)*range;
-    let r; const buf=new Uint32Array(1);
-    do{ crypto.getRandomValues(buf); r=buf[0]; }while(r>=limit);
+    const range=i+1,limit=Math.floor(0x100000000/range)*range;
+    let r; const b=new Uint32Array(1);
+    do{crypto.getRandomValues(b);r=b[0];}while(r>=limit);
     [a[i],a[r%range]]=[a[r%range],a[i]];
   }
   return a;
 }
 
-// ── 설명 모달 ──
-var MODAL_CONTENTS = {
-  home: {
-    icon: '✦',
-    title: 'STRENGTH SLIDING',
-    sub: '강점 슬라이딩 게임 소개',
-    html: `
-      <div class="modal-section">
-        <div class="modal-section-title">게임 목적</div>
-        <div class="modal-step">
-          <div class="modal-step-num">🎯</div>
-          <div class="modal-step-text">54장의 강점 카드를 돌려보며 <strong>나의 진짜 강점</strong>을 발견하는 활동입니다. 4라운드 동안 카드를 킵하거나 패스하며 나와 가장 잘 어울리는 강점을 찾아보세요.</div>
+function getLeaderId(players){
+  const list=Object.entries(players).filter(([,p])=>p.joinedAt);
+  if(!list.length) return null;
+  list.sort((a,b)=>a[1].joinedAt-b[1].joinedAt);
+  return list[0][0];
+}
+
+function spawnParticles(){
+  const cx=innerWidth/2,cy=innerHeight/2;
+  const cols=['#ff9a56','#ffd700','#ff6b9d','#a855f7','#2dd4bf','#4ade80'];
+  for(let i=0;i<28;i++){
+    const p=document.createElement('div'); p.className='particle';
+    const sz=Math.random()*10+4,ang=Math.random()*360,d=Math.random()*180+80;
+    p.style.cssText=`left:${cx}px;top:${cy}px;width:${sz}px;height:${sz}px;background:${cols[~~(Math.random()*cols.length)]};--dx:${Math.cos(ang*Math.PI/180)*d}px;--dy:${Math.sin(ang*Math.PI/180)*d-60}px;--pd:${Math.random()*.6+.9}s;`;
+    document.body.appendChild(p); setTimeout(()=>p.remove(),1600);
+  }
+}
+
+// ══════════════════════════════════════
+// 강사 셋업 초기화
+// ══════════════════════════════════════
+(function initNumBtns(){
+  const nums=[2,3,4,5,6,7,8,9,10,15,20,25,30,35,40,45,50];
+  const wrap=document.getElementById('numBtnWrap');
+  nums.forEach(n=>{
+    const b=document.createElement('button');
+    b.className='num-btn'+(n===30?' sel':'');
+    b.textContent=n;
+    b.onclick=()=>{
+      wrap.querySelectorAll('.num-btn').forEach(x=>x.classList.remove('sel'));
+      b.classList.add('sel'); selGroups=n;
+      document.getElementById('selGroupNum').textContent=n;
+    };
+    wrap.appendChild(b);
+  });
+})();
+
+function goJoin(){
+  db.ref('config/totalGroups').once('value').then(snap=>{
+    if(snap.exists()) loadGroupSelect(snap.val());
+    else alert('강사가 아직 방을 생성하지 않았습니다.');
+  });
+}
+
+// ══════════════════════════════════════
+// 강사: 방 생성
+// ══════════════════════════════════════
+async function hostCreateGroups(){
+  const pw=document.getElementById('hostPwInput').value;
+  const msg=document.getElementById('hostPwMsg');
+  if(pw!==HOST_PW){ msg.textContent='비밀번호가 틀렸습니다.'; return; }
+  msg.textContent='방 생성 중...';
+
+  const n=selGroups;
+  const upd={'config/totalGroups':n,'config/createdAt':Date.now()};
+
+  for(let g=1;g<=n;g++){
+    const gk='groups/group_'+g;
+    upd[gk+'/name']=g+'조';
+    upd[gk+'/phase']='lobby';
+    upd[gk+'/round']=0;
+    upd[gk+'/deckIndex']=0;
+    upd[gk+'/masterDecks/round1']=toObj(cryptoShuffle(CARDS.map(c=>c.id)));
+    upd[gk+'/masterDecks/round2']=toObj(cryptoShuffle(CARDS.map(c=>c.id)));
+    upd[gk+'/masterDecks/round3']=toObj(cryptoShuffle(CARDS.map(c=>c.id)));
+    // players/currentDeck/gifts/keptByRound/giftReceived 초기화
+    upd[gk+'/players']=null;
+    upd[gk+'/currentDeck']=null;
+    upd[gk+'/gifts']=null;
+    upd[gk+'/keptByRound']=null;
+    upd[gk+'/giftReceived']=null;
+    upd[gk+'/commonPool']=null;
+    upd[gk+'/poolCards']=null;
+    upd[gk+'/opCount']=0;
+  }
+
+  try{
+    await db.ref().update(upd);
+    msg.textContent='';
+    alert(`✅ ${n}개 조 생성 완료!\n참가자에게 이 URL을 공유하세요.`);
+    loadGroupSelect(n);
+  }catch(e){ msg.textContent='오류: '+e.message; }
+}
+
+// ══════════════════════════════════════
+// 참가자: 조 선택
+// ══════════════════════════════════════
+function loadGroupSelect(total){
+  const grid=document.getElementById('groupGrid');
+  grid.innerHTML='';
+  // 기존 리스너 해제
+  for(let g=1;g<=50;g++) db.ref('groups/group_'+g+'/players').off();
+
+  for(let g=1;g<=total;g++){
+    const btn=document.createElement('div');
+    btn.className='group-btn'; btn.id='gb'+g;
+    btn.innerHTML=`<div>${g}조</div><div class="gb-cnt" id="gc${g}">-</div>`;
+    btn.onclick=()=>selectGroup(g);
+    grid.appendChild(btn);
+    // 인원 실시간
+    db.ref('groups/group_'+g+'/players').on('value',snap=>{
+      const el=document.getElementById('gc'+g); if(!el) return;
+      const cnt=snap.val()?Object.keys(snap.val()).length:0;
+      el.textContent=cnt+'명';
+      const b=document.getElementById('gb'+g);
+      if(b) b.classList.toggle('full',cnt>=8);
+    });
+  }
+  showScreen('sGroupSelect');
+}
+
+function selectGroup(g){
+  GC='group_'+g;
+  document.getElementById('nameGroupLabel').textContent=g+'조에 입장합니다';
+  document.getElementById('playerNameInput').value='';
+  document.getElementById('nameInputMsg').textContent='';
+  showScreen('sNameInput');
+}
+
+// ══════════════════════════════════════
+// 참가자: 이름 입력 & 입장
+// ══════════════════════════════════════
+async function joinGroup(){
+  const name=document.getElementById('playerNameInput').value.trim();
+  const msg=document.getElementById('nameInputMsg');
+  if(!name){ msg.textContent='이름을 입력하세요.'; return; }
+
+  const snap=await db.ref('groups/'+GC).once('value');
+  if(!snap.exists()){ msg.textContent='조를 찾을 수 없습니다.'; return; }
+  const data=snap.val();
+  const players=data.players||{};
+  const pid='p_'+name;
+
+  // 중복 이름 체크 (재입장 허용)
+  if(players[pid]){
+    const sess=getSession();
+    if(!sess||sess.GC!==GC||sess.myId!==pid){
+      msg.textContent='같은 이름이 이미 있습니다.'; return;
+    }
+  }
+
+  myName=name; myId=pid;
+  const joinedAt=players[pid]?.joinedAt||Date.now();
+  await db.ref('groups/'+GC+'/players/'+myId).update({name,joinedAt,ready:players[pid]?.ready||false});
+  saveSession();
+  gRef=db.ref('groups/'+GC);
+  startListener();
+}
+
+// ══════════════════════════════════════
+// 세션 (localStorage)
+// ══════════════════════════════════════
+function saveSession(){ localStorage.setItem('ss_v5',JSON.stringify({GC,myId,myName})); }
+function getSession(){ try{ return JSON.parse(localStorage.getItem('ss_v5')); }catch(e){ return null; } }
+function clearSession(){ localStorage.removeItem('ss_v5'); }
+
+// ══════════════════════════════════════
+// 재입장 감지
+// ══════════════════════════════════════
+async function tryResume(){
+  const sess=getSession();
+  if(!sess){ initFresh(); return; }
+  const {GC:gc,myId:mid,myName:mn}=sess;
+  const snap=await db.ref('groups/'+gc+'/players/'+mid).once('value');
+  if(snap.exists()){
+    GC=gc; myId=mid; myName=mn;
+    gRef=db.ref('groups/'+gc);
+    startListener();
+  } else {
+    clearSession(); initFresh();
+  }
+}
+
+function initFresh(){
+  db.ref('config/totalGroups').once('value').then(snap=>{
+    if(snap.exists()) loadGroupSelect(snap.val());
+    else showScreen('sHostSetup');
+  });
+}
+
+// ══════════════════════════════════════
+// Firebase 리스너
+// ══════════════════════════════════════
+function startListener(){
+  if(gListener){ gRef.off('value',gListener); gListener=null; }
+  gListener=gRef.on('value',snap=>{
+    if(!snap.exists()) return;
+    route(snap.val());
+  });
+}
+
+// ══════════════════════════════════════
+// Phase 라우팅
+// ══════════════════════════════════════
+function route(data){
+  const ph=data.phase||'lobby';
+  switch(ph){
+    case 'lobby':      renderLobby(data); break;
+    case 'playing':    renderPlaying(data); break;
+    case 'commonPool': renderPool(data); break;
+    case 'roundResult':renderRoundResult(data); break;
+    case 'roundWait':  renderRoundWait(data); break;
+    case 'final':      renderFinal(data); break;
+  }
+}
+
+// ══════════════════════════════════════
+// 로비
+// ══════════════════════════════════════
+function renderLobby(data){
+  showScreen('sLobby');
+  const players=data.players||{};
+  const gNum=GC.replace('group_','');
+  document.getElementById('lobbyGroupLabel').textContent=gNum+'조 대기실';
+
+  const list=Object.entries(players).sort((a,b)=>a[1].joinedAt-b[1].joinedAt);
+  const leaderId=list.length?list[0][0]:null;
+
+  document.getElementById('lobbyPlayerList').innerHTML=list.map(([id,p],i)=>`
+    <div class="player-row">
+      <div class="avatar" style="background:${COLORS[i%8]}22;color:${COLORS[i%8]}">${p.name[0]}</div>
+      <div class="player-name">${p.name} ${id===leaderId?'<span class="badge badge-y">조장</span>':''}</div>
+    </div>`).join('');
+
+  const isLeader=(myId===leaderId);
+  document.getElementById('leaderStartWrap').style.display=isLeader?'block':'none';
+  document.getElementById('lobbyMsg').textContent=isLeader
+    ?(list.length>=2?'조원이 모두 입장하면 1라운드를 시작하세요!':'조원 입장 대기 중...')
+    :'조장이 게임을 시작할 때까지 기다려주세요...';
+}
+
+function doLeave(){
+  if(!confirm('나가면 게임에서 제외됩니다. 나가시겠습니까?')) return;
+  if(gRef&&myId) gRef.child('players/'+myId).remove();
+  clearSession();
+  if(gListener){ gRef.off('value',gListener); gListener=null; }
+  location.reload();
+}
+
+// ══════════════════════════════════════
+// 조장: 라운드 시작
+// ══════════════════════════════════════
+async function leaderStartRound(){
+  const btn=document.getElementById('rwStartBtn');
+  if(btn) btn.disabled=true;
+
+  const snap=await gRef.once('value');
+  const data=snap.val();
+  const nextRound=(data.round||0)+1;
+
+  if(nextRound>TOTAL_RNDS){
+    await gRef.update({phase:'final'}); return;
+  }
+
+  const players=data.players||{};
+  const pIds=Object.keys(players);
+  const n=pIds.length; if(!n) return;
+
+  const masterDeck=toArr(data.masterDecks?.['round'+nextRound]);
+  // 선택기회 수: floor(54 / (2*n))
+  const opCnt=Math.max(1, Math.floor(masterDeck.length/(2*n)));
+  const usedCards=opCnt*2*n;
+  const poolArr=masterDeck.slice(usedCards); // 남는 카드 → 공통 풀
+
+  const upd={
+    phase:'playing',
+    round:nextRound,
+    deckIndex:0,
+    opCount:opCnt,
+    poolCards:poolArr.length?toObj(poolArr):null,
+    gifts:null,
+    commonPool:null
+  };
+
+  // 첫 선택기회: 각 플레이어에게 2장씩 (deckIndex=0)
+  pIds.forEach((pid,i)=>{
+    const s=i*2;
+    upd['currentDeck/'+pid]=toObj(masterDeck.slice(s,s+2));
+    upd['players/'+pid+'/ready']=false;
+    upd['keptByRound/'+pid+'/round'+nextRound]=toObj([]); // 빈 배열 우회
+    upd['giftReceived/'+pid+'/round'+nextRound]=toObj([]);
+  });
+
+  await gRef.update(upd);
+}
+
+// ══════════════════════════════════════
+// 게임 카드 화면
+// ══════════════════════════════════════
+function renderPlaying(data){
+  const myReady=data.players?.[myId]?.ready;
+
+  if(myReady){
+    // 전송 완료 → 대기 박스
+    showWait(data);
+    return;
+  }
+
+  showScreen('sGameCard');
+  clearInterval(cdIntervalId);
+
+  const round=data.round||1;
+  const di=data.deckIndex||0;
+  const opCnt=data.opCount||1;
+
+  document.getElementById('gcRoundNum').textContent=`ROUND ${round} / ${TOTAL_RNDS}`;
+  document.getElementById('gcOpLabel').textContent=`선택기회 ${di+1}/${opCnt}회`;
+  document.getElementById('gcRoundDesc').textContent='2장의 카드 중 킵할 카드를 선택하고 전송하세요';
+
+  // 누적 킵 표시
+  const kRaw=data.keptByRound?.[myId]?.['round'+round];
+  const kArr=toArr(kRaw);
+  const gcKBox=document.getElementById('gcKeptBox');
+  if(kArr.length){
+    gcKBox.style.display='block';
+    document.getElementById('gcKeptBar').innerHTML=kArr.map(cid=>{
+      const c=CM[cid]; return c?`<span class="kept-chip ${cl(c.cat)}">${c.e} ${c.n}</span>`:'';
+    }).join('');
+  } else gcKBox.style.display='none';
+
+  // 내 현재 카드 2장
+  deal=toArr(data.currentDeck?.[myId]);
+  keptLocal=[]; giftMap={};
+
+  document.getElementById('gcDealBox').style.display='block';
+  document.getElementById('gcWaitBox').style.display='none';
+  renderDeal(data);
+}
+
+function renderDeal(data){
+  const players=data.players||{};
+  const others=Object.entries(players).filter(([id])=>id!==myId);
+
+  // 카드 2장
+  document.getElementById('gcDealArea').innerHTML=deal.map((cid,idx)=>{
+    const c=CM[cid]; if(!c) return '';
+    const isKept=keptLocal.includes(cid);
+    return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:10px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);">
+      ${cardHTML(cid, isKept?'kept no-hover':'')}
+      <div style="flex:1;">
+        <div style="font-size:.85rem;font-weight:600;color:var(--text);margin-bottom:4px;">${c.e} ${c.n}</div>
+        <div style="font-size:.72rem;color:var(--dim);line-height:1.5;margin-bottom:8px;">${c.def}</div>
+        <div class="keep-toggle ${isKept?'on':''}" onclick="toggleKept('${cid}')">
+          <span>${isKept?'✦ 킵 선택됨':'○ 킵 선택'}</span>
         </div>
       </div>
-      <div class="modal-section">
-        <div class="modal-section-title">카드 영역 구성</div>
-        <div class="modal-domain-row">
-          <div class="modal-domain md-feel"><div class="md-ico">😊</div><div class="md-name">감성</div><div class="md-desc">느끼고 공감하는 강점 18장</div></div>
-          <div class="modal-domain md-think"><div class="md-ico">🧠</div><div class="md-name">이성</div><div class="md-desc">생각하고 분석하는 강점 18장</div></div>
-          <div class="modal-domain md-do"><div class="md-ico">⚡</div><div class="md-name">행동</div><div class="md-desc">실행하고 표현하는 강점 18장</div></div>
+    </div>`;
+  }).join('');
+
+  updateGiftSection(others);
+  updateSendBtn(others);
+}
+
+function toggleKept(cid){
+  if(keptLocal.includes(cid)){
+    keptLocal=keptLocal.filter(id=>id!==cid);
+    delete giftMap[cid];
+  } else {
+    keptLocal.push(cid);
+  }
+  gRef.once('value').then(s=>renderDeal(s.val()));
+}
+
+function updateGiftSection(others){
+  const gs=document.getElementById('gcGiftSection');
+  const notKept=deal.filter(cid=>!keptLocal.includes(cid));
+  if(!notKept.length||!others.length){ gs.style.display='none'; return; }
+  gs.style.display='block';
+
+  const opts='<option value="">-- 선물할 조원 --</option>'+
+    others.map(([id,p])=>`<option value="${id}">${p.name}</option>`).join('');
+
+  document.getElementById('gcGiftList').innerHTML=notKept.map(cid=>{
+    const c=CM[cid]; if(!c) return '';
+    const sel=giftMap[cid]||'';
+    const selOpts=opts.replace(`value="${sel}"`,`value="${sel}" selected`);
+    return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+      <span style="font-size:1.1rem;">${c.e}</span>
+      <span style="font-size:.82rem;flex:1;color:var(--text);">${c.n}</span>
+      <select class="gift-select" style="max-width:140px;" onchange="setGift('${cid}',this.value)">${selOpts}</select>
+    </div>`;
+  }).join('');
+}
+
+function setGift(cid,tid){ if(tid) giftMap[cid]=tid; else delete giftMap[cid]; updateSendBtn(); }
+
+function updateSendBtn(others){
+  if(!others){
+    gRef.once('value').then(s=>{
+      const p=s.val()?.players||{};
+      updateSendBtn(Object.entries(p).filter(([id])=>id!==myId));
+    }); return;
+  }
+  const notKept=deal.filter(cid=>!keptLocal.includes(cid));
+  // 조원이 없으면 선물 불필요, 있으면 킵 안 한 카드 전부 선물 지정해야 전송 가능
+  const needGift=notKept.length>0&&others.length>0;
+  const allGifted=notKept.every(cid=>giftMap[cid]);
+  const ok=!needGift||(needGift&&allGifted);
+  document.getElementById('gcSendBtn').disabled=!ok;
+  document.getElementById('gcSendMsg').textContent=
+    ok?'전송 준비 완료':(notKept.length?'킵하지 않은 카드의 선물 대상을 선택하세요':'');
+}
+
+// ══════════════════════════════════════
+// 전송하기
+// ══════════════════════════════════════
+async function sendCards(){
+  document.getElementById('gcSendBtn').disabled=true;
+  const snap=await gRef.once('value');
+  const data=snap.val();
+  const round=data.round||1;
+  const players=data.players||{};
+  const pIds=Object.keys(players);
+
+  const upd={};
+  // 킵 누적
+  const prevKept=toArr(data.keptByRound?.[myId]?.['round'+round]);
+  upd['keptByRound/'+myId+'/round'+round]=toObj([...prevKept,...keptLocal]);
+  // 선물 전달
+  for(const [cid,tid] of Object.entries(giftMap)){
+    if(!tid) continue;
+    const prev=toArr(data.gifts?.[tid]);
+    upd['gifts/'+tid]=toObj([...prev,cid]);
+  }
+  upd['players/'+myId+'/ready']=true;
+  await gRef.update(upd);
+
+  showWait(data);
+
+  // 조장만 전원 ready 감시 → 다음 단계 처리
+  const leaderId=getLeaderId(players);
+  if(myId===leaderId) watchAllReady(data);
+}
+
+// ══════════════════════════════════════
+// 전송 후 대기 박스 표시
+// ══════════════════════════════════════
+function showWait(data){
+  showScreen('sGameCard');
+  document.getElementById('gcDealBox').style.display='none';
+  document.getElementById('gcWaitBox').style.display='block';
+  document.getElementById('gcCdWrap').style.display='none';
+  document.getElementById('gcRecvWrap').style.display='none';
+  document.getElementById('gcKeptBox').style.display='none';
+  document.getElementById('gcWaitMsg').textContent='모든 조원이 전송을 완료하면 자동으로 다음 단계로 넘어갑니다...';
+}
+
+// ══════════════════════════════════════
+// 조장: 전원 ready 감시 (Firebase 리스너)
+// ══════════════════════════════════════
+function watchAllReady(dataAtSend){
+  const round=dataAtSend.round||1;
+  const di=dataAtSend.deckIndex||0;
+  const opCnt=dataAtSend.opCount||1;
+
+  // players 변화 감시
+  gRef.child('players').on('value',async snap=>{
+    const players=snap.val();
+    if(!players) return;
+    const allReady=Object.values(players).every(p=>p.ready);
+    if(!allReady) return;
+
+    // 한 번만 실행되도록 off
+    gRef.child('players').off('value');
+
+    // 전원 ready → 10초 카운트다운 신호
+    await gRef.update({phase_cd: Date.now()});
+    await sleep(10000);
+
+    // 다음 선택기회 or 공통풀 or 라운드결과
+    const snap2=await gRef.once('value');
+    await advanceDeal(snap2.val(), round, di, opCnt);
+  });
+}
+
+// ══════════════════════════════════════
+// phase_cd 감지 → 카운트다운 + 선물 표시 (모든 참가자)
+// ══════════════════════════════════════
+// route() 함수에서 playing 시 phase_cd 체크
+function renderPlaying(data){
+  // phase_cd 있고 내가 ready 상태면 카운트다운 표시
+  if(data.phase_cd && data.players?.[myId]?.ready){
+    const elapsed=Math.floor((Date.now()-data.phase_cd)/1000);
+    const remaining=Math.max(0,10-elapsed);
+    showWait(data);
+    startCdUI(data, remaining);
+    return;
+  }
+
+  const myReady=data.players?.[myId]?.ready;
+  if(myReady){ showWait(data); return; }
+
+  showScreen('sGameCard');
+  clearInterval(cdIntervalId);
+
+  const round=data.round||1;
+  const di=data.deckIndex||0;
+  const opCnt=data.opCount||1;
+
+  document.getElementById('gcRoundNum').textContent=`ROUND ${round} / ${TOTAL_RNDS}`;
+  document.getElementById('gcOpLabel').textContent=`선택기회 ${di+1}/${opCnt}회`;
+  document.getElementById('gcRoundDesc').textContent='2장의 카드 중 킵할 카드를 선택하고 전송하세요';
+
+  const kArr=toArr(data.keptByRound?.[myId]?.['round'+round]);
+  const gcKBox=document.getElementById('gcKeptBox');
+  if(kArr.length){
+    gcKBox.style.display='block';
+    document.getElementById('gcKeptBar').innerHTML=kArr.map(cid=>{
+      const c=CM[cid]; return c?`<span class="kept-chip ${cl(c.cat)}">${c.e} ${c.n}</span>`:'';
+    }).join('');
+  } else gcKBox.style.display='none';
+
+  deal=toArr(data.currentDeck?.[myId]);
+  keptLocal=[]; giftMap={};
+  document.getElementById('gcDealBox').style.display='block';
+  document.getElementById('gcWaitBox').style.display='none';
+  renderDeal(data);
+}
+
+function startCdUI(data, startSec){
+  const round=data.round||1;
+  document.getElementById('gcCdWrap').style.display='block';
+  document.getElementById('gcRecvWrap').style.display='block';
+
+  const gifts=toArr(data.gifts?.[myId]);
+  document.getElementById('gcRecvCards').innerHTML=gifts.length
+    ?gifts.map(cid=>cardHTML(cid,'no-hover')).join('')
+    :'<span style="color:var(--dim);font-size:.8rem;padding:10px;">없음</span>';
+
+  let sec=startSec;
+  document.getElementById('gcCdNum').textContent=sec;
+  clearInterval(cdIntervalId);
+  cdIntervalId=setInterval(()=>{
+    sec--; document.getElementById('gcCdNum').textContent=Math.max(0,sec);
+    if(sec<=0) clearInterval(cdIntervalId);
+  },1000);
+}
+
+// ══════════════════════════════════════
+// 다음 선택기회 / 공통풀 / 라운드결과 전환
+// ══════════════════════════════════════
+async function advanceDeal(data, round, di, opCnt){
+  const players=data.players||{};
+  const pIds=Object.keys(players);
+  const n=pIds.length;
+  const masterDeck=toArr(data.masterDecks?.['round'+round]);
+  const nextDi=di+1;
+  const upd={phase_cd:null}; // 카운트다운 힌트 제거
+
+  if(nextDi>=opCnt){
+    // 선택기회 소진 → 공통풀 or 라운드결과
+    // 먼저 gifts → giftReceived 반영
+    for(const pid of pIds){
+      const gifts=toArr(data.gifts?.[pid]);
+      const prev=toArr(data.giftReceived?.[pid]?.['round'+round]);
+      upd['giftReceived/'+pid+'/round'+round]=toObj([...prev,...gifts]);
+    }
+    upd['gifts']=null;
+    pIds.forEach(pid=>{ upd['players/'+pid+'/ready']=false; });
+
+    const poolArr=toArr(data.poolCards);
+    if(poolArr.length){
+      const poolObj={};
+      poolArr.forEach(cid=>{ poolObj[cid]={takenBy:null}; });
+      upd['phase']='commonPool';
+      upd['commonPool/round'+round]=poolObj;
+      upd['commonPool/startAt']=Date.now();
+    } else {
+      upd['phase']='roundResult';
+    }
+  } else {
+    // 다음 선택기회
+    upd['deckIndex']=nextDi;
+    upd['gifts']=null;
+    pIds.forEach((pid,i)=>{
+      // nextDi번째 기회: 각 사람 인덱스 = nextDi*n + i, 카드 2장씩
+      const s=(nextDi*n+i)*2;
+      upd['currentDeck/'+pid]=toObj(masterDeck.slice(s,s+2));
+      upd['players/'+pid+'/ready']=false;
+    });
+  }
+  await gRef.update(upd);
+}
+
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+// ══════════════════════════════════════
+// 공통 풀
+// ══════════════════════════════════════
+function renderPool(data){
+  clearInterval(cpIntervalId);
+  showScreen('sCommonPool');
+  const round=data.round||1;
+  document.getElementById('cpRoundNum').textContent=`ROUND ${round} 공통 풀`;
+
+  const poolData=data.commonPool?.['round'+round]||{};
+  const startAt=data.commonPool?.startAt||Date.now();
+  cpMyTook=Object.values(poolData).filter(v=>v.takenBy===myId).length;
+
+  renderPoolCards(poolData,round);
+  startPoolTimer(startAt,round,poolData);
+
+  // 공통 풀 실시간 구독
+  gRef.child('commonPool/round'+round).on('value',snap=>{
+    if(!snap.exists()) return;
+    const pd=snap.val();
+    cpMyTook=Object.values(pd).filter(v=>v.takenBy===myId).length;
+    document.getElementById('cpMyCnt').textContent=`내가 가져간: ${cpMyTook} / 2`;
+    renderPoolCards(pd,round);
+    if(Object.values(pd).every(v=>v.takenBy)){
+      clearInterval(cpIntervalId);
+      endPool(round);
+    }
+  });
+}
+
+function renderPoolCards(poolData,round){
+  const grid=document.getElementById('cpGrid');
+  grid.innerHTML='';
+  for(const [cid,info] of Object.entries(poolData)){
+    const c=CM[cid]; if(!c) continue;
+    const taken=info.takenBy;
+    const isMine=(taken===myId);
+    const avail=!taken&&cpMyTook<2;
+    const cls=taken?(isMine?'pool-mine':'pool-taken'):(avail?'pool-avail':'');
+    const div=document.createElement('div');
+    div.className='str-card '+c.cat+'-card '+cls;
+    div.innerHTML=`<div class="tooltip"><div class="tt-name">${c.e} ${c.n}</div>${c.def}</div>
+      <div class="ce">${c.e}</div><div class="cn">${c.n}</div><div class="ccat">${cl2(c.cat)}</div>`;
+    if(!isMine&&taken){
+      const nm=taken.replace('p_','');
+      div.innerHTML+=`<div style="position:absolute;bottom:2px;left:0;right:0;font-size:.5rem;color:var(--dim);text-align:center;padding:0 2px;">${nm}님 가져감</div>`;
+    }
+    if(avail) div.onclick=()=>takePool(cid,round);
+    grid.appendChild(div);
+  }
+}
+
+async function takePool(cid,round){
+  if(cpMyTook>=2) return;
+  const ref=gRef.child('commonPool/round'+round+'/'+cid+'/takenBy');
+  const snap=await ref.once('value');
+  if(snap.val()) return;
+  await ref.set(myId);
+  // giftReceived에도 추가
+  const snap2=await gRef.once('value');
+  const data=snap2.val();
+  const prev=toArr(data.giftReceived?.[myId]?.['round'+round]);
+  await gRef.child('giftReceived/'+myId+'/round'+round).set(toObj([...prev,cid]));
+  spawnParticles();
+}
+
+function startPoolTimer(startAt,round,poolData){
+  const elapsed=Math.floor((Date.now()-startAt)/1000);
+  let rem=Math.max(0,POOL_SEC-elapsed);
+  const bar=document.getElementById('cpTimerBar');
+  const num=document.getElementById('cpTimerNum');
+  const tick=()=>{
+    num.textContent=rem;
+    bar.style.width=(rem/POOL_SEC*100)+'%';
+    bar.style.background=rem<=10?'linear-gradient(90deg,var(--red),#ff7700)':'linear-gradient(90deg,var(--w1),var(--w3))';
+    if(rem<=0){ clearInterval(cpIntervalId); endPool(round); return; }
+    rem--;
+  };
+  tick();
+  cpIntervalId=setInterval(tick,1000);
+}
+
+async function endPool(round){
+  gRef.child('commonPool/round'+round).off();
+  clearInterval(cpIntervalId);
+  const snap=await gRef.once('value');
+  const data=snap.val();
+  const leaderId=getLeaderId(data.players||{});
+  if(myId===leaderId){
+    await gRef.update({phase:'roundResult'});
+  }
+}
+
+// ══════════════════════════════════════
+// 라운드 결과 — 핵심강점 선택
+// ══════════════════════════════════════
+function renderRoundResult(data){
+  showScreen('sRoundResult');
+  const round=data.round||1;
+  document.getElementById('rrTitle').textContent=`✦ ROUND ${round} 종료 ✦`;
+  rrSel=[];
+
+  const kept=toArr(data.keptByRound?.[myId]?.['round'+round]);
+  const recv=toArr(data.giftReceived?.[myId]?.['round'+round]);
+  const all=[...new Set([...kept,...recv])];
+
+  const grid=document.getElementById('rrGrid');
+  if(!all.length){
+    grid.innerHTML='<div style="color:var(--dim);font-size:.85rem;padding:20px;text-align:center;">이번 라운드에서 모은 카드가 없습니다</div>';
+    return;
+  }
+  grid.innerHTML=all.map(cid=>{
+    const c=CM[cid]; if(!c) return '';
+    return `<div class="str-card ${c.cat}-card" id="rrc_${cid}" onclick="toggleRRSel('${cid}')">
+      <div class="tooltip"><div class="tt-name">${c.e} ${c.n}</div>${c.def}</div>
+      <div class="ce">${c.e}</div><div class="cn">${c.n}</div><div class="ccat">${cl2(c.cat)}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('rrMsg').textContent='핵심강점 카드를 탭해서 선택 (개수 제한 없음)';
+}
+
+function toggleRRSel(cid){
+  const el=document.getElementById('rrc_'+cid); if(!el) return;
+  if(rrSel.includes(cid)){ rrSel=rrSel.filter(id=>id!==cid); el.classList.remove('kept'); }
+  else{ rrSel.push(cid); el.classList.add('kept'); }
+  document.getElementById('rrMsg').textContent=rrSel.length?`${rrSel.length}장 선택됨`:'핵심강점 카드를 탭해서 선택';
+}
+
+async function saveRoundResult(){
+  const snap=await gRef.once('value');
+  const data=snap.val();
+  const round=data.round||1;
+  const prev=toArr(data.players?.[myId]?.finalStrengths);
+  await gRef.child('players/'+myId+'/finalStrengths').set(toObj([...prev,...rrSel]));
+  await gRef.child('players/'+myId+'/ready').set(true);
+  document.getElementById('rrMsg').textContent='저장 완료! 다음 라운드를 기다리세요.';
+
+  // 조장: 전원 저장 완료 감시
+  const leaderId=getLeaderId(data.players||{});
+  if(myId===leaderId) watchAllReadyForNext(data);
+  showScreen('sRoundWait');
+  renderRoundWait(data);
+}
+
+function renderRoundWait(data){
+  showScreen('sRoundWait');
+  const round=data.round||1;
+  const players=data.players||{};
+  const leaderId=getLeaderId(players);
+  const isLeader=(myId===leaderId);
+  const next=round+1;
+
+  document.getElementById('rwMsg').innerHTML=
+    `<strong style="color:var(--w2);">ROUND ${round} 완료!</strong><br>`+
+    (next<=TOTAL_RNDS?`ROUND ${next} 준비를 기다리세요.`:'모든 라운드가 끝났습니다!');
+
+  document.getElementById('rwLeaderWrap').style.display=isLeader?'block':'none';
+  const rwStartBtn=document.getElementById('rwStartBtn');
+  if(rwStartBtn){
+    rwStartBtn.disabled=false;
+    rwStartBtn.textContent=next<=TOTAL_RNDS?'▶ 다음 라운드 시작':'🏆 최종 결과 보기';
+  }
+  document.getElementById('rwWaitMsg').textContent=isLeader?'':'조장이 다음 라운드를 시작할 때까지 기다려주세요...';
+}
+
+function watchAllReadyForNext(dataAtSave){
+  const round=dataAtSave.round||1;
+  gRef.child('players').on('value',async snap=>{
+    const players=snap.val(); if(!players) return;
+    const allReady=Object.values(players).every(p=>p.ready);
+    if(!allReady) return;
+    gRef.child('players').off('value');
+
+    const next=round+1;
+    if(next>TOTAL_RNDS){
+      await gRef.update({phase:'final'});
+    } else {
+      const upd={phase:'roundWait'};
+      Object.keys(players).forEach(pid=>{ upd['players/'+pid+'/ready']=false; });
+      await gRef.update(upd);
+    }
+  });
+}
+
+// ══════════════════════════════════════
+// 최종 결과
+// ══════════════════════════════════════
+function renderFinal(data){
+  showScreen('sFinalResult');
+  spawnParticles();
+  const me=data.players?.[myId]; if(!me) return;
+  const finals=toArr(me.finalStrengths);
+  const dom={feel:[],think:[],do:[]};
+  finals.forEach(cid=>{ const c=CM[cid]; if(c) dom[c.cat].push(c); });
+
+  document.getElementById('finalBox').innerHTML=`
+    <div class="result-card" id="resultCard">
+      <div style="text-align:center;margin-bottom:14px;">
+        <div style="font-size:.78rem;color:var(--dim);letter-spacing:2px;">✦ ${myName}님의 핵심 강점 ✦</div>
+      </div>
+      <div class="domain-bar">
+        <div class="domain-badge db-feel"><div class="db-num">${dom.feel.length}</div><div class="db-lbl">😊 감성</div></div>
+        <div class="domain-badge db-think"><div class="db-num">${dom.think.length}</div><div class="db-lbl">🧠 이성</div></div>
+        <div class="domain-badge db-do"><div class="db-num">${dom.do.length}</div><div class="db-lbl">⚡ 행동</div></div>
+      </div>
+      ${['feel','think','do'].map(cat=>{
+        if(!dom[cat].length) return '';
+        const cc=cl(cat);
+        return `<div style="margin-bottom:12px;">
+          <div style="font-size:.68rem;font-weight:700;letter-spacing:2px;color:var(--${cc});margin-bottom:6px;">${cl2(cat).toUpperCase()} 강점</div>
+          <div style="display:flex;flex-wrap:wrap;gap:5px;">
+            ${dom[cat].map(c=>`<span class="kept-chip ${cc}">${c.e} ${c.n}</span>`).join('')}
+          </div>
+        </div>`;
+      }).join('')}
+      ${!finals.length?'<div style="color:var(--dim);text-align:center;padding:10px;font-size:.85rem;">선택된 핵심강점이 없습니다</div>':''}
+    </div>`;
+}
+
+function showGroupResult(){
+  gRef.once('value').then(snap=>{
+    const data=snap.val(); const players=data.players||{};
+    const box=document.getElementById('grBox');
+    box.innerHTML=Object.entries(players).map(([pid,p])=>{
+      const finals=toArr(p.finalStrengths);
+      const dom={feel:[],think:[],do:[]};
+      finals.forEach(cid=>{ const c=CM[cid]; if(c) dom[c.cat].push(c); });
+      return `<div class="result-card" style="margin-bottom:12px;">
+        <div style="font-size:.92rem;font-weight:700;margin-bottom:10px;">${p.name} ${pid===myId?'<span class="badge badge-y">나</span>':''}</div>
+        <div class="domain-bar" style="margin-bottom:10px;">
+          <div class="domain-badge db-feel"><div class="db-num">${dom.feel.length}</div><div class="db-lbl">감성</div></div>
+          <div class="domain-badge db-think"><div class="db-num">${dom.think.length}</div><div class="db-lbl">이성</div></div>
+          <div class="domain-badge db-do"><div class="db-num">${dom.do.length}</div><div class="db-lbl">행동</div></div>
         </div>
-        <div class="modal-tip">총 54장의 카드를 참가자 수에 맞게 나누어 시작합니다. 카드에 마우스를 올리면 각 강점의 의미를 확인할 수 있어요.</div>
-      </div>
-      <div class="modal-section">
-        <div class="modal-section-title">게임 흐름</div>
-        <div class="modal-step"><div class="modal-step-num">1</div><div class="modal-step-text">강사가 <strong>방을 만들고</strong> 방 코드를 참가자에게 공유합니다.</div></div>
-        <div class="modal-step"><div class="modal-step-num">2</div><div class="modal-step-text">참가자가 코드를 입력해 <strong>입장</strong>합니다.</div></div>
-        <div class="modal-step"><div class="modal-step-num">3</div><div class="modal-step-text"><strong>4라운드</strong> 동안 카드를 킵하거나 패스합니다.</div></div>
-        <div class="modal-step"><div class="modal-step-num">4</div><div class="modal-step-text">최종 킵 카드로 <strong>나의 핵심 강점</strong>을 확인합니다.</div></div>
-      </div>
-    `
-  },
-  host: {
-    icon: '🏠',
-    title: '강사 안내',
-    sub: '방 만들기 & 게임 진행',
-    html: `
-      <div class="modal-section">
-        <div class="modal-section-title">방 만들기</div>
-        <div class="modal-step"><div class="modal-step-num">1</div><div class="modal-step-text"><strong>강사 이름</strong>을 입력하고 "방 만들기"를 누르세요.</div></div>
-        <div class="modal-step"><div class="modal-step-num">2</div><div class="modal-step-text">생성된 <strong>4자리 방 코드</strong>를 카톡 등으로 참가자에게 공유하세요.</div></div>
-        <div class="modal-step"><div class="modal-step-num">3</div><div class="modal-step-text">2명 이상 입장하면 <strong>"게임 시작"</strong> 버튼이 활성화됩니다.</div></div>
-      </div>
-      <div class="modal-section">
-        <div class="modal-section-title">라운드 진행 순서</div>
-        <div class="modal-step"><div class="modal-step-num">①</div><div class="modal-step-text">참가자가 킵 카드를 선택하면 <strong>"완료"</strong> 표시가 나타납니다.</div></div>
-        <div class="modal-step"><div class="modal-step-num">②</div><div class="modal-step-text"><strong>🥁 하나둘셋!</strong> 버튼 → 3·2·1 카운트다운 후 모두의 킵 카드가 동시 공개됩니다.</div></div>
-        <div class="modal-step"><div class="modal-step-num">③</div><div class="modal-step-text"><strong>🔄 슬라이딩!</strong> 버튼 → 남은 카드가 옆 사람에게 자동으로 이동합니다.</div></div>
-        <div class="modal-step"><div class="modal-step-num">④</div><div class="modal-step-text"><strong>▶ 다음 라운드</strong> 버튼 → 다음 라운드를 시작합니다. (4라운드 반복)</div></div>
-        <div class="modal-step"><div class="modal-step-num">⑤</div><div class="modal-step-text">4라운드 완료 후 <strong>🏆 최종 결과</strong> 버튼으로 마무리합니다.</div></div>
-      </div>
-      <div class="modal-tip">참가자 모두 킵 확정 전이라도 언제든 "하나둘셋!"을 눌러 진행할 수 있습니다.</div>
-    `
-  },
-  join: {
-    icon: '🚪',
-    title: '참가자 안내',
-    sub: '입장 방법',
-    html: `
-      <div class="modal-section">
-        <div class="modal-section-title">입장 방법</div>
-        <div class="modal-step"><div class="modal-step-num">1</div><div class="modal-step-text"><strong>내 이름</strong>을 입력하세요. (다른 참가자와 구분됩니다)</div></div>
-        <div class="modal-step"><div class="modal-step-num">2</div><div class="modal-step-text">강사에게 받은 <strong>방 코드 4자리</strong>를 입력하세요.</div></div>
-        <div class="modal-step"><div class="modal-step-num">3</div><div class="modal-step-text">"입장하기"를 누르면 대기실에서 강사의 시작을 기다립니다.</div></div>
-      </div>
-      <div class="modal-tip">같은 이름으로는 중복 입장이 불가합니다. 게임이 시작된 방에는 입장할 수 없어요.</div>
-    `
-  },
-  player: {
-    icon: '🎮',
-    title: '게임 진행 방법',
-    sub: '참가자 플레이 가이드',
-    html: `
-      <div class="modal-section">
-        <div class="modal-section-title">카드 선택 방법</div>
-        <div class="modal-step"><div class="modal-step-num">1</div><div class="modal-step-text">화면에 나타난 카드 중 <strong>내 강점과 가장 잘 어울리는 카드</strong>를 클릭하세요. 선택된 카드에 ✦ 표시가 나타납니다.</div></div>
-        <div class="modal-step"><div class="modal-step-num">2</div><div class="modal-step-text">카드에 <strong>마우스를 올리면</strong> 그 강점의 의미 설명을 볼 수 있습니다.</div></div>
-        <div class="modal-step"><div class="modal-step-num">3</div><div class="modal-step-text">선택이 완료되면 <strong>"✦ 킵 확정"</strong> 버튼을 눌러 강사에게 준비 완료를 알리세요.</div></div>
-      </div>
-      <div class="modal-section">
-        <div class="modal-section-title">킵 카드 개수 제한</div>
-        <div class="modal-step"><div class="modal-step-num">💡</div><div class="modal-step-text">카드가 <strong>4장 이상</strong>이면 최대 <strong>2장</strong>만 킵할 수 있어요.</div></div>
-        <div class="modal-step"><div class="modal-step-num">💡</div><div class="modal-step-text">카드가 <strong>3장</strong>이면 <strong>1장</strong>만 킵할 수 있어요.</div></div>
-        <div class="modal-step"><div class="modal-step-num">💡</div><div class="modal-step-text">카드가 <strong>2장 이하</strong>이면 모두 킵할 수 있어요.</div></div>
-      </div>
-      <div class="modal-section">
-        <div class="modal-section-title">라운드 흐름</div>
-        <div class="modal-step"><div class="modal-step-num">①</div><div class="modal-step-text">킵할 카드를 선택 → 킵 확정 버튼 클릭 → <strong>강사의 "하나둘셋!" 대기</strong></div></div>
-        <div class="modal-step"><div class="modal-step-num">②</div><div class="modal-step-text">동시 공개 후 남은 카드가 <strong>슬라이딩</strong>되어 옆 사람 카드가 내 화면으로 옵니다.</div></div>
-        <div class="modal-step"><div class="modal-step-num">③</div><div class="modal-step-text">4라운드 반복 후 최종 킵 카드가 <strong>나의 핵심 강점</strong>이 됩니다.</div></div>
-      </div>
-      <div class="modal-tip">매 라운드마다 상단에 지금까지 킵한 카드가 누적되어 표시됩니다. 내 강점이 쌓이는 걸 확인해보세요!</div>
-    `
-  },
-  hostControl: {
-    icon: '🎛️',
-    title: '강사 컨트롤 가이드',
-    sub: '버튼 기능 안내',
-    html: `
-      <div class="modal-section">
-        <div class="modal-section-title">버튼 순서 및 기능</div>
-        <div class="modal-step"><div class="modal-step-num" style="font-size:.65rem;width:28px;">🥁</div><div class="modal-step-text"><strong>하나둘셋!</strong> — 3·2·1 카운트다운 후 모든 참가자의 킵 카드를 동시에 공개합니다. 공개 창에서 결과를 확인하세요.</div></div>
-        <div class="modal-step"><div class="modal-step-num" style="font-size:.65rem;width:28px;">🔄</div><div class="modal-step-text"><strong>슬라이딩!</strong> — 각 참가자의 남은 카드(킵하지 않은 카드)를 옆 사람에게 자동으로 전달합니다.</div></div>
-        <div class="modal-step"><div class="modal-step-num" style="font-size:.65rem;width:28px;">▶</div><div class="modal-step-text"><strong>다음 라운드</strong> — 다음 라운드를 시작합니다. 참가자 화면에 새 카드 덱이 표시됩니다.</div></div>
-        <div class="modal-step"><div class="modal-step-num" style="font-size:.65rem;width:28px;">🏆</div><div class="modal-step-text"><strong>최종 결과</strong> — 4라운드 완료 후 나타나는 버튼으로, 전체 결과 화면으로 이동합니다.</div></div>
-      </div>
-      <div class="modal-section">
-        <div class="modal-section-title">준비 현황 확인</div>
-        <div class="modal-step"><div class="modal-step-num">👀</div><div class="modal-step-text">참가자 이름 옆 <strong>초록 "완료"</strong> 표시가 모두 켜지면 진행 준비가 된 것입니다. 모든 참가자가 준비되기 전에도 진행할 수 있습니다.</div></div>
-      </div>
-      <div class="modal-tip">각 참가자 아래 표시된 칩들이 지금까지 킵한 강점 카드입니다. 실시간으로 누적 현황을 확인할 수 있어요.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:5px;">
+          ${finals.map(cid=>{ const c=CM[cid]; return c?`<span class="kept-chip ${cl(c.cat)}">${c.e} ${c.n}</span>`:''; }).join('')}
+        </div>
+      </div>`;
+    }).join('');
+    showScreen('sGroupResult');
+  });
+}
+
+// ══════════════════════════════════════
+// 이미지 저장
+// ══════════════════════════════════════
+async function saveImg(){
+  if(!window.html2canvas){
+    await new Promise((ok,fail)=>{
+      const s=document.createElement('script');
+      s.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+      s.onload=ok; s.onerror=fail;
+      document.head.appendChild(s);
+    });
+  }
+  const el=document.getElementById('resultCard'); if(!el) return;
+  const canvas=await html2canvas(el,{backgroundColor:'#0d0d1a',scale:2,useCORS:true,logging:false});
+  const a=document.createElement('a');
+  a.download=myName+'_핵심강점.png';
+  a.href=canvas.toDataURL('image/png');
+  a.click();
+}
+
+// ══════════════════════════════════════
+// 모달
+// ══════════════════════════════════════
+const MODALS={
+  guide:{
+    icon:'🎮',title:'게임 진행 방법',sub:'강점 슬라이딩 플레이 가이드',
+    html:`
+      <div class="modal-section-title">기본 흐름</div>
+      <div class="modal-step"><div class="modal-step-num">1</div><div class="modal-step-text">조 선택 → 이름 입력 → 대기실 입장</div></div>
+      <div class="modal-step"><div class="modal-step-num">2</div><div class="modal-step-text">조장(첫 입장자)이 <strong>라운드 시작</strong> 버튼을 누릅니다.</div></div>
+      <div class="modal-step"><div class="modal-step-num">3</div><div class="modal-step-text">매 선택기회마다 <strong>2장의 카드</strong>가 배분됩니다. 킵할 카드를 선택하고, 나머지는 조원에게 선물하세요.</div></div>
+      <div class="modal-step"><div class="modal-step-num">4</div><div class="modal-step-text"><strong>전송하기</strong>를 누르면 10초 후 다음 선택기회 또는 라운드 종료로 이동합니다.</div></div>
+      <div class="modal-step"><div class="modal-step-num">5</div><div class="modal-step-text">라운드 종료 시 모은 카드 중 <strong>핵심강점</strong>을 선택하고 저장하세요.</div></div>
+      <div class="modal-step"><div class="modal-step-num">6</div><div class="modal-step-text"><strong>3라운드</strong> 완료 후 최종 강점 프로파일을 확인합니다.</div></div>
+      <div class="modal-tip">남는 카드는 <strong>공통 풀</strong>에 올라옵니다. 먼저 탭한 사람이 가져갈 수 있어요! (최대 2장)</div>
     `
   }
 };
-
-function showModal(type) {
-  const content = MODAL_CONTENTS[type];
-  if(!content) return;
-  document.getElementById('modalContent').innerHTML = `
-    <div class="modal-icon">${content.icon}</div>
-    <div class="modal-title">${content.title}</div>
-    <div class="modal-sub">${content.sub}</div>
-    ${content.html}
-  `;
+function showModal(t){
+  const c=MODALS[t]; if(!c) return;
+  document.getElementById('modalContent').innerHTML=`<div class="modal-icon">${c.icon}</div><div class="modal-title">${c.title}</div><div class="modal-sub">${c.sub}</div>${c.html}`;
   document.getElementById('modalBackdrop').classList.add('open');
-  document.body.style.overflow = 'hidden';
+  document.body.style.overflow='hidden';
 }
+function closeModal(){ document.getElementById('modalBackdrop').classList.remove('open'); document.body.style.overflow=''; }
+function closeModalOutside(e){ if(e.target===document.getElementById('modalBackdrop')) closeModal(); }
 
-function closeModal() {
-  document.getElementById('modalBackdrop').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-function closeModalOutside(e) {
-  if(e.target === document.getElementById('modalBackdrop')) closeModal();
-}
-
-// ── 전체화면 ──
-function toggleFS(){
-  if(!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{});
-  else document.exitFullscreen();
-}
+// ══════════════════════════════════════
+// 앱 시작
+// ══════════════════════════════════════
+tryResume();
 </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
