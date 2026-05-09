@@ -1388,7 +1388,7 @@ console.log("요청 URL:", getGeminiUrl());
       body: JSON.stringify({
         system_instruction: { parts: [{ text: systemPrompt + strategyAppend }] },
         contents: [{ role: 'user', parts: [{ text: userMessage }] }],
-        generationConfig: { maxOutputTokens: 2048, temperature: 0.7 }
+        generationConfig: { maxOutputTokens: 8192, temperature: 0.7 }
       })
     });
 
@@ -1431,14 +1431,30 @@ function analyzeJD() {
   if (jdCompany) mem.company = jdCompany;
   if (Object.keys(mem).length) saveMemory(mem);
 
-  const system = `당신은 ATS(지원자 추적 시스템) 및 채용공고 분석 전문가입니다.
-채용공고를 분석하여 다음을 추출하세요:
+  const system = `당신은 ATS(지원자 추적 시스템) 전문가이자 15년 경력의 채용공고 분석 컨설턴트입니다.
+채용공고를 완전히 분석하여 아래 6개 항목을 빠짐없이 작성하세요. 각 항목은 충분한 설명과 함께 구체적으로 작성합니다.
+
 1) [핵심 직무 역량] 반드시 갖춰야 할 역량 5가지
-2) [ATS 필수 키워드] 자소서에 반드시 포함해야 할 키워드 10개 (기술명, 도구, 자격증 등)
-3) [우대사항 분석] 우대사항에서 어필 가능한 항목과 준비 전략
-4) [인재상 추론] 공고 톤과 표현에서 읽히는 실제 인재상
-5) [자소서 전략] 이 JD에 맞는 자소서 작성 방향 3가지
-한국어로 작성하세요.`;
+   - 각 역량마다: 역량명 / JD에서 근거가 된 표현 / 왜 이 역량이 중요한지 2~3문장 설명
+
+2) [ATS 필수 키워드] 자소서에 반드시 포함해야 할 키워드 15개
+   - 기술명, 도구, 방법론, 자격증, 직무 용어를 구분하여 나열
+   - 각 키워드 옆에 "(어디에 쓸지)" 한 줄 활용 팁 포함
+
+3) [우대사항 분석] 우대사항 항목별 어필 전략
+   - 우대사항 각 항목을 나열하고, 보유 여부와 상관없이 어필 가능한 방향을 구체적으로 제시
+   - 없는 경우 대체 어필 방법도 제시
+
+4) [인재상 추론] 공고 톤·표현·요구사항에서 읽히는 실제 인재상
+   - 이 기업이 원하는 사람의 특성을 3가지로 정리
+   - 각 특성마다 JD에서 근거가 된 표현 인용
+
+5) [자소서 항목별 전략] 지원동기·직무역량·문제해결·협업·성장·포부 각 항목에서
+   이 JD를 기준으로 반드시 언급해야 할 포인트를 항목별로 1~2문장씩 작성
+
+6) [서류 합격 체크리스트] 이 공고에 지원할 때 제출 전 반드시 확인할 사항 5가지
+
+모든 분석은 한국어로 작성하고, 항목마다 소제목을 명확히 구분하여 작성하세요.`;
 
   const user = `채용공고:\n${jdText}\n\n지원 직무: ${jdJob || '미입력'}\n지원 기업: ${jdCompany || '미입력'}`;
   callClaude(system, user, 'jd-loading', 'jd-result', 'jd-result-text', true);
@@ -1675,7 +1691,7 @@ async function startMock() {
       body: JSON.stringify({
         system_instruction: { parts: [{ text: mockSystemMsg }] },
         contents: mockHistory.map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] })),
-        generationConfig: { maxOutputTokens: 2048, temperature: 0.8 }
+        generationConfig: { maxOutputTokens: 8192, temperature: 0.8 }
       })
     });
     if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error?.message || 'HTTP ' + res.status); }
@@ -1706,7 +1722,7 @@ async function submitMockAnswer() {
       body: JSON.stringify({
         system_instruction: { parts: [{ text: mockSystemMsg }] },
         contents: mockHistory.map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] })),
-        generationConfig: { maxOutputTokens: 2048, temperature: 0.8 }
+        generationConfig: { maxOutputTokens: 8192, temperature: 0.8 }
       })
     });
     if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error?.message || 'HTTP ' + res.status); }
