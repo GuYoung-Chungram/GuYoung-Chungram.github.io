@@ -596,8 +596,7 @@
     <div style="margin-bottom:12px;">
       <label style="font-size:0.82rem;color:var(--gray-600);display:block;margin-bottom:6px;">사용 모델 선택</label>
       <select id="model-select" style="width:100%;padding:10px 12px;border:1.5px solid var(--gray-300);border-radius:var(--radius-sm);font-family:'Noto Sans KR',sans-serif;font-size:0.85rem;background:#fafbff;">
-        <option value="gemini-2.5-flash-preview-04-17">gemini-2.5-flash (최신 추천)</option>
-        <option value="gemini-2.0-flash">gemini-2.0-flash</option>
+          <option value="gemini-2.0-flash">gemini-2.0-flash</option>
         <option value="gemini-2.0-flash-lite">gemini-2.0-flash-lite (경량)</option>
         <option value="gemini-1.5-flash">gemini-1.5-flash (무료)</option>
         <option value="gemini-1.5-pro">gemini-1.5-pro (고품질)</option>
@@ -1260,7 +1259,7 @@ function getApiKey() {
 }
 
 function getGeminiModel() {
-  return localStorage.getItem('gemini-model') || 'gemini-2.5-flash-preview-04-17';
+  return localStorage.getItem('gemini-model') || 'gemini-2.0-flash';
 }
 
 function getGeminiUrl() {
@@ -1380,6 +1379,8 @@ async function callClaude(systemPrompt, userMessage, loadingId, resultId, result
   const strategyAppend = hasStrategy ? `\n\n답변 마지막에 아래 구분선을 넣고 전략 인사이트를 작성하세요:\n===전략 인사이트===\n[면접관 심리] 이 항목을 읽는 면접관이 실제로 보려는 것\n[ATS 통과 포인트] 서류 통과를 위해 반드시 포함해야 할 키워드/표현\n[위험 표현] 감점 요소가 될 수 있는 표현 또는 패턴\n[차별화 전략] 다른 지원자와 구별될 수 있는 한 가지 전략` : '';
 
   try {
+    console.log("현재 모델:", getGeminiModel());
+console.log("요청 URL:", getGeminiUrl());
     const response = await fetch(getGeminiUrl(), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -1666,6 +1667,7 @@ async function startMock() {
   document.getElementById('mock-loading').classList.add('show');
 
   try {
+    console.log("현재 모델:", getGeminiModel());
     const res = await fetch(getGeminiUrl(), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
