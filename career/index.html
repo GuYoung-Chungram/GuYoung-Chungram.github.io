@@ -593,8 +593,18 @@
     <h3>🔑 Gemini API 키 설정</h3>
     <p>Google Gemini API 키를 입력하세요. 키는 브라우저 로컬에만 저장되며 외부로 전송되지 않습니다.</p>
     <input type="password" class="modal-input" id="api-key-input" placeholder="AIza...">
+    <div style="margin-bottom:12px;">
+      <label style="font-size:0.82rem;color:var(--gray-600);display:block;margin-bottom:6px;">사용 모델 선택</label>
+      <select id="model-select" style="width:100%;padding:10px 12px;border:1.5px solid var(--gray-300);border-radius:var(--radius-sm);font-family:'Noto Sans KR',sans-serif;font-size:0.85rem;background:#fafbff;">
+        <option value="gemini-2.5-flash-preview-05-20">gemini-2.5-flash (최신 추천)</option>
+        <option value="gemini-2.0-flash">gemini-2.0-flash</option>
+        <option value="gemini-2.0-flash-lite">gemini-2.0-flash-lite (경량)</option>
+        <option value="gemini-1.5-flash">gemini-1.5-flash (무료)</option>
+        <option value="gemini-1.5-pro">gemini-1.5-pro (고품질)</option>
+      </select>
+    </div>
     <div class="api-modal-hint">
-      키 발급: <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--blue)">aistudio.google.com</a> → API Keys (무료 사용 가능)
+      키 발급: <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--blue)">aistudio.google.com</a> → Get API Key · 무료 할당량 초과 시 모델 변경
     </div>
     <div style="display:flex;gap:8px;">
       <button class="btn btn-primary" style="flex:1" onclick="saveApiKey()">저장</button>
@@ -1245,18 +1255,22 @@ function updateMemoryCards() {
 }
 
 // ── API KEY ──
-const GEMINI_MODEL = 'gemini-2.0-flash';
-
 function getApiKey() {
   return localStorage.getItem('gemini-api-key') || '';
 }
 
+function getGeminiModel() {
+  return localStorage.getItem('gemini-model') || 'gemini-2.5-flash-preview-05-20';
+}
+
 function getGeminiUrl() {
-  return `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${getApiKey()}`;
+  return `https://generativelanguage.googleapis.com/v1beta/models/${getGeminiModel()}:generateContent?key=${getApiKey()}`;
 }
 
 function showApiModal() {
   document.getElementById('api-key-input').value = getApiKey();
+  const sel = document.getElementById('model-select');
+  if (sel) sel.value = getGeminiModel();
   document.getElementById('api-modal').classList.add('show');
 }
 
@@ -1268,8 +1282,10 @@ function saveApiKey() {
   const key = document.getElementById('api-key-input').value.trim();
   if (!key) { alert('API 키를 입력해주세요.'); return; }
   localStorage.setItem('gemini-api-key', key);
+  const sel = document.getElementById('model-select');
+  if (sel) localStorage.setItem('gemini-model', sel.value);
   closeApiModal();
-  alert('✅ Gemini API 키가 저장되었습니다.');
+  alert('✅ Gemini API 키가 저장되었습니다.\n모델: ' + getGeminiModel());
 }
 
 // ── 네비게이션 ──
