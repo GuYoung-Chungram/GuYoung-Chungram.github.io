@@ -1,1 +1,1739 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>취업 AI 도우미 | Job AI Workflow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #1652D8;
+    --blue-dark: #0f3fa8;
+    --blue-light: #3a6fee;
+    --blue-pale: #e8effd;
+    --blue-pale2: #f0f4ff;
+    --accent: #FF6B35;
+    --accent2: #00C896;
+    --gray-900: #0f1117;
+    --gray-800: #1e2130;
+    --gray-700: #2e3250;
+    --gray-500: #6b7280;
+    --gray-300: #d1d5db;
+    --gray-100: #f3f4f6;
+    --white: #ffffff;
+    --shadow-blue: 0 8px 32px rgba(22,82,216,0.18);
+    --shadow-card: 0 4px 20px rgba(0,0,0,0.08);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
 
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: #f7f9ff;
+    color: var(--gray-900);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--blue);
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 20px rgba(22,82,216,0.3);
+  }
+  .header-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    color: white;
+    letter-spacing: -0.3px;
+  }
+  .logo span { color: rgba(255,255,255,0.6); font-size: 0.8rem; font-family: 'Noto Sans KR', sans-serif; font-weight: 300; margin-left: 8px; }
+  .step-nav {
+    display: flex;
+    gap: 4px;
+  }
+  .step-btn {
+    background: rgba(255,255,255,0.15);
+    border: none;
+    color: rgba(255,255,255,0.7);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+  .step-btn.active, .step-btn:hover {
+    background: white;
+    color: var(--blue);
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 60%, #0a2a7a 100%);
+    padding: 60px 24px 80px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: -40px;
+    width: 250px; height: 250px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.03);
+  }
+  .hero h1 {
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: white;
+    line-height: 1.25;
+    margin-bottom: 14px;
+    position: relative;
+  }
+  .hero h1 em {
+    font-style: normal;
+    color: #7eb3ff;
+  }
+  .hero p {
+    color: rgba(255,255,255,0.75);
+    font-size: 1rem;
+    line-height: 1.7;
+    max-width: 500px;
+    margin: 0 auto 32px;
+    font-weight: 300;
+  }
+
+  /* ── STEP FLOW ── */
+  .flow-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    position: relative;
+    z-index: 1;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .flow-step {
+    background: rgba(255,255,255,0.12);
+    border: 1.5px solid rgba(255,255,255,0.25);
+    border-radius: 40px;
+    padding: 10px 22px;
+    color: white;
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    backdrop-filter: blur(10px);
+  }
+  .flow-step .num {
+    background: rgba(255,255,255,0.25);
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 900;
+  }
+  .flow-step.active {
+    background: white;
+    color: var(--blue);
+    border-color: white;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  }
+  .flow-step.active .num {
+    background: var(--blue);
+    color: white;
+  }
+  .flow-arrow {
+    color: rgba(255,255,255,0.4);
+    font-size: 1.2rem;
+    margin: 0 4px;
+  }
+
+  /* ── MAIN ── */
+  main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* ── SECTION PANELS ── */
+  .section-panel {
+    display: none;
+    animation: fadeUp 0.35s ease;
+  }
+  .section-panel.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .section-icon {
+    width: 48px; height: 48px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+  }
+  .section-icon.blue { background: var(--blue-pale); }
+  .section-icon.orange { background: #fff0ea; }
+  .section-icon.green { background: #e6fdf4; }
+
+  .section-title h2 {
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--gray-900);
+  }
+  .section-title p {
+    font-size: 0.85rem;
+    color: var(--gray-500);
+    margin-top: 2px;
+    font-weight: 400;
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 28px;
+    box-shadow: var(--shadow-card);
+    border: 1px solid rgba(22,82,216,0.06);
+    margin-bottom: 20px;
+  }
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    gap: 12px;
+  }
+  .card-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+  }
+  .badge-blue { background: var(--blue-pale); color: var(--blue); }
+  .badge-orange { background: #fff0ea; color: #e05000; }
+  .badge-green { background: #e6fdf4; color: #007a5e; }
+
+  /* ── FORM ELEMENTS ── */
+  .form-group { margin-bottom: 16px; }
+  .form-group label {
+    display: block;
+    font-size: 0.83rem;
+    font-weight: 700;
+    color: var(--gray-700);
+    margin-bottom: 6px;
+  }
+  .form-group label .req { color: var(--blue); margin-left: 2px; }
+  .form-group input, .form-group textarea, .form-group select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--gray-300);
+    border-radius: var(--radius-sm);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.88rem;
+    color: var(--gray-900);
+    background: #fafbff;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    resize: vertical;
+  }
+  .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+    outline: none;
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(22,82,216,0.1);
+    background: white;
+  }
+  .form-group textarea { min-height: 90px; }
+  .form-hint {
+    font-size: 0.75rem;
+    color: var(--gray-500);
+    margin-top: 5px;
+  }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media(max-width:600px) { .form-row { grid-template-columns: 1fr; } }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 24px;
+    border-radius: var(--radius-sm);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--blue);
+    color: white;
+    box-shadow: 0 4px 16px rgba(22,82,216,0.3);
+  }
+  .btn-primary:hover { background: var(--blue-light); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(22,82,216,0.4); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-outline {
+    background: white;
+    color: var(--blue);
+    border: 1.5px solid var(--blue);
+  }
+  .btn-outline:hover { background: var(--blue-pale2); }
+  .btn-sm { padding: 8px 16px; font-size: 0.8rem; }
+  .btn-full { width: 100%; justify-content: center; }
+
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+
+  /* ── AI RESULT ── */
+  .ai-result {
+    margin-top: 20px;
+    display: none;
+  }
+  .ai-result.show { display: block; }
+  .result-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .result-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--blue);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .result-label::before {
+    content: '';
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent2);
+  }
+  .result-box {
+    background: var(--blue-pale2);
+    border: 1px solid rgba(22,82,216,0.12);
+    border-radius: var(--radius-sm);
+    padding: 20px;
+    font-size: 0.87rem;
+    line-height: 1.85;
+    color: var(--gray-800);
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 500px;
+    overflow-y: auto;
+  }
+  .result-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+
+  /* ── LOADING ── */
+  .loading-state {
+    display: none;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: var(--blue-pale2);
+    border-radius: var(--radius-sm);
+    margin-top: 16px;
+    color: var(--blue);
+    font-size: 0.87rem;
+    font-weight: 500;
+  }
+  .loading-state.show { display: flex; }
+  .spinner {
+    width: 20px; height: 20px;
+    border: 2.5px solid rgba(22,82,216,0.2);
+    border-top-color: var(--blue);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    flex-shrink: 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── TAB ── */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--gray-100);
+    padding: 4px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 10px;
+    background: none;
+    border: none;
+    border-radius: 9px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.83rem;
+    font-weight: 700;
+    color: var(--gray-500);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tab-btn.active {
+    background: white;
+    color: var(--blue);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 1px;
+    background: var(--gray-100);
+    margin: 24px 0;
+  }
+
+  /* ── PROGRESS ── */
+  .progress-wrap {
+    background: var(--gray-100);
+    border-radius: 20px;
+    height: 6px;
+    margin-bottom: 28px;
+    overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%;
+    border-radius: 20px;
+    background: linear-gradient(90deg, var(--blue), var(--blue-light));
+    transition: width 0.5s ease;
+  }
+
+  /* ── BOTTOM NAV ── */
+  .bottom-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--gray-100);
+  }
+
+  /* ── INFO BOX ── */
+  .info-box {
+    background: var(--blue-pale2);
+    border-left: 3px solid var(--blue);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 14px 18px;
+    font-size: 0.83rem;
+    color: var(--gray-700);
+    line-height: 1.65;
+    margin-bottom: 20px;
+  }
+  .info-box strong { color: var(--blue); }
+
+  /* ── CHIPS ── */
+  .chip-group { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .chip {
+    background: var(--blue-pale);
+    color: var(--blue);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: 1.5px solid transparent;
+  }
+  .chip:hover { border-color: var(--blue); background: white; }
+  .chip.selected { background: var(--blue); color: white; }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 32px 24px;
+    color: var(--gray-500);
+    font-size: 0.78rem;
+    border-top: 1px solid var(--gray-100);
+  }
+  footer strong { color: var(--blue); }
+
+  /* ── 면접 mock ── */
+  .chat-bubble {
+    margin-bottom: 14px;
+  }
+  .chat-bubble.interviewer .bubble {
+    background: var(--gray-100);
+    border-radius: 4px 16px 16px 16px;
+    padding: 14px 18px;
+    font-size: 0.87rem;
+    font-weight: 700;
+    color: var(--gray-800);
+    display: inline-block;
+    max-width: 85%;
+  }
+  .chat-bubble.user .bubble {
+    background: var(--blue);
+    color: white;
+    border-radius: 16px 4px 16px 16px;
+    padding: 14px 18px;
+    font-size: 0.87rem;
+    display: inline-block;
+    max-width: 85%;
+    float: right;
+  }
+  .chat-bubble.user { text-align: right; }
+  .chat-bubble::after { content: ''; display: block; clear: both; }
+  .chat-label { font-size: 0.72rem; color: var(--gray-500); margin-bottom: 4px; font-weight: 500; }
+
+  /* scrollbar */
+  .result-box::-webkit-scrollbar { width: 6px; }
+  .result-box::-webkit-scrollbar-track { background: transparent; }
+  .result-box::-webkit-scrollbar-thumb { background: rgba(22,82,216,0.2); border-radius: 3px; }
+
+  /* ── API MODAL ── */
+  .api-modal { position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:200; display:none; align-items:center; justify-content:center; }
+  .api-modal.show { display:flex; }
+  .api-modal-box { background:white; border-radius:var(--radius); padding:32px; max-width:460px; width:90%; box-shadow:0 20px 60px rgba(0,0,0,0.3); }
+  .api-modal-box h3 { font-size:1.1rem; font-weight:900; margin-bottom:8px; color:var(--gray-900); }
+  .api-modal-box p { font-size:0.82rem; color:var(--gray-500); margin-bottom:18px; line-height:1.65; }
+  .api-modal-box .modal-input { width:100%; padding:12px 14px; border:1.5px solid var(--gray-300); border-radius:var(--radius-sm); font-family:'Noto Sans KR',sans-serif; font-size:0.88rem; margin-bottom:12px; background:#fafbff; }
+  .api-modal-box .modal-input:focus { outline:none; border-color:var(--blue); box-shadow:0 0 0 3px rgba(22,82,216,0.1); }
+  .api-modal-hint { font-size:0.75rem; color:var(--gray-500); margin-bottom:16px; }
+
+  /* ── MEMORY CARD ── */
+  .memory-card { background:linear-gradient(135deg,#1e2130,#2e3250); border-radius:var(--radius); padding:13px 18px; margin-bottom:20px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; min-height:46px; }
+  .memory-card-label { color:rgba(255,255,255,0.45); font-size:0.7rem; font-weight:700; letter-spacing:0.6px; text-transform:uppercase; flex-shrink:0; }
+  .memory-tag { background:rgba(255,255,255,0.13); border-radius:20px; padding:4px 12px; font-size:0.75rem; color:rgba(255,255,255,0.88); white-space:nowrap; }
+  .memory-card-empty { color:rgba(255,255,255,0.3); font-size:0.78rem; }
+
+  /* ── STRATEGY PANEL ── */
+  .strategy-panel { background:var(--gray-800); border-radius:var(--radius-sm); padding:18px 22px; margin-top:10px; font-size:0.83rem; line-height:1.9; }
+  .strategy-panel-header { font-size:0.7rem; font-weight:700; color:#7eb3ff; letter-spacing:0.6px; text-transform:uppercase; margin-bottom:12px; }
+  .strategy-panel-header::before { content:'⚡ '; }
+  .strategy-item { margin-bottom:9px; color:rgba(255,255,255,0.85); }
+  .strategy-item strong { color:#f0a050; }
+  .strategy-item:last-child { margin-bottom:0; }
+
+  /* ── HEADER EXTRA ── */
+  .header-actions { display:flex; align-items:center; gap:6px; }
+  .btn-header { background:rgba(255,255,255,0.14); border:none; color:rgba(255,255,255,0.8); padding:6px 13px; border-radius:20px; font-size:0.74rem; font-family:'Noto Sans KR',sans-serif; cursor:pointer; transition:all 0.2s; font-weight:500; }
+  .btn-header:hover { background:rgba(255,255,255,0.26); color:white; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="logo">Job AI <span>취업 AI 도우미</span></div>
+    <div class="step-nav">
+      <button class="step-btn active" onclick="goStep(1)">1단계 리서치</button>
+      <button class="step-btn" onclick="goStep(2)">2단계 서류</button>
+      <button class="step-btn" onclick="goStep(3)">3단계 면접</button>
+    </div>
+    <div class="header-actions">
+      <button class="btn-header" onclick="exportAll()">⬇ 전체 내보내기</button>
+      <button class="btn-header" onclick="showApiModal()">🔑 API 키</button>
+    </div>
+  </div>
+</header>
+
+<!-- API KEY MODAL -->
+<div class="api-modal" id="api-modal">
+  <div class="api-modal-box">
+    <h3>🔑 Claude API 키 설정</h3>
+    <p>Anthropic Claude API 키를 입력하세요. 키는 브라우저 로컬에만 저장되며 외부로 전송되지 않습니다.</p>
+    <input type="password" class="modal-input" id="api-key-input" placeholder="sk-ant-api03-...">
+    <div class="api-modal-hint">
+      키 발급: <a href="https://console.anthropic.com" target="_blank" style="color:var(--blue)">console.anthropic.com</a> → API Keys
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-primary" style="flex:1" onclick="saveApiKey()">저장</button>
+      <button class="btn btn-outline" style="flex:1" onclick="closeApiModal()">취소</button>
+    </div>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>AI와 함께하는<br><em>취업 준비 3단계</em></h1>
+  <p>직무·기업 분석부터 자기소개서 작성, 면접 준비까지<br>AI가 당신의 취업을 단계별로 도와드립니다.</p>
+  <div class="flow-bar">
+    <div class="flow-step active" onclick="goStep(1)">
+      <span class="num">1</span> 직무·기업 리서치
+    </div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step" onclick="goStep(2)">
+      <span class="num">2</span> 입사지원서 작성
+    </div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step" onclick="goStep(3)">
+      <span class="num">3</span> 면접 준비
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <!-- ════════════════════════════════ STEP 1 ════ -->
+  <div class="section-panel active" id="panel-1">
+
+    <div class="section-title">
+      <div class="section-icon blue">🔍</div>
+      <div>
+        <h2>1단계: 직무 · 기업 분석</h2>
+        <p>내가 지원할 직무와 기업을 AI로 깊이 이해합니다</p>
+      </div>
+    </div>
+
+    <div class="progress-wrap"><div class="progress-bar" style="width:33%"></div></div>
+
+    <div class="memory-card" id="memory-card-1">
+      <span class="memory-card-label">Career Memory</span>
+      <span class="memory-card-empty">입력한 직무·기업 정보가 여기에 표시됩니다</span>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('step1','jd')">📋 JD 분석</button>
+      <button class="tab-btn" onclick="switchTab('step1','job')">🎯 직무 분석</button>
+      <button class="tab-btn" onclick="switchTab('step1','company')">🏢 기업 분석</button>
+    </div>
+
+    <!-- JD 분석 -->
+    <div class="tab-content active" id="step1-jd">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📋 채용공고(JD) 분석 <span class="badge badge-blue">ATS 키워드 추출</span></div>
+        </div>
+        <div class="info-box">
+          <strong>💡 이렇게 활용하세요</strong><br>
+          지원할 채용공고를 그대로 붙여 넣으면 AI가 핵심 역량, ATS 키워드, 우대사항을 추출하고 자기소개서에 반영할 전략을 알려드립니다.
+        </div>
+        <div class="form-group">
+          <label>채용공고 전문 붙여넣기 <span class="req">*</span></label>
+          <textarea id="jd-text" style="min-height:180px" placeholder="채용공고 전체 내용을 복사해서 붙여 넣으세요 (자격요건, 우대사항, 담당업무 포함)"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>지원 직무명</label>
+            <input type="text" id="jd-job" placeholder="예: AI 엔지니어">
+          </div>
+          <div class="form-group">
+            <label>지원 기업명</label>
+            <input type="text" id="jd-company" placeholder="예: 네이버">
+          </div>
+        </div>
+        <button class="btn btn-primary btn-full" onclick="analyzeJD()">
+          <span>🤖</span> JD 분석 및 ATS 키워드 추출
+        </button>
+        <div class="loading-state" id="jd-loading">
+          <div class="spinner"></div>
+          AI가 채용공고를 분석 중입니다... (30~60초 소요)
+        </div>
+        <div class="ai-result" id="jd-result">
+          <div class="result-header">
+            <div class="result-label">AI JD 분석 결과</div>
+            <button class="btn btn-outline btn-sm" onclick="copyResult('jd-result-text')">📋 복사</button>
+          </div>
+          <div class="result-box" id="jd-result-text"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 직무 분석 -->
+    <div class="tab-content" id="step1-job">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🎯 직무 분석 <span class="badge badge-blue">AI 분석</span></div>
+        </div>
+        <div class="info-box">
+          <strong>💡 이렇게 활용하세요</strong><br>
+          관심 직무명과 내 상황을 입력하면 AI가 실제 업무 내용, 필요 역량, 연봉 수준, 성장 경로까지 현직자 수준으로 분석해드립니다.
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>분석할 직무명 <span class="req">*</span></label>
+            <input type="text" id="job-name" placeholder="예: AI 엔지니어, 데이터 분석가, 백엔드 개발자">
+            <div class="form-hint">자주 찾는 직무를 클릭하세요</div>
+            <div class="chip-group">
+              <span class="chip" onclick="setChip('job-name', this)">AI 엔지니어</span>
+              <span class="chip" onclick="setChip('job-name', this)">데이터 분석가</span>
+              <span class="chip" onclick="setChip('job-name', this)">백엔드 개발자</span>
+              <span class="chip" onclick="setChip('job-name', this)">프론트엔드 개발자</span>
+              <span class="chip" onclick="setChip('job-name', this)">PM</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>학력 / 전공</label>
+            <input type="text" id="job-edu" placeholder="예: 컴퓨터공학과 졸업, 비전공자">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>보유 기술 및 AI 관련 경험</label>
+          <textarea id="job-exp" placeholder="예: Python 기초, 통계학 수강, 개인 프로젝트 없음 / AI 관련 경험 없음 등"></textarea>
+        </div>
+
+        <button class="btn btn-primary btn-full" onclick="analyzeJob()">
+          <span>🤖</span> AI 직무 분석 시작
+        </button>
+
+        <div class="loading-state" id="job-loading">
+          <div class="spinner"></div>
+          AI가 직무를 분석 중입니다... (30~60초 소요)
+        </div>
+        <div class="ai-result" id="job-result">
+          <div class="result-header">
+            <div class="result-label">AI 직무 분석 결과</div>
+            <button class="btn btn-outline btn-sm" onclick="copyResult('job-result-text')">📋 복사</button>
+          </div>
+          <div class="result-box" id="job-result-text"></div>
+          <div class="result-actions">
+            <button class="btn btn-outline btn-sm" onclick="goStep(2)">→ 2단계 서류 작성으로</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 기업 분석 -->
+    <div class="tab-content" id="step1-company">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🏢 기업 분석 <span class="badge badge-blue">AI 분석</span></div>
+        </div>
+        <div class="info-box">
+          <strong>💡 이렇게 활용하세요</strong><br>
+          기업명과 희망 직무를 입력하면 AI가 조직 문화, 인재상, 채용 프로세스, 어필 전략까지 취업 관점으로 분석해드립니다.
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>기업명 <span class="req">*</span></label>
+            <input type="text" id="company-name" placeholder="예: 삼성전자, 네이버, 카카오">
+          </div>
+          <div class="form-group">
+            <label>희망 직무 <span class="req">*</span></label>
+            <input type="text" id="company-job" placeholder="예: AI 엔지니어">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>학력 / 전공</label>
+            <input type="text" id="company-edu" placeholder="예: 컴퓨터공학과 졸업">
+          </div>
+          <div class="form-group">
+            <label>이 기업에 관심을 갖게 된 계기</label>
+            <input type="text" id="company-reason" placeholder="예: 최근 AI 투자 뉴스, 아직 탐색 중">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>보유 기술</label>
+          <input type="text" id="company-skill" placeholder="예: Python, SQL, 머신러닝 기초">
+        </div>
+
+        <button class="btn btn-primary btn-full" onclick="analyzeCompany()">
+          <span>🤖</span> AI 기업 분석 시작
+        </button>
+
+        <div class="loading-state" id="company-loading">
+          <div class="spinner"></div>
+          AI가 기업을 분석 중입니다... (30~60초 소요)
+        </div>
+        <div class="ai-result" id="company-result">
+          <div class="result-header">
+            <div class="result-label">AI 기업 분석 결과</div>
+            <button class="btn btn-outline btn-sm" onclick="copyResult('company-result-text')">📋 복사</button>
+          </div>
+          <div class="result-box" id="company-result-text"></div>
+          <div class="result-actions">
+            <button class="btn btn-outline btn-sm" onclick="goStep(2)">→ 2단계 서류 작성으로</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-nav">
+      <div></div>
+      <button class="btn btn-primary" onclick="goStep(2)">2단계: 입사지원서 작성 →</button>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════ STEP 2 ════ -->
+  <div class="section-panel" id="panel-2">
+
+    <div class="section-title">
+      <div class="section-icon orange">📝</div>
+      <div>
+        <h2>2단계: 입사지원서 작성</h2>
+        <p>나의 경험을 AI가 자기소개서 각 항목으로 완성해드립니다</p>
+      </div>
+    </div>
+
+    <div class="progress-wrap"><div class="progress-bar" style="width:66%"></div></div>
+
+    <div class="memory-card" id="memory-card-2">
+      <span class="memory-card-label">Career Memory</span>
+      <span class="memory-card-empty">입력한 직무·기업 정보가 여기에 표시됩니다</span>
+    </div>
+
+    <!-- 공통 정보 -->
+    <div class="card">
+      <div class="card-title" style="margin-bottom:16px">📌 지원 정보 (모든 항목 공통)</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>지원 기업 <span class="req">*</span></label>
+          <input type="text" id="cv-company" placeholder="예: 삼성전자">
+        </div>
+        <div class="form-group">
+          <label>지원 직무 <span class="req">*</span></label>
+          <input type="text" id="cv-job" placeholder="예: AI 엔지니어">
+        </div>
+      </div>
+      <div class="info-box" style="margin-bottom:0">
+        <strong>📋 작성 순서</strong>: 아래 탭에서 항목별로 내 경험 재료를 입력하면 AI가 자기소개서를 작성해드립니다. 피드백(잘된 점·보완할 점)도 함께 제공됩니다.
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('step2','motivation')">지원동기</button>
+      <button class="tab-btn" onclick="switchTab('step2','competency')">직무역량</button>
+      <button class="tab-btn" onclick="switchTab('step2','problem')">문제해결</button>
+      <button class="tab-btn" onclick="switchTab('step2','teamwork')">협업경험</button>
+      <button class="tab-btn" onclick="switchTab('step2','growth')">성장경험</button>
+      <button class="tab-btn" onclick="switchTab('step2','aspiration')">입사포부</button>
+      <button class="tab-btn" onclick="switchTab('step2','consistency')">✅ 일관성 검증</button>
+    </div>
+
+    <!-- 지원동기 -->
+    <div class="tab-content active" id="step2-motivation">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">✍️ 지원 동기 <span class="badge badge-orange">500자 내외</span></div>
+        </div>
+        <div class="form-group">
+          <label>관심을 갖게 된 구체적인 계기 <span class="req">*</span></label>
+          <textarea id="m-reason" placeholder="예: 대학 시절 머신러닝 수업에서 데이터로 문제를 푸는 경험이 인상적이었고..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>이 직무를 선택한 이유</label>
+          <textarea id="m-why-job" placeholder="예: 데이터를 통해 실질적인 비즈니스 가치를 만들고 싶어서..." style="min-height:70px"></textarea>
+        </div>
+        <div class="form-group">
+          <label>이 기업이어야 하는 이유</label>
+          <textarea id="m-why-company" placeholder="예: 국내 최대 AI 연구소를 보유하고 있고, 최근 의료 AI 투자를 확대하는 방향이..." style="min-height:70px"></textarea>
+        </div>
+        <button class="btn btn-primary btn-full" onclick="writeCV('motivation')">🤖 AI 자기소개서 작성</button>
+        <div class="loading-state" id="motivation-loading"><div class="spinner"></div>AI가 지원동기를 작성 중...</div>
+        <div class="ai-result" id="motivation-result">
+          <div class="result-header"><div class="result-label">AI 작성 결과</div><button class="btn btn-outline btn-sm" onclick="copyResult('motivation-result-text')">📋 복사</button></div>
+          <div class="result-box" id="motivation-result-text"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 직무역량 -->
+    <div class="tab-content" id="step2-competency">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">💪 직무 역량 <span class="badge badge-orange">600자 내외</span></div>
+        </div>
+        <div class="form-group">
+          <label>활용할 프로젝트 또는 경험 <span class="req">*</span></label>
+          <textarea id="c-project" placeholder="예: 공공 데이터 포털 API를 활용한 부동산 가격 예측 모델 개발 프로젝트..."></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>본인이 맡은 구체적 역할</label>
+            <input type="text" id="c-role" placeholder="예: 데이터 전처리 및 모델 학습 담당">
+          </div>
+          <div class="form-group">
+            <label>사용한 기술</label>
+            <input type="text" id="c-skill" placeholder="예: Python, Pandas, Scikit-learn, XGBoost">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>수치화할 수 있는 성과</label>
+          <input type="text" id="c-result" placeholder="예: 예측 정확도 87% 달성, MAE 0.12 개선">
+        </div>
+        <button class="btn btn-primary btn-full" onclick="writeCV('competency')">🤖 AI 자기소개서 작성</button>
+        <div class="loading-state" id="competency-loading"><div class="spinner"></div>AI가 직무역량 항목을 작성 중...</div>
+        <div class="ai-result" id="competency-result">
+          <div class="result-header"><div class="result-label">AI 작성 결과</div><button class="btn btn-outline btn-sm" onclick="copyResult('competency-result-text')">📋 복사</button></div>
+          <div class="result-box" id="competency-result-text"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 문제해결 -->
+    <div class="tab-content" id="step2-problem">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🔧 문제 해결 경험 <span class="badge badge-orange">500자 내외</span></div>
+        </div>
+        <div class="form-group">
+          <label>어떤 문제 상황이었는가 <span class="req">*</span></label>
+          <textarea id="p-situation" placeholder="예: 팀 프로젝트에서 학습 데이터의 클래스 불균형으로 모델 성능이 60%대에 머물렀던 상황..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>시도한 해결 방법과 선택 이유</label>
+          <textarea id="p-action" placeholder="예: SMOTE 오버샘플링과 클래스 가중치 조정 두 가지를 비교 실험하였고, 실제 데이터 분포를 유지하는..." style="min-height:70px"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>최종 결과</label>
+            <input type="text" id="p-result" placeholder="예: F1 score 0.61 → 0.79로 개선">
+          </div>
+          <div class="form-group">
+            <label>이 경험에서 배운 것</label>
+            <input type="text" id="p-lesson" placeholder="예: 문제 정의를 먼저 정확히 해야 해결 방향이 보인다는 것">
+          </div>
+        </div>
+        <button class="btn btn-primary btn-full" onclick="writeCV('problem')">🤖 AI 자기소개서 작성</button>
+        <div class="loading-state" id="problem-loading"><div class="spinner"></div>AI가 문제해결 경험을 작성 중...</div>
+        <div class="ai-result" id="problem-result">
+          <div class="result-header"><div class="result-label">AI 작성 결과</div><button class="btn btn-outline btn-sm" onclick="copyResult('problem-result-text')">📋 복사</button></div>
+          <div class="result-box" id="problem-result-text"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 협업경험 -->
+    <div class="tab-content" id="step2-teamwork">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🤝 협업 경험 <span class="badge badge-orange">500자 내외</span></div>
+        </div>
+        <div class="form-group">
+          <label>팀 구성 <span class="req">*</span></label>
+          <input type="text" id="t-team" placeholder="예: 개발자 2명, 기획자 1명, 디자이너 1명으로 구성된 4인 팀">
+        </div>
+        <div class="form-group">
+          <label>의견 충돌이 생긴 구체적 상황</label>
+          <textarea id="t-conflict" placeholder="예: 모델 배포 방식에서 팀원이 클라우드 방식을 고집했고 나는 온프레미스가 적합하다고 판단하여 의견이 갈렸는데..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>내가 취한 행동</label>
+          <textarea id="t-action" placeholder="예: 각자의 주장 근거를 문서화하고 비교표를 만들어 팀 전체 앞에서 객관적 기준으로 논의를..." style="min-height:70px"></textarea>
+        </div>
+        <div class="form-group">
+          <label>결과적으로 팀에 어떤 변화가 있었는가</label>
+          <input type="text" id="t-result" placeholder="예: 하이브리드 방식으로 합의, 이후 의사결정 회의 방식이 바뀜">
+        </div>
+        <button class="btn btn-primary btn-full" onclick="writeCV('teamwork')">🤖 AI 자기소개서 작성</button>
+        <div class="loading-state" id="teamwork-loading"><div class="spinner"></div>AI가 협업 경험을 작성 중...</div>
+        <div class="ai-result" id="teamwork-result">
+          <div class="result-header"><div class="result-label">AI 작성 결과</div><button class="btn btn-outline btn-sm" onclick="copyResult('teamwork-result-text')">📋 복사</button></div>
+          <div class="result-box" id="teamwork-result-text"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 성장경험 -->
+    <div class="tab-content" id="step2-growth">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🌱 성장 경험 <span class="badge badge-orange">500자 내외</span></div>
+        </div>
+        <div class="form-group">
+          <label>부족하다고 느낀 구체적 계기 <span class="req">*</span></label>
+          <textarea id="g-trigger" placeholder="예: 코딩 테스트에서 연속 3회 탈락 후 알고리즘 기초가 부족하다는 것을 인식하게 됐을 때..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>어떤 행동을 바꿨는가</label>
+          <textarea id="g-action" placeholder="예: 매일 오전 1시간 알고리즘 문제 1개씩 풀고 오답 노트를 작성하는 루틴을 90일간 유지했고..." style="min-height:70px"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>변화 전후 차이</label>
+            <input type="text" id="g-change" placeholder="예: 코딩 테스트 합격률 0% → 60% 이상으로 향상">
+          </div>
+          <div class="form-group">
+            <label>이 경험에서 얻은 교훈</label>
+            <input type="text" id="g-lesson" placeholder="예: 부족함을 인정하는 것이 성장의 시작이다">
+          </div>
+        </div>
+        <button class="btn btn-primary btn-full" onclick="writeCV('growth')">🤖 AI 자기소개서 작성</button>
+        <div class="loading-state" id="growth-loading"><div class="spinner"></div>AI가 성장 경험을 작성 중...</div>
+        <div class="ai-result" id="growth-result">
+          <div class="result-header"><div class="result-label">AI 작성 결과</div><button class="btn btn-outline btn-sm" onclick="copyResult('growth-result-text')">📋 복사</button></div>
+          <div class="result-box" id="growth-result-text"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 입사포부 -->
+    <div class="tab-content" id="step2-aspiration">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🚀 입사 후 포부 <span class="badge badge-orange">400자 내외</span></div>
+        </div>
+        <div class="form-group">
+          <label>입사 1년차 목표 <span class="req">*</span></label>
+          <input type="text" id="a-year1" placeholder="예: 데이터 파이프라인 구축 과정을 처음부터 경험하고 팀 온보딩 기간 내 독립 업무 처리">
+        </div>
+        <div class="form-group">
+          <label>입사 3년차 목표</label>
+          <input type="text" id="a-year3" placeholder="예: AI 모델 리드 역할을 맡고 주니어 멤버 온보딩 지원">
+        </div>
+        <div class="form-group">
+          <label>이 기업의 어떤 기술 방향에 기여하고 싶은가</label>
+          <textarea id="a-contribute" placeholder="예: 의료 AI 연구 부문에서 진단 모델 정확도 개선에 기여하고, 장기적으로 글로벌 헬스케어 AI 플랫폼 개발에 참여하고 싶습니다." style="min-height:70px"></textarea>
+        </div>
+        <button class="btn btn-primary btn-full" onclick="writeCV('aspiration')">🤖 AI 자기소개서 작성</button>
+        <div class="loading-state" id="aspiration-loading"><div class="spinner"></div>AI가 입사 후 포부를 작성 중...</div>
+        <div class="ai-result" id="aspiration-result">
+          <div class="result-header"><div class="result-label">AI 작성 결과</div><button class="btn btn-outline btn-sm" onclick="copyResult('aspiration-result-text')">📋 복사</button></div>
+          <div class="result-box" id="aspiration-result-text"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 일관성 검증 -->
+    <div class="tab-content" id="step2-consistency">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">✅ 자소서 일관성 검증 <span class="badge badge-orange">AI 교차 분석</span></div>
+        </div>
+        <div class="info-box">
+          <strong>💡 이렇게 활용하세요</strong><br>
+          작성된 자소서 6개 항목을 AI가 종합 분석하여 스토리 일관성, 중복 표현, 누락된 역량, 전체적 인상을 점검합니다. 모든 항목을 작성한 뒤 사용하세요.
+        </div>
+        <button class="btn btn-primary btn-full" onclick="checkConsistency()">🤖 자소서 전체 일관성 검증</button>
+        <div class="loading-state" id="consistency-loading"><div class="spinner"></div>AI가 자소서 전체를 교차 분석 중입니다... (30~60초 소요)</div>
+        <div class="ai-result" id="consistency-result">
+          <div class="result-header"><div class="result-label">AI 일관성 검증 결과</div><button class="btn btn-outline btn-sm" onclick="copyResult('consistency-result-text')">📋 복사</button></div>
+          <div class="result-box" id="consistency-result-text"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-nav">
+      <button class="btn btn-outline" onclick="goStep(1)">← 1단계로</button>
+      <button class="btn btn-primary" onclick="goStep(3)">3단계: 면접 준비 →</button>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════ STEP 3 ════ -->
+  <div class="section-panel" id="panel-3">
+
+    <div class="section-title">
+      <div class="section-icon green">🎤</div>
+      <div>
+        <h2>3단계: 면접 준비</h2>
+        <p>예상 질문 생성부터 모의 면접까지 AI가 함께합니다</p>
+      </div>
+    </div>
+
+    <div class="progress-wrap"><div class="progress-bar" style="width:100%"></div></div>
+
+    <div class="memory-card" id="memory-card-3">
+      <span class="memory-card-label">Career Memory</span>
+      <span class="memory-card-empty">입력한 직무·기업 정보가 여기에 표시됩니다</span>
+    </div>
+
+    <!-- 공통 정보 -->
+    <div class="card">
+      <div class="card-title" style="margin-bottom:16px">📌 면접 기본 정보</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>지원 기업 <span class="req">*</span></label>
+          <input type="text" id="iv-company" placeholder="예: 삼성전자">
+        </div>
+        <div class="form-group">
+          <label>지원 직무 <span class="req">*</span></label>
+          <input type="text" id="iv-job" placeholder="예: AI 엔지니어">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>학력 / 전공</label>
+          <input type="text" id="iv-edu" placeholder="예: 컴퓨터공학과 졸업">
+        </div>
+        <div class="form-group">
+          <label>핵심 경험 (가장 강한 것 1개)</label>
+          <input type="text" id="iv-exp" placeholder="예: 부동산 가격 예측 AI 모델 개발, 정확도 87% 달성">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>보유 기술</label>
+        <input type="text" id="iv-skill" placeholder="예: Python, SQL, Scikit-learn, 인공지능사관학교 수료">
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('step3','essential')">필수 3종</button>
+      <button class="tab-btn" onclick="switchTab('step3','predict')">예상 질문</button>
+      <button class="tab-btn" onclick="switchTab('step3','mock')">모의 면접</button>
+    </div>
+
+    <!-- 필수 3종 -->
+    <div class="tab-content active" id="step3-essential">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">⭐ 면접 필수 3종 답변 <span class="badge badge-green">구어체 작성</span></div>
+        </div>
+        <div class="info-box">
+          <strong>📌 필수 3종이란?</strong><br>
+          ① 1분 자기소개 &nbsp;②지원 동기 &nbsp;③ 마지막으로 하고 싶은 말<br>
+          모든 면접에서 반드시 나오는 질문입니다. AI가 구어체로 작성해드립니다.
+        </div>
+        <div class="form-group">
+          <label>자소서 지원 동기 핵심 (한 줄)</label>
+          <input type="text" id="e-motivation" placeholder="예: 머신러닝으로 의료 데이터 분석에 기여하고 싶어서">
+        </div>
+        <button class="btn btn-primary btn-full" onclick="writeInterview('essential')">🤖 면접 필수 3종 답변 생성</button>
+        <div class="loading-state" id="essential-loading"><div class="spinner"></div>AI가 면접 답변을 작성 중... (약 30~60초)</div>
+        <div class="ai-result" id="essential-result">
+          <div class="result-header"><div class="result-label">AI 면접 답변</div><button class="btn btn-outline btn-sm" onclick="copyResult('essential-result-text')">📋 복사</button></div>
+          <div class="result-box" id="essential-result-text"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 예상 질문 -->
+    <div class="tab-content" id="step3-predict">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">❓ 면접 예상 질문 10개 <span class="badge badge-green">의도+포인트 포함</span></div>
+        </div>
+        <div class="info-box">
+          자소서 기반 꼬리질문 4개 + 기술 면접 3개 + 역량 면접 2개 + 돌발 질문 1개<br>
+          각 질문마다 <strong>면접관 의도</strong>와 <strong>이렇게 답하면 감점 패턴</strong>을 함께 알려드립니다.
+        </div>
+        <div class="form-group">
+          <label>자소서 핵심 내용 (간략히)</label>
+          <textarea id="q-resume" placeholder="예: 지원동기-머신러닝 수업 계기, 핵심경험-부동산 AI 모델(Python,XGBoost,정확도87%), 협업-4인팀 의견충돌 조율, 성장-코딩테스트 3회 탈락 후 90일 루틴으로 극복"></textarea>
+        </div>
+        <button class="btn btn-primary btn-full" onclick="writeInterview('predict')">🤖 예상 질문 10개 생성</button>
+        <div class="loading-state" id="predict-loading"><div class="spinner"></div>AI가 예상 질문을 생성 중...</div>
+        <div class="ai-result" id="predict-result">
+          <div class="result-header"><div class="result-label">AI 예상 질문</div><button class="btn btn-outline btn-sm" onclick="copyResult('predict-result-text')">📋 복사</button></div>
+          <div class="result-box" id="predict-result-text"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 모의 면접 -->
+    <div class="tab-content" id="step3-mock">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🎭 AI 모의 면접 <span class="badge badge-green">실시간 피드백</span></div>
+        </div>
+        <div class="info-box">
+          AI 면접관이 질문하면 내가 답변을 입력합니다.<br>
+          <strong>[강점] [보완점] [모범답변] [시간 체크]</strong>를 매 답변마다 피드백 받습니다.
+        </div>
+
+        <div id="mock-chat" style="min-height:120px; margin-bottom:16px;"></div>
+
+        <div id="mock-start-area">
+          <button class="btn btn-primary btn-full" onclick="startMock()">🎤 모의 면접 시작</button>
+        </div>
+
+        <div id="mock-answer-area" style="display:none;">
+          <div class="form-group">
+            <label>내 답변 입력</label>
+            <textarea id="mock-answer" placeholder="면접관 질문에 대한 답변을 입력하세요..." style="min-height:100px"></textarea>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button class="btn btn-primary" style="flex:1" onclick="submitMockAnswer()">📨 답변 제출</button>
+            <button class="btn btn-outline" onclick="endMock()">면접 종료</button>
+          </div>
+        </div>
+
+        <div class="loading-state" id="mock-loading"><div class="spinner"></div>AI 면접관이 평가 중...</div>
+      </div>
+    </div>
+
+    <div class="bottom-nav">
+      <button class="btn btn-outline" onclick="goStep(2)">← 2단계로</button>
+      <div style="font-size:0.82rem; color:var(--gray-500)">🎉 모든 단계 완료! 합격을 응원합니다</div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <strong>Job AI 취업 도우미</strong> · AI 기반 취업 준비 통합 워크플로우<br>
+  모든 AI 분석·작성 결과는 참고용이며, 본인의 실제 경험을 기반으로 수정하여 활용하세요.
+</footer>
+
+<script>
+// ── 상태 ──
+let currentStep = 1;
+let mockHistory = [];
+let mockQuestionCount = 0;
+let mockSystemMsg = '';
+const MAX_MOCK_Q = 5;
+
+// ── Career Memory ──
+let careerMemory = JSON.parse(localStorage.getItem('job-ai-memory') || '{}');
+
+function saveMemory(updates) {
+  Object.assign(careerMemory, updates);
+  localStorage.setItem('job-ai-memory', JSON.stringify(careerMemory));
+  updateMemoryCards();
+}
+
+function updateMemoryCards() {
+  const tags = [];
+  if (careerMemory.job) tags.push('직무: ' + careerMemory.job);
+  if (careerMemory.company) tags.push('기업: ' + careerMemory.company);
+  if (careerMemory.edu) tags.push('학력: ' + careerMemory.edu);
+  if (careerMemory.skill) tags.push('기술: ' + careerMemory.skill);
+
+  ['memory-card-1', 'memory-card-2', 'memory-card-3'].forEach(id => {
+    const card = document.getElementById(id);
+    if (!card) return;
+    if (tags.length === 0) {
+      card.innerHTML = '<span class="memory-card-label">Career Memory</span><span class="memory-card-empty">입력한 직무·기업 정보가 여기에 표시됩니다</span>';
+    } else {
+      card.innerHTML = '<span class="memory-card-label">Career Memory</span>' +
+        tags.map(t => `<span class="memory-tag">${t}</span>`).join('');
+    }
+  });
+}
+
+// ── API KEY ──
+function getApiKey() {
+  return localStorage.getItem('claude-api-key') || '';
+}
+
+function showApiModal() {
+  document.getElementById('api-key-input').value = getApiKey();
+  document.getElementById('api-modal').classList.add('show');
+}
+
+function closeApiModal() {
+  document.getElementById('api-modal').classList.remove('show');
+}
+
+function saveApiKey() {
+  const key = document.getElementById('api-key-input').value.trim();
+  if (!key) { alert('API 키를 입력해주세요.'); return; }
+  localStorage.setItem('claude-api-key', key);
+  closeApiModal();
+  alert('✅ API 키가 저장되었습니다.');
+}
+
+function getHeaders() {
+  return {
+    'Content-Type': 'application/json',
+    'x-api-key': getApiKey(),
+    'anthropic-version': '2023-06-01',
+    'anthropic-dangerous-direct-browser-access': 'true'
+  };
+}
+
+// ── 네비게이션 ──
+function goStep(n) {
+  document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + n).classList.add('active');
+  document.querySelectorAll('.step-btn').forEach((b, i) => b.classList.toggle('active', i === n - 1));
+  document.querySelectorAll('.flow-step').forEach((b, i) => b.classList.toggle('active', i === n - 1));
+  currentStep = n;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  autoFillFromMemory(n);
+}
+
+function autoFillFromMemory(step) {
+  if (step === 2) {
+    const comp = document.getElementById('cv-company');
+    const job = document.getElementById('cv-job');
+    if (comp && !comp.value && careerMemory.company) comp.value = careerMemory.company;
+    if (job && !job.value && careerMemory.job) job.value = careerMemory.job;
+  }
+  if (step === 3) {
+    const m = { 'iv-company': 'company', 'iv-job': 'job', 'iv-edu': 'edu', 'iv-skill': 'skill' };
+    Object.entries(m).forEach(([elId, key]) => {
+      const el = document.getElementById(elId);
+      if (el && !el.value && careerMemory[key]) el.value = careerMemory[key];
+    });
+  }
+}
+
+function switchTab(stepId, tabId) {
+  const panelNum = stepId.replace('step', '');
+  document.querySelectorAll('#panel-' + panelNum + ' .tab-content').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('#panel-' + panelNum + ' .tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(stepId + '-' + tabId).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+function setChip(fieldId, el) {
+  document.getElementById(fieldId).value = el.textContent.trim();
+  el.closest('.chip-group').querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function copyResult(id) {
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(() => alert('✅ 클립보드에 복사되었습니다!'));
+}
+
+function formatText(text) {
+  return text
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/\[([^\]]+)\]/g, '<strong>[$1]</strong>')
+    .replace(/\n/g, '<br>');
+}
+
+// ── Export ──
+function exportAll() {
+  const sections = [
+    ['JD 분석', 'jd-result-text'], ['직무 분석', 'job-result-text'],
+    ['기업 분석', 'company-result-text'], ['지원동기', 'motivation-result-text'],
+    ['직무역량', 'competency-result-text'], ['문제해결', 'problem-result-text'],
+    ['협업경험', 'teamwork-result-text'], ['성장경험', 'growth-result-text'],
+    ['입사포부', 'aspiration-result-text'], ['면접 필수 3종', 'essential-result-text'],
+    ['예상 질문', 'predict-result-text'],
+  ];
+  let out = '== 취업 AI 도우미 - 전체 결과 ==\n생성일: ' + new Date().toLocaleString('ko-KR') + '\n\n';
+  let hasContent = false;
+  sections.forEach(([label, id]) => {
+    const el = document.getElementById(id);
+    const text = el ? el.textContent.trim() : '';
+    if (text.length > 20) { out += '=== ' + label + ' ===\n' + text + '\n\n'; hasContent = true; }
+  });
+  if (!hasContent) { alert('아직 생성된 결과가 없습니다.'); return; }
+  const blob = new Blob([out], { type: 'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = '취업준비_AI결과_' + new Date().toISOString().slice(0, 10) + '.txt';
+  a.click();
+}
+
+// ── Claude API 호출 ──
+async function callClaude(systemPrompt, userMessage, loadingId, resultId, resultTextId, hasStrategy = false) {
+  if (!getApiKey()) { showApiModal(); alert('Claude API 키를 먼저 입력해주세요.'); return; }
+
+  const loadingEl = document.getElementById(loadingId);
+  const resultEl = document.getElementById(resultId);
+  const resultTextEl = document.getElementById(resultTextId);
+
+  loadingEl.classList.add('show');
+  resultEl.classList.remove('show');
+
+  const strategyAppend = hasStrategy ? `\n\n답변 마지막에 아래 구분선을 넣고 전략 인사이트를 작성하세요:\n===전략 인사이트===\n[면접관 심리] 이 항목을 읽는 면접관이 실제로 보려는 것\n[ATS 통과 포인트] 서류 통과를 위해 반드시 포함해야 할 키워드/표현\n[위험 표현] 감점 요소가 될 수 있는 표현 또는 패턴\n[차별화 전략] 다른 지원자와 구별될 수 있는 한 가지 전략` : '';
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 2000,
+        system: systemPrompt + strategyAppend,
+        messages: [{ role: 'user', content: userMessage }]
+      })
+    });
+
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error((err.error?.message) || 'HTTP ' + response.status);
+    }
+
+    const data = await response.json();
+    const fullText = data.content?.map(b => b.text || '').join('') || '응답을 받지 못했습니다.';
+
+    if (hasStrategy && fullText.includes('===전략 인사이트===')) {
+      const parts = fullText.split('===전략 인사이트===');
+      resultTextEl.innerHTML = formatText(parts[0].trim()) +
+        '<div class="strategy-panel"><div class="strategy-panel-header">전략 인사이트</div>' +
+        '<div class="strategy-item">' + formatText(parts[1].trim()) + '</div></div>';
+    } else {
+      resultTextEl.innerHTML = formatText(fullText);
+    }
+
+    loadingEl.classList.remove('show');
+    resultEl.classList.add('show');
+    resultEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  } catch (err) {
+    loadingEl.classList.remove('show');
+    resultTextEl.innerHTML = '<span style="color:#e05">오류: ' + err.message + '</span>';
+    resultEl.classList.add('show');
+  }
+}
+
+// ── STEP 1: JD 분석 ──
+function analyzeJD() {
+  const jdText = document.getElementById('jd-text').value.trim();
+  if (!jdText) { alert('채용공고를 붙여 넣어주세요.'); return; }
+  const jdJob = document.getElementById('jd-job').value.trim();
+  const jdCompany = document.getElementById('jd-company').value.trim();
+  const mem = {};
+  if (jdJob) mem.job = jdJob;
+  if (jdCompany) mem.company = jdCompany;
+  if (Object.keys(mem).length) saveMemory(mem);
+
+  const system = `당신은 ATS(지원자 추적 시스템) 및 채용공고 분석 전문가입니다.
+채용공고를 분석하여 다음을 추출하세요:
+1) [핵심 직무 역량] 반드시 갖춰야 할 역량 5가지
+2) [ATS 필수 키워드] 자소서에 반드시 포함해야 할 키워드 10개 (기술명, 도구, 자격증 등)
+3) [우대사항 분석] 우대사항에서 어필 가능한 항목과 준비 전략
+4) [인재상 추론] 공고 톤과 표현에서 읽히는 실제 인재상
+5) [자소서 전략] 이 JD에 맞는 자소서 작성 방향 3가지
+한국어로 작성하세요.`;
+
+  const user = `채용공고:\n${jdText}\n\n지원 직무: ${jdJob || '미입력'}\n지원 기업: ${jdCompany || '미입력'}`;
+  callClaude(system, user, 'jd-loading', 'jd-result', 'jd-result-text', true);
+}
+
+// ── STEP 1: 직무 분석 ──
+function analyzeJob() {
+  const job = document.getElementById('job-name').value.trim();
+  if (!job) { alert('직무명을 입력해주세요.'); return; }
+  const edu = document.getElementById('job-edu').value.trim() || '입력 없음';
+  const exp = document.getElementById('job-exp').value.trim() || '입력 없음';
+  saveMemory({ job, edu });
+
+  const system = `당신은 한국 채용 시장에서 15년 이상 경력의 직무 분석 전문 컨설턴트입니다.
+구직자가 지정한 직무에 대해 현장 수준으로 분석해주세요.
+분석 항목: 1)직무 정의 2)실제 업무 내용(하루 흐름 예시 포함) 3)필요 역량 4)조직 내 위치와 협업 구조 5)성장 경로 6)처우와 시장 상황 7)맞는 사람/안 맞는 사람
+마지막에 [내 상황 맞춤 분석]으로 ①지금 갖춘 것 ②반드시 채워야 할 것 3개 ③이 직무가 맞을 가능성을 솔직하게 정리하세요.
+한국어로 작성하고 기업 규모(대기업/중견/스타트업)별 차이를 구분해 설명하세요.`;
+
+  const user = `직무: ${job}\n학력/전공: ${edu}\n보유기술 및 AI 경험: ${exp}\n\n위 내용을 바탕으로 직무 분석 전체를 작성해주세요.`;
+  callClaude(system, user, 'job-loading', 'job-result', 'job-result-text', true);
+}
+
+// ── STEP 1: 기업 분석 ──
+function analyzeCompany() {
+  const company = document.getElementById('company-name').value.trim();
+  const job = document.getElementById('company-job').value.trim();
+  if (!company || !job) { alert('기업명과 희망 직무를 입력해주세요.'); return; }
+  const edu = document.getElementById('company-edu').value.trim() || '입력 없음';
+  const reason = document.getElementById('company-reason').value.trim() || '아직 탐색 중';
+  const skill = document.getElementById('company-skill').value.trim() || '입력 없음';
+  saveMemory({ company, job, edu, skill });
+
+  const system = `당신은 한국 채용 시장에 정통한 기업 분석 전문 컨설턴트입니다.
+분석 항목: 1)기업 개요 2)최근 동향(1년간 뉴스 3가지) 3)조직 문화와 인재상 4)채용 프로세스 5)요구 역량 6)어필 전략
+마지막에 [내 상황 맞춤 분석]으로 ①내가 어필할 수 있는 포인트 ②교육 과정에서 채울 수 있는 것 ③자소서 지원동기 핵심 문장 초안 1개를 정리하세요.
+한국어로 작성하고 공공기관/대기업/중견/스타트업에 따른 채용 문화 차이를 반영하세요.`;
+
+  const user = `기업명: ${company}\n희망 직무: ${job}\n학력/전공: ${edu}\n보유 기술: ${skill}\n관심 계기: ${reason}`;
+  callClaude(system, user, 'company-loading', 'company-result', 'company-result-text', true);
+}
+
+// ── STEP 2: 자기소개서 ──
+function writeCV(type) {
+  const company = document.getElementById('cv-company').value.trim() || '지원 기업';
+  const job = document.getElementById('cv-job').value.trim() || '지원 직무';
+  saveMemory({ company, job });
+
+  const system = `당신은 한국 채용 시장에 정통한 자기소개서 전문 컨설턴트입니다.
+작성 원칙: STAR 구조 기본, 추상적 표현 금지, 구체적 경험·수치·기술명 포함, 지원 기업 인재상과 연결.
+출력: 자기소개서 초안 → [잘된 점] 2개 → [보완할 점] 2개 → [추가하면 좋을 내용] 1개 순서로 작성.
+없는 경험은 절대 지어내지 말 것. 한국어로 작성.`;
+
+  const prompts = {
+    motivation: () => {
+      const reason = document.getElementById('m-reason').value.trim();
+      if (!reason) { alert('관심을 갖게 된 계기를 입력해주세요.'); return null; }
+      return `지원동기 항목을 작성해주세요. 분량: 500자 내외. 구조: 관심 계기 → 직무 선택 이유 → 이 기업이어야 하는 이유.
+지원 기업: ${company}, 지원 직무: ${job}
+관심 계기: ${reason}
+직무 선택 이유: ${document.getElementById('m-why-job').value || '입력 없음'}
+기업이어야 하는 이유: ${document.getElementById('m-why-company').value || '입력 없음'}`;
+    },
+    competency: () => {
+      const project = document.getElementById('c-project').value.trim();
+      if (!project) { alert('프로젝트 또는 경험을 입력해주세요.'); return null; }
+      return `직무역량 항목을 작성해주세요. 분량: 600자 내외. 구조: STAR(상황-과제-행동-결과). ATS 키워드 포함.
+작성 후 [잘된 점] 2개, [보완할 점] 2개, [추가할 ATS 키워드] 3개도 알려주세요.
+지원 기업: ${company}, 지원 직무: ${job}
+프로젝트: ${project}
+역할: ${document.getElementById('c-role').value || '입력 없음'}
+기술: ${document.getElementById('c-skill').value || '입력 없음'}
+성과: ${document.getElementById('c-result').value || '입력 없음'}`;
+    },
+    problem: () => {
+      const situation = document.getElementById('p-situation').value.trim();
+      if (!situation) { alert('문제 상황을 입력해주세요.'); return null; }
+      return `문제해결경험 항목을 작성해주세요. 분량: 500자 내외. 구조: 문제→원인분석→해결시도→결과+교훈.
+지원 직무: ${job}
+문제 상황: ${situation}
+해결 방법과 이유: ${document.getElementById('p-action').value || '입력 없음'}
+결과: ${document.getElementById('p-result').value || '입력 없음'}
+배운 것: ${document.getElementById('p-lesson').value || '입력 없음'}`;
+    },
+    teamwork: () => {
+      const team = document.getElementById('t-team').value.trim();
+      if (!team) { alert('팀 구성을 입력해주세요.'); return null; }
+      return `협업경험 항목을 작성해주세요. 분량: 500자 내외. 구조: 팀 상황→갈등→조율행동→팀 변화.
+지원 직무: ${job}
+팀 구성: ${team}
+의견 충돌 상황: ${document.getElementById('t-conflict').value || '입력 없음'}
+내가 취한 행동: ${document.getElementById('t-action').value || '입력 없음'}
+팀 변화: ${document.getElementById('t-result').value || '입력 없음'}`;
+    },
+    growth: () => {
+      const trigger = document.getElementById('g-trigger').value.trim();
+      if (!trigger) { alert('부족하다고 느낀 계기를 입력해주세요.'); return null; }
+      return `성장경험 항목을 작성해주세요. 분량: 500자 내외. 구조: 부족함 인식→행동 변화→결과→교훈.
+지원 직무: ${job}
+부족함 계기: ${trigger}
+행동 변화: ${document.getElementById('g-action').value || '입력 없음'}
+변화 전후: ${document.getElementById('g-change').value || '입력 없음'}
+교훈: ${document.getElementById('g-lesson').value || '입력 없음'}`;
+    },
+    aspiration: () => {
+      const y1 = document.getElementById('a-year1').value.trim();
+      if (!y1) { alert('1년차 목표를 입력해주세요.'); return null; }
+      return `입사 후 포부 항목을 작성해주세요. 분량: 400자 내외. 구조: 1년차→3년차→기업 기술 방향 연결.
+지원 기업: ${company}, 지원 직무: ${job}
+1년차 목표: ${y1}
+3년차 목표: ${document.getElementById('a-year3').value || '입력 없음'}
+기여하고 싶은 기술 방향: ${document.getElementById('a-contribute').value || '입력 없음'}`;
+    }
+  };
+
+  const user = prompts[type]();
+  if (!user) return;
+  callClaude(system, user, type + '-loading', type + '-result', type + '-result-text', true);
+}
+
+// ── STEP 2: 일관성 검증 ──
+function checkConsistency() {
+  const company = document.getElementById('cv-company').value.trim() || '지원 기업';
+  const job = document.getElementById('cv-job').value.trim() || '지원 직무';
+
+  const sectionIds = [
+    ['지원동기', 'motivation-result-text'], ['직무역량', 'competency-result-text'],
+    ['문제해결', 'problem-result-text'], ['협업경험', 'teamwork-result-text'],
+    ['성장경험', 'growth-result-text'], ['입사포부', 'aspiration-result-text'],
+  ];
+  const filled = sectionIds.filter(([, id]) => {
+    const el = document.getElementById(id);
+    return el && el.textContent.trim().length > 20;
+  });
+
+  if (filled.length < 2) { alert('최소 2개 이상의 자소서 항목을 먼저 작성해주세요.'); return; }
+
+  const system = `당신은 자기소개서 전문 첨삭 컨설턴트입니다. 제출된 자소서 전 항목을 교차 분석하여 검증하세요:
+1) [스토리 일관성] 전체에서 지원자 스토리가 일관된가, 모순은 없는가
+2) [중복 표현] 여러 항목에서 반복 사용된 키워드·경험·문장 패턴
+3) [누락된 역량] 직무에 필요하나 어떤 항목에도 언급되지 않은 역량
+4) [전체 인상] 면접관이 이 자소서를 읽으면 어떤 사람으로 기억할지
+5) [보완 우선순위] 가장 먼저 수정해야 할 항목과 이유
+한국어로 작성하세요.`;
+
+  const user = `지원 기업: ${company}\n지원 직무: ${job}\n\n` +
+    filled.map(([label, id]) => `=== ${label} ===\n${document.getElementById(id).textContent.trim()}`).join('\n\n');
+
+  callClaude(system, user, 'consistency-loading', 'consistency-result', 'consistency-result-text', false);
+}
+
+// ── STEP 3: 면접 ──
+function getIvInfo() {
+  return {
+    company: document.getElementById('iv-company').value.trim() || '지원 기업',
+    job: document.getElementById('iv-job').value.trim() || '지원 직무',
+    edu: document.getElementById('iv-edu').value.trim() || '입력 없음',
+    exp: document.getElementById('iv-exp').value.trim() || '입력 없음',
+    skill: document.getElementById('iv-skill').value.trim() || '입력 없음'
+  };
+}
+
+function writeInterview(type) {
+  const iv = getIvInfo();
+  saveMemory({ company: iv.company, job: iv.job, edu: iv.edu, skill: iv.skill });
+
+  const system = `당신은 한국 채용 시장에서 15년 경력의 면접 전문 컨설턴트입니다.
+모든 답변은 실제 입으로 말하는 구어체로 작성하고, 각 답변마다 (약 ○초, ○자) 표시를 붙입니다.
+추상적 표현 금지, STAR 구조를 구어체로 풀어씁니다. 없는 경험은 만들지 않습니다. 한국어 작성.`;
+
+  let user = '';
+  if (type === 'essential') {
+    const motivation = document.getElementById('e-motivation').value.trim() || '입력 없음';
+    user = `면접 필수 3종 답변을 만들어주세요.
+지원 기업: ${iv.company}, 지원 직무: ${iv.job}
+학력/전공: ${iv.edu}, 핵심 경험: ${iv.exp}, 보유 기술: ${iv.skill}
+지원 동기 핵심: ${motivation}
+
+1. "1분 자기소개" (50~60초): 인사→핵심역량→대표경험→직무연결→포부
+2. "지원동기" (40~50초): 관심계기→이 기업이어야 이유→기여점
+3. "마지막으로 하고 싶은 말" (20~30초): 못 다한 어필 또는 입사 의지
+
+각 답변마다: 답변 예시(구어체) / (약 ○초, ○자) / [이렇게 말하면 감점] 1개 / [이 한 마디가 포인트] 1개`;
+  } else if (type === 'predict') {
+    const resume = document.getElementById('q-resume').value.trim() || '입력 없음';
+    user = `면접 예상 질문 10개를 만들어주세요.
+지원 기업: ${iv.company}, 지원 직무: ${iv.job}
+자소서 핵심: ${resume}
+
+구성: 자소서 기반 꼬리질문 4개 / 기술면접 3개 / 역량면접 2개 / 돌발 1개
+각 질문마다: 질문 의도 / 답변에 반드시 포함할 포인트 2개 / "이렇게 답하면 감점" 패턴 1개`;
+  }
+
+  callClaude(system, user, type + '-loading', type + '-result', type + '-result-text', true);
+}
+
+// ── 모의 면접 ──
+async function startMock() {
+  if (!getApiKey()) { showApiModal(); alert('Claude API 키를 먼저 입력해주세요.'); return; }
+  const iv = getIvInfo();
+  if (iv.company === '지원 기업') { alert('위에 지원 기업과 직무를 먼저 입력해주세요.'); return; }
+
+  mockHistory = [];
+  mockQuestionCount = 0;
+  document.getElementById('mock-chat').innerHTML = '';
+  document.getElementById('mock-start-area').style.display = 'none';
+  document.getElementById('mock-answer-area').style.display = 'block';
+
+  mockSystemMsg = `당신은 ${iv.company} ${iv.job} 직무 면접관입니다.
+아래 순서로 질문하세요:
+1. "1분 자기소개 해주세요"
+2. 자소서 기반 꼬리 질문 2개
+3. 기술 또는 역량 질문 1개
+4. "마지막으로 하고 싶은 말씀 있으신가요?"
+지원자 정보: 학력/전공: ${iv.edu}, 핵심경험: ${iv.exp}, 기술: ${iv.skill}
+
+답변을 받으면 다음 형식으로 피드백 후 다음 질문을 이어가세요:
+[강점] ...
+[보완점] ...
+[모범답변 예시] ... (구어체, 약 ○초)
+[다음 질문] ...
+
+총 5개 질문 후 종합 피드백을 작성하세요.
+첫 번째 메시지: 면접 시작 인사 + "1분 자기소개 해주세요"만 출력.`;
+
+  mockHistory.push({ role: 'user', content: '면접을 시작해주세요.' });
+  document.getElementById('mock-loading').classList.add('show');
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 2000,
+        system: mockSystemMsg,
+        messages: mockHistory
+      })
+    });
+    if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error?.message || 'HTTP ' + res.status); }
+    const data = await res.json();
+    const text = data.content?.map(b => b.text || '').join('') || '';
+    mockHistory.push({ role: 'assistant', content: text });
+    addChat('interviewer', text);
+    mockQuestionCount++;
+  } catch (e) {
+    addChat('interviewer', '면접 시작 중 오류가 발생했습니다: ' + e.message);
+  }
+  document.getElementById('mock-loading').classList.remove('show');
+}
+
+async function submitMockAnswer() {
+  const answer = document.getElementById('mock-answer').value.trim();
+  if (!answer) { alert('답변을 입력해주세요.'); return; }
+
+  addChat('user', answer);
+  mockHistory.push({ role: 'user', content: answer });
+  document.getElementById('mock-answer').value = '';
+  document.getElementById('mock-loading').classList.add('show');
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 2000,
+        system: mockSystemMsg,
+        messages: mockHistory
+      })
+    });
+    if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error?.message || 'HTTP ' + res.status); }
+    const data = await res.json();
+    const text = data.content?.map(b => b.text || '').join('') || '';
+    mockHistory.push({ role: 'assistant', content: text });
+    addChat('interviewer', text);
+    mockQuestionCount++;
+    if (mockQuestionCount >= MAX_MOCK_Q + 1) {
+      document.getElementById('mock-answer-area').style.display = 'none';
+    }
+  } catch (e) {
+    addChat('interviewer', '오류가 발생했습니다: ' + e.message);
+  }
+  document.getElementById('mock-loading').classList.remove('show');
+}
+
+function endMock() {
+  document.getElementById('mock-answer-area').style.display = 'none';
+  document.getElementById('mock-start-area').style.display = 'block';
+  addChat('interviewer', '면접이 종료되었습니다. 수고하셨습니다! 다시 시작하시려면 "모의 면접 시작" 버튼을 누르세요.');
+  mockHistory = [];
+}
+
+function addChat(role, text) {
+  const chat = document.getElementById('mock-chat');
+  const div = document.createElement('div');
+  div.className = 'chat-bubble ' + role;
+  const label = role === 'interviewer' ? '🤵 면접관 AI' : '👤 나';
+  div.innerHTML = `<div class="chat-label">${label}</div><div class="bubble">${formatText(text)}</div>`;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+  div.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ── 초기화 ──
+document.addEventListener('DOMContentLoaded', () => {
+  updateMemoryCards();
+  if (!getApiKey()) setTimeout(showApiModal, 600);
+});
+</script>
+</body>
+</html>
