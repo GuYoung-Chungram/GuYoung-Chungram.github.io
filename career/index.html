@@ -590,11 +590,11 @@
 <!-- API KEY MODAL -->
 <div class="api-modal" id="api-modal">
   <div class="api-modal-box">
-    <h3>🔑 Claude API 키 설정</h3>
-    <p>Anthropic Claude API 키를 입력하세요. 키는 브라우저 로컬에만 저장되며 외부로 전송되지 않습니다.</p>
-    <input type="password" class="modal-input" id="api-key-input" placeholder="sk-ant-api03-...">
+    <h3>🔑 Gemini API 키 설정</h3>
+    <p>Google Gemini API 키를 입력하세요. 키는 브라우저 로컬에만 저장되며 외부로 전송되지 않습니다.</p>
+    <input type="password" class="modal-input" id="api-key-input" placeholder="AIza...">
     <div class="api-modal-hint">
-      키 발급: <a href="https://console.anthropic.com" target="_blank" style="color:var(--blue)">console.anthropic.com</a> → API Keys
+      키 발급: <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--blue)">aistudio.google.com</a> → API Keys (무료 사용 가능)
     </div>
     <div style="display:flex;gap:8px;">
       <button class="btn btn-primary" style="flex:1" onclick="saveApiKey()">저장</button>
@@ -1245,8 +1245,14 @@ function updateMemoryCards() {
 }
 
 // ── API KEY ──
+const GEMINI_MODEL = 'gemini-2.0-flash';
+
 function getApiKey() {
-  return localStorage.getItem('claude-api-key') || '';
+  return localStorage.getItem('gemini-api-key') || '';
+}
+
+function getGeminiUrl() {
+  return `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${getApiKey()}`;
 }
 
 function showApiModal() {
@@ -1261,18 +1267,9 @@ function closeApiModal() {
 function saveApiKey() {
   const key = document.getElementById('api-key-input').value.trim();
   if (!key) { alert('API 키를 입력해주세요.'); return; }
-  localStorage.setItem('claude-api-key', key);
+  localStorage.setItem('gemini-api-key', key);
   closeApiModal();
-  alert('✅ API 키가 저장되었습니다.');
-}
-
-function getHeaders() {
-  return {
-    'Content-Type': 'application/json',
-    'x-api-key': getApiKey(),
-    'anthropic-version': '2023-06-01',
-    'anthropic-dangerous-direct-browser-access': 'true'
-  };
+  alert('✅ Gemini API 키가 저장되었습니다.');
 }
 
 // ── 네비게이션 ──
@@ -1353,9 +1350,9 @@ function exportAll() {
   a.click();
 }
 
-// ── Claude API 호출 ──
+// ── Gemini API 호출 ──
 async function callClaude(systemPrompt, userMessage, loadingId, resultId, resultTextId, hasStrategy = false) {
-  if (!getApiKey()) { showApiModal(); alert('Claude API 키를 먼저 입력해주세요.'); return; }
+  if (!getApiKey()) { showApiModal(); alert('Gemini API 키를 먼저 입력해주세요.'); return; }
 
   const loadingEl = document.getElementById(loadingId);
   const resultEl = document.getElementById(resultId);
@@ -1367,14 +1364,13 @@ async function callClaude(systemPrompt, userMessage, loadingId, resultId, result
   const strategyAppend = hasStrategy ? `\n\n답변 마지막에 아래 구분선을 넣고 전략 인사이트를 작성하세요:\n===전략 인사이트===\n[면접관 심리] 이 항목을 읽는 면접관이 실제로 보려는 것\n[ATS 통과 포인트] 서류 통과를 위해 반드시 포함해야 할 키워드/표현\n[위험 표현] 감점 요소가 될 수 있는 표현 또는 패턴\n[차별화 전략] 다른 지원자와 구별될 수 있는 한 가지 전략` : '';
 
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const response = await fetch(getGeminiUrl(), {
       method: 'POST',
-      headers: getHeaders(),
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 2000,
-        system: systemPrompt + strategyAppend,
-        messages: [{ role: 'user', content: userMessage }]
+        system_instruction: { parts: [{ text: systemPrompt + strategyAppend }] },
+        contents: [{ role: 'user', parts: [{ text: userMessage }] }],
+        generationConfig: { maxOutputTokens: 2048, temperature: 0.7 }
       })
     });
 
@@ -1384,7 +1380,7 @@ async function callClaude(systemPrompt, userMessage, loadingId, resultId, result
     }
 
     const data = await response.json();
-    const fullText = data.content?.map(b => b.text || '').join('') || '응답을 받지 못했습니다.';
+    const fullText = data.candidates?.[0]?.content?.parts?.map(p => p.text || '').join('') || '응답을 받지 못했습니다.';
 
     if (hasStrategy && fullText.includes('===전략 인사이트===')) {
       const parts = fullText.split('===전략 인사이트===');
@@ -1623,7 +1619,7 @@ function writeInterview(type) {
 
 // ── 모의 면접 ──
 async function startMock() {
-  if (!getApiKey()) { showApiModal(); alert('Claude API 키를 먼저 입력해주세요.'); return; }
+  if (!getApiKey()) { showApiModal(); alert('Gemini API 키를 먼저 입력해주세요.'); return; }
   const iv = getIvInfo();
   if (iv.company === '지원 기업') { alert('위에 지원 기업과 직무를 먼저 입력해주세요.'); return; }
 
@@ -1654,19 +1650,18 @@ async function startMock() {
   document.getElementById('mock-loading').classList.add('show');
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch(getGeminiUrl(), {
       method: 'POST',
-      headers: getHeaders(),
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 2000,
-        system: mockSystemMsg,
-        messages: mockHistory
+        system_instruction: { parts: [{ text: mockSystemMsg }] },
+        contents: mockHistory.map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] })),
+        generationConfig: { maxOutputTokens: 2048, temperature: 0.8 }
       })
     });
     if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error?.message || 'HTTP ' + res.status); }
     const data = await res.json();
-    const text = data.content?.map(b => b.text || '').join('') || '';
+    const text = data.candidates?.[0]?.content?.parts?.map(p => p.text || '').join('') || '';
     mockHistory.push({ role: 'assistant', content: text });
     addChat('interviewer', text);
     mockQuestionCount++;
@@ -1686,19 +1681,18 @@ async function submitMockAnswer() {
   document.getElementById('mock-loading').classList.add('show');
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch(getGeminiUrl(), {
       method: 'POST',
-      headers: getHeaders(),
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 2000,
-        system: mockSystemMsg,
-        messages: mockHistory
+        system_instruction: { parts: [{ text: mockSystemMsg }] },
+        contents: mockHistory.map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] })),
+        generationConfig: { maxOutputTokens: 2048, temperature: 0.8 }
       })
     });
     if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error?.message || 'HTTP ' + res.status); }
     const data = await res.json();
-    const text = data.content?.map(b => b.text || '').join('') || '';
+    const text = data.candidates?.[0]?.content?.parts?.map(p => p.text || '').join('') || '';
     mockHistory.push({ role: 'assistant', content: text });
     addChat('interviewer', text);
     mockQuestionCount++;
