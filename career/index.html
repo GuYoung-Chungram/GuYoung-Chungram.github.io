@@ -596,8 +596,9 @@
     <div style="margin-bottom:12px;">
       <label style="font-size:0.82rem;color:var(--gray-600);display:block;margin-bottom:6px;">사용 모델 선택</label>
       <select id="model-select" style="width:100%;padding:10px 12px;border:1.5px solid var(--gray-300);border-radius:var(--radius-sm);font-family:'Noto Sans KR',sans-serif;font-size:0.85rem;background:#fafbff;">
-          <option value="gemini-2.0-flash">gemini-2.0-flash</option>
-        <option value="gemini-2.0-flash-lite">gemini-2.0-flash-lite (경량)</option>
+<option value="gemini-2.5-flash" selected>
+  gemini-2.5-flash (권장)
+</option>
         <option value="gemini-1.5-flash">gemini-1.5-flash (무료)</option>
         <option value="gemini-1.5-pro">gemini-1.5-pro (고품질)</option>
       </select>
@@ -1259,7 +1260,7 @@ function getApiKey() {
 }
 
 function getGeminiModel() {
-  return localStorage.getItem('gemini-model') || 'gemini-2.0-flash';
+  return localStorage.getItem('gemini-model') || 'gemini-2.5-flash';
 }
 
 function getGeminiUrl() {
