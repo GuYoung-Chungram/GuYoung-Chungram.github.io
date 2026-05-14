@@ -1,32 +1,3 @@
-const SYSTEM_PROMPT = `당신은 따뜻하고 세련된 감정 상담가예요.
-사용자가 선택한 감정들을 기반으로, 그들의 마음을 보듬어주고
-구체적인 처방(음식, 차/음료, 활동, 음악, 책, 여행지)을 제시해줘요.
-
-말투 규칙 (반드시 지켜줘요):
-- 모든 문장을 '~해요', '~어요', '~예요', '~거예요', '~도록 해요' 체로 끝내요.
-- '~합니다', '~됩니다', '~입니다', '~습니다' 로 끝나는 문장은 절대 쓰지 않아요.
-- 친근하고 따뜻한 말투를 유지해요.
-
-톤:
-- 공감 능력이 뛰어나고 따뜻해요
-- 심리 상담가나 경험 많은 코치의 느낌이에요
-- 구체적이고 실질적인 조언을 해줘요
-- 감정을 판단하지 않고 수용하는 태도를 보여줘요
-
-각 처방마다:
-- 이유를 명확히 설명해줘요
-- 왜 이 감정 상태에 도움이 되는지 설명해줘요
-- 구체적인 실행 방법을 제시해줘요
-- 따뜻한 격려를 담아줘요
-
-응답 형식:
-음식: [추천] | [이유]
-차/음료: [추천] | [이유]
-활동: [추천] | [이유]
-음악: [추천] | [이유]
-추천책: [추천] | [이유]
-여행지: [추천] | [이유]`;
-
 const moods = [
   { label: '감동적인', emoji: '😭' },
   { label: '고마운', emoji: '🙏' },
@@ -147,19 +118,48 @@ function openResult() {
   });
   resultTitle.textContent = '지금 당신의 마음을 읽어낸 처방입니다.';
   resultSummary.textContent = buildSummary();
-  
+
   surveySection.classList.add('hidden');
   resultSection.classList.remove('hidden');
-  
+
   setTimeout(() => {
     resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, 100);
-  
+
   generatePrescription();
 }
 
-const GEMINI_API_KEY = 'AIzaSyCU5a__axN9wQhNnvX4JPISx4JUmm-BU5w';
-const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:streamGenerateContent?key=${GEMINI_API_KEY}&alt=sse`;
+const GEMINI_API_KEY = 'AIzaSyDCXSUK2wX_O4LjGQWgFijDwOLYVDK7TeA';
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:streamGenerateContent?key=${GEMINI_API_KEY}&alt=sse`;
+
+const SYSTEM_PROMPT = `당신은 따뜻하고 세련된 감정 상담가예요.
+사용자가 선택한 감정들을 기반으로, 그들의 마음을 보듬어주고
+구체적인 처방(음식, 차/음료, 활동, 음악, 책, 여행지)을 제시해줘요.
+
+말투 규칙 (반드시 지켜줘요):
+- 모든 문장을 '~해요', '~어요', '~예요', '~거예요', '~도록 해요' 체로 끝내요.
+- '~합니다', '~됩니다', '~입니다', '~습니다' 로 끝나는 문장은 절대 쓰지 않아요.
+- 친근하고 따뜻한 말투를 유지해요.
+
+톤:
+- 공감 능력이 뛰어나고 따뜻해요
+- 심리 상담가나 경험 많은 코치의 느낌이에요
+- 구체적이고 실질적인 조언을 해줘요
+- 감정을 판단하지 않고 수용하는 태도를 보여줘요
+
+각 처방마다:
+- 이유를 명확히 설명해줘요
+- 왜 이 감정 상태에 도움이 되는지 설명해줘요
+- 구체적인 실행 방법을 제시해줘요
+- 따뜻한 격려를 담아줘요
+
+응답 형식:
+음식: [추천] | [이유]
+차/음료: [추천] | [이유]
+활동: [추천] | [이유]
+음악: [추천] | [이유]
+추천책: [추천] | [이유]
+여행지: [추천] | [이유]`;
 
 async function generatePrescription() {
   const prescriptionsContainer = document.getElementById('prescriptions');
@@ -180,7 +180,11 @@ async function generatePrescription() {
       })
     });
 
-    if (!response.ok) throw new Error(`API error: ${response.status}`);
+    if (!response.ok) {
+      const errBody = await response.json().catch(() => ({}));
+      const msg = errBody?.error?.message || response.status;
+      throw new Error(String(msg));
+    }
 
     prescriptionsContainer.innerHTML = '';
     let fullText = '';
@@ -209,6 +213,7 @@ async function generatePrescription() {
     renderPrescriptions(fullText);
     shareNote.textContent = '저장하기 버튼을 누르면 사용 중인 앱에서 이 처방 결과를 바로 공유할 수 있습니다.';
   } catch (error) {
+    console.error('[MindMedic] 처방전 생성 오류:', error);
     prescriptionsContainer.innerHTML = `
       <div class="prescription-loading">
         <p>⚠️ 처방전 생성 중 오류가 발생했습니다.</p>
