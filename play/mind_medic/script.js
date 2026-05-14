@@ -129,8 +129,8 @@ function openResult() {
   generatePrescription();
 }
 
-const GEMINI_API_KEY = 'AIzaSyDCXSUK2wX_O4LjGQWgFijDwOLYVDK7TeA';
-const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:streamGenerateContent?key=${GEMINI_API_KEY}&alt=sse`;
+const GEMINI_API_KEY = 'AIzaSyCd-DSMZYANUL0wHsCrcO01q-rfhBeDefg';
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:streamGenerateContent?key=${GEMINI_API_KEY}&alt=sse`;
 
 const SYSTEM_PROMPT = `당신은 따뜻하고 세련된 감정 상담가예요.
 사용자가 선택한 감정들을 기반으로, 그들의 마음을 보듬어주고
