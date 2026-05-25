@@ -335,9 +335,232 @@
       font-size: 0.82rem;
       text-align: center;
     }
+
+    /* ===== 락스크린 (Lock Screen) ===== */
+    .lock-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(253, 246, 236, 0.75);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    .lock-card {
+      width: 100%;
+      max-width: 380px;
+      background: rgba(255, 250, 243, 0.85);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      padding: 36px 32px;
+      box-shadow: 0 10px 40px var(--shadow);
+      text-align: center;
+      backdrop-filter: blur(10px);
+      animation: cardPop 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    @keyframes cardPop {
+      from { opacity: 0; transform: scale(0.93) translateY(20px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .lock-title {
+      font-size: 1.45rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-top: 16px;
+    }
+    .lock-subtitle {
+      font-size: 0.85rem;
+      color: var(--text-soft);
+      margin-top: 8px;
+      line-height: 1.6;
+    }
+    .lock-input-group {
+      margin-top: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      text-align: left;
+    }
+    .lock-input-group label {
+      font-size: 0.78rem;
+      color: var(--text-soft);
+      font-weight: 500;
+      margin-left: 4px;
+    }
+    .lock-input {
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.8);
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: var(--text);
+      outline: none;
+      transition: all 0.2s;
+    }
+    .lock-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+    .lock-btn {
+      width: 100%;
+      margin-top: 24px;
+      padding: 14px;
+      border-radius: 16px;
+      background: var(--accent);
+      color: white;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(212, 132, 90, 0.3);
+      transition: all 0.2s;
+    }
+    .lock-btn:hover { background: #C4744A; transform: translateY(-1px); }
+    .lock-btn:active { transform: translateY(1px); }
+
+    /* 흔들림 애니메이션 */
+    .shake {
+      animation: shake 0.4s ease;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+
+    /* 설정 톱니바퀴 & 모달 */
+    .settings-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-soft);
+      transition: transform 0.3s ease, color 0.2s;
+    }
+    .settings-btn:hover {
+      transform: rotate(45deg);
+      color: var(--accent);
+    }
+    .settings-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(61, 44, 30, 0.4);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      transition: opacity 0.3s ease;
+    }
+    .settings-modal.show {
+      display: flex;
+    }
+    .settings-card {
+      width: 100%;
+      max-width: 400px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 32px 28px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+      position: relative;
+      animation: cardPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    .settings-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      transition: all 0.2s;
+    }
+    .settings-close:hover {
+      background: rgba(0,0,0,0.05);
+      color: var(--text);
+    }
+    .settings-title {
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
   </style>
 </head>
 <body>
+
+<!-- 락스크린 모달 -->
+<div class="lock-screen" id="lockScreen">
+  <div class="lock-card" id="lockCard">
+    <div style="font-size: 3rem;">🔑</div>
+    <div class="lock-title" id="lockTitle">키링 잠금해제</div>
+    <div class="lock-subtitle" id="lockSubtitle">정박사님만을 위한 안전한 대화 공간입니다.<br>비밀번호를 입력해주세요.</div>
+    
+    <div class="lock-input-group">
+      <!-- 최초 설정 필드 -->
+      <div id="setupFields" style="display: none; flex-direction: column; gap: 12px; width: 100%;">
+        <div style="display:flex; flex-direction:column; gap:4px;">
+          <label for="setupPassword">마스터 비밀번호 설정</label>
+          <input type="password" id="setupPassword" class="lock-input" placeholder="새 비밀번호 입력">
+        </div>
+        <div style="display:flex; flex-direction:column; gap:4px; margin-top:8px;">
+          <label for="setupApiKey">Claude API Key 입력</label>
+          <input type="password" id="setupApiKey" class="lock-input" placeholder="sk-ant-api03-...">
+        </div>
+      </div>
+      <!-- 일반 로그인 필드 -->
+      <div id="loginField" style="width: 100%;">
+        <input type="password" id="lockPassword" class="lock-input" placeholder="비밀번호 입력" onkeydown="handleLockKey(event)">
+      </div>
+    </div>
+    
+    <button class="lock-btn" id="lockBtn" onclick="submitLock()">확인</button>
+  </div>
+</div>
+
+<!-- 설정 모달 -->
+<div class="settings-modal" id="settingsModal">
+  <div class="settings-card">
+    <button class="settings-close" onclick="toggleSettings(false)">&times;</button>
+    <div class="settings-title">⚙️ 설정 관리</div>
+    <div class="lock-input-group" style="margin-top: 10px;">
+      <div style="display:flex; flex-direction:column; gap:4px;">
+        <label for="changePassword">비밀번호 변경</label>
+        <input type="password" id="changePassword" class="lock-input" placeholder="새 비밀번호 (비워두면 유지)">
+      </div>
+      <div style="display:flex; flex-direction:column; gap:4px; margin-top:12px;">
+        <label for="changeApiKey">Claude API Key 변경</label>
+        <input type="password" id="changeApiKey" class="lock-input" placeholder="새 API Key (비워두면 유지)">
+      </div>
+    </div>
+    <button class="lock-btn" onclick="saveSettings()">설정 저장</button>
+  </div>
+</div>
+
 <div class="wrapper">
 
   <!-- HEADER -->
@@ -347,6 +570,10 @@
       <div class="header-name">키링</div>
       <div class="header-status">늘 여기 있어요</div>
     </div>
+    <!-- 설정 버튼 -->
+    <button class="settings-btn" onclick="toggleSettings(true)" aria-label="설정">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+    </button>
   </div>
   <div class="header-divider"></div>
 
@@ -413,6 +640,124 @@
 
   var messages = [];
   var isLoading = false;
+  var isUnlocked = false;
+
+  // 로컬 스토리지 키 정의
+  var STORAGE_PW_KEY = 'keyring_secure_pw';
+  var STORAGE_API_KEY = 'keyring_secure_apikey';
+
+  // 초기화 함수 실행
+  window.addEventListener('DOMContentLoaded', function() {
+    initKeyring();
+  });
+
+  function initKeyring() {
+    var pw = localStorage.getItem(STORAGE_PW_KEY);
+    var apiKey = localStorage.getItem(STORAGE_API_KEY);
+    var lockScreen = document.getElementById('lockScreen');
+
+    if (!pw || !apiKey) {
+      // 최초 설정 모드
+      document.getElementById('lockTitle').textContent = '키링 초기 설정🔑';
+      document.getElementById('lockSubtitle').innerHTML = '만나서 반가워요! 안전한 대화를 위해<br>비밀번호와 Claude API Key를 입력해주세요.';
+      document.getElementById('setupFields').style.display = 'flex';
+      document.getElementById('loginField').style.display = 'none';
+      lockScreen.style.display = 'flex';
+    } else {
+      // 일반 잠금 해제 모드
+      document.getElementById('lockTitle').textContent = '키링 잠금해제';
+      document.getElementById('lockSubtitle').innerHTML = '정박사님만을 위한 안전한 대화 공간입니다.<br>비밀번호를 입력해주세요.';
+      document.getElementById('setupFields').style.display = 'none';
+      document.getElementById('loginField').style.display = 'block';
+      lockScreen.style.display = 'flex';
+      document.getElementById('lockPassword').focus();
+    }
+  }
+
+  function submitLock() {
+    var pw = localStorage.getItem(STORAGE_PW_KEY);
+    var apiKey = localStorage.getItem(STORAGE_API_KEY);
+    var card = document.getElementById('lockCard');
+
+    if (!pw || !apiKey) {
+      // 최초 설정 제출
+      var setupPw = document.getElementById('setupPassword').value.trim();
+      var setupKey = document.getElementById('setupApiKey').value.trim();
+
+      if (!setupPw || !setupKey) {
+        shakeCard();
+        alert('비밀번호와 Claude API Key를 모두 입력해주세요!');
+        return;
+      }
+
+      localStorage.setItem(STORAGE_PW_KEY, setupPw);
+      localStorage.setItem(STORAGE_API_KEY, setupKey);
+      unlockSuccess();
+    } else {
+      // 비밀번호 검증
+      var inputPw = document.getElementById('lockPassword').value;
+      if (inputPw === pw) {
+        unlockSuccess();
+      } else {
+        shakeCard();
+        document.getElementById('lockPassword').value = '';
+        document.getElementById('lockPassword').focus();
+      }
+    }
+  }
+
+  function handleLockKey(e) {
+    if (e.key === 'Enter') {
+      submitLock();
+    }
+  }
+
+  function shakeCard() {
+    var card = document.getElementById('lockCard');
+    card.classList.add('shake');
+    setTimeout(function() {
+      card.classList.remove('shake');
+    }, 400);
+  }
+
+  function unlockSuccess() {
+    isUnlocked = true;
+    var lockScreen = document.getElementById('lockScreen');
+    lockScreen.style.opacity = '0';
+    lockScreen.style.transform = 'scale(1.05)';
+    setTimeout(function() {
+      lockScreen.style.display = 'none';
+      // 잠금 해제 후 입력창 자동 포커스
+      document.getElementById('msgInput').focus();
+    }, 400);
+  }
+
+  // 설정 제어
+  function toggleSettings(show) {
+    var modal = document.getElementById('settingsModal');
+    if (show) {
+      modal.classList.add('show');
+      document.getElementById('changePassword').value = '';
+      document.getElementById('changeApiKey').value = '';
+    } else {
+      modal.classList.remove('show');
+    }
+  }
+
+  function saveSettings() {
+    var newPw = document.getElementById('changePassword').value.trim();
+    var newKey = document.getElementById('changeApiKey').value.trim();
+
+    if (newPw) {
+      localStorage.setItem(STORAGE_PW_KEY, newPw);
+    }
+    if (newKey) {
+      localStorage.setItem(STORAGE_API_KEY, newKey);
+    }
+
+    alert('설정이 안전하게 저장되었습니다!');
+    toggleSettings(false);
+  }
 
   function getTime() {
     var now = new Date();
@@ -492,7 +837,13 @@
   async function sendMessage() {
     var input = document.getElementById('msgInput');
     var text = input.value.trim();
-    if (!text || isLoading) return;
+    if (!text || isLoading || !isUnlocked) return;
+
+    var apiKey = localStorage.getItem(STORAGE_API_KEY);
+    if (!apiKey) {
+      alert('Claude API Key가 등록되어 있지 않습니다. 설정(⚙️)에서 입력해주세요.');
+      return;
+    }
 
     hideEmpty();
     input.value = '';
@@ -506,16 +857,26 @@
     try {
       var response = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
+          model: 'claude-3-5-sonnet-20241022',
+          max_tokens: 1024,
           system: SYSTEM_PROMPT,
           messages: messages
         })
       });
 
       var data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error ? data.error.message : 'API 호출 오류 발생');
+      }
+
       var reply = '';
       if (data.content && data.content[0] && data.content[0].text) {
         reply = data.content[0].text;
@@ -532,7 +893,7 @@
       var chatArea = document.getElementById('chatArea');
       var err = document.createElement('div');
       err.className = 'error-bubble';
-      err.textContent = '연결이 끊겼어요. 잠깐 후에 다시 말 걸어봐요.';
+      err.textContent = '연결 오류: ' + e.message + ' (API Key 및 설정을 다시 확인해주세요.)';
       chatArea.appendChild(err);
       chatArea.scrollTop = chatArea.scrollHeight;
       messages.pop();
