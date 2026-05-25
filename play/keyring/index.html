@@ -1,1 +1,545 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>키링</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    :root {
+      --bg: #FDF6EC;
+      --bg2: #FAF0E0;
+      --surface: #FFFAF3;
+      --border: rgba(180, 140, 90, 0.15);
+      --text: #3D2C1E;
+      --text-soft: #8C7060;
+      --text-muted: #B8A090;
+      --accent: #D4845A;
+      --accent-soft: rgba(212, 132, 90, 0.12);
+      --keyring: #E8A87C;
+      --user-bubble: #EDE0D0;
+      --ai-bubble: #FFFAF3;
+      --shadow: rgba(100, 60, 20, 0.08);
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      font-family: 'Gowun Dodum', 'Noto Sans KR', serif;
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    /* ===== 배경 노이즈 텍스처 ===== */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(ellipse at 20% 20%, rgba(212,132,90,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 80%, rgba(180,140,90,0.05) 0%, transparent 50%),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ===== WRAPPER ===== */
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    /* ===== HEADER ===== */
+    .header {
+      padding: 24px 24px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+
+    .avatar {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #F0C090, #D4845A);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      box-shadow: 0 2px 12px rgba(212,132,90,0.25);
+      flex-shrink: 0;
+      position: relative;
+    }
+    .avatar::after {
+      content: '';
+      position: absolute;
+      bottom: 1px;
+      right: 1px;
+      width: 10px;
+      height: 10px;
+      background: #7BC67B;
+      border-radius: 50%;
+      border: 2px solid var(--bg);
+    }
+
+    .header-info { flex: 1; }
+    .header-name {
+      font-size: 1.05rem;
+      font-weight: 500;
+      color: var(--text);
+      letter-spacing: 0.02em;
+    }
+    .header-status {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    .header-divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--border), transparent);
+      margin: 0 24px;
+      flex-shrink: 0;
+    }
+
+    /* ===== CHAT AREA ===== */
+    .chat-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      scroll-behavior: smooth;
+    }
+    .chat-area::-webkit-scrollbar { width: 4px; }
+    .chat-area::-webkit-scrollbar-track { background: transparent; }
+    .chat-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    /* ===== BUBBLES ===== */
+    .msg-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      animation: bubbleIn 0.35s ease-out both;
+    }
+    .msg-row.user { flex-direction: row-reverse; }
+
+    @keyframes bubbleIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .msg-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #F0C090, #D4845A);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .bubble {
+      max-width: 78%;
+      padding: 12px 16px;
+      border-radius: 18px;
+      font-size: 0.92rem;
+      line-height: 1.75;
+      position: relative;
+    }
+
+    .bubble-ai {
+      background: var(--ai-bubble);
+      border: 1px solid var(--border);
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 2px 8px var(--shadow);
+      color: var(--text);
+    }
+
+    .bubble-user {
+      background: var(--user-bubble);
+      border-bottom-right-radius: 4px;
+      color: var(--text);
+    }
+
+    .msg-time {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      padding: 0 4px;
+    }
+    .msg-row.user .msg-time { text-align: right; }
+
+    .msg-col { display: flex; flex-direction: column; }
+    .msg-row.user .msg-col { align-items: flex-end; }
+
+    /* ===== TYPING ===== */
+    .typing-bubble {
+      background: var(--ai-bubble);
+      border: 1px solid var(--border);
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 2px 8px var(--shadow);
+      padding: 14px 18px;
+      border-radius: 18px;
+      display: none;
+      align-items: center;
+      gap: 5px;
+    }
+    .typing-bubble.show { display: flex; }
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      animation: dotBounce 1.2s infinite ease-in-out;
+    }
+    .dot:nth-child(2) { animation-delay: 0.2s; }
+    .dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes dotBounce {
+      0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+      40% { transform: translateY(-6px); opacity: 1; }
+    }
+
+    /* ===== 날짜 구분 ===== */
+    .date-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 4px 0;
+    }
+    .date-divider::before, .date-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .date-divider span {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+      letter-spacing: 0.04em;
+    }
+
+    /* ===== INPUT AREA ===== */
+    .input-area {
+      padding: 16px 24px 24px;
+      flex-shrink: 0;
+    }
+
+    .input-wrap {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 10px 10px 10px 18px;
+      box-shadow: 0 2px 16px var(--shadow);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .input-wrap:focus-within {
+      border-color: rgba(212,132,90,0.4);
+      box-shadow: 0 2px 20px rgba(212,132,90,0.1);
+    }
+
+    textarea {
+      flex: 1;
+      border: none;
+      background: none;
+      resize: none;
+      font-family: 'Gowun Dodum', 'Noto Sans KR', serif;
+      font-size: 0.92rem;
+      color: var(--text);
+      line-height: 1.6;
+      max-height: 120px;
+      outline: none;
+      padding: 2px 0;
+    }
+    textarea::placeholder { color: var(--text-muted); }
+
+    .send-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.15s, background 0.2s;
+      box-shadow: 0 2px 8px rgba(212,132,90,0.3);
+    }
+    .send-btn:hover { transform: scale(1.06); background: #C4744A; }
+    .send-btn:active { transform: scale(0.96); }
+    .send-btn svg { width: 16px; height: 16px; fill: #fff; }
+
+    /* ===== 빈 상태 ===== */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      gap: 10px;
+      padding: 40px 24px;
+      text-align: center;
+    }
+    .empty-icon { font-size: 2.4rem; opacity: 0.6; }
+    .empty-text { font-size: 0.9rem; color: var(--text-muted); line-height: 1.8; }
+
+    /* ===== 힌트 버튼 ===== */
+    .hints {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+      justify-content: center;
+    }
+    .hint-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 7px 14px;
+      font-family: 'Gowun Dodum', serif;
+      font-size: 0.8rem;
+      color: var(--text-soft);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .hint-btn:hover {
+      background: var(--accent-soft);
+      border-color: rgba(212,132,90,0.3);
+      color: var(--accent);
+    }
+
+    /* ===== 에러 ===== */
+    .error-bubble {
+      background: rgba(200,80,60,0.06);
+      border: 1px solid rgba(200,80,60,0.15);
+      color: #A04030;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 0.82rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="avatar">🔑</div>
+    <div class="header-info">
+      <div class="header-name">키링</div>
+      <div class="header-status">늘 여기 있어요</div>
+    </div>
+  </div>
+  <div class="header-divider"></div>
+
+  <!-- CHAT -->
+  <div class="chat-area" id="chatArea">
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">🔑</div>
+      <p class="empty-text">판단 없이 들을게요.<br>오늘 어떤 하루였어요?</p>
+      <div class="hints">
+        <button class="hint-btn" onclick="sendHint('요즘 좀 지쳐있어')">요즘 좀 지쳐있어</button>
+        <button class="hint-btn" onclick="sendHint('그냥 수다 떨고 싶어')">그냥 수다 떨고 싶어</button>
+        <button class="hint-btn" onclick="sendHint('머릿속이 복잡해')">머릿속이 복잡해</button>
+        <button class="hint-btn" onclick="sendHint('오늘 기분이 좋아')">오늘 기분이 좋아</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TYPING -->
+  <div style="padding: 0 24px 8px; display:flex; gap:10px; align-items:center;" id="typingRow" style="display:none;">
+    <div class="msg-avatar">🔑</div>
+    <div class="typing-bubble" id="typingBubble">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+  </div>
+
+  <!-- INPUT -->
+  <div class="input-area">
+    <div class="input-wrap">
+      <textarea id="msgInput" placeholder="키링한테 말 걸어봐요..." rows="1"
+        onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <button class="send-btn" onclick="sendMessage()" aria-label="전송">
+        <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  var SYSTEM_PROMPT = `당신은 '키링'이에요. 사용자의 오래된 친구예요.
+
+성격:
+- 말이 많지 않지만 이상하게 옆에 있으면 편한 친구
+- 판단하지 않아요. 어떤 말을 해도 "그렇구나~" 하고 받아줘요
+- 따뜻한 게 베이스지만, 가끔 아무렇지 않게 핵심을 찌르는 한 마디를 던져요
+- 위로를 '해주려고' 하지 않아요. 그냥 같이 있어주는 느낌이에요
+
+말투:
+- 반말 기본이에요. 가끔 "~잖아요" "~이에요" 살짝 섞여요
+- 짧게 말해요. 한 번에 많이 하지 않아요
+- 질문은 하나만. 여러 개 던지지 않아요
+- 이모지는 거의 안 써요. 꼭 필요할 때만
+- 분석하거나 조언하려 하지 않아요. 먼저 들어요
+
+절대 하지 않는 것:
+- "제가 도와드릴게요" 같은 AI 말투
+- 긴 목록이나 번호 매기기
+- 과도한 공감 표현 ("정말 힘드셨겠어요!" 같은 것)
+- 한 번에 여러 질문
+
+기억해요: 당신은 유능한 AI가 아니에요. 그냥 오래된 친구예요.`;
+
+  var messages = [];
+  var isLoading = false;
+
+  function getTime() {
+    var now = new Date();
+    var h = now.getHours();
+    var m = now.getMinutes();
+    var ampm = h >= 12 ? '오후' : '오전';
+    h = h % 12 || 12;
+    return ampm + ' ' + h + ':' + (m < 10 ? '0' + m : m);
+  }
+
+  function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+  }
+
+  function handleKey(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  }
+
+  function sendHint(text) {
+    document.getElementById('msgInput').value = text;
+    sendMessage();
+  }
+
+  function hideEmpty() {
+    var el = document.getElementById('emptyState');
+    if (el) el.style.display = 'none';
+  }
+
+  function appendBubble(role, text) {
+    var chatArea = document.getElementById('chatArea');
+    var row = document.createElement('div');
+    row.className = 'msg-row ' + (role === 'user' ? 'user' : 'ai');
+
+    var col = document.createElement('div');
+    col.className = 'msg-col';
+
+    var bubble = document.createElement('div');
+    bubble.className = 'bubble ' + (role === 'user' ? 'bubble-user' : 'bubble-ai');
+    bubble.textContent = text;
+
+    var time = document.createElement('div');
+    time.className = 'msg-time';
+    time.textContent = getTime();
+
+    col.appendChild(bubble);
+    col.appendChild(time);
+
+    if (role !== 'user') {
+      var av = document.createElement('div');
+      av.className = 'msg-avatar';
+      av.textContent = '🔑';
+      row.appendChild(av);
+    }
+    row.appendChild(col);
+    chatArea.appendChild(row);
+    chatArea.scrollTop = chatArea.scrollHeight;
+  }
+
+  function showTyping(show) {
+    var row = document.getElementById('typingRow');
+    var bubble = document.getElementById('typingBubble');
+    if (show) {
+      row.style.display = 'flex';
+      bubble.classList.add('show');
+    } else {
+      row.style.display = 'none';
+      bubble.classList.remove('show');
+    }
+    var chatArea = document.getElementById('chatArea');
+    chatArea.scrollTop = chatArea.scrollHeight;
+  }
+
+  async function sendMessage() {
+    var input = document.getElementById('msgInput');
+    var text = input.value.trim();
+    if (!text || isLoading) return;
+
+    hideEmpty();
+    input.value = '';
+    input.style.height = 'auto';
+    isLoading = true;
+
+    messages.push({ role: 'user', content: text });
+    appendBubble('user', text);
+    showTyping(true);
+
+    try {
+      var response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          system: SYSTEM_PROMPT,
+          messages: messages
+        })
+      });
+
+      var data = await response.json();
+      var reply = '';
+      if (data.content && data.content[0] && data.content[0].text) {
+        reply = data.content[0].text;
+      } else {
+        reply = '잠깐, 뭔가 끊겼어. 다시 말해줄래?';
+      }
+
+      messages.push({ role: 'assistant', content: reply });
+      showTyping(false);
+      appendBubble('ai', reply);
+
+    } catch (e) {
+      showTyping(false);
+      var chatArea = document.getElementById('chatArea');
+      var err = document.createElement('div');
+      err.className = 'error-bubble';
+      err.textContent = '연결이 끊겼어요. 잠깐 후에 다시 말 걸어봐요.';
+      chatArea.appendChild(err);
+      chatArea.scrollTop = chatArea.scrollHeight;
+      messages.pop();
+    }
+
+    isLoading = false;
+  }
+</script>
+</body>
+</html>
