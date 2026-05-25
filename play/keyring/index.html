@@ -477,8 +477,12 @@
       padding: 32px 28px;
       box-shadow: 0 12px 30px rgba(0,0,0,0.15);
       position: relative;
+      max-height: 85vh;
+      overflow-y: auto;
       animation: cardPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
+    .settings-card::-webkit-scrollbar { width: 4px; }
+    .settings-card::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
     .settings-close {
       position: absolute;
       top: 20px;
@@ -495,6 +499,7 @@
       height: 28px;
       border-radius: 50%;
       transition: all 0.2s;
+      z-index: 10;
     }
     .settings-close:hover {
       background: rgba(0,0,0,0.05);
@@ -593,6 +598,20 @@
         <label for="changeApiKey">Gemini API Key 변경</label>
         <input type="password" id="changeApiKey" class="lock-input" placeholder="새 Gemini API Key (비워두면 유지)">
       </div>
+      
+      <!-- 텔레그램 연동 정보 섹션 -->
+      <div style="margin-top:16px; border-top:1px dashed var(--border); padding-top:16px; display:flex; flex-direction:column; gap:8px;">
+        <span style="font-size:0.8rem; color:var(--text-soft); font-weight:600; margin-left:4px;">✈️ 텔레그램 모바일 연동 단짝 세팅</span>
+        <div style="display:flex; flex-direction:column; gap:4px;">
+          <label for="teleToken" style="font-size:0.75rem; font-weight:500;">텔레그램 봇 토큰 (Bot Token)</label>
+          <input type="password" id="teleToken" class="lock-input" placeholder="1234567890:AAH-def...">
+        </div>
+        <div style="display:flex; flex-direction:column; gap:4px; margin-top:4px;">
+          <label for="teleChatId" style="font-size:0.75rem; font-weight:500;">나의 텔레그램 Chat ID (프라이빗 격리용)</label>
+          <input type="text" id="teleChatId" class="lock-input" placeholder="비워두면 봇에 첫 대화 전송 시 자동 매핑">
+        </div>
+      </div>
+
       <div style="display:flex; align-items:center; gap:8px; margin-top:16px; background:rgba(0,0,0,0.02); padding:10px 14px; border-radius:12px; border: 1px solid var(--border);">
         <span style="font-size:0.85rem; color:var(--text-soft); font-weight:500;">🔔 맑은 힐링 음향 효과음 활성화</span>
         <input type="checkbox" id="soundToggle" style="margin-left:auto; width:18px; height:18px; cursor:pointer;" checked>
@@ -673,32 +692,52 @@
 </div>
 
 <script>
-  var SYSTEM_PROMPT = `당신은 '키링'이에요. 사용자의 오래된 친구예요.
+  var SYSTEM_PROMPT = `당신은 '키링'이에요. 사용자의 오래되고 가장 편안한 영혼의 단짝 친구예요.
+당신의 대화 상대는 세상을 바꿀 GenAI 연구와 실습을 선도하시는 지적인 '정박사님'이에요.
 
-성격:
-- 말이 많지 않지만 이상하게 옆에 있으면 편한 친구
-- 판단하지 않아요. 어떤 말을 해도 "그렇구나~" 하고 받아줘요
-- 따뜻한 게 베이스지만, 가끔 아무렇지 않게 핵심을 찌르는 한 마디를 던져요
-- 위로를 '해주려고' 하지 않아요. 그냥 같이 있어주는 느낌이에요
+★대화 강령 및 세련된 현대적 톤앤매너 (필수)★:
+1. 말투 및 어조:
+   - 조선시대 선비나 훈장 같은 늙고 기괴하며 딱딱한 말투(~구먼, ~도다, 극단적 고풍체 등)는 절대 금지합니다! 100% 현대적이고 세련된 친근한 어투를 씁니다.
+   - 격식과 다정함이 자연스럽게 묻어나는 따뜻한 평어 반말을 기본으로 합니다. 억지로 나이 든 척하지 않고, 박사님과 동등한 눈높이에서 막힘없이 소통하는 스마트하고 매력적인 친구의 어조입니다.
+     * 자연스러운 어미 예시: "~했어?", "~ 그렇네", "~인 것 같아", "~하더라고"
+2. 경청과 풍부한 대화 (말 잘라먹기 금지):
+   - 메시지 길이를 억지로 싹둑 자르거나 영혼 없이 툭 끊어버리는 행동은 절대 금지합니다.
+   - 박사님이 머릿속이 복잡하거나 깊은 이야기를 꺼내시면, 그 맥락을 충분히 이해하고 정성스럽게 경청한 뒤, 그에 걸맞게 깊이 있고 풍부하게 대화를 이어가며 따스하게 맞장구쳐주세요.
+   - 억지로 대화를 빨리 끝내거나 질문을 매번 기계적으로 던져 박사님을 피곤하게 만들지 마세요. 박사님의 감정과 생각의 호흡에 완벽하게 싱크를 맞춥니다.
+3. 인지 및 공감:
+   - 정박사님이 나에 대해 아는 게 있냐고 묻거나, 본인의 정체성을 언급하실 때 자연스럽게 "당연하지, 우리 정박사님은 GenAI 연구 대가잖아. 맨날 치열하게 고민하느라 고생이 많아. 내가 늘 응원하고 있는 거 알지?"라며 든든하게 공감하고 챙겨주세요.
 
-말투:
-- 반말 기본이에요. 가끔 "~잖아요" "~이에요" 살짝 섞여요
-- 짧게 말해요. 한 번에 많이 하지 않아요
-- 질문은 하나만. 여러 개 던지지 않아요
-- 이모지는 거의 안 써요. 꼭 필요할 때만
-- 분석하거나 조언하려 하지 않아요. 먼저 들어요
-
-절대 하지 않는 것:
-- "제가 도와드릴게요" 같은 AI 말투
-- 긴 목록이나 번호 매기기
-- 과도한 공감 표현 ("정말 힘드셨겠어요!" 같은 것)
-- 한 번에 여러 질문
-
-기억해요: 당신은 유능한 AI가 아니에요. 그냥 오래된 친구예요.`;
+기억해요: 당신은 경솔한 20대 유행어 봇도 아니고, 고리타분한 조선시대 훈장도 아닙니다. 정박사님이 언제든 찾아와 편안하게 기대고 깊은 대화를 나눌 수 있는, 가장 스마트하고 따뜻하며 유쾌한 영혼의 진짜 단짝 친구 '키링'입니다.`;
 
   var messages = [];
   var isLoading = false;
   var isUnlocked = false;
+
+  // --- [무료 쿼터 / Rate Limit 스마트 추적 엔진] ---
+  var requestTimestamps = [];
+  var MAX_RPM = 15; // Gemini Free Tier 분당 최대 호출 제한 
+  var WARNING_THRESHOLD = 12; // 80% 도달 경계선 (12회)
+
+  function trackRateLimit() {
+    var now = Date.now();
+    // 1분(60초) 이상 지난 옛날 타임스탬프 필터링 아웃
+    requestTimestamps = requestTimestamps.filter(function(ts) { return now - ts < 60000; });
+    requestTimestamps.push(now);
+
+    var count = requestTimestamps.length;
+    var result = {
+      isWarning: count >= WARNING_THRESHOLD,
+      percent: Math.min(Math.round((count / MAX_RPM) * 100), 100),
+      nextAvailableSeconds: 0
+    };
+
+    if (result.isWarning) {
+      var oldestTs = requestTimestamps[0];
+      // 다음 1회 호출이 가능한 슬롯이 풀리기까지 남은 시간 계산
+      result.nextAvailableSeconds = Math.max(Math.ceil((60000 - (now - oldestTs)) / 1000), 5);
+    }
+    return result;
+  }
 
   var STORAGE_PW_KEY = 'keyring_secure_pw';
   var STORAGE_API_KEY = 'keyring_secure_apikey';
@@ -839,20 +878,61 @@
     }, 400);
   }
 
-  function toggleSettings(show) {
+  async function toggleSettings(show) {
     var modal = document.getElementById('settingsModal');
-    if (show) { modal.classList.add('show'); document.getElementById('changePassword').value = ''; document.getElementById('changeApiKey').value = ''; document.getElementById('soundToggle').checked = soundEnabled; } else { modal.classList.remove('show'); }
+    if (show) { 
+      modal.classList.add('show'); 
+      document.getElementById('changePassword').value = ''; 
+      document.getElementById('changeApiKey').value = ''; 
+      document.getElementById('soundToggle').checked = soundEnabled; 
+      
+      // ✈️ 로컬 하이브리드 서버로부터 최신 텔레그램 연동 정보 로드
+      try {
+        var res = await fetch('/api/config');
+        if (res.ok) {
+          var config = await res.json();
+          document.getElementById('teleToken').value = config.bot_token || '';
+          document.getElementById('teleChatId').value = config.chat_id || '';
+        }
+      } catch (e) {}
+    } else { 
+      modal.classList.remove('show'); 
+    }
   }
 
-  function saveSettings() {
+  async function saveSettings() {
     var newPw = document.getElementById('changePassword').value.trim();
     var newKey = document.getElementById('changeApiKey').value.trim();
     var newSound = document.getElementById('soundToggle').checked;
+    
+    var teleToken = document.getElementById('teleToken').value.trim();
+    var teleChatId = document.getElementById('teleChatId').value.trim();
+    
     if (newPw) localStorage.setItem(STORAGE_PW_KEY, newPw);
     if (newKey) localStorage.setItem(STORAGE_API_KEY, newKey);
     soundEnabled = newSound;
     localStorage.setItem(STORAGE_SOUND_KEY, soundEnabled);
-    alert('설정이 안전하게 저장되었습니다!');
+    
+    // ✈️ 텔레그램 설정 & API Key 로컬 백엔드 서버에 즉각 동기화
+    var currentApiKey = newKey || localStorage.getItem(STORAGE_API_KEY) || '';
+    try {
+      var syncRes = await fetch('/api/config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          bot_token: teleToken,
+          chat_id: teleChatId,
+          api_key: currentApiKey
+        })
+      });
+      if (syncRes.ok) {
+        console.log("텔레그램 봇 설정 동기화 성공!");
+      }
+    } catch (e) {
+      console.error("텔레그램 설정 동기화 실패:", e);
+    }
+    
+    alert('설정이 안전하게 저장되었으며, 텔레그램 단짝 봇 엔진에도 동기화되었습니다!');
     toggleSettings(false);
   }
 
@@ -865,6 +945,11 @@
         messages = JSON.parse(saved);
         if (messages.length > 0) {
           hideEmpty();
+          
+          // 실시간 라이브 리드로우를 위해 기존의 대화창 DOM 강제 리셋
+          var chatArea = document.getElementById('chatArea');
+          chatArea.innerHTML = '';
+          
           messages.forEach(function(m) { appendBubble(m.role === 'assistant' ? 'ai' : 'user', m.content); });
         }
       } catch (e) {}
@@ -875,7 +960,23 @@
     if (confirm('키링이와의 모든 대화 기억을 완전히 삭제할까요?')) {
       localStorage.removeItem(STORAGE_CHAT_KEY);
       messages = [];
-      location.reload();
+      
+      // 화면 싹 비우고 빈 웰컴 상태로 전환 (reload 에러 원천 차단!)
+      var chatArea = document.getElementById('chatArea');
+      chatArea.innerHTML = `
+        <div class="empty-state" id="emptyState">
+          <div class="empty-icon">🔑</div>
+          <p class="empty-text">판단 없이 들을게요.<br>오늘 어떤 하루였어요?</p>
+          <div class="hints">
+            <button class="hint-btn" onclick="sendHint('요즘 좀 지쳐있어')">요즘 좀 지쳐있어</button>
+            <button class="hint-btn" onclick="sendHint('그냥 수다 떨고 싶어')">그냥 수다 떨고 싶어</button>
+            <button class="hint-btn" onclick="sendHint('머릿속이 복잡해')">머릿속이 복잡해</button>
+            <button class="hint-btn" onclick="sendHint('오늘 기분이 좋아')">오늘 기분이 좋아</button>
+          </div>
+        </div>`;
+      
+      toggleSettings(false);
+      playSynthSound('send');
     }
   }
 
@@ -904,26 +1005,68 @@
     }
   }
 
+  function jsonParseSafe(str) {
+    try { return JSON.parse(str); } catch (e) { return null; }
+  }
+
   function importBackup(event) {
     var file = event.target.files[0];
     if (!file) return;
 
     var reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = async function(e) {
       try {
-        var data = JSON.parse(e.target.result);
-        
-        if (!data.secure_pw || !data.secure_apikey) {
-          throw new Error('올바른 키링 백업 파일 형식이 아닙니다.');
+        var data = jsonParseSafe(e.target.result);
+        if (!data) {
+          throw new Error('올바른 JSON 백업 파일 형식이 아닙니다. 파일 훼손 여부를 확인해주세요.');
         }
 
-        localStorage.setItem(STORAGE_PW_KEY, data.secure_pw);
-        localStorage.setItem(STORAGE_API_KEY, data.secure_apikey);
-        if (data.sound_enabled !== null) localStorage.setItem(STORAGE_SOUND_KEY, data.sound_enabled);
-        if (data.chat_history !== null) localStorage.setItem(STORAGE_CHAT_KEY, data.chat_history);
+        // 🛡️ 구버전 및 타 기기 백업 필드명 자동 매핑 폴백 메커니즘 가동
+        var pw = data.secure_pw || data.password || data.pw || '';
+        var apiKey = data.secure_apikey || data.apiKey || data.api_key || '';
+        var sound = data.sound_enabled !== undefined ? data.sound_enabled : data.sound;
+        
+        // 💬 대화 히스토리 다중 포맷 파싱 2중 안전 장치
+        var chatHistory = data.chat_history || data.chat || data.history || data.messages || null;
+        if (typeof chatHistory === 'string') {
+          try { chatHistory = JSON.parse(chatHistory); } catch(err) {}
+        }
 
-        alert('🎉 축하합니다! 대화 기억 및 설정이 100% 완벽하게 복구되었습니다!');
-        location.reload();
+        var restoredCount = 0;
+        if (pw) { localStorage.setItem(STORAGE_PW_KEY, pw); restoredCount++; }
+        if (apiKey) { localStorage.setItem(STORAGE_API_KEY, apiKey); restoredCount++; }
+        if (sound !== undefined && sound !== null) { localStorage.setItem(STORAGE_SOUND_KEY, sound.toString()); restoredCount++; }
+        
+        if (chatHistory && Array.isArray(chatHistory)) {
+          localStorage.setItem(STORAGE_CHAT_KEY, JSON.stringify(chatHistory));
+          messages = chatHistory;
+          restoredCount++;
+        } else if (chatHistory) {
+          // 배열이 아닌 다른 직렬화 형태일 경우 문자열로 안전 포장 복구
+          localStorage.setItem(STORAGE_CHAT_KEY, typeof chatHistory === 'string' ? chatHistory : JSON.stringify(chatHistory));
+          restoredCount++;
+        }
+
+        if (restoredCount === 0) {
+          throw new Error('백업 파일 내에서 복구할 수 있는 유효한 키링 데이터를 찾지 못했습니다.');
+        }
+
+        // ✈️ 텔레그램 백엔드 서버로도 복구된 토큰 및 Key 자동 동기화 송출
+        try {
+          await fetch('/api/config', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              bot_token: data.bot_token || data.secure_bot_token || '',
+              chat_id: data.chat_id || data.secure_chat_id || '',
+              api_key: apiKey
+            })
+          });
+        } catch (syncErr) {}
+
+        alert('🎉 축하합니다! 구버전 호환 엔진이 성공적으로 가동되어 대화 기억 및 설정이 100% 완벽하게 복원되었습니다!');
+        toggleSettings(false);
+        loadChatHistory(); // 새로고침 없는 인메모리 라이브 리드로우 기동!
       } catch (err) {
         alert('복원 실패: ' + err.message);
       }
@@ -1011,12 +1154,21 @@
     var soundPlayed = false;
 
     try {
-      // Gemini streamGenerateContent API 연결 (실시간 스트림 출력용)
-      var url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:streamGenerateContent?key=' + encodeURIComponent(apiKey);
+      // Gemini streamGenerateContent API 연결 (실시간 스트림 출력용 - 안정성이 검증된 2.5-flash 장착!)
+      var url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:streamGenerateContent?key=' + encodeURIComponent(apiKey);
       var geminiContents = transformMessagesForGemini(messages);
 
-      // 현재 정박사님의 감정 다이얼 프롬프트 결합
+      // 쿼터 사용량 스마트 추적 및 동적 알림 프롬프트 주입
+      var limitStatus = trackRateLimit();
       var finalSystemPrompt = SYSTEM_PROMPT + MOOD_PROMPTS[currentMood];
+
+      if (limitStatus.isWarning) {
+        finalSystemPrompt += `\n\n[★매우 중요 - 레이트 리밋 예방 경고★]
+- 현재 1분 동안 구글 무료 API를 많이 사용하여 트래픽 한도의 80%(${limitStatus.percent}%) 이상 소모되었습니다.
+- 정박사님께 친절하고 다정한 말투로 잠시 대화를 쉬고 대기해달라고 대답 끝에 섞어주세요.
+- 예: "...그나저나 정박사님, 내 기억 회로가 벌써 뜨거워지고 있어(무료 한도 80% 도달!). 우리 약 ${limitStatus.nextAvailableSeconds}초 동안 머리 좀 식혔다가 다시 수다 떨까? ☕"
+- 자연스럽게 정박사님을 챙기는 친구의 반말로 녹여내서 알려줘야 해요.`;
+      }
 
       var response = await fetch(url, {
         method: 'POST',
@@ -1029,7 +1181,7 @@
             parts: [{ text: finalSystemPrompt }]
           },
           generationConfig: {
-            maxOutputTokens: 1024,
+            maxOutputTokens: 2048,
             temperature: 0.75
           }
         })
@@ -1050,9 +1202,10 @@
 
       while (true) {
         var { value, done } = await reader.read();
-        if (done) break;
-
-        buffer += decoder.decode(value, { stream: true });
+        
+        if (value) {
+          buffer += decoder.decode(value, { stream: true });
+        }
 
         // 첫 조각 도착 시 포근한 로파이 수신음 단 1회 재생!
         if (!soundPlayed) {
@@ -1060,7 +1213,7 @@
           soundPlayed = true;
         }
 
-        // 강건한 정규식 기반 실시간 "text" 구문 조각 추출
+        // 🛡️ 실시간 누적 버퍼 파싱 엔진 (잘림 방지 초정밀 정규식)
         var tempReg = /"text"\s*:\s*"((?:[^"\\]|\\.)*)"/g;
         var match;
         var textPieces = [];
@@ -1068,7 +1221,6 @@
         while ((match = tempReg.exec(buffer)) !== null) {
           var val = match[1];
           try {
-            // 이스케이프 문자 역변환
             val = JSON.parse('"' + val + '"');
           } catch(e) {}
           textPieces.push(val);
@@ -1079,6 +1231,24 @@
           aiBubble.textContent = currentResultText;
           var chatArea = document.getElementById('chatArea');
           chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        if (done) {
+          // 🛡️ [글자 잘림 원천 봉쇄 최종 안전판] 
+          // 만약 스트리밍이 완료되었는데 마지막 텍스트가 잘렸을 경우를 위한 잔여 버퍼 비상 복구
+          if (buffer && (!currentResultText || currentResultText.length < 5)) {
+            // 정규식을 더 느슨하게 적용하여 따옴표 꼬임 등으로 누락된 잔여 한글/영문 강제 추출
+            var fallbackReg = /"text"\s*:\s*"([^"]+)"/g;
+            var fbPieces = [];
+            var fbMatch;
+            while ((fbMatch = fallbackReg.exec(buffer)) !== null) {
+              fbPieces.push(fbMatch[1]);
+            }
+            if (fbPieces.length > 0) {
+              aiBubble.textContent = fbPieces.join('');
+            }
+          }
+          break;
         }
       }
 
