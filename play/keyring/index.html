@@ -509,6 +509,43 @@
       align-items: center;
       gap: 8px;
     }
+
+    /* ===== 감정 다이얼 ===== */
+    .mood-selector {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      animation: fadeIn 0.4s ease;
+    }
+    .mood-btn {
+      background: rgba(255, 250, 243, 0.85);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 6px 12px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      color: var(--text-soft);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px var(--shadow);
+    }
+    .mood-btn:hover {
+      background: var(--accent-soft);
+      color: var(--accent);
+      transform: translateY(-1px);
+    }
+    .mood-btn.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+      box-shadow: 0 4px 10px rgba(212, 132, 90, 0.25);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
@@ -528,8 +565,8 @@
           <input type="password" id="setupPassword" class="lock-input" placeholder="새 비밀번호 입력">
         </div>
         <div style="display:flex; flex-direction:column; gap:4px; margin-top:8px;">
-          <label for="setupApiKey">Claude API Key 입력</label>
-          <input type="password" id="setupApiKey" class="lock-input" placeholder="sk-ant-api03-...">
+          <label for="setupApiKey">Gemini API Key 입력</label>
+          <input type="password" id="setupApiKey" class="lock-input" placeholder="AIzaSy...">
         </div>
       </div>
       <!-- 일반 로그인 필드 -->
@@ -553,9 +590,23 @@
         <input type="password" id="changePassword" class="lock-input" placeholder="새 비밀번호 (비워두면 유지)">
       </div>
       <div style="display:flex; flex-direction:column; gap:4px; margin-top:12px;">
-        <label for="changeApiKey">Claude API Key 변경</label>
-        <input type="password" id="changeApiKey" class="lock-input" placeholder="새 API Key (비워두면 유지)">
+        <label for="changeApiKey">Gemini API Key 변경</label>
+        <input type="password" id="changeApiKey" class="lock-input" placeholder="새 Gemini API Key (비워두면 유지)">
       </div>
+      <div style="display:flex; align-items:center; gap:8px; margin-top:16px; background:rgba(0,0,0,0.02); padding:10px 14px; border-radius:12px; border: 1px solid var(--border);">
+        <span style="font-size:0.85rem; color:var(--text-soft); font-weight:500;">🔔 맑은 힐링 음향 효과음 활성화</span>
+        <input type="checkbox" id="soundToggle" style="margin-left:auto; width:18px; height:18px; cursor:pointer;" checked>
+      </div>
+      <!-- 대화 내역 초기화 버튼 -->
+      <div style="margin-top:16px; border-top:1px dashed var(--border); padding-top:16px; display:flex; flex-direction:column; gap:8px;">
+        <span style="font-size:0.8rem; color:var(--text-soft); font-weight:500; margin-left:4px;">💾 대화 기억 보관 (백업 및 타 기기 이식)</span>
+        <div style="display:flex; gap:8px; width:100%;">
+          <button class="lock-btn" onclick="exportBackup()" style="margin-top:0; flex:1; background:var(--accent-soft); border:1px solid rgba(212,132,90,0.25); color:var(--accent); box-shadow:none;">💾 백업 저장</button>
+          <button class="lock-btn" onclick="document.getElementById('importFile').click()" style="margin-top:0; flex:1; background:var(--surface); border:1px solid var(--border); color:var(--text-soft); box-shadow:none;">📂 백업 복원</button>
+        </div>
+        <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importBackup(event)">
+      </div>
+      <button class="lock-btn" onclick="clearChatHistory()" style="background:rgba(200,80,60,0.08); border:1px solid rgba(200,80,60,0.18); color:#A04030; box-shadow:none; margin-top:14px;">🧹 대화 내역 모두 지우기</button>
     </div>
     <button class="lock-btn" onclick="saveSettings()">설정 저장</button>
   </div>
@@ -603,6 +654,13 @@
 
   <!-- INPUT -->
   <div class="input-area">
+    <!-- 오늘의 감정 다이얼 -->
+    <div class="mood-selector" id="moodSelector">
+      <button class="mood-btn active" id="mood-normal" onclick="selectMood('normal')">☕ 평온</button>
+      <button class="mood-btn" id="mood-happy" onclick="selectMood('happy')">😊 신남</button>
+      <button class="mood-btn" id="mood-sad" onclick="selectMood('sad')">☁️ 우울</button>
+      <button class="mood-btn" id="mood-tired" onclick="selectMood('tired')">⚡ 피곤</button>
+    </div>
     <div class="input-wrap">
       <textarea id="msgInput" placeholder="키링한테 말 걸어봐요..." rows="1"
         onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
@@ -642,29 +700,99 @@
   var isLoading = false;
   var isUnlocked = false;
 
-  // 로컬 스토리지 키 정의
   var STORAGE_PW_KEY = 'keyring_secure_pw';
   var STORAGE_API_KEY = 'keyring_secure_apikey';
+  var STORAGE_SOUND_KEY = 'keyring_sound_enabled';
+  var STORAGE_CHAT_KEY = 'keyring_secure_chat';
 
-  // 초기화 함수 실행
+  var audioCtx = null;
+  var soundEnabled = true;
+  var currentMood = 'normal';
+
+  var MOOD_PROMPTS = {
+    normal: '',
+    happy: '\n[현재 정박사님의 기분: 😊 아주 신남/기쁨]\n- 정박사님의 기쁜 텐션에 맞춰서 평소보다 조금 더 밝고 위트 있게 대화해줘. 같이 기뻐해주고 활기찬 친구의 느낌을 살려줘.',
+    sad: '\n[현재 정박사님의 기분: ☁️ 다소 우울함/위로가 필요]\n- 절대 조언하려 들지 말고, 묵묵하고 아주 따뜻하게 곁을 지키는 톤으로 대화해줘. 말수를 더 줄이고, 다정한 반말로 마음을 어루만져줘.',
+    tired: '\n[현재 정박사님의 기분: ⚡ 몹시 피곤함/지쳐있음]\n- 말을 너무 길게 시키지 말고, 편히 쉴 수 있도록 편안하고 나른한 위로를 전해줘. 한 호흡 쉬어갈 수 있게 배려 깊은 한 마디를 던져줘.'
+  };
+
   window.addEventListener('DOMContentLoaded', function() {
     initKeyring();
   });
 
+  // 브라우저 닫기, 새로고침, PC 종료 직전 2중 자동 저장 안전 낙하산
+  window.addEventListener('beforeunload', function() {
+    saveChatHistory();
+  });
+
+  function initAudio() {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+  }
+
+  function playSynthSound(type) {
+    if (!soundEnabled) return;
+    try {
+      initAudio();
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      
+      var osc = audioCtx.createOscillator();
+      var gainNode = audioCtx.createGain();
+      
+      osc.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      
+      var now = audioCtx.currentTime;
+      
+      if (type === 'send') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(600, now);
+        osc.frequency.exponentialRampToValueAtTime(1200, now + 0.12);
+        gainNode.gain.setValueAtTime(0.12, now);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+        osc.start(now);
+        osc.stop(now + 0.12);
+      } else if (type === 'receive') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(350, now);
+        osc.frequency.exponentialRampToValueAtTime(440, now + 0.22);
+        gainNode.gain.setValueAtTime(0.08, now);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+        osc.start(now);
+        osc.stop(now + 0.22);
+      }
+    } catch (e) {}
+  }
+
+  function selectMood(mood) {
+    currentMood = mood;
+    var btns = document.querySelectorAll('.mood-btn');
+    btns.forEach(function(btn) { btn.classList.remove('active'); });
+    document.getElementById('mood-' + mood).classList.add('active');
+    playSynthSound('send');
+  }
+
   function initKeyring() {
     var pw = localStorage.getItem(STORAGE_PW_KEY);
     var apiKey = localStorage.getItem(STORAGE_API_KEY);
+    var savedSound = localStorage.getItem(STORAGE_SOUND_KEY);
     var lockScreen = document.getElementById('lockScreen');
 
+    if (savedSound !== null) {
+      soundEnabled = savedSound === 'true';
+      document.getElementById('soundToggle').checked = soundEnabled;
+    }
+
     if (!pw || !apiKey) {
-      // 최초 설정 모드
       document.getElementById('lockTitle').textContent = '키링 초기 설정🔑';
-      document.getElementById('lockSubtitle').innerHTML = '만나서 반가워요! 안전한 대화를 위해<br>비밀번호와 Claude API Key를 입력해주세요.';
+      document.getElementById('lockSubtitle').innerHTML = '만나서 반가워요! 안전한 대화를 위해<br>비밀번호와 Gemini API Key를 입력해주세요.';
       document.getElementById('setupFields').style.display = 'flex';
       document.getElementById('loginField').style.display = 'none';
       lockScreen.style.display = 'flex';
     } else {
-      // 일반 잠금 해제 모드
       document.getElementById('lockTitle').textContent = '키링 잠금해제';
       document.getElementById('lockSubtitle').innerHTML = '정박사님만을 위한 안전한 대화 공간입니다.<br>비밀번호를 입력해주세요.';
       document.getElementById('setupFields').style.display = 'none';
@@ -677,86 +805,130 @@
   function submitLock() {
     var pw = localStorage.getItem(STORAGE_PW_KEY);
     var apiKey = localStorage.getItem(STORAGE_API_KEY);
-    var card = document.getElementById('lockCard');
-
     if (!pw || !apiKey) {
-      // 최초 설정 제출
       var setupPw = document.getElementById('setupPassword').value.trim();
       var setupKey = document.getElementById('setupApiKey').value.trim();
-
-      if (!setupPw || !setupKey) {
-        shakeCard();
-        alert('비밀번호와 Claude API Key를 모두 입력해주세요!');
-        return;
-      }
-
+      if (!setupPw || !setupKey) { shakeCard(); alert('비밀번호와 Gemini API Key를 입력해주세요!'); return; }
       localStorage.setItem(STORAGE_PW_KEY, setupPw);
       localStorage.setItem(STORAGE_API_KEY, setupKey);
       unlockSuccess();
     } else {
-      // 비밀번호 검증
       var inputPw = document.getElementById('lockPassword').value;
-      if (inputPw === pw) {
-        unlockSuccess();
-      } else {
-        shakeCard();
-        document.getElementById('lockPassword').value = '';
-        document.getElementById('lockPassword').focus();
-      }
+      if (inputPw === pw) { unlockSuccess(); } else { shakeCard(); document.getElementById('lockPassword').value = ''; document.getElementById('lockPassword').focus(); }
     }
   }
 
-  function handleLockKey(e) {
-    if (e.key === 'Enter') {
-      submitLock();
-    }
-  }
+  function handleLockKey(e) { if (e.key === 'Enter') submitLock(); }
 
   function shakeCard() {
     var card = document.getElementById('lockCard');
     card.classList.add('shake');
-    setTimeout(function() {
-      card.classList.remove('shake');
-    }, 400);
+    setTimeout(function() { card.classList.remove('shake'); }, 400);
   }
 
   function unlockSuccess() {
     isUnlocked = true;
+    initAudio();
     var lockScreen = document.getElementById('lockScreen');
     lockScreen.style.opacity = '0';
-    lockScreen.style.transform = 'scale(1.05)';
     setTimeout(function() {
       lockScreen.style.display = 'none';
-      // 잠금 해제 후 입력창 자동 포커스
       document.getElementById('msgInput').focus();
+      playSynthSound('receive');
+      loadChatHistory();
     }, 400);
   }
 
-  // 설정 제어
   function toggleSettings(show) {
     var modal = document.getElementById('settingsModal');
-    if (show) {
-      modal.classList.add('show');
-      document.getElementById('changePassword').value = '';
-      document.getElementById('changeApiKey').value = '';
-    } else {
-      modal.classList.remove('show');
-    }
+    if (show) { modal.classList.add('show'); document.getElementById('changePassword').value = ''; document.getElementById('changeApiKey').value = ''; document.getElementById('soundToggle').checked = soundEnabled; } else { modal.classList.remove('show'); }
   }
 
   function saveSettings() {
     var newPw = document.getElementById('changePassword').value.trim();
     var newKey = document.getElementById('changeApiKey').value.trim();
-
-    if (newPw) {
-      localStorage.setItem(STORAGE_PW_KEY, newPw);
-    }
-    if (newKey) {
-      localStorage.setItem(STORAGE_API_KEY, newKey);
-    }
-
+    var newSound = document.getElementById('soundToggle').checked;
+    if (newPw) localStorage.setItem(STORAGE_PW_KEY, newPw);
+    if (newKey) localStorage.setItem(STORAGE_API_KEY, newKey);
+    soundEnabled = newSound;
+    localStorage.setItem(STORAGE_SOUND_KEY, soundEnabled);
     alert('설정이 안전하게 저장되었습니다!');
     toggleSettings(false);
+  }
+
+  function saveChatHistory() { localStorage.setItem(STORAGE_CHAT_KEY, JSON.stringify(messages)); }
+
+  function loadChatHistory() {
+    var saved = localStorage.getItem(STORAGE_CHAT_KEY);
+    if (saved) {
+      try {
+        messages = JSON.parse(saved);
+        if (messages.length > 0) {
+          hideEmpty();
+          messages.forEach(function(m) { appendBubble(m.role === 'assistant' ? 'ai' : 'user', m.content); });
+        }
+      } catch (e) {}
+    }
+  }
+
+  function clearChatHistory() {
+    if (confirm('키링이와의 모든 대화 기억을 완전히 삭제할까요?')) {
+      localStorage.removeItem(STORAGE_CHAT_KEY);
+      messages = [];
+      location.reload();
+    }
+  }
+
+  function exportBackup() {
+    try {
+      var backupData = {
+        secure_pw: localStorage.getItem(STORAGE_PW_KEY),
+        secure_apikey: localStorage.getItem(STORAGE_API_KEY),
+        sound_enabled: localStorage.getItem(STORAGE_SOUND_KEY),
+        chat_history: localStorage.getItem(STORAGE_CHAT_KEY)
+      };
+
+      var jsonStr = JSON.stringify(backupData, null, 2);
+      var blob = new Blob([jsonStr], { type: 'application/json' });
+      var url = URL.createObjectURL(blob);
+      
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'keyring_backup_' + new Date().toISOString().slice(0, 10) + '.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      alert('백업 파일 생성에 실패했습니다: ' + e.message);
+    }
+  }
+
+  function importBackup(event) {
+    var file = event.target.files[0];
+    if (!file) return;
+
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        var data = JSON.parse(e.target.result);
+        
+        if (!data.secure_pw || !data.secure_apikey) {
+          throw new Error('올바른 키링 백업 파일 형식이 아닙니다.');
+        }
+
+        localStorage.setItem(STORAGE_PW_KEY, data.secure_pw);
+        localStorage.setItem(STORAGE_API_KEY, data.secure_apikey);
+        if (data.sound_enabled !== null) localStorage.setItem(STORAGE_SOUND_KEY, data.sound_enabled);
+        if (data.chat_history !== null) localStorage.setItem(STORAGE_CHAT_KEY, data.chat_history);
+
+        alert('🎉 축하합니다! 대화 기억 및 설정이 100% 완벽하게 복구되었습니다!');
+        location.reload();
+      } catch (err) {
+        alert('복원 실패: ' + err.message);
+      }
+    };
+    reader.readAsText(file);
   }
 
   function getTime() {
@@ -768,72 +940,48 @@
     return ampm + ' ' + h + ':' + (m < 10 ? '0' + m : m);
   }
 
-  function autoResize(el) {
-    el.style.height = 'auto';
-    el.style.height = Math.min(el.scrollHeight, 120) + 'px';
-  }
+  function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 120) + 'px'; }
 
-  function handleKey(e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  }
+  function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
 
-  function sendHint(text) {
-    document.getElementById('msgInput').value = text;
-    sendMessage();
-  }
+  function sendHint(text) { document.getElementById('msgInput').value = text; sendMessage(); }
 
-  function hideEmpty() {
-    var el = document.getElementById('emptyState');
-    if (el) el.style.display = 'none';
-  }
+  function hideEmpty() { var el = document.getElementById('emptyState'); if (el) el.style.display = 'none'; }
 
   function appendBubble(role, text) {
     var chatArea = document.getElementById('chatArea');
     var row = document.createElement('div');
     row.className = 'msg-row ' + (role === 'user' ? 'user' : 'ai');
-
     var col = document.createElement('div');
     col.className = 'msg-col';
-
     var bubble = document.createElement('div');
     bubble.className = 'bubble ' + (role === 'user' ? 'bubble-user' : 'bubble-ai');
     bubble.textContent = text;
-
     var time = document.createElement('div');
     time.className = 'msg-time';
     time.textContent = getTime();
-
     col.appendChild(bubble);
     col.appendChild(time);
-
-    if (role !== 'user') {
-      var av = document.createElement('div');
-      av.className = 'msg-avatar';
-      av.textContent = '🔑';
-      row.appendChild(av);
-    }
+    if (role !== 'user') { var av = document.createElement('div'); av.className = 'msg-avatar'; av.textContent = '🔑'; row.appendChild(av); }
     row.appendChild(col);
     chatArea.appendChild(row);
     chatArea.scrollTop = chatArea.scrollHeight;
+    return bubble;
   }
 
   function showTyping(show) {
     var row = document.getElementById('typingRow');
     var bubble = document.getElementById('typingBubble');
-    if (show) {
-      row.style.display = 'flex';
-      bubble.classList.add('show');
-    } else {
-      row.style.display = 'none';
-      bubble.classList.remove('show');
-    }
-    var chatArea = document.getElementById('chatArea');
-    chatArea.scrollTop = chatArea.scrollHeight;
+    if (show) { row.style.display = 'flex'; bubble.classList.add('show'); } else { row.style.display = 'none'; bubble.classList.remove('show'); }
   }
 
+  function transformMessagesForGemini(msgList) {
+    return msgList.map(function(m) {
+      return { role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] };
+    });
+  }
+
+  // 초광속 스트리밍(streamGenerateContent) 비동기 통신 가동!
   async function sendMessage() {
     var input = document.getElementById('msgInput');
     var text = input.value.trim();
@@ -841,7 +989,7 @@
 
     var apiKey = localStorage.getItem(STORAGE_API_KEY);
     if (!apiKey) {
-      alert('Claude API Key가 등록되어 있지 않습니다. 설정(⚙️)에서 입력해주세요.');
+      alert('Gemini API Key가 등록되어 있지 않습니다. 설정(⚙️)에서 입력해주세요.');
       return;
     }
 
@@ -850,43 +998,94 @@
     input.style.height = 'auto';
     isLoading = true;
 
+    // 대화 전송 경쾌한 맑은 삐리링 사운드 발진!
+    playSynthSound('send');
+
     messages.push({ role: 'user', content: text });
     appendBubble('user', text);
+    saveChatHistory(); // 정박사의 대화내역 실시간 세이브
     showTyping(true);
 
+    // AI 답변 도착용 스트리밍 말풍선 선제 배치
+    var aiBubble = null;
+    var soundPlayed = false;
+
     try {
-      var response = await fetch('https://api.anthropic.com/v1/messages', {
+      // Gemini streamGenerateContent API 연결 (실시간 스트림 출력용)
+      var url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:streamGenerateContent?key=' + encodeURIComponent(apiKey);
+      var geminiContents = transformMessagesForGemini(messages);
+
+      // 현재 정박사님의 감정 다이얼 프롬프트 결합
+      var finalSystemPrompt = SYSTEM_PROMPT + MOOD_PROMPTS[currentMood];
+
+      var response = await fetch(url, {
         method: 'POST',
         headers: { 
-          'Content-Type': 'application/json',
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true'
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          model: 'claude-3-5-sonnet-20241022',
-          max_tokens: 1024,
-          system: SYSTEM_PROMPT,
-          messages: messages
+          contents: geminiContents,
+          systemInstruction: {
+            parts: [{ text: finalSystemPrompt }]
+          },
+          generationConfig: {
+            maxOutputTokens: 1024,
+            temperature: 0.75
+          }
         })
       });
 
-      var data = await response.json();
-      
       if (!response.ok) {
+        var data = await response.json();
         throw new Error(data.error ? data.error.message : 'API 호출 오류 발생');
       }
 
-      var reply = '';
-      if (data.content && data.content[0] && data.content[0].text) {
-        reply = data.content[0].text;
-      } else {
-        reply = '잠깐, 뭔가 끊겼어. 다시 말해줄래?';
+      // ReadableStream 가동하여 스트리밍 파싱 시작!
+      var reader = response.body.getReader();
+      var decoder = new TextDecoder('utf-8');
+      var buffer = '';
+      
+      showTyping(false); // 타이핑 스피너 제거하고 즉시 스트리밍 말풍선 전환
+      aiBubble = appendBubble('ai', ''); 
+
+      while (true) {
+        var { value, done } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+
+        // 첫 조각 도착 시 포근한 로파이 수신음 단 1회 재생!
+        if (!soundPlayed) {
+          playSynthSound('receive');
+          soundPlayed = true;
+        }
+
+        // 강건한 정규식 기반 실시간 "text" 구문 조각 추출
+        var tempReg = /"text"\s*:\s*"((?:[^"\\]|\\.)*)"/g;
+        var match;
+        var textPieces = [];
+        
+        while ((match = tempReg.exec(buffer)) !== null) {
+          var val = match[1];
+          try {
+            // 이스케이프 문자 역변환
+            val = JSON.parse('"' + val + '"');
+          } catch(e) {}
+          textPieces.push(val);
+        }
+
+        var currentResultText = textPieces.join('');
+        if (currentResultText) {
+          aiBubble.textContent = currentResultText;
+          var chatArea = document.getElementById('chatArea');
+          chatArea.scrollTop = chatArea.scrollHeight;
+        }
       }
 
-      messages.push({ role: 'assistant', content: reply });
-      showTyping(false);
-      appendBubble('ai', reply);
+      // 최종 완성된 답변을 메시지 히스토리에 기록 및 실시간 세이브
+      var finalReply = aiBubble.textContent || '잠깐, 뭔가 끊겼어. 다시 말해줄래?';
+      messages.push({ role: 'assistant', content: finalReply });
+      saveChatHistory(); // 정박사의 대화내역 실시간 세이브
 
     } catch (e) {
       showTyping(false);
@@ -896,7 +1095,10 @@
       err.textContent = '연결 오류: ' + e.message + ' (API Key 및 설정을 다시 확인해주세요.)';
       chatArea.appendChild(err);
       chatArea.scrollTop = chatArea.scrollHeight;
-      messages.pop();
+      if (messages.length > 0 && messages[messages.length - 1].role === 'user') {
+        messages.pop(); // 에러 시 마지막 유저 메시지 롤백
+        saveChatHistory();
+      }
     }
 
     isLoading = false;
