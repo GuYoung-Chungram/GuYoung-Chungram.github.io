@@ -1041,19 +1041,29 @@
     /* ── DIAGNOSIS CTA BANNER ── */
     .diag-cta-wrap {
       margin: 36px auto 0;
-      max-width: 700px;
+      max-width: 980px;
       animation: fadeUp 0.7s 0.3s both;
       padding: 0 20px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
     }
     .diag-cta-card {
+      min-height: 178px;
       background: linear-gradient(135deg, rgba(212,255,94,0.09) 0%, rgba(212,255,94,0.04) 100%);
       border: 1px solid rgba(212,255,94,0.32);
       border-radius: var(--radius);
-      padding: 26px 32px;
+      padding: 26px 28px;
       display: flex;
-      align-items: center;
+      flex-direction: column;
+      align-items: flex-start;
       justify-content: space-between;
-      gap: 24px;
+      gap: 20px;
+      text-align: left;
+    }
+    .diag-cta-card.practice {
+      background: linear-gradient(135deg, rgba(255,255,255,0.07) 0%, rgba(212,255,94,0.05) 100%);
+      border-color: rgba(255,255,255,0.18);
     }
     .diag-cta-tag {
       font-size: 9px;
@@ -1074,6 +1084,11 @@
       font-size: 12px;
       color: var(--text-dim);
       line-height: 1.6;
+    }
+    .diag-cta-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
     }
     .diag-cta-btn {
       display: inline-flex;
@@ -1097,8 +1112,11 @@
       box-shadow: 0 0 40px rgba(212,255,94,0.5);
       transform: translateY(-2px);
     }
+    @media(max-width: 820px) {
+      .diag-cta-wrap { grid-template-columns: 1fr; max-width: 700px; }
+    }
     @media(max-width: 640px) {
-      .diag-cta-card { flex-direction: column; text-align: center; padding: 22px 18px; }
+      .diag-cta-card { text-align: left; padding: 22px 18px; }
     }
   </style>
 </head>
@@ -1166,7 +1184,7 @@
       </div>
     </div>
 
-    <!-- 진단 CTA -->
+    <!-- 진단 · 연습 CTA -->
     <div class="diag-cta-wrap">
       <div class="diag-cta-card">
         <div>
@@ -1174,7 +1192,19 @@
           <div class="diag-cta-title">나의 AI 활용 능력 진단하기</div>
           <div class="diag-cta-sub">5가지 행동 기반 문항으로 현재 위치를 파악하고<br>내게 맞는 학습 경로를 추천받으세요.</div>
         </div>
-        <a href="chungram-ai-diagnosis.html" class="diag-cta-btn">🧠 진단 시작하기 →</a>
+        <div class="diag-cta-actions">
+          <a href="chungram-ai-diagnosis.html" class="diag-cta-btn">🧠 진단 시작하기 →</a>
+        </div>
+      </div>
+      <div class="diag-cta-card practice">
+        <div>
+          <div class="diag-cta-tag">✦ 빈칸 채우기 · 실전 미션</div>
+          <div class="diag-cta-title">프롬프트 연습 바로가기</div>
+          <div class="diag-cta-sub">상황을 읽고 핵심 요건을 뽑아<br>나만의 프롬프트를 완성해보세요.</div>
+        </div>
+        <div class="diag-cta-actions">
+          <a href="chungram-prompt-practice.html" class="diag-cta-btn">⌨️ 연습 시작하기 →</a>
+        </div>
       </div>
     </div>
   </section>

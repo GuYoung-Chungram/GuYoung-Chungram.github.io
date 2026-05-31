@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CHUNGRAM — 프롬프트 연습</title>
+    <link rel="stylesheet" href="./chungram-prompt-practice.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="workspace" aria-label="프롬프트 연습 프로그램">
+        <aside class="control-panel">
+          <div class="brand-block">
+            <span class="brand-mark" aria-hidden="true">P</span>
+            <div>
+              <p class="eyebrow">Prompt Playing</p>
+              <h1>프롬프트 연습</h1>
+            </div>
+          </div>
+
+          <div class="panel-section">
+            <h2>학습 설정</h2>
+            <label class="field-label" for="levelSelect">난이도</label>
+            <select id="levelSelect"></select>
+
+            <label class="field-label" for="personaSelect">사용자 버전</label>
+            <select id="personaSelect"></select>
+
+            <label class="field-label" for="lengthSelect">프롬프트 길이</label>
+            <select id="lengthSelect"></select>
+          </div>
+
+          <div class="panel-section">
+            <h2>오늘의 미션</h2>
+            <div class="mission-card">
+              <p id="missionTitle">빈칸을 채워 프롬프트 완성</p>
+              <div class="progress-track" aria-label="미션 달성률">
+                <span id="progressFill"></span>
+              </div>
+              <strong id="progressLabel">0% 달성</strong>
+            </div>
+            <div class="badge-board" aria-label="획득 배지">
+              <span data-badge="role">역할</span>
+              <span data-badge="context">상황</span>
+              <span data-badge="request">요청</span>
+              <span data-badge="format">형식</span>
+              <span data-badge="constraint">조건</span>
+            </div>
+            <p id="nextAction" class="next-action">첫 빈칸을 채우면 연습이 시작됩니다.</p>
+          </div>
+
+          <div class="panel-section compact">
+            <h2>연습 기록</h2>
+            <p><strong id="sessionCount">0</strong>회 완료</p>
+            <p>최고 점수 <strong id="bestScore">0</strong>점</p>
+          </div>
+        </aside>
+
+        <section class="practice-stage">
+          <header class="goal-card">
+            <div>
+              <p class="eyebrow" id="scenarioMeta">초급 · 공무원 · 단문</p>
+              <h2 id="goalTitle">상황을 불러오는 중</h2>
+            </div>
+            <button id="newScenarioButton" class="icon-button" type="button" aria-label="다른 상황 보기" title="다른 상황 보기">
+              <span aria-hidden="true">↻</span>
+            </button>
+          </header>
+
+          <section class="goal-detail" aria-label="목표 설명">
+            <div>
+              <span class="chip">미션 상황</span>
+              <p id="goalDescription"></p>
+            </div>
+            <div>
+              <span class="chip">클리어 조건</span>
+              <p id="successCriteria"></p>
+            </div>
+            <div>
+              <span class="chip">빈칸 단서</span>
+              <p id="missionClues"></p>
+            </div>
+          </section>
+
+          <section class="prompt-lab" aria-label="빈칸 프롬프트 작성">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Practice</p>
+                <h2>빈칸을 채워 미션 프롬프트를 완성하세요</h2>
+              </div>
+              <button id="hintButton" type="button" class="secondary-button">힌트</button>
+            </div>
+            <div id="promptBuilder" class="prompt-builder"></div>
+            <p id="hintText" class="hint-text" hidden></p>
+          </section>
+
+          <section class="review-grid" aria-label="프롬프트 점검과 결과">
+            <article class="score-card">
+              <div class="section-heading compact-heading">
+                <div>
+                  <p class="eyebrow">Skill Gauge</p>
+                  <h2>실력 게이지</h2>
+                </div>
+                <strong id="scoreValue">0점</strong>
+              </div>
+              <div id="checklist" class="checklist"></div>
+            </article>
+
+            <article class="output-card">
+              <div class="section-heading compact-heading">
+                <div>
+                  <p class="eyebrow">My Prompt</p>
+                  <h2>내가 완성한 프롬프트</h2>
+                </div>
+                <button id="copyButton" type="button" class="primary-button">복사</button>
+              </div>
+              <textarea id="finalPrompt" readonly aria-label="완성 프롬프트"></textarea>
+              <p class="copy-guide">복사한 뒤 ChatGPT, Gemini, Claude 등 본인이 사용하는 LLM에 붙여 넣고 결과를 확인해보세요.</p>
+
+              <div id="sampleBox" class="sample-box" hidden>
+                <div class="sample-heading">
+                  <span class="chip">참고 예시</span>
+                  <p>아래 문장은 정답이 아닙니다. 다만 역할, 상황, 요청, 형식, 조건을 더 구체적으로 담아 AI가 원하는 결과에 가까운 답을 낼 가능성을 높이는 예시입니다.</p>
+                </div>
+                <textarea id="samplePrompt" readonly aria-label="완성도 높은 참고 프롬프트"></textarea>
+              </div>
+            </article>
+          </section>
+
+          <section id="advancedPanel" class="advanced-panel" hidden>
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">심화 루프</p>
+                <h2>하나의 Goal을 PRD부터 개선 프롬프트까지 확장</h2>
+              </div>
+            </div>
+            <div id="advancedTasks" class="advanced-tasks"></div>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <script src="./chungram-prompt-practice.js"></script>
+  </body>
+</html>
