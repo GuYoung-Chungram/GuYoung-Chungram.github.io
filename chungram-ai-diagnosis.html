@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="securityKit/security.js"></script>
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="청람M&C 정구영 대표">
+  <meta name="copyright" content="© 2026 청람M&C AI Lab. All Rights Reserved.">
+  <meta name="CCBot" content="noindex">
+  <meta name="GPTBot" content="noindex">
+  <meta name="anthropic-ai" content="noindex">
+  <meta name="Google-Extended" content="noindex">
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none';">
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <title>CHUNGRAM — AI 활용 능력 자가진단</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #000000;
+      --bg-card: #141414;
+      --bg-card2: #1a1a1a;
+      --text: #ffffff;
+      --text-dim: rgba(255,255,255,0.5);
+      --text-dimmer: rgba(255,255,255,0.3);
+      --accent: #D4FF5E;
+      --accent-dim: rgba(212,255,94,0.12);
+      --accent-dim2: rgba(212,255,94,0.06);
+      --border: rgba(212,255,94,0.25);
+      --border-dim: rgba(255,255,255,0.07);
+      --radius: 20px;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'Noto Sans KR', sans-serif; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 9999; opacity: 0.6;
+    }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: #000; }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 500;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px; height: 64px;
+      background: rgba(0,0,0,0.92); backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border-dim);
+    }
+    .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
+    .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 0.18em; color: var(--accent); }
+    .nav-logo-sub { font-size: 10px; font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-dimmer); border-left: 1px solid var(--border-dim); padding-left: 10px; line-height: 1.3; }
+    .nav-center { display: flex; align-items: center; gap: 4px; margin-left: auto; }
+    .nav-center a { padding: 7px 13px; border-radius: 100px; font-size: 13px; font-weight: 500; color: var(--text-dim); text-decoration: none; transition: all .2s; white-space: nowrap; }
+    .nav-center a:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+    .nav-center a.active { color: var(--accent); }
+    .nav-collab-btn { background: var(--accent) !important; color: #000 !important; font-weight: 700 !important; border-radius: 6px !important; padding: 7px 14px !important; box-shadow: 0 0 10px rgba(212,255,94,0.35) !important; }
+    .nav-collab-btn:hover { background: #c8f54a !important; box-shadow: 0 0 18px rgba(212,255,94,0.55) !important; transform: translateY(-1px) !important; color: #000 !important; }
+    .nav-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 6px; background: none; border: none; }
+    .nav-toggle span { display: block; width: 22px; height: 2px; background: var(--accent); border-radius: 2px; }
+    .nav-mobile { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(0,0,0,0.97); backdrop-filter: blur(24px); border-bottom: 1px solid var(--border-dim); flex-direction: column; gap: 4px; padding: 16px 20px 20px; z-index: 499; }
+    .nav-mobile.open { display: flex; }
+    .nav-mobile a { padding: 11px 16px; border-radius: 12px; font-size: 15px; font-weight: 500; color: var(--text-dim); text-decoration: none; border: 1px solid transparent; transition: all .2s; }
+    .nav-mobile a:hover { color: var(--accent); border-color: var(--border); background: var(--accent-dim); }
+    @media(max-width:768px) { .nav-center { display: none; } .nav-toggle { display: flex; } }
+
+    /* HERO */
+    .hero {
+      text-align: center;
+      padding: 72px 40px 52px;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; top: -200px; left: 50%;
+      transform: translateX(-50%); width: 600px; height: 400px;
+      background: radial-gradient(ellipse, rgba(212,255,94,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--accent-dim); border: 1px solid var(--border); border-radius: 100px;
+      padding: 5px 16px; font-size: 10px; font-weight: 700; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 24px;
+      animation: fadeUp 0.6s both;
+    }
+    .hero h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(44px, 6vw, 78px);
+      letter-spacing: 0.06em; line-height: 1;
+      margin-bottom: 16px;
+      animation: fadeUp 0.6s 0.1s both;
+    }
+    .hero h1 .hl { color: var(--accent); }
+    .hero-desc {
+      font-size: 15px; font-weight: 300; color: var(--text-dim);
+      line-height: 1.7; max-width: 480px; margin: 0 auto 20px;
+      animation: fadeUp 0.6s 0.15s both;
+    }
+    .hero-meta {
+      display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;
+      font-size: 11px; color: var(--text-dimmer); letter-spacing: 0.05em;
+      animation: fadeUp 0.6s 0.2s both;
+    }
+    .hero-meta span { display: flex; align-items: center; gap: 5px; }
+
+    /* QUIZ */
+    .quiz-wrap { max-width: 760px; margin: 0 auto; padding: 40px 24px 80px; }
+
+    /* PROGRESS */
+    .progress-bar-wrap { margin-bottom: 36px; animation: fadeUp 0.6s 0.25s both; }
+    .progress-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-dimmer); margin-bottom: 10px; letter-spacing: 0.08em; }
+    .progress-label span:last-child { color: var(--accent); font-weight: 600; }
+    .progress-track { height: 3px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--accent); border-radius: 2px; width: 0%; transition: width 0.5s ease; }
+
+    /* QUESTION CARD */
+    .q-card {
+      background: var(--bg-card2); border: 1px solid var(--border-dim); border-radius: var(--radius);
+      padding: 28px; margin-bottom: 16px; transition: border-color 0.3s;
+      animation: fadeUp 0.5s both;
+    }
+    .q-card.answered { border-color: rgba(212,255,94,0.28); }
+    .q-num { font-size: 9px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+    .q-axis {
+      display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--text-dimmer); background: rgba(255,255,255,0.05);
+      border-radius: 100px; padding: 2px 10px; margin-bottom: 12px;
+    }
+    .q-text { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.55; margin-bottom: 18px; }
+    .q-options { display: flex; flex-direction: column; gap: 7px; }
+    .q-option {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 12px 16px; border: 1px solid var(--border-dim); border-radius: 12px;
+      cursor: pointer; transition: all 0.18s ease; background: transparent;
+      width: 100%; text-align: left; font-family: 'Noto Sans KR', sans-serif; color: var(--text-dim);
+    }
+    .q-option:hover { border-color: rgba(212,255,94,0.35); background: var(--accent-dim2); color: var(--text); }
+    .q-option.selected { border-color: var(--accent); background: var(--accent-dim); color: var(--text); }
+    .q-option-score {
+      font-family: 'Bebas Neue', sans-serif; font-size: 17px; line-height: 1;
+      color: var(--accent); flex-shrink: 0; width: 18px; text-align: center;
+      margin-top: 1px; opacity: 0.45;
+    }
+    .q-option.selected .q-option-score { opacity: 1; }
+    .q-option-text { font-size: 13px; line-height: 1.55; }
+
+    /* SUBMIT */
+    .submit-wrap { text-align: center; margin-top: 28px; animation: fadeUp 0.6s 0.6s both; }
+    .submit-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--accent); color: #000; font-family: 'Noto Sans KR', sans-serif;
+      font-weight: 700; font-size: 16px; padding: 16px 40px; border-radius: 100px;
+      border: none; cursor: pointer; transition: all 0.2s;
+      box-shadow: 0 0 32px rgba(212,255,94,0.3); opacity: 0.38; pointer-events: none;
+    }
+    .submit-btn.ready { opacity: 1; pointer-events: auto; }
+    .submit-btn.ready:hover { background: #c8f54a; box-shadow: 0 0 48px rgba(212,255,94,0.5); transform: translateY(-2px); }
+    .submit-hint { font-size: 12px; color: var(--text-dimmer); margin-top: 12px; }
+
+    /* RESULTS */
+    .results-section { display: none; max-width: 760px; margin: 0 auto; padding: 0 24px 100px; }
+    .results-section.visible { display: block; animation: fadeUp 0.8s both; }
+
+    .result-header { text-align: center; margin-bottom: 44px; }
+    .result-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; display: block; }
+    .result-score-wrap { display: flex; align-items: flex-end; justify-content: center; gap: 6px; margin-bottom: 6px; }
+    .result-score-num { font-family: 'Bebas Neue', sans-serif; font-size: clamp(72px, 14vw, 120px); color: var(--accent); line-height: 1; letter-spacing: 0.04em; }
+    .result-score-denom { font-family: 'Bebas Neue', sans-serif; font-size: clamp(28px, 5vw, 42px); color: var(--text-dimmer); margin-bottom: 14px; }
+    .result-position-label { font-size: 14px; color: var(--text-dim); letter-spacing: 0.06em; }
+
+    /* SPECTRUM */
+    .spectrum-wrap { background: var(--bg-card2); border: 1px solid var(--border-dim); border-radius: var(--radius); padding: 30px; margin-bottom: 20px; }
+    .spectrum-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-dimmer); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 12px; }
+    .spectrum-track { height: 8px; background: linear-gradient(90deg, rgba(255,255,255,0.06) 0%, rgba(212,255,94,0.3) 100%); border-radius: 4px; position: relative; margin-bottom: 24px; }
+    .spectrum-marker {
+      position: absolute; top: 50%; transform: translate(-50%, -50%);
+      width: 20px; height: 20px; background: var(--accent); border-radius: 50%;
+      box-shadow: 0 0 0 4px rgba(212,255,94,0.22), 0 0 18px rgba(212,255,94,0.55);
+      transition: left 1.1s cubic-bezier(0.34, 1.2, 0.64, 1);
+    }
+    .spectrum-position-text { font-size: 19px; font-weight: 700; color: var(--text); text-align: center; margin-bottom: 10px; }
+    .spectrum-desc { font-size: 13px; color: var(--text-dim); line-height: 1.78; text-align: center; }
+    .spectrum-next-step { margin-top: 20px; background: rgba(212,255,94,0.06); border: 1px solid rgba(212,255,94,0.18); border-radius: 12px; padding: 16px 20px; }
+    .spectrum-next-label { font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+    .spectrum-next-text { font-size: 13px; color: var(--text-dim); line-height: 1.65; }
+
+    /* 5-AXIS */
+    .axis-wrap { background: var(--bg-card2); border: 1px solid var(--border-dim); border-radius: var(--radius); padding: 28px; margin-bottom: 20px; }
+    .axis-title { font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-dimmer); margin-bottom: 22px; }
+    .axis-row { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+    .axis-row:last-of-type { margin-bottom: 0; }
+    .axis-label { font-size: 13px; color: var(--text-dim); width: 96px; flex-shrink: 0; }
+    .axis-bar-track { flex: 1; height: 6px; background: rgba(255,255,255,0.07); border-radius: 3px; overflow: hidden; }
+    .axis-bar-fill { height: 100%; background: var(--accent); border-radius: 3px; width: 0%; transition: width 1.2s cubic-bezier(0.34, 1, 0.64, 1); }
+    .axis-score-label { font-family: 'Bebas Neue', sans-serif; font-size: 17px; color: var(--accent); width: 34px; text-align: right; flex-shrink: 0; }
+
+    .axis-detail-toggle {
+      display: flex; align-items: center; gap: 7px; margin-top: 18px;
+      font-size: 12px; color: var(--text-dimmer); cursor: pointer;
+      border: none; background: none; font-family: 'Noto Sans KR', sans-serif; transition: color 0.2s;
+    }
+    .axis-detail-toggle:hover { color: var(--accent); }
+    .axis-detail-content { display: none; margin-top: 14px; }
+    .axis-detail-content.open { display: block; }
+    .axis-detail-item { padding: 12px 16px; border-radius: 10px; background: rgba(255,255,255,0.03); margin-bottom: 8px; font-size: 12px; color: var(--text-dim); line-height: 1.65; }
+    .axis-detail-item strong { color: var(--accent); }
+
+    /* RESULT CTA */
+    .result-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 36px; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--accent); color: #000; font-family: 'Noto Sans KR', sans-serif;
+      font-weight: 700; font-size: 14px; padding: 14px 26px; border-radius: 100px;
+      text-decoration: none; transition: all 0.2s; box-shadow: 0 0 24px rgba(212,255,94,0.25);
+    }
+    .btn-primary:hover { background: #c8f54a; transform: translateY(-2px); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: var(--text-dim); font-family: 'Noto Sans KR', sans-serif;
+      font-weight: 500; font-size: 14px; padding: 14px 26px; border-radius: 100px;
+      text-decoration: none; border: 1px solid var(--border-dim); transition: all 0.2s;
+    }
+    .btn-secondary:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+    .btn-retry {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: var(--accent); font-family: 'Noto Sans KR', sans-serif;
+      font-weight: 600; font-size: 14px; padding: 14px 26px; border-radius: 100px;
+      border: 1px solid rgba(212,255,94,0.3); cursor: pointer; transition: all 0.2s;
+    }
+    .btn-retry:hover { background: var(--accent-dim); }
+
+    /* FOOTER */
+    footer { border-top: 1px solid var(--border-dim); padding: 32px 40px; text-align: center; font-size: 11px; color: var(--text-dimmer); letter-spacing: 0.1em; }
+    footer strong { color: var(--accent); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media(max-width: 640px) {
+      .hero { padding: 56px 20px 40px; }
+      .quiz-wrap, .results-section { padding: 24px 16px 60px; }
+      nav { padding: 0 20px; }
+      .axis-label { width: 78px; font-size: 12px; }
+      .hero-meta { gap: 12px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-brand">
+      <span class="nav-logo">CHUNGRAM</span>
+      <span class="nav-logo-sub">AI Lab · 청람M&amp;C</span>
+    </a>
+    <div class="nav-center">
+      <a href="index.html">홈</a>
+      <a href="https://betweenworld.org" target="_blank" rel="noopener">블로그</a>
+      <a href="chungram-prompt-library.html">프롬프트</a>
+      <a href="chungram-chatbot-guide.html">챗봇 지침</a>
+      <a href="chungram-ai-tool-hub.html">AI 허브</a>
+      <a href="chungram-ai-diagnosis.html" class="active">🧠 AI 역량 진단</a>
+      <a href="index.html#ebooks">전자책</a>
+      <a href="index.html#faq">FAQ</a>
+      <a href="cheongram_proposal_v2.html" class="nav-collab-btn">🤝 협업 문의하기</a>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="메뉴 열기">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- 모바일 메뉴 -->
+  <div class="nav-mobile" id="navMobile">
+    <a href="index.html">🏠 홈</a>
+    <a href="https://betweenworld.org" target="_blank">✍️ 블로그 BTW</a>
+    <a href="chungram-prompt-library.html">⚡ 프롬프트 라이브러리</a>
+    <a href="chungram-chatbot-guide.html">📋 챗봇 지침</a>
+    <a href="chungram-ai-tool-hub.html">🤖 AI 허브</a>
+    <a href="chungram-ai-diagnosis.html">🧠 AI 역량 진단</a>
+    <a href="index.html#ebooks">📖 전자책</a>
+    <a href="index.html#faq">💬 FAQ</a>
+    <a href="chungram-notice.html">📢 공지사항</a>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-tag">✦ 무료 자가진단</div>
+    <h1>나의 AI 활용<br><span class="hl">역량 진단</span></h1>
+    <p class="hero-desc">5가지 행동 기반 문항으로 현재 AI 역량 위치를 파악하고<br>내게 맞는 학습 경로를 확인하세요.</p>
+    <div class="hero-meta">
+      <span>⏱ 약 5분 소요</span>
+      <span>📊 5가지 역량 축 분석</span>
+      <span>🎯 맞춤 학습 경로 추천</span>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <div class="quiz-wrap" id="quizWrap">
+
+    <!-- 진행률 -->
+    <div class="progress-bar-wrap">
+      <div class="progress-label">
+        <span>진행률</span>
+        <span id="progressLabel">0 / 5 완료</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+
+    <!-- Q1 -->
+    <div class="q-card" id="q1-card">
+      <div class="q-num">Question 01 / 05</div>
+      <div class="q-axis">도구 친숙도</div>
+      <div class="q-text">최근 1개월 안에 ChatGPT, Gemini, Claude 같은 AI 도구를 얼마나 자주 사용했나요?</div>
+      <div class="q-options" data-q="1">
+        <button class="q-option" data-score="0"><span class="q-option-score">0</span><span class="q-option-text">사용한 적이 거의 없다</span></button>
+        <button class="q-option" data-score="1"><span class="q-option-score">1</span><span class="q-option-text">1~2번 써봤다</span></button>
+        <button class="q-option" data-score="2"><span class="q-option-score">2</span><span class="q-option-text">필요할 때 가끔 쓴다</span></button>
+        <button class="q-option" data-score="3"><span class="q-option-score">3</span><span class="q-option-text">매주 여러 번 쓴다</span></button>
+        <button class="q-option" data-score="4"><span class="q-option-score">4</span><span class="q-option-text">업무나 생활에서 자연스럽게 자주 쓴다</span></button>
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="q-card" id="q2-card" style="animation-delay:0.08s;">
+      <div class="q-num">Question 02 / 05</div>
+      <div class="q-axis">프롬프트 기술</div>
+      <div class="q-text">AI에게 요청할 때 역할, 상황, 원하는 형식 등을 얼마나 구체적으로 말해본 적이 있나요?</div>
+      <div class="q-options" data-q="2">
+        <button class="q-option" data-score="0"><span class="q-option-score">0</span><span class="q-option-text">보통 한 문장으로만 물어본다</span></button>
+        <button class="q-option" data-score="1"><span class="q-option-score">1</span><span class="q-option-text">원하는 결과를 조금 설명해본 적이 있다</span></button>
+        <button class="q-option" data-score="2"><span class="q-option-score">2</span><span class="q-option-text">역할이나 형식을 가끔 지정한다</span></button>
+        <button class="q-option" data-score="3"><span class="q-option-score">3</span><span class="q-option-text">상황, 조건, 예시를 넣어 요청할 수 있다</span></button>
+        <button class="q-option" data-score="4"><span class="q-option-score">4</span><span class="q-option-text">목적에 맞게 프롬프트 구조를 스스로 조정한다</span></button>
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="q-card" id="q3-card" style="animation-delay:0.16s;">
+      <div class="q-num">Question 03 / 05</div>
+      <div class="q-axis">결과물 활용</div>
+      <div class="q-text">AI가 만들어준 결과물을 실제로 수정하거나 활용해본 경험은 어느 정도인가요?</div>
+      <div class="q-options" data-q="3">
+        <button class="q-option" data-score="0"><span class="q-option-score">0</span><span class="q-option-text">결과를 보기만 하고 거의 쓰지 않았다</span></button>
+        <button class="q-option" data-score="1"><span class="q-option-score">1</span><span class="q-option-text">마음에 드는 문장이나 아이디어 일부를 써봤다</span></button>
+        <button class="q-option" data-score="2"><span class="q-option-score">2</span><span class="q-option-text">메시지, 문서, 이미지 아이디어 등에 가끔 활용했다</span></button>
+        <button class="q-option" data-score="3"><span class="q-option-score">3</span><span class="q-option-text">실제 업무나 생활 결과물에 여러 번 반영했다</span></button>
+        <button class="q-option" data-score="4"><span class="q-option-score">4</span><span class="q-option-text">AI 결과물을 내 목적에 맞게 다듬어 정기적으로 활용한다</span></button>
+      </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="q-card" id="q4-card" style="animation-delay:0.24s;">
+      <div class="q-num">Question 04 / 05</div>
+      <div class="q-axis">조합·자동화</div>
+      <div class="q-text">하나의 질문을 넘어서 여러 단계의 일을 AI와 함께 처리해본 경험이 있나요?</div>
+      <div class="q-options" data-q="4">
+        <button class="q-option" data-score="0"><span class="q-option-score">0</span><span class="q-option-text">한 번에 하나씩만 질문한다</span></button>
+        <button class="q-option" data-score="1"><span class="q-option-score">1</span><span class="q-option-text">답변을 보고 다시 이어서 질문해본 적이 있다</span></button>
+        <button class="q-option" data-score="2"><span class="q-option-score">2</span><span class="q-option-text">초안 작성 후 수정, 요약 후 재작성처럼 2단계 이상 해봤다</span></button>
+        <button class="q-option" data-score="3"><span class="q-option-score">3</span><span class="q-option-text">반복 업무나 템플릿 만들기에 활용해봤다</span></button>
+        <button class="q-option" data-score="4"><span class="q-option-score">4</span><span class="q-option-text">여러 도구나 절차를 엮어 작은 작업 흐름을 만든 적이 있다</span></button>
+      </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="q-card" id="q5-card" style="animation-delay:0.32s;">
+      <div class="q-num">Question 05 / 05</div>
+      <div class="q-axis">비판적 활용</div>
+      <div class="q-text">AI 답변이 맞는지 확인하거나 더 나은 결과로 고쳐본 경험은 어느 정도인가요?</div>
+      <div class="q-options" data-q="5">
+        <button class="q-option" data-score="0"><span class="q-option-score">0</span><span class="q-option-text">답변을 그대로 믿거나 맞는지 잘 모르겠다</span></button>
+        <button class="q-option" data-score="1"><span class="q-option-score">1</span><span class="q-option-text">이상한 답변이 나오면 다시 물어본다</span></button>
+        <button class="q-option" data-score="2"><span class="q-option-score">2</span><span class="q-option-text">중요한 내용은 검색이나 자료로 한 번 더 확인한다</span></button>
+        <button class="q-option" data-score="3"><span class="q-option-score">3</span><span class="q-option-text">틀린 부분을 지적하고 조건을 바꿔 개선해봤다</span></button>
+        <button class="q-option" data-score="4"><span class="q-option-score">4</span><span class="q-option-text">AI의 한계를 의식하면서 검증 기준을 세워 활용한다</span></button>
+      </div>
+    </div>
+
+    <!-- SUBMIT -->
+    <div class="submit-wrap">
+      <button class="submit-btn" id="submitBtn" onclick="showResults()">📊 진단 결과 보기</button>
+      <p class="submit-hint" id="submitHint">5개 문항을 모두 선택하면 결과를 확인할 수 있습니다</p>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results-section" id="resultsSection">
+    <div class="result-header">
+      <span class="result-tag">✦ 진단 완료</span>
+      <div class="result-score-wrap">
+        <div class="result-score-num" id="resultScoreNum">0</div>
+        <div class="result-score-denom">/20</div>
+      </div>
+      <div class="result-position-label" id="resultPositionLabel">결과를 분석하는 중입니다...</div>
+    </div>
+
+    <!-- 스펙트럼 -->
+    <div class="spectrum-wrap">
+      <div class="spectrum-labels">
+        <span>초급</span>
+        <span>중급</span>
+        <span>고급</span>
+      </div>
+      <div class="spectrum-track">
+        <div class="spectrum-marker" id="spectrumMarker" style="left:0%"></div>
+      </div>
+      <div class="spectrum-position-text" id="spectrumPositionText">—</div>
+      <div class="spectrum-desc" id="spectrumDesc">—</div>
+      <div class="spectrum-next-step">
+        <div class="spectrum-next-label">📌 추천 다음 단계</div>
+        <div class="spectrum-next-text" id="spectrumNextStep">—</div>
+      </div>
+    </div>
+
+    <!-- 5축 분석 -->
+    <div class="axis-wrap">
+      <div class="axis-title">5가지 역량 축 분석</div>
+      <div class="axis-row">
+        <div class="axis-label">도구 친숙도</div>
+        <div class="axis-bar-track"><div class="axis-bar-fill" id="axis1-bar"></div></div>
+        <div class="axis-score-label" id="axis1-score">—</div>
+      </div>
+      <div class="axis-row">
+        <div class="axis-label">프롬프트 기술</div>
+        <div class="axis-bar-track"><div class="axis-bar-fill" id="axis2-bar"></div></div>
+        <div class="axis-score-label" id="axis2-score">—</div>
+      </div>
+      <div class="axis-row">
+        <div class="axis-label">결과물 활용</div>
+        <div class="axis-bar-track"><div class="axis-bar-fill" id="axis3-bar"></div></div>
+        <div class="axis-score-label" id="axis3-score">—</div>
+      </div>
+      <div class="axis-row">
+        <div class="axis-label">조합·자동화</div>
+        <div class="axis-bar-track"><div class="axis-bar-fill" id="axis4-bar"></div></div>
+        <div class="axis-score-label" id="axis4-score">—</div>
+      </div>
+      <div class="axis-row">
+        <div class="axis-label">비판적 활용</div>
+        <div class="axis-bar-track"><div class="axis-bar-fill" id="axis5-bar"></div></div>
+        <div class="axis-score-label" id="axis5-score">—</div>
+      </div>
+      <button class="axis-detail-toggle" id="axisDetailToggle" onclick="toggleAxisDetail()">
+        ▾ 축별 상세 피드백 보기
+      </button>
+      <div class="axis-detail-content" id="axisDetailContent"></div>
+    </div>
+
+    <!-- 하단 CTA -->
+    <div class="result-cta">
+      <a href="chungram-prompt-library.html" class="btn-primary">⚡ 프롬프트 라이브러리 보기</a>
+      <button class="btn-retry" onclick="retryQuiz()">↺ 다시 진단하기</button>
+      <a href="cheongram_proposal_v2.html" class="btn-secondary">🤝 강의 문의하기</a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <strong>CHUNGRAM</strong> AI 역량 자가진단 &nbsp;|&nbsp; 청람M&amp;C · 한국지역개발경영교육원 &nbsp;|&nbsp; AI 교육 전문 &copy; 2026<br>
+    <span style="font-size:10px;opacity:0.5;">사업자등록번호 125-25-00428 | 대표자 고숙진 | 서울시 광진구 능동로 19길 35, 1417호</span>
+  </footer>
+
+  <script>
+    // Nav toggle
+    document.getElementById('navToggle').addEventListener('click', () => {
+      document.getElementById('navMobile').classList.toggle('open');
+    });
+
+    // 퀴즈 상태
+    const scores = { 1: null, 2: null, 3: null, 4: null, 5: null };
+    let answeredCount = 0;
+
+    // 옵션 클릭
+    document.querySelectorAll('.q-options').forEach(group => {
+      const q = parseInt(group.dataset.q);
+      group.querySelectorAll('.q-option').forEach(btn => {
+        btn.addEventListener('click', () => {
+          group.querySelectorAll('.q-option').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+
+          const wasNull = scores[q] === null;
+          scores[q] = parseInt(btn.dataset.score);
+
+          if (wasNull) {
+            answeredCount++;
+            document.getElementById('q' + q + '-card').classList.add('answered');
+          }
+          updateProgress();
+        });
+      });
+    });
+
+    function updateProgress() {
+      const pct = (answeredCount / 5) * 100;
+      document.getElementById('progressFill').style.width = pct + '%';
+      document.getElementById('progressLabel').textContent = answeredCount + ' / 5 완료';
+
+      if (answeredCount === 5) {
+        document.getElementById('submitBtn').classList.add('ready');
+        document.getElementById('submitHint').textContent = '✓ 모든 문항 완료! 결과를 확인해보세요.';
+      }
+    }
+
+    // 결과 데이터 (PRD 5-1 기준)
+    const RESULTS = [
+      {
+        range: '0~4점',
+        position: 'AI와 처음 친해지는 구간',
+        desc: '아직 AI 사용 경험이 많지 않은 상태입니다. 괜찮습니다. 지금은 좋은 질문을 완성하는 것보다, 작은 요청을 직접 입력해보고 결과가 어떻게 달라지는지 느끼는 것이 먼저입니다.',
+        next: '초급 1회차: 이미지 프롬프트 빈칸 채우기 → 프롬프트 라이브러리에서 "AI 활용" 카테고리를 먼저 살펴보세요.'
+      },
+      {
+        range: '5~8점',
+        position: '초급에 가까운 구간',
+        desc: 'AI를 몇 번 사용해본 경험은 있지만, 요청을 구조화하는 방법은 아직 익숙하지 않을 수 있습니다. 역할, 상황, 원하는 형식을 하나씩 붙여보면 결과가 눈에 띄게 안정됩니다.',
+        next: '초급: 역할·맥락·형식 연습 → 프롬프트 라이브러리의 업무·생산성 카테고리를 활용해보세요.'
+      },
+      {
+        range: '9~12점',
+        position: '초급과 중급 사이',
+        desc: '기본적인 요청과 결과 활용 경험이 있습니다. 이제는 한 번에 맞히기보다, 첫 결과를 보고 다시 고치는 연습이 중요합니다. 프롬프트를 수정하면서 결과가 좋아지는 과정을 확인해보세요.',
+        next: '초급 후반 또는 중급 입문: 수정·재실습 → 프롬프트를 복사한 뒤 조건을 하나씩 추가해 비교해보세요.'
+      },
+      {
+        range: '13~16점',
+        position: '중급에 가까운 구간',
+        desc: 'AI를 실제 상황에 꽤 활용하고 있습니다. 다음 단계는 반복되는 일을 AI와 함께 절차화하는 것입니다. 조건, 예시, 출력 형식을 명확히 주면 업무형 결과물로 이어지기 쉽습니다.',
+        next: '중급: 템플릿·반복 작업 자동화 맛보기 → 청람M&C 중급 강의나 협업 문의를 통해 심화 학습을 시작해보세요.'
+      },
+      {
+        range: '17~20점',
+        position: '고급으로 확장 가능한 구간',
+        desc: 'AI를 도구처럼 다루는 감각이 이미 있습니다. 이제는 결과를 검증하고, 여러 단계를 엮어 작은 시스템처럼 설계하는 훈련이 도움이 됩니다.',
+        next: '고급: 문제 정의·검증·작은 자동화 설계 → 청람M&C 고급 강의 또는 맞춤 컨설팅을 문의해보세요.'
+      }
+    ];
+
+    const AXIS_NAMES = ['도구 친숙도', '프롬프트 기술', '결과물 활용', '조합·자동화', '비판적 활용'];
+    const AXIS_FEEDBACK_LOW = [
+      '도구 사용 경험이 아직 적습니다. ChatGPT나 Claude에서 하루 1~2번씩 짧은 요청부터 시작해보세요.',
+      'AI에게 역할·맥락·형식을 지정해본 경험이 적습니다. "너는 ○○야. ○○를 ○○로 작성해줘" 구조를 한 번 써보세요.',
+      'AI 결과물을 실제 활용한 경험이 적습니다. 다음번엔 AI 답변의 좋은 부분만 복사해 직접 써보는 시도를 해보세요.',
+      '여러 단계 작업 경험이 적습니다. 답변을 받은 후 "이걸 더 간결하게 요약해줘"처럼 이어서 질문하는 연습을 해보세요.',
+      'AI 답변 검증 경험이 적습니다. 중요한 정보는 AI 외 다른 출처로 한 번 더 확인하는 습관을 붙여보세요.'
+    ];
+
+    function getResultIndex(total) {
+      if (total <= 4) return 0;
+      if (total <= 8) return 1;
+      if (total <= 12) return 2;
+      if (total <= 16) return 3;
+      return 4;
+    }
+
+    function showResults() {
+      if (answeredCount < 5) return;
+
+      const s = [scores[1], scores[2], scores[3], scores[4], scores[5]];
+      const total = s.reduce((a, b) => a + b, 0);
+      const idx = getResultIndex(total);
+      const result = RESULTS[idx];
+
+      // 퀴즈 숨기고 결과 표시
+      document.getElementById('quizWrap').style.display = 'none';
+      const rs = document.getElementById('resultsSection');
+      rs.classList.add('visible');
+
+      // 점수
+      document.getElementById('resultScoreNum').textContent = total;
+      document.getElementById('resultPositionLabel').textContent = result.range + ' · ' + result.position;
+
+      // 스펙트럼 마커 (5% ~ 95% 범위로 클램핑)
+      const rawPct = (total / 20) * 100;
+      const clampedPct = Math.max(5, Math.min(95, rawPct));
+      setTimeout(() => {
+        document.getElementById('spectrumMarker').style.left = clampedPct + '%';
+      }, 200);
+
+      document.getElementById('spectrumPositionText').textContent = result.position;
+      document.getElementById('spectrumDesc').textContent = result.desc;
+      document.getElementById('spectrumNextStep').textContent = result.next;
+
+      // 5축 바 채우기
+      s.forEach((sc, i) => {
+        const pctAxis = (sc / 4) * 100;
+        setTimeout(() => {
+          document.getElementById('axis' + (i + 1) + '-bar').style.width = pctAxis + '%';
+        }, 350 + i * 110);
+        document.getElementById('axis' + (i + 1) + '-score').textContent = sc + '/4';
+      });
+
+      // 축별 상세 피드백 (점수 ≤1인 축만)
+      const detailItems = s.map((sc, i) => {
+        if (sc <= 1) {
+          return '<div class="axis-detail-item"><strong>' + AXIS_NAMES[i] + '</strong>: ' + AXIS_FEEDBACK_LOW[i] + '</div>';
+        }
+        return null;
+      }).filter(Boolean);
+
+      document.getElementById('axisDetailContent').innerHTML = detailItems.length
+        ? detailItems.join('')
+        : '<div class="axis-detail-item">모든 축에서 기본 이상의 경험이 확인됩니다. 더 깊은 심화 실습으로 이어가세요!</div>';
+
+      // 스크롤
+      setTimeout(() => {
+        rs.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+
+    function toggleAxisDetail() {
+      const content = document.getElementById('axisDetailContent');
+      const toggle = document.getElementById('axisDetailToggle');
+      content.classList.toggle('open');
+      toggle.textContent = content.classList.contains('open') ? '▴ 상세 피드백 닫기' : '▾ 축별 상세 피드백 보기';
+    }
+
+    function retryQuiz() {
+      Object.keys(scores).forEach(k => { scores[k] = null; });
+      answeredCount = 0;
+
+      document.querySelectorAll('.q-option').forEach(btn => btn.classList.remove('selected'));
+      document.querySelectorAll('.q-card').forEach(card => card.classList.remove('answered'));
+      document.getElementById('progressFill').style.width = '0%';
+      document.getElementById('progressLabel').textContent = '0 / 5 완료';
+      document.getElementById('submitBtn').classList.remove('ready');
+      document.getElementById('submitHint').textContent = '5개 문항을 모두 선택하면 결과를 확인할 수 있습니다';
+      [1, 2, 3, 4, 5].forEach(i => {
+        document.getElementById('axis' + i + '-bar').style.width = '0%';
+        document.getElementById('axis' + i + '-score').textContent = '—';
+      });
+      document.getElementById('axisDetailContent').classList.remove('open');
+      document.getElementById('axisDetailToggle').textContent = '▾ 축별 상세 피드백 보기';
+
+      document.getElementById('resultsSection').classList.remove('visible');
+      document.getElementById('quizWrap').style.display = '';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>

@@ -1037,6 +1037,69 @@
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
+    /* ── DIAGNOSIS CTA BANNER ── */
+    .diag-cta-wrap {
+      margin: 36px auto 0;
+      max-width: 700px;
+      animation: fadeUp 0.7s 0.3s both;
+      padding: 0 20px;
+    }
+    .diag-cta-card {
+      background: linear-gradient(135deg, rgba(212,255,94,0.09) 0%, rgba(212,255,94,0.04) 100%);
+      border: 1px solid rgba(212,255,94,0.32);
+      border-radius: var(--radius);
+      padding: 26px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .diag-cta-tag {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 7px;
+    }
+    .diag-cta-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 0.06em;
+      color: var(--text);
+      margin-bottom: 5px;
+    }
+    .diag-cta-sub {
+      font-size: 12px;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+    .diag-cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent);
+      color: #000;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 13px 26px;
+      border-radius: 100px;
+      text-decoration: none;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+      box-shadow: 0 0 24px rgba(212,255,94,0.25);
+    }
+    .diag-cta-btn:hover {
+      background: #c8f54a;
+      box-shadow: 0 0 40px rgba(212,255,94,0.5);
+      transform: translateY(-2px);
+    }
+    @media(max-width: 640px) {
+      .diag-cta-card { flex-direction: column; text-align: center; padding: 22px 18px; }
+    }
   </style>
 </head>
 
@@ -1055,6 +1118,7 @@
       <a href="chungram-prompt-library.html" class="active">프롬프트</a>
       <a href="chungram-chatbot-guide.html">챗봇 지침</a>
       <a href="chungram-ai-tool-hub.html">AI 허브</a>
+      <a href="chungram-ai-diagnosis.html">🧠 AI 역량 진단</a>
       <a href="index.html#ebooks">전자책</a>
       <a href="index.html#faq">FAQ</a>
       <a href="chungram-notice.html">공지사항</a>
@@ -1076,6 +1140,7 @@
     <a href="chungram-prompt-library.html">⚡ 프롬프트 라이브러리</a>
     <a href="chungram-chatbot-guide.html">📋 챗봇 지침</a>
     <a href="chungram-ai-tool-hub.html">🤖 AI 허브</a>
+    <a href="chungram-ai-diagnosis.html">🧠 AI 역량 진단</a>
     <a href="index.html#ebooks">📖 전자책</a>
     <a href="index.html#faq">💬 FAQ</a>
     <a href="chungram-notice.html">📢 공지사항</a>
@@ -1098,6 +1163,18 @@
       <div class="stat-item">
         <div class="stat-num">100%</div>
         <div class="stat-label">무료 제공</div>
+      </div>
+    </div>
+
+    <!-- 진단 CTA -->
+    <div class="diag-cta-wrap">
+      <div class="diag-cta-card">
+        <div>
+          <div class="diag-cta-tag">✦ 무료 자가진단 · 5분 소요</div>
+          <div class="diag-cta-title">나의 AI 활용 능력 진단하기</div>
+          <div class="diag-cta-sub">5가지 행동 기반 문항으로 현재 위치를 파악하고<br>내게 맞는 학습 경로를 추천받으세요.</div>
+        </div>
+        <a href="chungram-ai-diagnosis.html" class="diag-cta-btn">🧠 진단 시작하기 →</a>
       </div>
     </div>
   </section>
