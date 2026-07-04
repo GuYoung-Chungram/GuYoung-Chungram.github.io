@@ -305,6 +305,8 @@ a{text-decoration:none;color:inherit;}
 .btn-copy.done{background:#2E7D32;border-color:#2E7D32;color:#fff;}
 .btn-gemini{flex:1;padding:14px 10px;border-radius:12px;background:var(--client-primary-mid);border:none;color:#fff;font-size:0.86rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;transition:opacity 0.15s;}
 .btn-gemini:active{opacity:0.8;}
+.btn-chatgpt{flex:1;padding:14px 10px;border-radius:12px;background:#10A37F;border:none;color:#fff;font-size:0.86rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;transition:opacity 0.15s;}
+.btn-chatgpt:active{opacity:0.8;}
 
 /* ── 사용법 탭 ── */
 .guide-banner{margin:16px 16px 0;background:linear-gradient(135deg,var(--client-primary) 0%,var(--client-primary-light) 100%);border-radius:16px;padding:20px 18px;color:#fff;}
@@ -517,9 +519,7 @@ a{text-decoration:none;color:inherit;}
     <div class="btn-row">
       <button class="btn-copy" id="copyBtn" onclick="copyPrompt()">📋 복사하기</button>
       <a class="btn-gemini" id="geminiLink" href="https://gemini.google.com" target="_blank" rel="noopener">✦ Gemini 열기</a>
-    </div>
-    <div style="text-align:center;margin-top:12px;">
-      <a href="https://crmc.co.kr/hub" target="_blank" rel="noopener" style="font-size:0.7rem;color:var(--text-secondary);border-bottom:1px solid var(--border);padding-bottom:1px;text-decoration:none;">청람M&C AI 교육 프로그램 보기 →</a>
+      <a class="btn-chatgpt" id="chatgptLink" href="https://chatgpt.com" target="_blank" rel="noopener">ChatGPT 열기</a>
     </div>
   </div>
 </div>
@@ -531,7 +531,7 @@ var PRACTICES=[
   {id:2,group:'produce',color:'green',cat:'회의 내용 문서화',title:'회의록 자동 정리',prompt:'아래 회의 내용을 깔끔한 공식 회의록으로 정리해줘.\n\n[회의에서 논의한 내용을 자유롭게 붙여넣으세요]\n\n형식: 일시 / 참석자 / 안건 / 논의 내용 / 결정사항 / 액션아이템(담당자+기한)\n★ 핵심만 추려서 한눈에 보이게 정리해줘',tip:'녹음 내용이나 메모를 그대로 붙여넣어도 됩니다.'},
   {id:3,group:'produce',color:'green',cat:'성과 문서화',title:'정책·사업 성과 보고서',prompt:'아래 사업/정책 내용을 기반으로 공식 성과 보고서를 작성해줘.\n\n사업명: [사업명]\n추진 기간: [기간]\n주요 성과: [성과 3가지 이상]\n예산 집행: [예산 및 집행률]\n\n형식: 개요 → 추진 내용 → 성과 분석 → 개선 과제 → 향후 계획\n분량: A4 2장 내외',tip:'공무원 보고서 형식에 맞게 자동으로 구성해 줍니다.'},
   {id:4,group:'produce',color:'green',cat:'홍보물 제작',title:'교육 안내 포스터',prompt:'아래 교육 프로그램을 홍보하는 포스터를 디자인해줘.\n\n교육명: [교육 과정명]\n대상: [교육 대상]\n일시: [날짜 및 시간]\n장소: [장소명]\n문의: [연락처]\n\n스타일: 공공기관 느낌, 깔끔하고 신뢰감 있게\n포인트 컬러: 녹색 계열 활용',tip:'행사 포스터, 안내문, 현수막 초안으로 활용 가능합니다.'},
-  {id:5,group:'produce',color:'green',cat:'데이터 시각화',title:'KPI 현황판 (대시보드)',prompt:'아래 실적 데이터를 시각화한 KPI 현황판을 만들어줘.\n\n데이터:\n[월별 또는 항목별 수치를 입력해주세요]\n예시: 1월 목표 100명 / 실적 87명, 2월 목표 110명 / 실적 115명\n\n요청사항:\n- 목표 vs 실적 비교 바 차트\n- 달성률(%) 표시\n- 전월 대비 증감 화살표\n- 깔끔한 공공기관용 스타일',tip:'숫자 데이터를 표 형태로 붙여넣으면 AI가 차트까지 만들어 줍니다.'},
+  {id:5,group:'produce',color:'green',cat:'데이터 시각화',title:'KPI 현황판 (대시보드)',prompt:'아래 실적 데이터를 시각화한 KPI 현황판을 만들어줘.\n\n데이터:\n[월별 또는 항목별 수치를 입력해주세요]\n예시: 1월 목표 100명 / 실적 87명, 2월 목표 110명 / 실적 115명\n\n요청사항:\n- 목표 vs 실적 비교 바 차트\n- 달성률(%) 표시\n- 전월 대비 증감 화살표\n- 깔끔한 공공기관용 스타일',tip:'숫자 데이터를 표 형태로 붙여넣으면 AI가 차트까지 만들어 줍니다. ⚠️ 실제 표・차트로 결과물을 받으려면 Canvas(또는 아티팩트) 버튼을 눌러서 만들어야 합니다.'},
   {id:6,group:'produce',color:'green',cat:'성과 홍보',title:'정책/사업 홍보 보도자료',prompt:'아래 내용을 바탕으로 공식 보도자료를 작성해줘.\n\n기관명: 국세청\n발표 내용: [정책·사업·행사 내용]\n주요 특징: [3가지 핵심 특장점]\n기대 효과: [예상되는 효과]\n담당자: [이름, 직책, 연락처]\n\n형식: 제목 → 부제목 → 리드문 → 본문(5W1H) → 담당자 정보',tip:'보도자료 첫 문장에 핵심이 담기도록 AI가 자동 구성합니다.'},
   {id:7,group:'produce',color:'green',cat:'협조 요청',title:'업무 협조 요청 이메일',prompt:'아래 상황에 맞는 업무 협조 요청 이메일을 작성해줘.\n\n발신: [내 이름 / 직책 / 부서]\n수신: [받는 분 / 직책 / 관계]\n협조 요청 내용: [어떤 협조가 필요한지]\n이유/배경: [왜 필요한지]\n요청 기한: [언제까지]\n\n톤: 정중하고 명확하게',tip:'기한을 명확히 적으면 협조를 더 빨리 받을 수 있습니다.'},
   {id:8,group:'produce',color:'green',cat:'일정 조율',title:'미팅/일정 조율 이메일',prompt:'아래 내용으로 미팅 일정 조율 이메일을 작성해줘.\n\n발신: [내 이름 / 직책]\n수신: [받는 분 / 관계]\n미팅 목적: [무엇을 논의할지]\n제안 일정: [1지망, 2지망 날짜·시간]\n예상 소요: [시간]\n방식: [대면/화상/전화]\n\n톤: 부드럽고 배려 있게',tip:'복수 일정을 제안하면 답장이 빨리 옵니다.'},
@@ -542,7 +542,7 @@ var PRACTICES=[
   {id:13,group:'auto',color:'amber',cat:'아이디어 문서화',title:'아이디어 → 기획서 자동 변환',prompt:'아래 아이디어를 실행 가능한 간이 기획서로 만들어줘.\n\n아이디어:\n[떠오른 아이디어를 자유롭게 설명해주세요]\n\n기획서 구성:\n① 배경 및 목적\n② 핵심 내용 3줄 요약\n③ 기대 효과\n④ 실행 계획 (단기·중기)\n⑤ 필요 자원/예산 (개략)\n\n분량: 1페이지 이내',tip:'거친 아이디어도 괜찮습니다. AI가 논리적인 기획 구조로 재정리해 줍니다.'},
   {id:14,group:'auto',color:'amber',cat:'업무 표준화',title:'반복 업무 SOP 문서화',prompt:'아래 반복 업무를 표준 운영 절차서(SOP)로 만들어줘.\n\n업무명: [업무 이름]\n담당자: [직책 또는 팀]\n업무 주기: [매일/매주/매월]\n업무 순서:\n[지금 하고 있는 업무 순서를 순서대로 적어주세요]\n\n형식: 목적 / 적용 범위 / 절차(단계별) / 주의사항 / 관련 서식\n★ 누가 봐도 따라 할 수 있을 만큼 명확하게',tip:'머릿속에만 있던 노하우를 텍스트로 꺼내면 AI가 SOP로 정리해 줍니다.'},
   {id:15,group:'auto',color:'amber',cat:'회의 준비',title:'회의 전 아젠다 자동 작성',prompt:'아래 정보로 회의 아젠다를 작성해줘.\n\n회의명: [회의 제목]\n목적: [이 회의에서 무엇을 결정·논의할지]\n참석자: [참석자 명단 또는 인원수]\n예정 시간: [총 시간]\n핵심 논의사항: [다뤄야 할 주요 안건들]\n\n형식:\n① 각 안건별 소요 시간 배분\n② 담당자 또는 발표자 표시\n③ 사전 준비사항 안내 포함\n④ 결정 사항과 공유 사항 구분',tip:'시간 배분을 명시하면 회의가 제 시간에 끝날 확률이 높아집니다.'},
-  {id:16,group:'auto',color:'amber',cat:'데이터 분석',title:'데이터 기반 인사이트 도출',prompt:'아래 데이터를 분석해서 핵심 인사이트와 개선 제안을 도출해줘.\n\n데이터:\n[분석할 데이터를 붙여넣거나 입력해주세요]\n\n분석 목적: [무엇을 알고 싶은지]\n의사결정 필요 사항: [어떤 판단이 필요한지]\n\n출력 형식:\n① 핵심 인사이트 3가지 (중요도 순)\n② 원인 분석\n③ 실행 가능한 개선 제안 3가지',tip:'숫자나 표 데이터를 그대로 붙여넣어도 됩니다.'},
+  {id:16,group:'auto',color:'amber',cat:'데이터 분석',title:'데이터 기반 인사이트 도출',prompt:'아래 데이터를 분석해서 핵심 인사이트와 개선 제안을 도출해줘.\n\n데이터:\n[분석할 데이터를 붙여넣거나 입력해주세요]\n\n분석 목적: [무엇을 알고 싶은지]\n의사결정 필요 사항: [어떤 판단이 필요한지]\n\n출력 형식:\n① 핵심 인사이트 3가지 (중요도 순)\n② 원인 분석\n③ 실행 가능한 개선 제안 3가지',tip:'숫자나 표 데이터를 그대로 붙여넣어도 됩니다. 💡 자료수집(리서치)이 함께 필요하다면 심층리서치(Deep Research) 버튼을 누르면 AI가 자료 조사부터 분석까지 한 번에 해줍니다.'},
   {id:17,group:'auto',color:'amber',cat:'AI 비서 설계',title:'나만의 Gems 만들기',prompt:'내 업무에 맞는 Gemini Gems를 만들어줘.\n\nGems 이름: [예: 보고서 작성 도우미 / 민원 답변 전문가 / 회의록 정리봇]\n\n담당 업무: [내가 주로 하는 업무를 설명해주세요]\n자주 쓰는 문서 유형: [보고서 / 이메일 / 회의록 / 공문 등]\n원하는 말투·스타일: [공식적 / 친절한 / 간결한 등]\n\n아래 형식으로 Gems 설정 내용을 작성해줘:\n① 이름\n② 설명 (Gems가 무엇을 하는지 1~2줄)\n③ 지시사항 (Gemini에게 줄 상세 역할·규칙·출력 형식)',tip:'Gems 설정 내용을 Gemini → Gems → 새 Gem에 그대로 붙여넣으면 나만의 AI 비서가 완성됩니다.'}
 ];
 
