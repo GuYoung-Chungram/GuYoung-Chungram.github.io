@@ -79,10 +79,10 @@
                 class="w-full text-xs p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 bg-slate-50 font-mono text-slate-700"
                 placeholder="여기에 복사한 실적 데이터를 붙여넣거나 위의 버튼을 눌러주세요."></textarea>
 
-            <!-- 생성 버튼 -->
-            <button onclick="processAndGenerate()" 
+            <!-- 실적 데이터 복사 버튼 -->
+            <button id="copyDataBtn" type="button" onclick="copyPerformanceData()" 
                 class="w-full py-3 bg-blue-700 hover:bg-blue-800 text-white font-bold rounded-lg text-sm transition shadow-md active:scale-[0.98]">
-                📊 실시간 KPI 현황판 생성하기
+                📋 실적 데이터 복사
             </button>
         </div>
 
@@ -219,8 +219,14 @@
 
         let myChart = null; // Chart.js 인스턴스 전역 저장소
 
-        // 페이지 최초 로드 시 시나리오 1 데이터 사전 로딩
+        let inputUpdateTimer = null;
+
+        // 페이지 최초 로드 시 시나리오 1 데이터 사전 로딩 및 직접 입력 자동 반영
         window.onload = function() {
+            document.getElementById('dataInput').addEventListener('input', function() {
+                clearTimeout(inputUpdateTimer);
+                inputUpdateTimer = setTimeout(() => processAndGenerate(false), 250);
+            });
             loadSample(1);
         };
 
@@ -249,11 +255,55 @@
             }, 3000);
         }
 
+        // 입력된 실적 데이터를 클립보드에 복사
+        function copyPerformanceData() {
+            const input = document.getElementById('dataInput');
+            const text = input.value.trim();
+            const button = document.getElementById('copyDataBtn');
+
+            if (!text) {
+                showToast("복사할 실적 데이터를 입력하거나 샘플을 선택해주세요.");
+                return;
+            }
+
+            const completeCopy = () => {
+                button.innerText = "✅ 실적 데이터 복사 완료";
+                showToast("실적 데이터가 클립보드에 복사되었습니다.", "✅");
+                setTimeout(() => {
+                    button.innerText = "📋 실적 데이터 복사";
+                }, 1800);
+            };
+
+            const fallbackCopy = () => {
+                const temp = document.createElement('textarea');
+                temp.value = text;
+                temp.style.position = 'fixed';
+                temp.style.opacity = '0';
+                document.body.appendChild(temp);
+                temp.select();
+                try {
+                    document.execCommand('copy');
+                    completeCopy();
+                } catch (error) {
+                    showToast("자동 복사에 실패했습니다. 데이터를 직접 선택해 복사해주세요.");
+                }
+                document.body.removeChild(temp);
+            };
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(completeCopy).catch(fallbackCopy);
+            } else {
+                fallbackCopy();
+            }
+        }
+
         // 입력 텍스트 분석기 (AI 파서 시뮬레이터)
-        function processAndGenerate() {
+        function processAndGenerate(showStatusToast = true) {
             const text = document.getElementById('dataInput').value.trim();
             if (!text) {
-                showToast("데이터를 입력하거나 샘플 데이터를 선택해주세요.");
+                if (showStatusToast) {
+                    showToast("데이터를 입력하거나 샘플 데이터를 선택해주세요.");
+                }
                 return;
             }
 
@@ -303,16 +353,18 @@
             });
 
             if (parsedData.length === 0) {
-                showToast("데이터에서 목표치와 실적치를 분석하지 못했습니다.\n입력 형식 확인 바랍니다.");
+                if (showStatusToast) {
+                    showToast("데이터에서 목표치와 실적치를 분석하지 못했습니다.\n입력 형식 확인 바랍니다.");
+                }
                 return;
             }
 
             // 데이터 기반 대시보드 렌더링 업데이트
-            renderDashboard(parsedData);
+            renderDashboard(parsedData, showStatusToast);
         }
 
         // 대시보드 구성 요소 업데이트 (차트, 스탯 카드, 표)
-        function renderDashboard(data) {
+        function renderDashboard(data, showStatusToast = true) {
             let totalTarget = 0;
             let totalActual = 0;
 
@@ -374,7 +426,9 @@
 
             // Chart.js 시각화 바 차트 생성 및 리프레시
             buildChart(data);
-            showToast("📈 대시보드가 실시간으로 정상 동기화되었습니다.", "✅");
+            if (showStatusToast) {
+                showToast("📈 대시보드가 실시간으로 정상 동기화되었습니다.", "✅");
+            }
         }
 
         // Chart.js를 사용한 비교 바 차트 렌더링
