@@ -1,1 +1,81 @@
-
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>프롬프트 설계 미션</title>
+<style>
+:root{--bg:#17303b;--panel:#f8f3e8;--ink:#17303b;--accent:#2f5575;--accent2:#d7e4ec;--good:#284f3e;}
+*{box-sizing:border-box} body{margin:0;font-family:Pretendard,"Noto Sans KR",Apple SD Gothic Neo,sans-serif;background:linear-gradient(#17303b,#102731);color:white;min-height:100vh}
+.app{max-width:1200px;margin:auto;padding:28px 22px 48px} header{display:flex;justify-content:space-between;gap:16px;align-items:end;margin-bottom:24px}
+h1{margin:0;font-size:clamp(30px,4vw,46px)} .sub,.hint{opacity:.82;line-height:1.5} .hint{text-align:right;font-size:14px}
+.layout{display:grid;grid-template-columns:350px 1fr;gap:24px;align-items:start}
+.board{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:22px;padding:20px;box-shadow:0 12px 32px rgba(0,0,0,.22)}
+.board-title{text-align:center;margin:0 0 16px;font-size:25px} .groups{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px}
+.group-btn{border:3px solid var(--accent);background:var(--panel);color:var(--ink);border-radius:10px;padding:10px;min-height:53px;font-size:27px;font-weight:800;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.14)}
+.group-btn:hover{transform:translateY(-2px)} .group-btn.active{background:var(--accent2);outline:4px solid rgba(255,255,255,.13)}
+.content{background:var(--panel);color:var(--ink);border-radius:22px;padding:28px;min-height:640px;box-shadow:0 12px 32px rgba(0,0,0,.22)}
+.empty{min-height:560px;display:flex;align-items:center;justify-content:center;text-align:center;color:#63747d;font-size:20px;line-height:1.7}
+.badge{display:inline-block;background:var(--accent);color:white;border-radius:999px;padding:8px 14px;font-size:15px;font-weight:800}
+.mission-title{font-size:34px;margin:12px 0 10px} .situation{font-size:21px;line-height:1.55;font-weight:750;background:white;border-left:7px solid var(--accent);border-radius:12px;padding:18px 20px}
+.section{margin-top:22px} .section h3{margin:0 0 10px;color:var(--accent);font-size:20px}
+.conditions{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px;list-style:none;padding:0}
+.conditions li{background:#edf3f6;border-radius:10px;padding:12px 14px 12px 34px;position:relative;line-height:1.45}
+.conditions li:before{content:"✓";position:absolute;left:13px;font-weight:900;color:var(--accent)}
+.mission-box{background:white;border:2px dashed var(--accent);border-radius:14px;padding:18px 20px;line-height:1.7}
+.prompt-frame{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.prompt-frame div{background:var(--accent2);border-radius:10px;padding:12px;text-align:center;font-weight:800}
+.answer-wrap{margin-top:26px;padding-top:20px;border-top:1px solid #cbd5da}
+.answer-btn{width:100%;border:0;border-radius:12px;background:var(--good);color:white;font-size:18px;font-weight:850;padding:15px;cursor:pointer}
+.answer-btn:hover{filter:brightness(1.08)} .answer{display:none;margin-top:14px;background:#f0f6f2;border-left:7px solid var(--good);border-radius:12px;padding:20px;line-height:1.75;white-space:pre-wrap}
+.answer.show{display:block} .answer h3{margin:0 0 10px;color:var(--good)} .note{margin-top:16px;color:#667981;font-size:14px}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.conditions{grid-template-columns:1fr}.content{min-height:0}.empty{min-height:250px}}
+@media(max-width:520px){header{display:block}.hint{text-align:left;margin-top:10px}.prompt-frame{grid-template-columns:1fr}.content{padding:20px}}
+</style>
+</head>
+<body>
+<main class="app">
+<header>
+<div><h1>프롬프트 설계 미션</h1><div class="sub">조 이름을 선택하면 각 조의 서로 다른 상황과 조건이 표시됩니다.</div></div>
+<div class="hint">역할 · 맥락 · 출력형식을 반영해<br>하나의 완성된 프롬프트를 작성하세요.</div>
+</header>
+<section class="layout">
+<aside class="board"><h2 class="board-title">화면</h2><div class="groups" id="groupButtons"></div></aside>
+<section class="content" id="contentArea"><div class="empty">왼쪽에서 조 이름을 선택하세요.<br>상황과 조건을 확인한 뒤 프롬프트를 작성합니다.</div></section>
+</section>
+</main>
+<script>
+const missions = {"1-1": {"title": "반복 민원 분석", "situation": "최근 3개월간 반복적으로 접수된 민원을 분석하여 시장에게 보고할 자료를 만들어야 합니다.", "conditions": ["보고 대상은 시장이며, 보고 시간은 5분입니다.", "민원 데이터를 유형별로 분류해야 합니다.", "반복 발생 원인을 추정하되, 확인되지 않은 내용은 단정하지 않습니다.", "실행 가능한 개선방안을 우선순위와 함께 제시해야 합니다.", "핵심 내용을 한눈에 볼 수 있는 표가 필요합니다."], "model": "당신은 지방자치단체의 민원·정책 데이터를 분석해 간부 의사결정을 지원하는 정책분석관입니다. 최근 3개월간 접수된 민원 자료를 바탕으로 반복 민원을 유형별로 분류하고, 각 유형의 발생 빈도와 주요 특징을 정리해 주세요. 확인된 자료로 설명할 수 있는 원인과 추가 확인이 필요한 추정 원인을 구분하고, 반복 발생을 줄이기 위한 개선방안을 실행 가능성과 시급성을 기준으로 우선순위화해 주세요. 결과는 시장이 5분 안에 핵심을 파악할 수 있도록 ① 한 문단 핵심 요약 ② 민원 유형별 현황표 ③ 원인 분석 ④ 우선순위가 표시된 개선방안 ⑤ 추가 확인이 필요한 사항 순으로 작성해 주세요."}, "1-2": {"title": "고령층 주민설명회", "situation": "새로운 복지사업을 안내하기 위한 주민설명회를 준비해야 합니다.", "conditions": ["참석자는 약 100명이며 고령층 비율이 높습니다.", "설명 시간은 20분입니다.", "어려운 행정용어와 전문용어는 피해야 합니다.", "주민이 실제로 해야 할 행동을 분명하게 안내해야 합니다.", "발표 원고, 슬라이드 목차, 예상 질문과 답변이 필요합니다."], "model": "당신은 고령층 주민 대상 공공정책 설명 경험이 풍부한 주민소통 전문가입니다. 약 100명이 참석하는 20분짜리 주민설명회에서 새로운 복지사업을 안내하려고 합니다. 참석자 다수가 행정용어에 익숙하지 않으므로 쉬운 생활언어를 사용하고, 지원 대상·신청 기간·신청 방법·준비 서류·문의 방법처럼 주민이 실제로 해야 할 행동을 빠뜨리지 말아 주세요. 결과는 ① 20분 발표 흐름 ② 슬라이드 8장 이내의 목차와 장별 핵심 문장 ③ 그대로 읽을 수 있는 발표 원고 ④ 주민이 자주 물을 질문 8개와 쉬운 답변 ⑤ 마지막 행동 안내 문구 순으로 작성해 주세요."}, "2-1": {"title": "지역축제 보도자료", "situation": "다음 달 개최되는 지역축제를 알리는 보도자료를 작성해야 합니다.", "conditions": ["지역 언론과 주민이 함께 읽는 자료입니다.", "확인되지 않은 관람객 수나 경제효과를 만들어서는 안 됩니다.", "과장된 홍보 표현은 피해야 합니다.", "행사 일시, 장소, 주요 프로그램과 주민 유의사항을 포함해야 합니다.", "제목, 부제목, 핵심요약, 본문, 문의처 순서로 구성합니다."], "model": "당신은 지방자치단체 홍보담당관입니다. 다음 달 열리는 지역축제를 지역 언론과 주민에게 알리는 보도자료를 작성해 주세요. 제공된 행사 일시, 장소, 주요 프로그램, 교통·안전·주차 등 주민 유의사항만 사용하고, 확인되지 않은 관람객 수·경제효과·최대 규모 같은 표현은 만들지 마세요. 홍보 효과는 살리되 과장되지 않은 공공기관 문체를 사용해 주세요. 결과는 ① 제목 3안 ② 부제목 ③ 세 문장 핵심요약 ④ 5W1H가 드러나는 본문 ⑤ 주민 유의사항 ⑥ 공식 문의처 순으로 작성해 주세요."}, "2-2": {"title": "불만 민원 답변", "situation": "도로 공사로 인한 소음과 통행 불편을 호소하는 민원인에게 공식 답변을 보내야 합니다.", "conditions": ["민원인은 여러 차례 항의하여 감정이 상한 상태입니다.", "확인된 사실과 현재 조치 상황만 사용합니다.", "공감은 표현하되 책임을 임의로 인정해서는 안 됩니다.", "향후 일정과 추가 문의 방법을 명확하게 안내해야 합니다.", "친절하지만 행정기관의 원칙은 분명히 유지합니다."], "model": "당신은 갈등 민원 대응 경험이 풍부한 지방자치단체 민원담당자입니다. 도로 공사로 인한 소음과 통행 불편에 대해 여러 차례 항의한 민원인에게 보낼 공식 답변을 작성해 주세요. 먼저 불편에 대한 공감을 표현하되 확인되지 않은 책임이나 보상 가능성을 임의로 인정하지 마세요. 제공된 사실과 현재 조치 상황만 사용하고, 확인되지 않은 내용은 '확인 중'이라고 구분해 주세요. 결과는 ① 공감과 사과의 뜻 ② 확인된 사실 ③ 현재 조치 ④ 향후 일정 ⑤ 민원인이 이용할 수 있는 추가 문의 방법 순으로 구성하고, 방어적으로 들리지 않으면서도 행정기관의 원칙이 분명한 문체로 작성해 주세요."}, "3-1": {"title": "30분 부서회의", "situation": "부서의 민원처리 지연 문제를 개선하기 위한 회의를 준비해야 합니다.", "conditions": ["참석자는 10명이며 회의 시간은 30분입니다.", "원인 토론보다 실행방안 결정에 초점을 둡니다.", "참석자의 발언이 특정인에게 편중되지 않도록 해야 합니다.", "회의 종료 시 담당자와 완료기한이 정해져야 합니다.", "시간 배분, 핵심 질문, 결정사항 양식이 필요합니다."], "model": "당신은 공공조직의 짧은 의사결정 회의를 설계하는 퍼실리테이터입니다. 참석자 10명이 30분 동안 민원처리 지연 문제의 실행 가능한 개선방안을 결정할 수 있도록 회의안을 만들어 주세요. 원인 설명에 시간을 과도하게 쓰지 말고, 모든 참석자가 짧게 의견을 낼 수 있는 방식과 최종 의사결정 절차를 포함해 주세요. 결과는 ① 분 단위 시간표 ② 회의 시작 시 공유할 목표와 규칙 ③ 토론을 이끌 핵심 질문 5개 ④ 대안 비교 기준 ⑤ 결정사항·담당자·완료기한을 기록하는 표 ⑥ 회의 종료 멘트 순으로 작성해 주세요."}, "3-2": {"title": "청년인구 감소 정책", "situation": "예산 제약 속에서 청년인구 감소에 대응할 신규 정책 아이디어를 마련해야 합니다.", "conditions": ["대규모 신규 시설 건립은 어렵습니다.", "기존 사업과의 중복을 최소화해야 합니다.", "단기 성과와 중장기 효과를 구분해야 합니다.", "실행 가능성, 기대효과, 위험요인을 함께 평가합니다.", "최종적으로 우선 추진할 정책 3개를 제시해야 합니다."], "model": "당신은 지방소멸과 청년정책을 다루는 지방정책 기획자입니다. 대규모 시설 건립 없이 제한된 예산으로 추진할 수 있는 청년인구 대응 정책을 제안해 주세요. 기존 일자리·주거·문화·창업 사업과의 중복 가능성을 점검하고, 단기적으로 체감할 수 있는 성과와 중장기적인 정착 효과를 구분해 주세요. 각 정책을 실행 가능성, 예상 비용 수준, 기대효과, 위험요인, 기존 사업과의 연계 가능성 기준으로 비교해 주세요. 결과는 ① 문제 구조 요약 ② 정책 아이디어 7개 ③ 비교평가표 ④ 우선 추진할 3개 정책과 선정 이유 ⑤ 100일 이내 착수할 실행 단계 순으로 작성해 주세요."}, "4-1": {"title": "의회 예상 질의", "situation": "다음 주 의회 업무보고에서 제기될 가능성이 높은 질의에 대비해야 합니다.", "conditions": ["질의 주제는 사업 지연과 예산 집행 부진입니다.", "답변은 확인된 사실과 공식 자료에 근거해야 합니다.", "정치적이거나 감정적인 표현을 사용하지 않습니다.", "추가 질문과 재질문까지 대비해야 합니다.", "예상 질문, 핵심 답변, 근거자료, 보충답변 형식이 필요합니다."], "model": "당신은 지방의회 업무보고 대응을 지원하는 행정전문관입니다. 사업 지연과 예산 집행 부진에 대해 의원이 제기할 수 있는 비판적 질문을 예상하고 답변자료를 작성해 주세요. 제공된 공식 자료와 확인된 사실만 사용하고, 자료가 부족한 부분은 임의로 채우지 말고 '확인 필요'라고 표시해 주세요. 정치적·감정적 표현을 피하고 책임 회피로 들리지 않도록 현재 상황, 원인, 조치, 향후 일정을 분명하게 설명해 주세요. 결과는 질문별로 ① 예상 질의 ② 30초 핵심답변 ③ 근거자료 ④ 예상 재질문 ⑤ 보충답변 ⑥ 답변 시 피해야 할 표현을 표로 정리해 주세요."}, "4-2": {"title": "재난문자 개선", "situation": "집중호우 상황에서 주민에게 발송할 재난문자 문안을 개선해야 합니다.", "conditions": ["문자는 짧고 즉시 이해할 수 있어야 합니다.", "주민이 해야 할 행동을 가장 먼저 제시합니다.", "지역명, 위험지역, 대피장소 등 핵심 정보가 필요합니다.", "불필요한 공포를 조장하지 않되 위험성은 분명히 전달합니다.", "긴급도에 따라 2가지 버전으로 작성합니다."], "model": "당신은 재난안전 문자와 위기 커뮤니케이션을 설계하는 전문가입니다. 집중호우 상황에서 주민이 문자를 읽는 즉시 행동할 수 있도록 재난문자 문안을 작성해 주세요. 행동 지침을 첫 문장에 배치하고, 지역명·위험지역·대피장소·적용 시간 등 제공된 핵심 정보를 빠뜨리지 마세요. 불필요한 공포를 조장하지 않되 위험 수준은 분명히 표현하고, 확인되지 않은 정보는 넣지 마세요. 결과는 ① 주의 단계 문자 ② 즉시 대피 단계 문자 두 가지로 작성하고, 각 문안 아래에 누락 여부를 확인할 체크리스트를 붙여 주세요."}, "5-1": {"title": "간부 보고자료", "situation": "부서의 상반기 주요 성과와 하반기 추진계획을 간부회의에서 보고해야 합니다.", "conditions": ["발표 시간은 7분입니다.", "성과를 과장하지 않고 수치와 근거 중심으로 작성합니다.", "미흡한 부분과 개선계획도 함께 제시합니다.", "핵심 메시지는 3개 이내로 정리합니다.", "1페이지 요약과 발표용 목차가 필요합니다."], "model": "당신은 지방자치단체 간부회의 보고자료를 설계하는 성과관리 전문가입니다. 부서의 상반기 성과와 하반기 추진계획을 7분 안에 보고할 수 있도록 자료를 구성해 주세요. 성과는 제공된 수치와 근거로만 설명하고, 목표에 미달한 부분도 숨기지 말고 원인과 개선계획을 함께 제시해 주세요. 핵심 메시지는 3개 이내로 압축해 주세요. 결과는 ① 간부가 먼저 볼 1페이지 요약 ② 7분 발표 목차와 시간 배분 ③ 성과·미흡사항·개선계획 표 ④ 예상 질문 5개와 답변 ⑤ 마지막 한 문장 결론 순으로 작성해 주세요."}, "5-2": {"title": "업무 인수인계", "situation": "담당자 변경을 앞두고 후임자가 바로 업무를 수행할 수 있는 인수인계서를 만들어야 합니다.", "conditions": ["후임자는 해당 업무 경험이 없습니다.", "정기 업무와 수시 업무를 구분합니다.", "중요 일정, 협업 부서, 유의사항을 포함합니다.", "개인정보와 내부 보안정보는 제외합니다.", "체크리스트와 월간 일정표 형태가 필요합니다."], "model": "당신은 신규 담당자가 빠르게 업무를 익힐 수 있도록 공공기관 인수인계서를 설계하는 업무매뉴얼 전문가입니다. 해당 업무 경험이 없는 후임자가 문서만 보고도 첫 달 업무를 수행할 수 있도록 정리해 주세요. 정기 업무와 수시 업무를 구분하고, 업무 목적·처리 순서·중요 일정·협업 부서·자주 발생하는 오류·유의사항을 포함해 주세요. 개인정보와 비공개 보안정보는 넣지 마세요. 결과는 ① 업무 전체 개요 ② 월간 일정표 ③ 정기·수시 업무별 절차 ④ 첫 주 체크리스트 ⑤ 협업 연락 시 확인할 사항 ⑥ 사고 예방용 주의사항 순으로 작성해 주세요."}, "6-1": {"title": "예산 우선순위 조정", "situation": "예산이 15% 삭감된 상황에서 기존 사업의 우선순위를 다시 정해야 합니다.", "conditions": ["주민 안전과 법정 의무사업은 우선 보호합니다.", "사업별 효과, 시급성, 중단 위험을 비교해야 합니다.", "단순 일괄 삭감은 허용하지 않습니다.", "삭감 또는 유지 사유를 명확히 제시합니다.", "의사결정자가 빠르게 비교할 수 있는 표가 필요합니다."], "model": "당신은 지방재정과 사업평가 경험이 있는 예산조정 분석관입니다. 전체 예산이 15% 삭감된 상황에서 기존 사업의 유지·축소·연기·중단 우선순위를 검토해 주세요. 주민 안전과 법정 의무사업은 우선 보호하고, 단순 일괄 삭감은 제안하지 마세요. 각 사업을 법적 의무성, 주민 영향, 정책 효과, 시급성, 중단 시 위험, 조정 가능성 기준으로 비교하고, 자료가 부족한 경우 판단을 유보해 주세요. 결과는 ① 판단 기준과 가중치 ② 사업별 평가표 ③ 유지·축소·연기·중단 권고 ④ 권고 사유 ⑤ 추가로 확인해야 할 자료 순으로 작성해 주세요."}, "6-2": {"title": "정책 홍보 문구", "situation": "새로운 생활지원 정책을 주민에게 알릴 온라인 홍보 문구를 작성해야 합니다.", "conditions": ["대상은 일반 주민이며 모바일 화면에서 읽습니다.", "혜택을 과장하거나 오해하게 해서는 안 됩니다.", "지원 대상, 신청 방법, 기간을 명확히 안내합니다.", "행정기관 문체보다 쉬운 생활언어를 사용합니다.", "긴 버전 1개와 짧은 SNS용 문구 3개가 필요합니다."], "model": "당신은 공공정책을 주민의 생활언어로 바꾸는 디지털 홍보 기획자입니다. 새로운 생활지원 정책을 모바일에서 읽는 일반 주민에게 알리는 홍보 문구를 작성해 주세요. 지원 대상·신청 기간·신청 방법·필요 서류·문의처를 정확히 안내하고, 모든 주민이 받을 수 있는 것처럼 오해하게 하거나 혜택을 과장하지 마세요. 행정기관식 표현보다 짧고 쉬운 문장을 사용해 주세요. 결과는 ① 모바일 안내문용 긴 버전 1개 ② SNS용 짧은 문구 3개 ③ 제목 5안 ④ 주민이 오해할 수 있어 피해야 할 표현 3개 순으로 작성해 주세요."}, "7-1": {"title": "현안 브리핑", "situation": "지역 내 공공시설 운영 중단과 관련해 기자 브리핑 자료를 준비해야 합니다.", "conditions": ["원인은 아직 조사 중이며 단정할 수 없습니다.", "현재 확인된 사실과 미확인 사항을 구분해야 합니다.", "주민 불편 최소화 대책을 포함합니다.", "예상되는 기자 질문과 답변을 준비해야 합니다.", "책임 회피로 보이지 않으면서도 신중한 표현을 사용합니다."], "model": "당신은 공공기관 위기 브리핑과 언론 대응을 지원하는 커뮤니케이션 전문가입니다. 공공시설 운영 중단에 관한 기자 브리핑 자료를 작성해 주세요. 원인은 아직 조사 중이므로 단정하지 말고, 현재 확인된 사실·조사 중인 사항·아직 알 수 없는 사항을 명확히 구분해 주세요. 주민 불편 최소화 대책과 다음 정보 공개 시점을 포함하고, 책임 회피로 들리지 않으면서도 신중한 문체를 사용해 주세요. 결과는 ① 1분 브리핑문 ② 사실관계 표 ③ 주민 대책 ④ 예상 기자 질문 10개와 답변 ⑤ 사용하면 안 되는 단정적 표현 순으로 작성해 주세요."}, "7-2": {"title": "주민 설문결과 요약", "situation": "지역 생활환경 개선사업에 대한 주민 만족도 설문 결과를 간부회의용으로 요약해야 합니다.", "conditions": ["응답자는 350명이며 만족도 문항과 자유의견이 함께 있습니다.", "전체 평균뿐 아니라 연령대와 거주지역별 차이를 비교해야 합니다.", "자유의견은 반복적으로 나타난 주제 중심으로 분류해야 합니다.", "응답 수가 적은 집단의 결과는 과도하게 일반화하지 않습니다.", "간부가 5분 안에 파악할 수 있는 1페이지 요약과 핵심 표가 필요합니다."], "model": "당신은 지방자치단체의 주민 설문조사를 분석해 간부 의사결정을 지원하는 정책분석관입니다. 지역 생활환경 개선사업에 대한 주민 350명의 만족도 설문 결과를 분석해 주세요. 만족도 문항은 전체 평균과 함께 연령대·거주지역별 차이를 비교하고, 응답 수가 적은 집단은 별도로 표시하여 결과를 과도하게 일반화하지 마세요. 자유의견은 반복적으로 나타난 주제를 분류하고, 각 주제의 대표 의견과 행정적으로 검토할 과제를 구분해 주세요. 결과는 ① 세 문장 핵심 요약 ② 전체 및 집단별 만족도 비교표 ③ 자유의견 주요 주제 ④ 우선 검토할 개선과제 3개 ⑤ 해석 시 유의사항 순으로 작성하고, 간부가 5분 안에 읽을 수 있는 1페이지 분량으로 정리해 주세요."}};
+const order=["1-1","1-2","2-1","2-2","3-1","3-2","4-1","4-2","5-1","5-2","6-1","6-2","7-1","7-2"];
+const buttons=document.getElementById("groupButtons"), content=document.getElementById("contentArea");
+order.forEach(name=>{const b=document.createElement("button");b.className="group-btn";b.textContent=name;b.onclick=()=>showMission(name,b);buttons.appendChild(b);});
+function showMission(name,btn){
+ document.querySelectorAll(".group-btn").forEach(x=>x.classList.remove("active"));btn.classList.add("active");
+ const m=missions[name];
+ content.innerHTML=`
+ <div class="badge">조별 미션 ${name}</div>
+ <h2 class="mission-title">${m.title}</h2>
+ <p class="situation">${m.situation}</p>
+ <div class="section"><h3>공통 조건</h3><ul class="conditions">${m.conditions.map(c=>`<li>${c}</li>`).join("")}</ul></div>
+ <div class="section"><h3>작성 미션</h3><div class="mission-box">
+ 위 상황과 조건을 모두 반영하여 <b>AI에게 바로 입력할 수 있는 하나의 완성된 프롬프트</b>를 작성하세요.
+ <div class="prompt-frame"><div>역할<br><small>AI는 누구인가?</small></div><div>맥락<br><small>무엇을 알아야 하나?</small></div><div>출력형식<br><small>어떤 결과를 받을 것인가?</small></div></div>
+ </div></div>
+ <div class="answer-wrap">
+   <button class="answer-btn" onclick="unlockAnswer('${name}')">모범 설계안 확인</button>
+   <div class="answer" id="answer-${name}"><h3>모범 설계안</h3><div>${m.model}</div></div>
+ </div>
+ <div class="note">※ 제공되지 않은 정보는 임의로 확정하지 말고, 필요한 경우 가정 또는 추가 확인 사항으로 구분하세요.</div>`;
+}
+function unlockAnswer(name){
+ const entered=prompt("비밀번호를 입력하세요.");
+ if(entered===null) return;
+ if(entered==="KOREA2026"){
+   document.getElementById("answer-"+name).classList.add("show");
+ } else {
+   alert("비밀번호가 일치하지 않습니다.");
+ }
+}
+</script>
+</body>
+</html>
