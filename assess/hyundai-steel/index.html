@@ -31,7 +31,7 @@
     <div class="interpret"><h3>영역별 해석 기준</h3><table><thead><tr><th>영역 점수</th><th>수준</th><th>해석</th></tr></thead><tbody><tr><td>13~15점</td><td>강점</td><td>현업에서 안정적으로 활용하고 있는 역량</td></tr><tr><td>10~12점</td><td>양호</td><td>기본 역량은 갖추었으나 상황별 일관성을 높일 필요가 있음</td></tr><tr><td>7~9점</td><td>개발 필요</td><td>경험과 직관을 보완할 도구와 기준이 필요함</td></tr><tr><td>3~6점</td><td>우선 개발</td><td>통제 과정에서 놓치기 쉬워 집중적인 연습이 필요한 영역</td></tr></tbody></table></div>
     <div class="interpret"><h3>나의 실행 계획</h3><div class="reflection"><label>가장 높은 역량<textarea id="r1"></textarea></label><label>이 역량이 발휘된 실제 사례<textarea id="r2"></textarea></label><label>우선 개발할 역량<textarea id="r3"></textarea></label><label>현재 놓치고 있는 통제 신호<textarea id="r4"></textarea></label><label>앞으로 적용할 행동 한 가지<textarea id="r5"></textarea></label><label>적용할 과제와 실행 시점<textarea id="r6"></textarea></label></div></div>
     <div class="note">점수는 개인의 우열을 평가하기 위한 것이 아닙니다. 현재 업무에서 강화할 통제 습관과 도구를 발견하기 위한 학습 출발점으로 활용하세요.</div>
-    <div class="actions"><button class="btn primary" id="copyBtn" type="button" onclick="copyForCopilot()">Copilot용 결과 복사</button><button class="btn outline" type="button" onclick="window.print()">인쇄·PDF 저장</button></div>
+    <div class="actions"><button class="btn primary" id="copyBtn" type="button" onclick="copyForCopilot()">Copilot용 결과 복사</button><button class="btn secondary" type="button" onclick="openCopilot()">Copilot으로 이동 ↗</button><button class="btn outline" type="button" onclick="window.print()">인쇄·PDF 저장</button></div>
   </section>
 </main>
 <script>
@@ -63,5 +63,6 @@ function copyForCopilot(){
   if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(text).then(done).catch(()=>fallbackCopy(text,done))}else fallbackCopy(text,done)
 }
 function fallbackCopy(text,done){const t=document.createElement('textarea');t.value=text;t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();try{document.execCommand('copy');done()}catch(e){alert('자동 복사가 제한되었습니다. 브라우저의 클립보드 권한을 확인해 주세요.')}t.remove()}
+function openCopilot(){window.open('https://m365.cloud.microsoft/chat/','_blank','noopener,noreferrer')}
 function resetQuiz(){if(!confirm('작성한 응답과 결과를 모두 지울까요?'))return;form.reset();document.querySelectorAll('.subtotal').forEach(x=>x.textContent='-/15점');document.getElementById('result').style.display='none';document.getElementById('error').style.display='none';['r1','r2','r3','r4','r5','r6'].forEach(id=>document.getElementById(id).value='');window.scrollTo({top:0,behavior:'smooth'})}
 </script></body></html>
