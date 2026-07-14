@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#061d4f">
+  <title>갈등 멀티버스 · 모드 추리 리모콘</title>
+  <style>
+    :root{--navy:#061d4f;--blue:#12428d;--teal:#009bb5;--paper:#f3f7fa;--ink:#0b1935;--muted:#647389;--line:#cad7e5}
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{min-height:100%;margin:0}
+    body{font-family:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;background:var(--paper);color:var(--ink);overscroll-behavior:none}
+    body:before{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(125deg,transparent 0 68%,rgba(0,155,181,.07) 68% 76%,transparent 76%),linear-gradient(90deg,rgba(18,66,141,.04) 1px,transparent 1px),linear-gradient(rgba(18,66,141,.04) 1px,transparent 1px);background-size:auto,30px 30px,30px 30px}
+    header{position:sticky;top:0;z-index:10;display:grid;grid-template-columns:52px 1fr 52px;align-items:center;min-height:74px;padding:calc(10px + env(safe-area-inset-top)) 16px 10px;background:rgba(255,255,255,.94);border-top:5px solid var(--teal);border-bottom:1px solid var(--line);backdrop-filter:blur(16px)}
+    .home,.fullscreen{display:grid;place-items:center;width:46px;height:46px;border:1px solid var(--line);border-radius:14px;background:#fff;color:var(--navy);font-size:22px;box-shadow:0 5px 18px rgba(6,29,79,.08)}
+    .logo{display:block;width:154px;height:48px;margin:auto;object-fit:contain}
+    main{position:relative;max-width:620px;margin:auto;padding:30px 18px calc(36px + env(safe-area-inset-bottom))}
+    .eyebrow{margin-bottom:7px;color:var(--teal);font-size:12px;font-weight:900;letter-spacing:.15em}
+    h1{margin:0;color:var(--navy);font-size:clamp(32px,10vw,52px);line-height:1.08;letter-spacing:-.05em}
+    .lead{margin:12px 0 25px;color:var(--muted);font-size:16px;line-height:1.55}
+    .target{display:flex;align-items:center;gap:10px;margin:0 0 18px;padding:13px 15px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.86);font-size:15px;font-weight:800}.target select{margin-left:auto;min-width:90px;padding:7px 10px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--navy);font:inherit}
+    .modes{display:grid;gap:11px}
+    .mode{position:relative;display:grid;grid-template-columns:66px 1fr 32px;align-items:center;min-height:86px;width:100%;padding:10px 16px;border:0;border-radius:19px;color:#fff;text-align:left;box-shadow:0 12px 30px rgba(6,29,79,.13);overflow:hidden;font:inherit;transition:transform .12s ease,filter .12s ease}
+    .mode:active{transform:scale(.975);filter:brightness(.93)}
+    .mode:after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,rgba(255,255,255,.17),transparent 42%);pointer-events:none}
+    .mode .emoji{position:relative;z-index:1;font-size:39px;text-align:center}.mode strong{position:relative;z-index:1;font-size:25px;font-weight:900;letter-spacing:-.03em}.mode small{display:block;margin-top:1px;font-size:12px;font-weight:600;opacity:.8}.mode .arrow{position:relative;z-index:1;font-size:24px;opacity:.75}
+    .compete{background:#c9343f}.avoid{background:#667286}.accept{background:#168b61}.compromise{background:#d87812}.collaborate{background:#1255af}
+    .foot{margin:24px 0 0;color:var(--muted);font-size:12px;text-align:center}.foot b{color:var(--blue)}
+    #result{position:fixed;z-index:30;inset:0;display:none;grid-template-rows:auto 1fr;background:var(--navy);color:#fff}.result-top{display:flex;align-items:center;gap:12px;padding:calc(14px + env(safe-area-inset-top)) 18px 14px}.result-home{display:grid;place-items:center;width:50px;height:50px;border:1px solid rgba(255,255,255,.28);border-radius:15px;background:rgba(255,255,255,.12);color:#fff;font-size:24px}.result-top span{font-size:14px;font-weight:800;letter-spacing:.05em}.result-card{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px calc(40px + env(safe-area-inset-bottom));text-align:center}.result-card .emoji{font-size:min(30vw,150px);filter:drop-shadow(0 18px 30px rgba(0,0,0,.2));animation:pop .38s cubic-bezier(.2,.8,.2,1.25)}.result-card .label{margin-top:12px;font-size:clamp(54px,20vw,110px);font-weight:900;line-height:1;letter-spacing:-.07em}.result-card .team{margin-top:24px;padding:9px 18px;border:1px solid rgba(255,255,255,.35);border-radius:999px;font-size:18px;font-weight:800}.result-card .instruction{margin-top:34px;font-size:14px;opacity:.78}@keyframes pop{from{opacity:0;transform:scale(.5) rotate(-12deg)}to{opacity:1;transform:none}}
+    #result[data-mode="compete"]{background:#b92d38}#result[data-mode="avoid"]{background:#535f73}#result[data-mode="accept"]{background:#087b53}#result[data-mode="compromise"]{background:#c86908}#result[data-mode="collaborate"]{background:#0b4799}
+    @media(min-width:700px){main{padding-top:45px}.modes{grid-template-columns:1fr 1fr}.mode:last-child{grid-column:1/-1}.mode{min-height:105px}}
+    @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <header>
+    <button class="home" id="homeBtn" aria-label="홈">⌂</button>
+    <img class="logo" src="현대제철_로고.jpg" alt="HYUNDAI STEEL">
+    <button class="fullscreen" id="fullBtn" aria-label="전체화면">⛶</button>
+  </header>
+  <main>
+    <div class="eyebrow">CONFLICT MULTIVERSE · MODE DETECTIVE</div>
+    <h1>어떤 모드였나요?</h1>
+    <p class="lead">관찰한 행동에 가장 가까운 모드를 하나 선택하세요. 선택 후 화면을 강사에게 보여주세요.</p>
+    <label class="target">추리 대상 조<select id="team"><option>1조</option><option>2조</option><option>3조</option><option>4조</option><option>5조</option></select></label>
+    <div class="modes">
+      <button class="mode compete" data-mode="compete" data-emoji="🔥" data-label="경쟁"><span class="emoji">🔥</span><strong>경쟁<small>빠른 결정 · 내 입장 관철</small></strong><span class="arrow">›</span></button>
+      <button class="mode avoid" data-mode="avoid" data-emoji="🌫️" data-label="회피"><span class="emoji">🌫️</span><strong>회피<small>결정 유보 · 갈등에서 거리두기</small></strong><span class="arrow">›</span></button>
+      <button class="mode accept" data-mode="accept" data-emoji="🌿" data-label="수용"><span class="emoji">🌿</span><strong>수용<small>상대 요구 · 관계 우선</small></strong><span class="arrow">›</span></button>
+      <button class="mode compromise" data-mode="compromise" data-emoji="⚖️" data-label="타협"><span class="emoji">⚖️</span><strong>타협<small>서로 양보 · 신속한 합의</small></strong><span class="arrow">›</span></button>
+      <button class="mode collaborate" data-mode="collaborate" data-emoji="🤝" data-label="협력"><span class="emoji">🤝</span><strong>협력<small>관심사 탐색 · 공동해법</small></strong><span class="arrow">›</span></button>
+    </div>
+    <p class="foot">선택 정보는 전송되지 않습니다. <b>강사가 화면을 보고 수동으로 기록합니다.</b></p>
+  </main>
+  <section id="result" aria-live="polite">
+    <div class="result-top"><button class="result-home" id="resultHome" aria-label="선택 화면으로">⌂</button><span>선택 화면으로 돌아가기</span></div>
+    <div class="result-card"><div class="emoji" id="resultEmoji"></div><div class="label" id="resultLabel"></div><div class="team" id="resultTeam"></div><div class="instruction">이 화면을 강사에게 보여주세요</div></div>
+  </section>
+  <script>
+    const result=document.querySelector('#result');
+    function home(){result.style.display='none';result.removeAttribute('data-mode');scrollTo({top:0,behavior:'smooth'})}
+    document.querySelectorAll('.mode').forEach(button=>button.addEventListener('click',()=>{
+      result.dataset.mode=button.dataset.mode;
+      document.querySelector('#resultEmoji').textContent=button.dataset.emoji;
+      document.querySelector('#resultLabel').textContent=button.dataset.label;
+      document.querySelector('#resultTeam').textContent=document.querySelector('#team').value+'에 대한 추리';
+      result.style.display='grid';
+    }));
+    document.querySelector('#homeBtn').addEventListener('click',home);
+    document.querySelector('#resultHome').addEventListener('click',home);
+    document.querySelector('#fullBtn').addEventListener('click',()=>{
+      if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();else document.exitFullscreen?.();
+    });
+  </script>
+</body>
+</html>
