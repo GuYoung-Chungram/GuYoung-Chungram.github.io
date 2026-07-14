@@ -63,6 +63,6 @@ function copyForCopilot(){
   if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(text).then(done).catch(()=>fallbackCopy(text,done))}else fallbackCopy(text,done)
 }
 function fallbackCopy(text,done){const t=document.createElement('textarea');t.value=text;t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();try{document.execCommand('copy');done()}catch(e){alert('자동 복사가 제한되었습니다. 브라우저의 클립보드 권한을 확인해 주세요.')}t.remove()}
-function openCopilot(){window.open('https://m365.cloud.microsoft/chat/','_blank','noopener,noreferrer')}
+function openCopilot(){window.open('https://copilot.microsoft.com/','_blank','noopener,noreferrer')}
 function resetQuiz(){if(!confirm('작성한 응답과 결과를 모두 지울까요?'))return;form.reset();document.querySelectorAll('.subtotal').forEach(x=>x.textContent='-/15점');document.getElementById('result').style.display='none';document.getElementById('error').style.display='none';['r1','r2','r3','r4','r5','r6'].forEach(id=>document.getElementById(id).value='');window.scrollTo({top:0,behavior:'smooth'})}
 </script></body></html>
