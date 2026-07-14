@@ -1,1 +1,67 @@
-
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>통제단계 책임급 핵심스킬 자가진단</title>
+  <style>
+    :root{--navy:#172554;--blue:#2563eb;--sky:#eff6ff;--line:#dbe3ef;--ink:#172033;--muted:#64748b;--green:#15803d;--amber:#b45309;--red:#b91c1c}
+    *{box-sizing:border-box} body{margin:0;background:#f3f6fa;color:var(--ink);font-family:Pretendard,"Noto Sans KR",Arial,sans-serif;line-height:1.55}
+    .wrap{max-width:1080px;margin:0 auto;padding:32px 20px 70px}.hero{background:linear-gradient(130deg,#172554,#2563eb);color:#fff;border-radius:24px;padding:34px 38px;box-shadow:0 14px 36px #1e3a8a28}
+    .eyebrow{font-size:14px;font-weight:800;letter-spacing:.08em;color:#bfdbfe}.hero h1{font-size:34px;line-height:1.25;margin:8px 0}.hero p{margin:0;color:#dbeafe}.panel{margin-top:22px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:26px;box-shadow:0 8px 24px #0f172a0b}
+    h2{font-size:23px;margin:0 0 16px} h3{font-size:18px;margin:0}.guide{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.guide div{background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center;font-size:13px}.guide b{display:block;color:var(--blue);font-size:17px}
+    .meta{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}.meta label{font-size:13px;font-weight:700;color:var(--muted)}input[type=text],input[type=date]{display:block;width:100%;margin-top:5px;border:1px solid #cbd5e1;border-radius:9px;padding:10px 12px;font:inherit}
+    .skill{margin-top:26px}.skill-head{display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:2px solid var(--blue)}.skill-no{display:inline-flex;width:28px;height:28px;border-radius:50%;align-items:center;justify-content:center;background:var(--blue);color:#fff;margin-right:8px}.subtotal{font-size:14px;color:var(--muted)}
+    .question{display:grid;grid-template-columns:1fr 265px;gap:18px;align-items:center;padding:16px 4px;border-bottom:1px solid #edf1f6}.qtext{display:flex;gap:9px}.qnum{font-weight:800;color:var(--blue)}.scale{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}.scale label{cursor:pointer;text-align:center}.scale input{position:absolute;opacity:0}.scale span{display:flex;align-items:center;justify-content:center;height:38px;border:1px solid #cbd5e1;border-radius:9px;font-weight:700;color:#64748b;transition:.15s}.scale input:checked+span{background:var(--blue);border-color:var(--blue);color:#fff;transform:translateY(-1px)}
+    .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:26px}.btn{border:0;border-radius:11px;padding:13px 20px;font-weight:800;font-size:15px;cursor:pointer}.primary{background:var(--blue);color:#fff}.secondary{background:#e2e8f0;color:#334155}.outline{background:#fff;border:1px solid #94a3b8;color:#334155}
+    #result{display:none}.totalbox{display:grid;grid-template-columns:180px 1fr;gap:22px;align-items:center;background:var(--sky);border-radius:16px;padding:22px}.scoreCircle{width:150px;height:150px;border-radius:50%;background:#fff;border:12px solid var(--blue);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:auto}.scoreCircle strong{font-size:38px;line-height:1}.scoreCircle span{font-size:13px;color:var(--muted)}.level{font-size:25px;font-weight:900;color:var(--navy)}
+    .bars{margin-top:24px}.barrow{display:grid;grid-template-columns:190px 1fr 66px;gap:12px;align-items:center;margin:14px 0}.track{height:14px;background:#e2e8f0;border-radius:99px;overflow:hidden}.fill{height:100%;background:linear-gradient(90deg,#60a5fa,#2563eb);border-radius:99px}.tag{font-size:12px;font-weight:800;text-align:center;border-radius:99px;padding:3px 6px;background:#e2e8f0}
+    .interpret{margin-top:20px;border-top:1px solid var(--line);padding-top:18px}.interpret table{width:100%;border-collapse:collapse;font-size:14px}.interpret th,.interpret td{border:1px solid var(--line);padding:9px;text-align:left}.interpret th{background:#f8fafc}.reflection{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}.reflection label{font-size:13px;font-weight:750}.reflection textarea{width:100%;min-height:78px;margin-top:5px;border:1px solid #cbd5e1;border-radius:9px;padding:10px;font:inherit;resize:vertical}.note{font-size:13px;color:var(--muted);background:#f8fafc;border-left:4px solid var(--blue);padding:13px 15px;margin-top:18px}.error{display:none;color:var(--red);text-align:center;font-weight:700;margin-top:14px}
+    @media(max-width:720px){.hero{padding:27px 22px}.hero h1{font-size:27px}.guide{grid-template-columns:1fr}.meta,.reflection{grid-template-columns:1fr}.question{grid-template-columns:1fr}.scale{max-width:310px}.totalbox{grid-template-columns:1fr}.barrow{grid-template-columns:115px 1fr 56px;font-size:13px}}
+    @media print{body{background:#fff}.wrap{max-width:none;padding:0}.hero{box-shadow:none;border-radius:0;padding:20px}.panel{box-shadow:none;border-radius:0;break-inside:avoid}.actions,.error{display:none!important}.question{padding:9px 2px}.scale span{height:29px}.skill{break-inside:avoid}#result{display:block!important}}
+  </style>
+</head>
+<body><main class="wrap">
+  <header class="hero"><div class="eyebrow">MONITORING &amp; CONTROLLING</div><h1>통제단계 책임급 핵심스킬 자가진단</h1><p>최근 3개월의 실제 업무 행동을 기준으로 응답하고, 나의 강점과 우선 개발 영역을 확인합니다.</p></header>
+  <section class="panel"><h2>응답 기준</h2><div class="guide"><div><b>1점</b>거의 그렇지 않다</div><div><b>2점</b>가끔 그렇다</div><div><b>3점</b>보통이다</div><div><b>4점</b>자주 그렇다</div><div><b>5점</b>거의 항상 그렇다</div></div><div class="meta"><label>이름(선택)<input id="name" type="text" placeholder="이름 또는 별칭"></label><label>진단일<input id="date" type="date"></label></div></section>
+  <form id="quiz" class="panel"></form>
+  <div id="error" class="error">응답하지 않은 문항이 있습니다. 18개 문항을 모두 선택해 주세요.</div>
+  <div class="actions"><button class="btn primary" type="button" onclick="calculate()">결과 확인</button><button class="btn secondary" type="button" onclick="resetQuiz()">다시 작성</button></div>
+  <section id="result" class="panel"><h2>진단 결과 및 해석</h2><div class="totalbox"><div class="scoreCircle"><strong id="totalScore">0</strong><span>/ 90점</span></div><div><div id="totalLevel" class="level"></div><p id="totalDesc"></p><p id="identity"></p></div></div><div id="bars" class="bars"></div>
+    <div class="interpret"><h3>영역별 해석 기준</h3><table><thead><tr><th>영역 점수</th><th>수준</th><th>해석</th></tr></thead><tbody><tr><td>13~15점</td><td>강점</td><td>현업에서 안정적으로 활용하고 있는 역량</td></tr><tr><td>10~12점</td><td>양호</td><td>기본 역량은 갖추었으나 상황별 일관성을 높일 필요가 있음</td></tr><tr><td>7~9점</td><td>개발 필요</td><td>경험과 직관을 보완할 도구와 기준이 필요함</td></tr><tr><td>3~6점</td><td>우선 개발</td><td>통제 과정에서 놓치기 쉬워 집중적인 연습이 필요한 영역</td></tr></tbody></table></div>
+    <div class="interpret"><h3>나의 실행 계획</h3><div class="reflection"><label>가장 높은 역량<textarea id="r1"></textarea></label><label>이 역량이 발휘된 실제 사례<textarea id="r2"></textarea></label><label>우선 개발할 역량<textarea id="r3"></textarea></label><label>현재 놓치고 있는 통제 신호<textarea id="r4"></textarea></label><label>앞으로 적용할 행동 한 가지<textarea id="r5"></textarea></label><label>적용할 과제와 실행 시점<textarea id="r6"></textarea></label></div></div>
+    <div class="note">점수는 개인의 우열을 평가하기 위한 것이 아닙니다. 현재 업무에서 강화할 통제 습관과 도구를 발견하기 위한 학습 출발점으로 활용하세요.</div>
+    <div class="actions"><button class="btn primary" id="copyBtn" type="button" onclick="copyForCopilot()">Copilot용 결과 복사</button><button class="btn outline" type="button" onclick="window.print()">인쇄·PDF 저장</button></div>
+  </section>
+</main>
+<script>
+const data=[
+ {name:'이상 신호 감지',qs:['계획 대비 일정·품질·자원 변화를 정기적으로 확인한다.','문제가 드러나기 전에 반복 지연, 재작업, 의사결정 정체 등의 초기 신호를 발견한다.','“진행 중”이라는 설명보다 완료 기준과 객관적인 증거를 확인한다.']},
+ {name:'편차 원인 해석',qs:['계획과 실제의 차이를 수치나 사실로 구체화할 수 있다.','발생한 현상과 그 현상을 만든 근본 원인을 구분한다.','개인의 책임을 판단하기 전에 업무 구조·의존관계·제약조건을 함께 살펴본다.']},
+ {name:'영향 예측',qs:['현재의 지연이나 품질 문제가 이후 작업에 미칠 영향을 예측한다.','대응하지 않을 경우 일정·비용·품질·안전·성과에 미칠 영향을 설명할 수 있다.','낙관적·현실적·비관적 시나리오를 비교하여 예상 결과를 제시한다.']},
+ {name:'우선순위 판단',qs:['긴급성뿐 아니라 영향도와 파급효과를 고려해 대응 순서를 정한다.','모든 문제를 직접 해결하려 하기보다 집중할 핵심 이슈를 선별한다.','안전·품질·일정·성과가 충돌할 때 판단 기준을 명확하게 설명한다.']},
+ {name:'보고와 에스컬레이션',qs:['문제가 커지기 전에 적절한 시점에 관련자와 상위 리더에게 공유한다.','보고할 때 현황뿐 아니라 영향, 원인, 선택 가능한 대응안을 함께 제시한다.','내가 결정할 사항, 협의할 사항, 상위 의사결정이 필요한 사항을 구분한다.']},
+ {name:'변경 및 후속조치 관리',qs:['변경 요청이 들어오면 목적과 필요성을 확인한 후 영향을 검토한다.','변경의 수용·조정·보류·거절을 판단하고 그 근거를 관계자와 공유한다.','결정된 조치의 담당자·완료 시기·완료 기준을 명확히 하고 끝까지 확인한다.']}
+];
+const form=document.getElementById('quiz');let n=0;
+data.forEach((s,i)=>{let html=`<section class="skill"><div class="skill-head"><h3><span class="skill-no">${i+1}</span>${s.name}</h3><span class="subtotal" id="sub${i}">-/15점</span></div>`;s.qs.forEach(q=>{n++;html+=`<div class="question"><div class="qtext"><span class="qnum">${n}.</span><span>${q}</span></div><div class="scale">${[1,2,3,4,5].map(v=>`<label title="${v}점"><input type="radio" name="q${n}" value="${v}"><span>${v}</span></label>`).join('')}</div></div>`});form.insertAdjacentHTML('beforeend',html+'</section>')});
+document.getElementById('date').value=new Date().toISOString().slice(0,10);
+function domainLevel(s){if(s>=13)return['강점','#15803d'];if(s>=10)return['양호','#2563eb'];if(s>=7)return['개발 필요','#b45309'];return['우선 개발','#b91c1c']}
+function totalLevel(s){if(s>=76)return['선제적 통제','변화를 조기에 감지하고 의사결정과 후속조치까지 주도하는 수준입니다.'];if(s>=61)return['안정적 통제','대부분의 상황을 체계적으로 관리하며, 일부 영역의 일관성을 높이면 좋습니다.'];if(s>=46)return['반응적 통제','문제가 드러난 이후 대응하는 경향이 있어 예측과 선제 대응을 강화할 필요가 있습니다.'];return['통제체계 형성 단계','개인 경험 중심의 관리에서 공통 기준과 관리 루틴 중심으로 전환할 필요가 있습니다.']}
+function calculate(){const vals=[];for(let i=1;i<=18;i++){const x=document.querySelector(`input[name=q${i}]:checked`);if(!x){document.getElementById('error').style.display='block';document.querySelector(`input[name=q${i}]`).closest('.question').scrollIntoView({behavior:'smooth',block:'center'});return}vals.push(+x.value)}document.getElementById('error').style.display='none';const sums=data.map((_,i)=>vals.slice(i*3,i*3+3).reduce((a,b)=>a+b,0));const total=sums.reduce((a,b)=>a+b,0);sums.forEach((s,i)=>document.getElementById('sub'+i).textContent=s+'/15점');const tl=totalLevel(total);document.getElementById('totalScore').textContent=total;document.getElementById('totalLevel').textContent=tl[0];document.getElementById('totalDesc').textContent=tl[1];const nm=document.getElementById('name').value.trim();document.getElementById('identity').textContent=(nm?nm+' · ':'')+document.getElementById('date').value;document.getElementById('bars').innerHTML=sums.map((s,i)=>{const l=domainLevel(s);return `<div class="barrow"><b>${data[i].name}</b><div class="track"><div class="fill" style="width:${s/15*100}%"></div></div><span class="tag" style="color:${l[1]}">${s} · ${l[0]}</span></div>`}).join('');const max=Math.max(...sums),min=Math.min(...sums);document.getElementById('r1').value=data[sums.indexOf(max)].name;document.getElementById('r3').value=data[sums.indexOf(min)].name;const r=document.getElementById('result');r.style.display='block';r.scrollIntoView({behavior:'smooth',block:'start'})}
+function copyForCopilot(){
+  const score=document.getElementById('totalScore').textContent;
+  if(!score||score==='0'){alert('먼저 진단 결과를 확인해 주세요.');return}
+  const rows=[...document.querySelectorAll('#bars .barrow')].map(row=>{
+    const name=row.querySelector('b').textContent;
+    const result=row.querySelector('.tag').textContent.replace(' · ','점 / ');
+    return `- ${name}: ${result}`;
+  }).join('\n');
+  const get=id=>document.getElementById(id).value.trim()||'아직 작성하지 않음';
+  const text=`다음은 나의 프로젝트 통제역량 자가진단 결과야. 이 결과를 바탕으로 현재 업무에서 실천할 수 있는 실행계획을 함께 구체화해줘.\n\n[진단 결과]\n- 종합점수: ${score}/90점\n- 종합수준: ${document.getElementById('totalLevel').textContent}\n${rows}\n\n[나의 생각]\n- 가장 높은 역량: ${get('r1')}\n- 강점이 발휘된 사례: ${get('r2')}\n- 우선 개발할 역량: ${get('r3')}\n- 현재 놓치고 있는 통제 신호: ${get('r4')}\n- 적용하고 싶은 행동: ${get('r5')}\n- 적용할 과제와 실행 시점: ${get('r6')}\n\n먼저 결과만 보고 단정하지 말고, 나의 실제 업무 상황을 파악하기 위한 질문을 한 번에 하나씩 해줘. 질문은 최대 5개까지만 하고 내 답변을 기다린 뒤 다음 질문을 해줘. 안전·품질·일정·성과·협업을 균형 있게 고려해줘.\n\n질문이 끝나면 다음 형식으로 실행계획을 제안해줘.\n1. 유지·활용할 강점\n2. 우선 개선할 행동 1가지\n3. 이 행동이 필요한 실제 상황과 통제 신호\n4. 2주 이내 실행할 구체적인 행동 3단계\n5. 실행 여부를 확인할 관찰 가능한 기준\n6. 예상되는 장애물과 대응 방법\n7. Copilot을 활용할 업무와 사용할 대화형 프롬프트\n8. 2주 후 스스로 점검할 질문 3개\n\n추상적인 조언보다 현재 업무에서 바로 실행할 수 있는 수준으로 작성하고, 최종 실행계획은 담당 행동·실행 시점·완료 기준이 드러나는 표로 정리해줘.`;
+  const done=()=>{const b=document.getElementById('copyBtn');const old=b.textContent;b.textContent='복사 완료!';setTimeout(()=>b.textContent=old,1800)};
+  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(text).then(done).catch(()=>fallbackCopy(text,done))}else fallbackCopy(text,done)
+}
+function fallbackCopy(text,done){const t=document.createElement('textarea');t.value=text;t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();try{document.execCommand('copy');done()}catch(e){alert('자동 복사가 제한되었습니다. 브라우저의 클립보드 권한을 확인해 주세요.')}t.remove()}
+function resetQuiz(){if(!confirm('작성한 응답과 결과를 모두 지울까요?'))return;form.reset();document.querySelectorAll('.subtotal').forEach(x=>x.textContent='-/15점');document.getElementById('result').style.display='none';document.getElementById('error').style.display='none';['r1','r2','r3','r4','r5','r6'].forEach(id=>document.getElementById(id).value='');window.scrollTo({top:0,behavior:'smooth'})}
+</script></body></html>
