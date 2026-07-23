@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 <style>
 html.theme-light {
@@ -440,17 +441,24 @@ body{font-family:'Noto Sans KR',-apple-system,sans-serif;background:var(--bg);co
    Firebase 설정
 ═══════════════════════════════════ */
 var firebaseConfig = {
-  apiKey:            "AIzaSyBlueBlockDummyKeyReplaceMe",
+  apiKey:            "AIzaSyB_-pZHh5RN9ksAKqi6VOWgnW0kKIwfBAw",
   authDomain:        "blueblock-cdff7.firebaseapp.com",
   databaseURL:       "https://blueblock-cdff7-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId:         "blueblock-cdff7",
-  storageBucket:     "blueblock-cdff7.appspot.com",
-  messagingSenderId: "000000000000",
-  appId:             "1:000000000000:web:000000000000000000000000"
+  storageBucket:     "blueblock-cdff7.firebasestorage.app",
+  messagingSenderId: "273215826494",
+  appId:             "1:273215826494:web:179e1fd7b5dbaaa2a5bf6f"
 };
 firebase.initializeApp(firebaseConfig);
 var db = firebase.database();
 var SESSION = db.ref('streams/session');
+var firebaseReady = firebase.auth().signInAnonymously();
+
+function reportFirebaseError(action, error){
+  console.error('[Firebase] '+action, error);
+  var code = error && error.code ? ' ('+error.code+')' : '';
+  showToast('⚠️ 실시간 연결 실패'+code);
+}
 
 /* URL 파라미터로 모드 결정
    강사: ?mode=instructor
@@ -1003,12 +1011,14 @@ function revealTile(id){
     document.getElementById('gameEndModal').classList.add('open');
   }
   // ★ Firebase: 현재 숫자 학습자에게 전송
-  SESSION.update({
-    curNum:     curNum === '☆' ? 'JOKER' : curNum,
-    revealedId: id,
-    revCount:   revCount,
-    ts:         firebase.database.ServerValue.TIMESTAMP
-  });
+  firebaseReady.then(function(){
+    return SESSION.update({
+      curNum:     curNum === '☆' ? 'JOKER' : curNum,
+      revealedId: id,
+      revCount:   revCount,
+      ts:         firebase.database.ServerValue.TIMESTAMP
+    });
+  }).catch(function(error){ reportFirebaseError('숫자 전송', error); });
 }
 function updateCurBox(num){
   var box=document.getElementById('curBox'),val=document.getElementById('curVal');
@@ -1320,14 +1330,16 @@ function init(){
 
   // ★ Firebase: 강사 모드일 때 새 게임 상태 write
   if(MODE === 'instructor'){
-    SESSION.set({
-      tileNums:   tileNums,
-      curNum:     null,
-      revealedId: null,
-      revCount:   0,
-      gameState:  'playing',
-      ts:         firebase.database.ServerValue.TIMESTAMP
-    });
+    firebaseReady.then(function(){
+      return SESSION.set({
+        tileNums:   tileNums,
+        curNum:     null,
+        revealedId: null,
+        revCount:   0,
+        gameState:  'playing',
+        ts:         firebase.database.ServerValue.TIMESTAMP
+      });
+    }).catch(function(error){ reportFirebaseError('게임 초기화', error); });
   }
 }
 
@@ -1339,7 +1351,8 @@ function startPlayerListener(){
   fbListenerActive = true;
   var lastTs = 0;
 
-  SESSION.on('value', function(snap){
+  firebaseReady.then(function(){
+    SESSION.on('value', function(snap){
     var data = snap.val();
     if(!data) return;
 
@@ -1371,8 +1384,6 @@ function startPlayerListener(){
 
     // 'JOKER' 문자열 → '☆' 변환
     var newNum = (rawNum === 'JOKER') ? '☆' : rawNum;
-    if(newNum === curNum) return;
-
     // 이전 라운드 마무리
     clearTimerFn();
     if(pPending!==null && pTiles[pPending]!==null){
@@ -1391,6 +1402,10 @@ function startPlayerListener(){
     if(revCount >= PLAYER_SLOTS){
       document.getElementById('goBanner').classList.add('show');
     }
+    }, function(error){ reportFirebaseError('학습자 수신', error); });
+  }).catch(function(error){
+    fbListenerActive = false;
+    reportFirebaseError('학습자 연결', error);
   });
 }
 
