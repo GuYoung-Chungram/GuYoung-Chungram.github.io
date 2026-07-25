@@ -31,7 +31,24 @@ function doGet(e) {
       .setMimeType(ContentService.MimeType.JSON);
   }
 
-  // 기본: 전체 목록 반환
+  if (action === 'update') {
+var id = e.parameter.id;
+var pinned = e.parameter.pinned;
+var data = sheet.getDataRange().getValues();
+for (var i = 1; i < data.length; i++) {
+if (String(data[i][0]) === String(id)) {
+if (pinned !== undefined) {
+sheet.getRange(i + 1, 3).setValue(pinned === 'true' ? 'TRUE' : 'FALSE');
+}
+break;
+}
+}
+return ContentService
+.createTextOutput(JSON.stringify({ ok: true }))
+.setMimeType(ContentService.MimeType.JSON);
+}
+
+// 기본: 전체 목록 반환
   var data = sheet.getDataRange().getValues();
   var posts = [];
   for (var i = 1; i < data.length; i++) {
