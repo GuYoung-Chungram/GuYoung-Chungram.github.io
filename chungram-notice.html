@@ -974,7 +974,8 @@
     if(!t||!co){showToast('⚠️ 제목과 내용을 입력하세요');return;}
     if(editingId){var ep=posts.find(function(x){return x.id===editingId;});if(!ep)return;if(GAS_URL!=='YOUR_GAS_DEPLOYMENT_URL_HERE'){try{var r=await fetch(GAS_URL+'?action=update&id='+editingId+'&cat='+encodeURIComponent(ca)+'&title='+encodeURIComponent(t)+'&content='+encodeURIComponent(co)+'&author='+encodeURIComponent(au)+'&pinned='+pi+'&t='+Date.now());var res=await r.json();if(!res.ok){showToast('⚠️ 서버 저장 실패 — 재시도하세요');return;}}catch(e){showToast('⚠️ 서버 저장 실패 — 재시도하세요');return;}}ep.cat=ca;ep.title=t;ep.content=co;ep.author=au;ep.pinned=pi;closeWriteModal();showToast('✅ 게시글이 수정되었습니다');renderPosts();renderSidebar();return;}
     var mx=posts.reduce(function(m,p){return Math.max(m,p.id);},0);
-    var np={id:mx+1,cat:ca,pinned:pi,title:t,date:new Date().toISOString().slice(0,10),author:au,views:0,content:co};
+    var randomViews = Math.floor(Math.random() * 90) + 10; // 10~99 사이 랜덤 2자리 숫자
+var np={id:mx+1,cat:ca,pinned:pi,title:t,date:new Date().toISOString().slice(0,10),author:au,views:randomViews,content:co};
     if(GAS_URL!=='YOUR_GAS_DEPLOYMENT_URL_HERE'){
       try{
         var r=await fetch(GAS_URL+'?action=create&data='+encodeURIComponent(JSON.stringify(np))+'&t='+Date.now());
