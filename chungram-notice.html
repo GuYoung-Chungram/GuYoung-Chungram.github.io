@@ -914,6 +914,7 @@
         var n=total-s-i, cc='cat-'+p.cat;
         var nb = isNew(p.date)?'<span class="post-new">NEW</span>':'';
         var ec = p.content.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/https?:\/\/[^\s]+/g,function(u){return '<a href="'+u+'" target="_blank">'+u+'</a>';});
+        var unpin = (isAdmin&&p.pinned)?'<button class="close-btn" style="margin-left:8px" onclick="event.stopPropagation();unpinPost('+p.id+')">고정 해제</button>':'';
         var del = isAdmin?'<button class="close-btn" style="border-color:var(--red);color:var(--red);margin-left:8px" onclick="event.stopPropagation();deletePost('+p.id+')">\uc0ad\uc81c</button>':'';
         return '<div class="post-item '+(p.pinned?'pinned':'')+'" onclick="togglePost(this)"><div class="post-summary">'
           +(p.pinned?'<div class="pin-icon">\ud83d\udccc</div>':'<div class="post-num">'+n+'</div>')
@@ -923,7 +924,7 @@
           +'<div class="post-views">'+(p.views||0)+'</div></div>'
           +'<div class="post-detail"><div class="detail-content">'+ec+'</div>'
           +'<div class="detail-footer"><div class="detail-author">\uc791\uc131\uc790: <span>'+p.author+'</span></div>'
-          +'<div><button class="close-btn" onclick="event.stopPropagation();this.closest(\'.post-item\').querySelector(\'.post-detail\').classList.remove(\'open\')">\ub2eb\uae30</button>'+del+'</div></div></div></div>';
+          +'<div><button class="close-btn" onclick="event.stopPropagation();this.closest(\'.post-item\').querySelector(\'.post-detail\').classList.remove(\'open\')">\ub2eb\uae30</button>'+unpin+del+'</div></div></div></div>';
       }).join('');
     }
     var pe = document.getElementById('pagination');
@@ -995,6 +996,22 @@
     showToast('🗑️ 삭제되었습니다');renderPosts();renderSidebar();
   }
 
+  async function unpinPost(id){
+    event.stopPropagation();
+    if(!confirm('이 게시글의 상단 고정을 해제하시겠습니까?'))return;
+    var p=posts.find(function(x){return x.id===id;});
+    if(!p)return;
+    if(GAS_URL!=='YOUR_GAS_DEPLOYMENT_URL_HERE'){
+      try{
+        var r=await fetch(GAS_URL+'?action=update&id='+id+'&pinned=false&t='+Date.now());
+        var res=await r.json();
+        if(!res.ok){showToast('⚠️ 고정 해제 실패 — 재시도하세요');return;}
+      }catch(e){showToast('⚠️ 고정 해제 실패 — 재시도하세요');return;}
+    }
+    p.pinned=false;
+    showToast('📌 고정이 해제되었습니다');renderPosts();renderSidebar();
+  }
+  
   loadPosts();
 </script>
 
