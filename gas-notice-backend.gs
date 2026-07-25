@@ -34,11 +34,28 @@ function doGet(e) {
   if (action === 'update') {
 var id = e.parameter.id;
 var pinned = e.parameter.pinned;
+var cat = e.parameter.cat;
+var title = e.parameter.title;
+var content = e.parameter.content;
+var author = e.parameter.author;
 var data = sheet.getDataRange().getValues();
 for (var i = 1; i < data.length; i++) {
 if (String(data[i][0]) === String(id)) {
+var row = i + 1;
 if (pinned !== undefined) {
-sheet.getRange(i + 1, 3).setValue(pinned === 'true' ? 'TRUE' : 'FALSE');
+sheet.getRange(row, 3).setValue(pinned === 'true' ? 'TRUE' : 'FALSE');
+}
+if (cat !== undefined) {
+sheet.getRange(row, 2).setValue(cat);
+}
+if (title !== undefined) {
+sheet.getRange(row, 4).setValue(title);
+}
+if (author !== undefined) {
+sheet.getRange(row, 6).setValue(author);
+}
+if (content !== undefined) {
+sheet.getRange(row, 8).setValue(content);
 }
 break;
 }
