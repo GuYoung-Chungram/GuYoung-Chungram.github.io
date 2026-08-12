@@ -1,1 +1,178 @@
 
+
+mobile-traffic-light.html
+
+페이지
+1
+/
+1
+100%
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#111111" />
+  <title>색 신호등</title>
+  <style>
+    :root {
+      --header-height: 64px;
+      --page-bg: #111318;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { height: 100%; margin: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+      background: var(--page-bg);
+      color: #fff;
+      overflow: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .app { min-height: 100dvh; }
+
+    .topbar {
+      position: fixed;
+      z-index: 10;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: calc(var(--header-height) + env(safe-area-inset-top));
+      padding: env(safe-area-inset-top) 16px 0;
+      display: flex;
+      align-items: center;
+      background: rgba(17, 19, 24, .92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,.12);
+    }
+
+    .home-button {
+      min-width: 78px;
+      height: 42px;
+      border: 0;
+      border-radius: 12px;
+      padding: 0 16px;
+      color: #17191e;
+      background: #ffffff;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .home-button:active { transform: scale(.97); }
+
+    .title {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 17px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .signal-list {
+      min-height: 100dvh;
+      padding-top: calc(var(--header-height) + env(safe-area-inset-top));
+      display: grid;
+      grid-template-rows: repeat(3, 1fr);
+      gap: 12px;
+      padding-left: 16px;
+      padding-right: 16px;
+      padding-bottom: max(16px, env(safe-area-inset-bottom));
+    }
+
+    .color-button {
+      border: 0;
+      border-radius: 24px;
+      cursor: pointer;
+      box-shadow: inset 0 -8px 20px rgba(0,0,0,.18), 0 8px 24px rgba(0,0,0,.24);
+      transition: transform .15s ease, filter .15s ease;
+    }
+
+    .color-button:active { transform: scale(.98); filter: brightness(.88); }
+    .red { background: #ef233c; }
+    .green { background: #20bf6b; }
+    .blue { background: #2f80ed; }
+
+    .fullscreen-color {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 5;
+      cursor: pointer;
+    }
+
+    body.fullscreen-mode .signal-list { display: none; }
+    body.fullscreen-mode .fullscreen-color { display: block; }
+    body.fullscreen-mode .topbar {
+      background: rgba(0, 0, 0, .18);
+      border-bottom-color: rgba(255,255,255,.2);
+    }
+
+    .hint {
+      display: none;
+      position: fixed;
+      z-index: 11;
+      right: 16px;
+      top: calc(env(safe-area-inset-top) + 22px);
+      font-size: 13px;
+      font-weight: 700;
+      text-shadow: 0 1px 3px rgba(0,0,0,.35);
+      pointer-events: none;
+    }
+
+    body.fullscreen-mode .hint { display: block; }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <button id="homeButton" class="home-button" type="button" aria-label="홈으로 돌아가기">홈</button>
+      <span class="title">색 신호등</span>
+    </header>
+
+    <section class="signal-list" aria-label="색 선택">
+      <button class="color-button red" type="button" data-color="#ef233c" aria-label="빨강 전체화면"></button>
+      <button class="color-button green" type="button" data-color="#20bf6b" aria-label="초록 전체화면"></button>
+      <button class="color-button blue" type="button" data-color="#2f80ed" aria-label="파랑 전체화면"></button>
+    </section>
+
+    <div id="fullscreenColor" class="fullscreen-color" aria-label="색상 전체화면"></div>
+    <span class="hint">화면을 누르거나 홈을 누르세요</span>
+  </main>
+
+  <script>
+    const body = document.body;
+    const homeButton = document.getElementById('homeButton');
+    const fullscreenColor = document.getElementById('fullscreenColor');
+    const colorButtons = document.querySelectorAll('.color-button');
+
+    function showHome() {
+      body.classList.remove('fullscreen-mode');
+      fullscreenColor.style.backgroundColor = '';
+      document.querySelector('meta[name="theme-color"]').content = '#111111';
+    }
+
+    function showColor(color) {
+      fullscreenColor.style.backgroundColor = color;
+      body.classList.add('fullscreen-mode');
+      document.querySelector('meta[name="theme-color"]').content = color;
+    }
+
+    colorButtons.forEach((button) => {
+      button.addEventListener('click', () => showColor(button.dataset.color));
+    });
+
+    homeButton.addEventListener('click', showHome);
+    fullscreenColor.addEventListener('click', showHome);
+
+    window.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') showHome();
+    });
+  </script>
+</body>
+</html>
+mobile-traffic-light.html 표시 중입니다.
