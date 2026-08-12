@@ -219,7 +219,12 @@ html.theme-dark .warn-banner { background: rgba(245,158,11,0.1); color: var(--wa
 .toast.show { opacity:1; }
 
 footer { margin-top: 56px; padding: 40px 0; border-top:1px solid var(--border); }
-footer .wrap { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; font-size:0.82rem; color: var(--text-secondary); }
+footer .wrap { display:flex; align-items:center; flex-wrap:wrap; gap:12px; font-size:0.82rem; color: var(--text-secondary); }
+footer .wrap.footer-center { justify-content:center; }
+.footer-badge { display:inline-flex; align-items:center; gap:8px; font-family: 'Inter', 'Noto Sans KR', sans-serif; font-weight:700; font-size:0.95rem; letter-spacing:0.02em; color: var(--accent); text-decoration:none; padding:10px 24px; border:1px solid var(--cr-card-border); border-radius:999px; background: var(--cr-light-bg); transition: all .18s ease; }
+.footer-badge:hover { background: var(--accent); color:#fff; box-shadow: 0 6px 16px rgba(22,82,216,0.18); transform: translateY(-1px); }
+.footer-badge:hover .footer-badge-dot { background:#fff; }
+.footer-badge-dot { width:6px; height:6px; border-radius:50%; background: var(--accent); transition: background .18s ease; }
 
 details { overflow: hidden; }
 details summary { cursor: pointer; list-style: none; }
@@ -245,7 +250,7 @@ details summary::-webkit-details-marker { display: none; }
   <header class="cr-hero-blue">
     <div class="cr-dot-grid"></div>
     <div class="wrap hero animate">
-      <span class="eyebrow">청람M&C × 세종특별자치시교육청평생교육원</span>
+      <span class="eyebrow"><a href="https://www.crmc.co.kr" target="_blank" rel="noopener" style="color:inherit; text-decoration:none;">청람M&amp;C</a> X 강사를 위한 협력도구</span>
       <h1>강의설계 프롬프트 템플릿보드</h1>
       <p class="lead">청소년·일반인 대상 평생학습 강좌를 설계하는 강사를 위한 클릭형 실습 보드입니다. 강의대상·시간·장소·인원·주제·목적·모듈비율·강사경력을 선택하면 개요서, 강의 모듈안, 제안서, 수업 시나리오, 수업소개 영상 스토리보드, 수업활동 기획까지 6종 산출물 초안이 자동으로 완성됩니다.</p>
       <div class="cta-row">
@@ -414,9 +419,8 @@ details summary::-webkit-details-marker { display: none; }
   </section>
 
   <footer>
-    <div class="wrap">
-      <span>청람M&C · Corporate Impact Blue Brand System v2</span>
-      <span>참고자료: 2026년 세종특별자치시교육청평생교육원 하반기 정규프로그램 학습자 모집 전단(53개 강좌, 5대 분야) 분석 기반</span>
+    <div class="wrap footer-center">
+      <a href="https://www.crmc.co.kr" target="_blank" rel="noopener" class="footer-badge"><span class="footer-badge-dot"></span>청람M&amp;C</a>
     </div>
   </footer>
 
