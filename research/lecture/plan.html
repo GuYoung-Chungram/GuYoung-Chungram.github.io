@@ -290,6 +290,8 @@ html { scroll-behavior: smooth; }
 .site-footer .wrap { display: flex; align-items: center; justify-content: center; gap: 8px; }
 .site-footer-mark { width: 8px; height: 8px; background: #fff; flex: none; }
 .site-footer p { color: rgba(255,255,255,0.92); font-size: 0.875rem; font-weight: 600; letter-spacing: -0.01em; }
+.site-footer-link { display: block; text-decoration: none; color: inherit; transition: opacity var(--duration-fast); }
+.site-footer-link:hover { opacity: 0.82; }
 
 /* ===== 메뉴 ===== */
 .viz-menu { position: fixed; top: 12px; right: 16px; z-index: 9999; }
@@ -428,10 +430,12 @@ html { scroll-behavior: smooth; }
 </main>
 
 <footer class="site-footer">
-  <div class="wrap">
-    <span class="site-footer-mark" aria-hidden="true"></span>
-    <p>청람 AI 홍보실습소 · 2026</p>
-  </div>
+  <a class="site-footer-link" href="https://www.crmc.co.kr" target="_blank" rel="noopener noreferrer" aria-label="청람M&C 홈페이지로 이동">
+    <div class="wrap">
+      <span class="site-footer-mark" aria-hidden="true"></span>
+      <p>청람 AI 홍보실습소 · 2026</p>
+    </div>
+  </a>
 </footer>
 
 <!-- ============ 모달 ============ -->
