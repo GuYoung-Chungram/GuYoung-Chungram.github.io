@@ -1,1 +1,1107 @@
+<!DOCTYPE html>
+<html lang="ko" class="theme-light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>강의설계 프롬프트 템플릿보드 — 청람M&C</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root { interpolate-size: allow-keywords; }
 
+html.theme-light {
+  --bg: #FFFFFF; --surface: #F8FAFF; --surface-hover: #EEF3FD;
+  --border: rgba(22,82,216,0.08);
+  --text: #1A1A1A; --text-secondary: #666666;
+  --accent: #1652D8; --accent-secondary: #0F3D99;
+  --positive: #059669; --negative: #e11d48; --warning: #d97706;
+  --cr-header-bar: #1652D8;
+  --cr-light-bg: #EEF3FD;
+  --cr-card-border: #D0D9F5;
+  --cr-dark-section: #0F0F0F;
+  --menu-bg: rgba(255,255,255,0.9);
+  --menu-bg-hover: rgba(255,255,255,0.98);
+  --menu-border: rgba(22,82,216,0.12);
+  --menu-text: #1A1A1A;
+  --menu-item-hover: rgba(22,82,216,0.06);
+}
+html.theme-dark {
+  --bg: #0F0F0F; --surface: #1A1A2E; --surface-hover: #252540;
+  --border: rgba(255,255,255,0.06);
+  --text: #EDEDED; --text-secondary: #888888;
+  --accent: #4B7BF5; --accent-secondary: #6B8FFF;
+  --positive: #10b981; --negative: #f43f5e; --warning: #f59e0b;
+  --cr-header-bar: #4B7BF5;
+  --cr-light-bg: #1A1A2E;
+  --cr-card-border: rgba(75,123,245,0.15);
+  --cr-dark-section: #0A0A0A;
+  --menu-bg: rgba(15,15,15,0.9);
+  --menu-bg-hover: rgba(15,15,15,0.98);
+  --menu-border: rgba(75,123,245,0.15);
+  --menu-text: #EDEDED;
+  --menu-item-hover: rgba(75,123,245,0.1);
+}
+
+body {
+  font-family: 'Noto Sans KR', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg); color: var(--text);
+  line-height: 1.7; -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
+  transition: background 0.3s, color 0.3s;
+  scrollbar-gutter: stable;
+}
+h1, h2, h3, h4, h5, h6 { color: var(--text); letter-spacing: -0.03em; line-height: 1.25; text-wrap: balance; }
+h1 { font-weight: 700; font-size: clamp(2.2rem, 4.5vw, 3.2rem); }
+h2 { font-weight: 600; font-size: clamp(1.7rem, 3.5vw, 2.2rem); letter-spacing: -0.02em; }
+h3 { font-weight: 600; font-size: clamp(1.25rem, 2.5vw, 1.5rem); letter-spacing: -0.02em; }
+body, p, li, td, th, span, label { font-weight: 400; }
+p, li, td, th, span, label { color: var(--text); }
+.text-secondary { color: var(--text-secondary); }
+a { color: var(--accent); }
+
+.cr-header-bar { background: var(--cr-header-bar); color: #FFFFFF; padding: 24px 32px; }
+.cr-accent-underline { border-bottom: 2px solid var(--accent); padding-bottom: 8px; display: inline-block; }
+.cr-dark-section { background: var(--cr-dark-section); color: #FFFFFF; padding: 64px 32px; position: relative; overflow: hidden; }
+.cr-hero-blue {
+  --hero-text: #FFFFFF;
+  --hero-text-soft: rgba(255,255,255,0.86);
+  --hero-border: rgba(255,255,255,0.4);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-secondary) 100%);
+  color: var(--hero-text);
+  padding: 56px 32px 64px;
+  position: relative;
+  overflow: hidden;
+}
+.cr-square-bullet { list-style: none; padding-left: 0; }
+.cr-square-bullet li { padding-left: 20px; position: relative; margin-bottom: 8px; }
+.cr-square-bullet li::before { content: ''; position: absolute; left: 0; top: 0.6em; width: 6px; height: 6px; background: var(--accent); }
+.cr-dot-grid { background-image: radial-gradient(circle, #ffffff 0.5px, transparent 0.5px); background-size: 24px 24px; opacity: 0.06; position: absolute; inset: 0; pointer-events: none; }
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 24px; transition: box-shadow 0.2s ease; }
+.card:hover { box-shadow: 0 0 0 1px var(--border), 0 8px 16px rgba(0,0,0,0.08); }
+
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+.animate { animation: fadeInUp 0.6s ease-out both; }
+.animate.delay-1 { animation-delay: 0.1s; } .animate.delay-2 { animation-delay: 0.2s; } .animate.delay-3 { animation-delay: 0.3s; }
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } .reveal { opacity: 1; transform: none; } }
+
+@media print {
+  body { background: white !important; color: black !important; }
+  .viz-menu, .no-print { display: none !important; }
+  .card { break-inside: avoid; border: 1px solid #ddd; box-shadow: none; }
+  * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+}
+@page { margin: 1in; }
+@media (max-width: 375px) { body { overflow-x: hidden; } }
+
+.viz-menu { position: fixed; top: 16px; right: 16px; z-index: 9999; }
+.viz-menu-toggle { width: 44px; height: 44px; border-radius: 12px; background: var(--menu-bg); border: 1px solid var(--menu-border); color: var(--menu-text); cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transition: all 0.2s; }
+.viz-menu-toggle:hover { background: var(--menu-bg-hover); }
+.viz-menu-dropdown { position: absolute; top: 52px; right: 0; min-width: 200px; background: var(--menu-bg); border: 1px solid var(--menu-border); border-radius: 12px; padding: 8px; opacity: 0; visibility: hidden; transform: translateY(-8px); transition: all 0.2s; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: 0 8px 32px rgba(0,0,0,0.12); }
+.viz-menu-dropdown.open { opacity: 1; visibility: visible; transform: translateY(0); }
+.viz-menu-dropdown button { width: 100%; padding: 10px 14px; border: none; border-radius: 8px; background: transparent; color: var(--menu-text); font-size: 14px; font-family: inherit; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 10px; transition: background 0.15s; }
+.viz-menu-dropdown button:hover { background: var(--menu-item-hover); }
+
+.skip-link { position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; overflow: hidden; z-index: 10000; padding: 8px 16px; background: var(--accent); color: white; text-decoration: none; border-radius: 4px; }
+.skip-link:focus { position: fixed; left: 16px; top: 16px; width: auto; height: auto; overflow: visible; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+/* ===== LAYOUT ===== */
+.wrap { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+section { padding: 56px 0; }
+
+.hero { text-align: left; }
+.hero h1 { color: var(--hero-text, #FFFFFF); }
+.hero .eyebrow { display:inline-block; font-size: 0.8rem; letter-spacing: 0.08em; font-weight: 600; color: var(--hero-text, #FFFFFF); border:1px solid var(--hero-border, rgba(255,255,255,0.3)); background: rgba(255,255,255,0.08); padding: 6px 14px; border-radius: 999px; margin-bottom: 20px; }
+.hero p.lead { color: var(--hero-text-soft, rgba(255,255,255,0.86)); font-size: 1.05rem; max-width: 680px; margin-top: 14px; }
+.hero .cta-row { display:flex; gap:12px; flex-wrap:wrap; margin-top: 28px; }
+.btn { border:none; cursor:pointer; font-family:inherit; font-weight:600; font-size:0.95rem; padding: 13px 22px; border-radius: 8px; transition: all .15s ease; display:inline-flex; align-items:center; gap:8px; }
+.btn-primary { background: var(--accent); color:#fff; }
+.btn-primary:hover { background: var(--accent-secondary); }
+.btn-hero-primary { background: #FFFFFF; color: var(--accent); box-shadow: 0 4px 14px rgba(0,0,0,0.12); }
+.btn-hero-primary:hover { background: var(--cr-light-bg); }
+.btn-ghost { background: transparent; color: var(--hero-text, #fff); border:1px solid var(--hero-border, rgba(255,255,255,0.45)); }
+.btn-ghost:hover { background: rgba(255,255,255,0.12); }
+.btn-outline { background: transparent; color: var(--accent); border:1px solid var(--cr-card-border); }
+.btn-outline:hover { background: var(--surface-hover); }
+.btn-sm { padding: 8px 14px; font-size: 0.82rem; }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Stepper — connected progress tracker, not boxed tabs */
+header + section.wrap, header + section { padding-top: 96px; }
+.stepper { display:flex; align-items:flex-start; margin-bottom: 44px; }
+.step-tab { position:relative; flex:1; display:flex; flex-direction:column; align-items:center; text-align:center; background:transparent; border:none; padding:0; cursor:pointer; }
+.step-tab::before { content:''; position:absolute; top:15px; left:-50%; right:50%; height:2px; background: var(--cr-card-border); z-index:0; }
+.step-tab.line-filled::before { background: var(--accent); }
+.step-tab:first-child::before { display:none; }
+.step-tab .node { position:relative; z-index:1; width:32px; height:32px; border-radius:50%; background:var(--surface); border:2px solid var(--cr-card-border); display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:700; color:var(--text-secondary); margin-bottom:10px; transition: all .15s; }
+.step-tab.active .node { border-color: var(--accent); color: var(--accent); background: var(--cr-light-bg); }
+.step-tab.done .node { border-color: var(--positive); background: var(--positive); color:#fff; }
+.step-tab .name { font-weight:600; font-size:0.88rem; color: var(--text-secondary); }
+.step-tab.active .name { color: var(--text); }
+.step-tab:hover .name { color: var(--text); }
+
+.layout-grid { display:grid; grid-template-columns: 300px 1fr; gap: 28px; align-items:start; }
+@media (max-width: 900px) { .layout-grid { grid-template-columns: 1fr; } .summary-panel { order: 2; position: static !important; } }
+
+.summary-panel { position: sticky; top: 24px; background: var(--surface); border: none; border-left: 3px solid var(--accent); border-radius: 4px; box-shadow: 0 1px 3px rgba(22,82,216,0.06); padding: 24px; }
+.summary-panel h3 { font-size: 1.05rem; margin-bottom: 4px; }
+.progress-track { height: 8px; background: var(--surface-hover); border-radius: 999px; overflow:hidden; margin: 14px 0 18px; }
+.progress-fill { height:100%; background: var(--accent); width:0%; transition: width .3s ease; }
+.sum-list { display:flex; flex-direction:column; gap:10px; font-size:0.86rem; }
+.sum-row { display:flex; justify-content:space-between; gap:10px; border-bottom: 1px dashed var(--border); padding-bottom:8px; }
+.sum-row .k { color: var(--text-secondary); flex-shrink:0; }
+.sum-row .v { text-align:right; font-weight:600; }
+.sum-row .v.empty { color: var(--text-secondary); font-weight:400; }
+.ratio-bar-wrap { margin-top: 16px; }
+.ratio-bar { display:flex; height: 22px; border-radius: 6px; overflow:hidden; border:1px solid var(--cr-card-border); }
+.ratio-bar .theory { background: var(--accent); }
+.ratio-bar .practice { background: var(--cr-light-bg); border-left: 1px solid var(--cr-card-border); }
+.ratio-labels { display:flex; justify-content:space-between; font-size:0.72rem; color: var(--text-secondary); margin-top:6px; }
+
+.field-block { margin-bottom: 30px; }
+.field-block .field-title { font-size: 1.05rem; font-weight:700; margin-bottom: 4px; }
+.field-block .field-desc { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px; }
+.chip-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+.chip { border:1px solid var(--border); background: var(--surface); border-radius: 8px; padding: 12px 14px; cursor:pointer; text-align:left; transition: all .15s; }
+.chip:hover { background: var(--surface-hover); }
+.chip.selected { border-color: var(--accent); background: var(--cr-light-bg); box-shadow: inset 0 0 0 1px var(--accent); }
+.chip .chip-label { font-weight:600; font-size:0.9rem; }
+.chip .chip-desc { font-size:0.76rem; color: var(--text-secondary); margin-top:2px; }
+.chip.tag { display:inline-block; padding: 8px 14px; border-radius: 999px; font-size:0.82rem; font-weight:600; }
+
+.text-input, .textarea-input { width:100%; border:1px solid var(--border); background: var(--surface); border-radius: 8px; padding: 12px 14px; font-family:inherit; font-size:0.92rem; color: var(--text); }
+.text-input:focus, .textarea-input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.textarea-input { min-height: 90px; resize: vertical; }
+
+.step-panel { display:none; }
+.step-panel.active { display:block; }
+.step-nav-btns { display:flex; justify-content:space-between; margin-top: 8px; }
+
+.warn-banner { background: #FFF7ED; border:1px solid var(--warning); color:#7c4a03; border-radius:8px; padding:12px 16px; font-size:0.85rem; margin-bottom:20px; }
+html.theme-dark .warn-banner { background: rgba(245,158,11,0.1); color: var(--warning); }
+
+.output-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 24px; }
+.output-card { position:relative; display:flex; flex-direction:column; align-items:flex-start; height:100%; border:none; border-radius:10px; padding-top:28px; box-shadow: 0 1px 2px rgba(22,82,216,0.06), 0 1px 8px rgba(22,82,216,0.04); overflow:hidden; transition: box-shadow 0.2s ease, transform 0.2s ease; }
+.output-card::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background: var(--accent); }
+.output-card:hover { box-shadow: 0 8px 24px rgba(22,82,216,0.12); transform: translateY(-2px); }
+.output-card.done::before { background: var(--positive); }
+.output-card .oc-icon { width:38px; height:38px; border-radius:8px; background: var(--cr-light-bg); color: var(--accent); display:flex; align-items:center; justify-content:center; font-weight:700; margin-bottom:12px; }
+.output-card h4 { font-size:1rem; margin-bottom:4px; }
+.output-card p { flex-grow:1; font-size:0.8rem; color: var(--text-secondary); margin-bottom:14px; }
+.output-card > button { margin-top:auto; }
+.badge-generated { position:absolute; top:16px; right:16px; font-size:0.68rem; font-weight:700; background: var(--positive); color:#fff; padding:3px 8px; border-radius:999px; display:none; }
+.output-card.done .badge-generated { display:inline-block; }
+
+#outputPanel { margin-top: 32px; }
+.doc-frame { border:1px solid var(--cr-card-border); border-radius: 10px; overflow:hidden; }
+.doc-frame-header { background: var(--cr-header-bar); color:#fff; padding: 18px 24px; display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
+.doc-frame-header h3 { color:#fff; font-size:1.1rem; }
+.doc-frame-body { padding: 24px; background: var(--bg); }
+.doc-frame-body h4 { margin-top: 22px; margin-bottom: 10px; border-bottom: 2px solid var(--accent); padding-bottom: 6px; display:inline-block; }
+.doc-frame-body h4:first-child { margin-top: 0; }
+.doc-table { width:100%; border-collapse: collapse; margin-bottom: 8px; font-size:0.88rem; }
+.doc-table th, .doc-table td { border:1px solid var(--cr-card-border); padding: 9px 12px; text-align:left; vertical-align: top; }
+.doc-table th { background: var(--cr-light-bg); font-weight:700; width: 22%; }
+.doc-table.wide th { width:auto; background: var(--cr-light-bg); }
+.doc-p { font-size:0.9rem; margin-bottom:6px; white-space:pre-line; }
+.doc-ul { padding-left: 20px; font-size:0.9rem; }
+.doc-ul li { margin-bottom:6px; }
+.doc-actions { display:flex; gap:8px; flex-wrap:wrap; }
+.prompt-section { margin-top:28px; padding-top:20px; border-top:1px dashed var(--cr-card-border); }
+.prompt-box { background: var(--cr-light-bg); border:1px solid var(--cr-card-border); border-radius:8px; padding:16px; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; font-size:0.8rem; line-height:1.65; white-space:pre-wrap; word-break:break-word; max-height:440px; overflow:auto; color: var(--text); margin-bottom: 4px; }
+.toast { position:fixed; bottom: 24px; left:50%; transform:translateX(-50%); background: var(--cr-dark-section); color:#fff; padding:10px 20px; border-radius:8px; font-size:0.85rem; opacity:0; pointer-events:none; transition: opacity .2s; z-index:10001; }
+.toast.show { opacity:1; }
+
+footer { margin-top: 56px; padding: 40px 0; border-top:1px solid var(--border); }
+footer .wrap { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; font-size:0.82rem; color: var(--text-secondary); }
+
+details { overflow: hidden; }
+details summary { cursor: pointer; list-style: none; }
+details summary::-webkit-details-marker { display: none; }
+</style>
+</head>
+<body>
+<a href="#main-content" class="skip-link">본문으로 건너뛰기</a>
+
+<div class="viz-menu">
+  <button class="viz-menu-toggle" onclick="toggleMenu()" aria-label="메뉴">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="5" x2="17" y2="5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="15" x2="17" y2="15"/></svg>
+  </button>
+  <div class="viz-menu-dropdown" id="vizMenuDropdown">
+    <button onclick="cycleTheme()"><span id="themeIcon">☀️</span><span id="themeLabel">라이트</span></button>
+    <button onclick="downloadImage()"><span>📥</span><span>PNG 다운로드</span></button>
+    <button onclick="window.print()"><span>🖨️</span><span>인쇄 / PDF</span></button>
+  </div>
+</div>
+
+<main id="main-content" role="main">
+
+  <header class="cr-hero-blue">
+    <div class="cr-dot-grid"></div>
+    <div class="wrap hero animate">
+      <span class="eyebrow">청람M&C × 세종특별자치시교육청평생교육원</span>
+      <h1>강의설계 프롬프트 템플릿보드</h1>
+      <p class="lead">청소년·일반인 대상 평생학습 강좌를 설계하는 강사를 위한 클릭형 실습 보드입니다. 강의대상·시간·장소·인원·주제·목적·모듈비율·강사경력을 선택하면 개요서, 강의 모듈안, 제안서, 수업 시나리오, 수업소개 영상 스토리보드, 수업활동 기획까지 6종 산출물 초안이 자동으로 완성됩니다.</p>
+      <div class="cta-row">
+        <button class="btn btn-hero-primary" onclick="loadSample()">예시로 5분 체험 (생성형 AI 200% 활용법)</button>
+        <button class="btn btn-ghost" onclick="resetAll()">빈 보드로 새로 시작</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="wrap" data-reveal>
+    <div class="layout-grid">
+
+      <!-- 좌측 요약 패널 -->
+      <aside class="summary-panel card">
+        <h3>선택 요약</h3>
+        <p class="text-secondary" style="font-size:0.8rem;">필수 항목을 채울수록 진행률이 올라갑니다.</p>
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="sum-list" id="summaryList"></div>
+        <div class="ratio-bar-wrap">
+          <div class="text-secondary" style="font-size:0.78rem; margin-bottom:6px;">모듈 비율 (이론:실습)</div>
+          <div class="ratio-bar"><div class="theory" id="ratioTheoryBar" style="width:0%"></div><div class="practice" id="ratioPracticeBar" style="width:0%"></div></div>
+          <div class="ratio-labels"><span id="ratioTheoryLabel">이론 0%</span><span id="ratioPracticeLabel">실습 0%</span></div>
+        </div>
+      </aside>
+
+      <!-- 우측 입력 스텝 -->
+      <div>
+        <nav class="stepper" id="stepperNav" aria-label="설계 단계"></nav>
+
+        <div class="step-panel active" data-step="1">
+          <div class="field-block">
+            <div class="field-title">① 강의대상</div>
+            <div class="field-desc">누구를 위한 수업인가요? (세종시교육청평생교육원 하반기 프로그램 대상 분류 기준)</div>
+            <div class="chip-grid" id="grp-audience"></div>
+          </div>
+          <div class="field-block">
+            <div class="field-title">② 강의시간(운영 시간대)</div>
+            <div class="field-desc">주로 어느 시간대에 운영하나요?</div>
+            <div class="chip-grid" id="grp-timeSlot"></div>
+          </div>
+          <div class="field-block">
+            <div class="field-title">③ 총 차시(강의기간)</div>
+            <div class="field-desc">회당 120분 기준으로 총 몇 차시인가요?</div>
+            <div class="chip-grid" id="grp-duration"></div>
+          </div>
+          <div class="field-block">
+            <div class="field-title">④ 강의장소</div>
+            <div class="field-desc">실습에 필요한 공간 유형을 선택하세요.</div>
+            <div class="chip-grid" id="grp-venue"></div>
+          </div>
+          <div class="field-block">
+            <div class="field-title">⑤ 참석인원</div>
+            <div class="field-desc">정원 규모를 선택하세요.</div>
+            <div class="chip-grid" id="grp-capacity"></div>
+          </div>
+        </div>
+
+        <div class="step-panel" data-step="2">
+          <div class="field-block">
+            <div class="field-title">⑥ 주제 분야</div>
+            <div class="field-desc">2026 하반기 정규프로그램 5대 분야 기준</div>
+            <div class="chip-grid" id="grp-topic"></div>
+          </div>
+          <div class="field-block">
+            <div class="field-title">⑦ 구체적 강좌명(주제)</div>
+            <div class="field-desc">예: 생성형 AI 200% 활용법, 지친 어른을 위한 걷기로 활력 충전</div>
+            <input type="text" class="text-input" id="input-courseName" aria-label="구체적 강좌명" placeholder="강좌명을 입력하세요" oninput="onTextInput('courseName', this.value)">
+          </div>
+          <div class="field-block">
+            <div class="field-title">⑧ 운영 목적</div>
+            <div class="field-desc">이 강좌가 학습자에게 주는 핵심 가치는 무엇인가요?</div>
+            <div class="chip-grid" id="grp-purpose"></div>
+          </div>
+          <div class="field-block">
+            <div class="field-title">⑨ 목적 한 줄 설명 (선택)</div>
+            <input type="text" class="text-input" id="input-purposeText" aria-label="목적 한 줄 설명" placeholder="예: 생성형 AI 도구를 업무와 일상에 실전 적용할 수 있는 역량 습득" oninput="onTextInput('purposeText', this.value)">
+          </div>
+        </div>
+
+        <div class="step-panel" data-step="3">
+          <div class="field-block">
+            <div class="field-title">⑩ 모듈 비율 (이론:실습)</div>
+            <div class="field-desc">회당 120분 기준으로 이론과 실습 비중을 정하세요.</div>
+            <div class="chip-grid" id="grp-ratio"></div>
+          </div>
+        </div>
+
+        <div class="step-panel" data-step="4">
+          <div class="field-block">
+            <div class="field-title">⑪ 강사명</div>
+            <input type="text" class="text-input" id="input-instructorName" aria-label="강사명" placeholder="예: 홍길동" oninput="onTextInput('instructorName', this.value)">
+          </div>
+          <div class="field-block">
+            <div class="field-title">⑫ 강사경력사항 (경력 연차)</div>
+            <div class="chip-grid" id="grp-career"></div>
+          </div>
+          <div class="field-block">
+            <div class="field-title">⑬ 전문분야 (복수 선택 가능)</div>
+            <div class="chip-grid" id="grp-expertise"></div>
+          </div>
+          <div class="field-block">
+            <div class="field-title">⑭ 경력 요약 (선택)</div>
+            <textarea class="textarea-input" id="input-instructorSummary" aria-label="경력 요약" placeholder="예: OO기관 AI 활용 강사 5년, 평생교육원 다수 출강, 관련 자격 보유" oninput="onTextInput('instructorSummary', this.value)"></textarea>
+          </div>
+        </div>
+
+        <div class="step-panel" data-step="5" id="outputsSection">
+          <h2 class="cr-accent-underline">5. 최종산출물 생성</h2>
+          <p class="text-secondary" style="margin-top:10px; max-width:760px;">1~4단계에서 입력한 내용을 바탕으로 6종 산출물을 생성합니다. 아래 카드에서 개요서, 강의 모듈안, 제안서, 수업 시나리오, 수업소개 영상 스토리보드, 수업활동 기획을 각각 만들어보세요. 생성된 문서는 복사 또는 Markdown 파일로 내려받아 실제 문서 작업의 초안으로 사용하세요.</p>
+          <div id="reqWarn" class="warn-banner" style="display:none;"></div>
+
+          <div class="output-grid">
+            <div class="card output-card" id="oc-overview">
+              <span class="badge-generated">생성완료</span>
+              <div class="oc-icon">01</div>
+              <h4>개요서</h4>
+              <p>과정 개요·학습목표·모듈비율·기대효과를 담은 강의계획 개요서</p>
+              <button class="btn btn-outline btn-sm" onclick="generateDoc('overview')">개요서 생성</button>
+            </div>
+            <div class="card output-card" id="oc-module">
+              <span class="badge-generated">생성완료</span>
+              <div class="oc-icon">02</div>
+              <h4>강의 모듈안</h4>
+              <p>회차별 이론/실습 배분과 핵심 내용을 정리한 운영표</p>
+              <button class="btn btn-outline btn-sm" onclick="generateDoc('module')">모듈안 생성</button>
+            </div>
+            <div class="card output-card" id="oc-proposal">
+              <span class="badge-generated">생성완료</span>
+              <div class="oc-icon">03</div>
+              <h4>제안서</h4>
+              <p>기관 제출용 강좌 개설 제안서 (배경·강사프로필·운영조건)</p>
+              <button class="btn btn-outline btn-sm" onclick="generateDoc('proposal')">제안서 생성</button>
+            </div>
+            <div class="card output-card" id="oc-scenario">
+              <span class="badge-generated">생성완료</span>
+              <div class="oc-icon">04</div>
+              <h4>수업 시나리오</h4>
+              <p>대표 회차의 도입-전개-정리 분단위 진행 대본</p>
+              <button class="btn btn-outline btn-sm" onclick="generateDoc('scenario')">시나리오 생성</button>
+            </div>
+            <div class="card output-card" id="oc-video">
+              <span class="badge-generated">생성완료</span>
+              <div class="oc-icon">05</div>
+              <h4>수업소개 영상</h4>
+              <p>35초 내외 홍보용 소개 영상 컷별 스토리보드/내레이션</p>
+              <button class="btn btn-outline btn-sm" onclick="generateDoc('video')">영상 스토리보드 생성</button>
+            </div>
+            <div class="card output-card" id="oc-activity">
+              <span class="badge-generated">생성완료</span>
+              <div class="oc-icon">06</div>
+              <h4>수업활동 기획</h4>
+              <p>도입·핵심실습·마무리 성찰 활동 카드 3종</p>
+              <button class="btn btn-outline btn-sm" onclick="generateDoc('activity')">활동기획 생성</button>
+            </div>
+          </div>
+
+          <div id="outputPanel"></div>
+        </div>
+
+        <div class="step-nav-btns no-print">
+          <button class="btn btn-outline btn-sm" id="stepPrevBtn" onclick="stepPrev()">이전 단계</button>
+          <button class="btn btn-primary btn-sm" id="stepNextBtn" onclick="stepNext()">다음 단계</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <span>청람M&C · Corporate Impact Blue Brand System v2</span>
+      <span>참고자료: 2026년 세종특별자치시교육청평생교육원 하반기 정규프로그램 학습자 모집 전단(53개 강좌, 5대 분야) 분석 기반</span>
+    </div>
+  </footer>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// === Menu ===
+function toggleMenu() { var d = document.getElementById('vizMenuDropdown'); if (d) d.classList.toggle('open'); }
+document.addEventListener('click', function(e) { if (!e.target.closest('.viz-menu')) { var d = document.getElementById('vizMenuDropdown'); if (d) d.classList.remove('open'); } });
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { var d = document.getElementById('vizMenuDropdown'); if (d) d.classList.remove('open'); } });
+
+var savedTheme = localStorage.getItem('cr-viz-theme');
+var currentTheme = savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+function applyTheme(t) {
+  document.documentElement.className = 'theme-' + t;
+  document.getElementById('themeIcon').textContent = t === 'dark' ? '🌙' : '☀️';
+  document.getElementById('themeLabel').textContent = t === 'dark' ? '다크' : '라이트';
+  localStorage.setItem('cr-viz-theme', t);
+  currentTheme = t;
+}
+function cycleTheme() { applyTheme(currentTheme === 'dark' ? 'light' : 'dark'); }
+applyTheme(currentTheme);
+
+document.querySelectorAll('[data-reveal]').forEach(function(el) { el.classList.add('reveal'); });
+var revealObserver = new IntersectionObserver(function(entries) { entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('visible'); revealObserver.unobserve(e.target); } }); }, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(function(el) { revealObserver.observe(el); });
+setTimeout(function() { document.querySelectorAll('.reveal').forEach(function(el) { el.classList.add('visible'); }); }, 400);
+
+async function downloadImage() {
+  var menu = document.querySelector('.viz-menu'); menu.style.display = 'none';
+  try {
+    var url = await htmlToImage.toPng(document.body, { quality: 1, pixelRatio: 2, filter: function(n) { return !n.classList || !n.classList.contains('viz-menu'); } });
+    var a = document.createElement('a'); a.href = url; a.download = '강의설계-프롬프트템플릿보드.png'; a.click();
+  } catch(e) { console.error('Download failed:', e); }
+  menu.style.display = '';
+}
+
+function showToast(msg) {
+  var t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 1800);
+}
+
+// ============================================================
+// OPTIONS — 2026 세종시교육청평생교육원 하반기 정규프로그램(53강좌·5대분야) 데이터 기반
+// ============================================================
+var OPTIONS = {
+  audience: [
+    {id:'kids', label:'유아 (6~7세)', desc:'짧은 차시, 놀이 중심'},
+    {id:'child', label:'아동 (초1~초6)', desc:'체험·놀이형 구성'},
+    {id:'youth', label:'청소년 (초5~중3)', desc:'진로·디지털 리터러시'},
+    {id:'adult', label:'성인 일반', desc:'직장인·주민 실생활 밀착형'},
+    {id:'senior', label:'시니어(장년/노년)', desc:'속도조절, 반복 학습'},
+    {id:'family', label:'가족/다세대', desc:'보호자+자녀 동반'}
+  ],
+  timeSlot: [
+    {id:'morning', label:'오전 (09:30~12:00)', desc:''},
+    {id:'afternoon', label:'오후 (13:00~17:00)', desc:''},
+    {id:'evening', label:'저녁 (19:00~21:00)', desc:'직장인 대상'},
+    {id:'weekend', label:'주말(토요일)', desc:'가족·아동 대상'}
+  ],
+  duration: [
+    {id:'d3', label:'3차시 (단회·체험형)', n:3},
+    {id:'d6', label:'6차시 (6주 단기)', n:6},
+    {id:'d8', label:'8차시 (8주)', n:8},
+    {id:'d10', label:'10차시 (10주)', n:10},
+    {id:'d12', label:'12차시 (12주, 기본형)', n:12}
+  ],
+  venue: [
+    {id:'computer', label:'컴퓨터실', desc:'디지털/AI 실습'},
+    {id:'studio', label:'창작실 · 디자인실', desc:'디지털·공예 제작'},
+    {id:'art', label:'미술실 · 공예실', desc:'예술·공예 실습'},
+    {id:'music', label:'음악운동실 · 밴드실', desc:'음악·신체활동'},
+    {id:'cooking', label:'요리실습실', desc:'건강요리 실습'},
+    {id:'lecture', label:'일반 강의실(산울·보람·한솔 등)', desc:'인문교양·강의형'},
+    {id:'online', label:'온라인 (ZOOM 비대면)', desc:'전지역 참여 가능'}
+  ],
+  capacity: [
+    {id:'s', label:'소규모 8~10명', desc:'밀착 실습형'},
+    {id:'m', label:'표준 12~15명', desc:'가장 일반적'},
+    {id:'l', label:'중규모 16~20명', desc:'강의+분임 병행'},
+    {id:'xl', label:'대규모 21~25명', desc:'강의 중심, 조별 실습'}
+  ],
+  topic: [
+    {id:'ai', label:'인공지능 · 디지털', desc:'AI 활용, 스마트기기, 콘텐츠 제작'},
+    {id:'econ', label:'경제 · 금융', desc:'재무, 부동산, 생활경제'},
+    {id:'health', label:'건강 · 요리', desc:'건강관리, 요리, 신체활동'},
+    {id:'humanities', label:'인문교양', desc:'역사, 어학, 심리, 육아'},
+    {id:'culture', label:'문화예술', desc:'음악, 미술, 공예, 공연'}
+  ],
+  purpose: [
+    {id:'digital', label:'디지털역량 강화'},
+    {id:'hobby', label:'자기계발 · 취미'},
+    {id:'health', label:'건강 증진'},
+    {id:'humanities', label:'인문소양 함양'},
+    {id:'culture', label:'문화예술 향유'},
+    {id:'community', label:'사회참여 · 관계망 형성'},
+    {id:'career', label:'자격 · 재취업 준비'}
+  ],
+  ratio: [
+    {id:'r7030', label:'이론 중심 (70:30)', theory:70, practice:30},
+    {id:'r5050', label:'균형형 (50:50)', theory:50, practice:50},
+    {id:'r3070', label:'실습 중심 (30:70)', theory:30, practice:70},
+    {id:'r1090', label:'실습 몰입형 (10:90)', theory:10, practice:90}
+  ],
+  career: [
+    {id:'c1', label:'3년 미만', desc:'신진 강사'},
+    {id:'c2', label:'3~7년', desc:'경력 강사'},
+    {id:'c3', label:'7~15년', desc:'베테랑 강사'},
+    {id:'c4', label:'15년 이상', desc:'전문 마스터 강사'}
+  ],
+  expertise: ['인공지능/디지털','창업/마케팅','공예/디자인','건강/요리','인문/어학','문화/예술','상담/심리']
+};
+
+var CATEGORY = {
+  ai: {
+    goals: ['생성형 AI 도구의 기본 원리와 활용 범위를 이해한다','실생활·업무 과제에 맞는 프롬프트를 직접 작성해 결과물을 완성한다','AI 결과물의 사실 여부를 스스로 점검하는 습관을 기른다'],
+    tools: ['노트북 또는 스마트기기','생성형 AI 계정(ChatGPT·Gemini·Claude 등)','실습 워크시트','인터넷 연결'],
+    mainActivity: {name:'프롬프트 배틀', desc:'같은 과제를 두고 서로 다른 프롬프트를 작성해 결과를 비교하고, 좋은 프롬프트의 조건을 함께 정리한다.'},
+    openingHook: '오늘 하루 AI를 몇 번이나 사용해보셨나요? 검색, 번역, 사진 보정도 모두 AI입니다.',
+    closingQ: '오늘 만든 결과물 중 실제로 써볼 것 같은 것은 무엇인가요?',
+    riskNote: '생성된 정보의 사실 여부(가격, 수치, 인물, 통계)는 반드시 원문 출처로 재확인하도록 안내한다.'
+  },
+  econ: {
+    goals: ['내 자산과 지출 구조를 스스로 점검한다','생활 속 금융·부동산 의사결정에 필요한 기초 개념을 이해한다','실제 사례에 적용해보는 연습을 통해 실전 감각을 기른다'],
+    tools: ['필기구','개인 재무/등기 자료(선택)','실습 워크시트','계산기 또는 스마트기기'],
+    mainActivity: {name:'내 재무상태 진단표 작성', desc:'참여자가 자신의 실제 상황(가상 사례 가능)을 워크시트에 채워보며 핵심 개념을 적용한다.'},
+    openingHook: '최근에 나도 모르게 손해 봤다고 느낀 경제적 결정이 있으셨나요?',
+    closingQ: '오늘 배운 것 중 이번 달 안에 바로 적용해볼 수 있는 것은 무엇인가요?',
+    riskNote: '개별 법률·세무·투자 자문에 해당하는 단정적 조언은 지양하고, 필요 시 전문기관 상담을 안내한다.'
+  },
+  health: {
+    goals: ['올바른 자세와 조리·운동 방법을 이해하고 직접 실습한다','재료 선택, 위생, 안전 수칙을 스스로 확인한다','배운 내용을 일상에서 반복할 수 있도록 자기 루틴을 설계한다'],
+    tools: ['위생장갑/앞치마 또는 운동복·실내화','조리도구/재료 또는 매트','실습 워크시트'],
+    mainActivity: {name:'짝 실습 코칭', desc:'2인 1조로 서로의 자세·조리 과정을 관찰하고 체크리스트로 피드백을 주고받는다.'},
+    openingHook: '오늘 배우는 것을 이번 주 안에 집에서 한 번 그대로 해보실 수 있을까요?',
+    closingQ: '오늘 실습 중 가장 자신 있게 다시 할 수 있는 과정은 무엇인가요?',
+    riskNote: '알레르기, 지병, 신체 제약 여부를 사전에 확인하고 대체 동작·재료를 안내한다.'
+  },
+  humanities: {
+    goals: ['주제와 관련된 배경 지식과 맥락을 이해한다','다양한 관점에서 자료를 해석하고 자신의 생각을 정리한다','학습 내용을 실생활 대화나 글쓰기로 표현해본다'],
+    tools: ['필기구','참고자료(사진·지도·텍스트 등)','실습 워크시트'],
+    mainActivity: {name:'모둠 토의 및 발표', desc:'소그룹으로 주제를 토의한 뒤 핵심 내용을 한 문장으로 정리해 발표한다.'},
+    openingHook: '오늘 주제에 대해 평소 가지고 있던 생각이나 궁금증이 있으신가요?',
+    closingQ: '오늘 이야기 중 다른 사람에게 들려주고 싶은 내용은 무엇인가요?',
+    riskNote: '역사·문화적 사실은 출처를 함께 제시하고, 논쟁적 주제는 다양한 관점을 균형 있게 안내한다.'
+  },
+  culture: {
+    goals: ['기초 기법과 도구 사용법을 익힌다','작품 또는 공연 형태의 결과물을 스스로 완성한다','완성 과정에서 느낀 점을 서로 나눈다'],
+    tools: ['실습 재료 및 도구(악기·화구·공예재료 등)','앞치마 또는 작업복','참고 예시자료'],
+    mainActivity: {name:'미니 발표회 · 전시', desc:'각자 완성한 결과물을 짧게 소개하고 서로 소감을 나누는 시간을 갖는다.'},
+    openingHook: '오늘 배우는 것으로 무엇을 만들어보고 싶으신가요?',
+    closingQ: '완성한 결과물 중 가장 마음에 드는 부분은 무엇인가요?',
+    riskNote: '도구 사용 안전수칙(가위·바늘·화학재료 등)을 활동 시작 전 반드시 안내한다.'
+  }
+};
+
+var REQUIRED = ['audience','timeSlot','duration','venue','capacity','topic','purpose','ratio','career'];
+var REQUIRED_TEXT = ['courseName','instructorName'];
+
+var state = {
+  audience:null, timeSlot:null, duration:null, venue:null, capacity:null,
+  topic:null, purpose:null, ratio:null, career:null, expertise:[],
+  courseName:'', purposeText:'', instructorName:'', instructorSummary:''
+};
+
+var LABELS = { audience:'강의대상', timeSlot:'강의시간', duration:'총 차시', venue:'강의장소', capacity:'참석인원', topic:'주제분야', purpose:'운영목적', ratio:'모듈비율', career:'강사경력', courseName:'강좌명', instructorName:'강사명' };
+
+function findOpt(group, id) { var arr = OPTIONS[group]; for (var i=0;i<arr.length;i++){ if(arr[i].id===id) return arr[i]; } return null; }
+
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function(c) {
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+
+// === Render chip groups ===
+function renderGroup(groupKey, multi) {
+  var container = document.getElementById('grp-' + groupKey);
+  if (!container) return;
+  container.innerHTML = '';
+  var opts = OPTIONS[groupKey];
+  opts.forEach(function(opt) {
+    var isTag = typeof opt === 'string';
+    var id = isTag ? opt : opt.id;
+    var label = isTag ? opt : opt.label;
+    var desc = isTag ? '' : (opt.desc || '');
+    var div = document.createElement('button');
+    div.type = 'button';
+    div.className = 'chip' + (isTag ? ' tag' : '');
+    div.innerHTML = '<div class="chip-label">' + esc(label) + '</div>' + (desc ? '<div class="chip-desc">' + esc(desc) + '</div>' : '');
+    div.onclick = function() { selectOption(groupKey, id, multi); };
+    container.appendChild(div);
+  });
+  refreshGroupUI(groupKey);
+}
+
+function selectOption(groupKey, id, multi) {
+  if (multi) {
+    var arr = state[groupKey];
+    var idx = arr.indexOf(id);
+    if (idx >= 0) arr.splice(idx, 1); else arr.push(id);
+  } else {
+    state[groupKey] = (state[groupKey] === id) ? null : id;
+  }
+  refreshGroupUI(groupKey);
+  updateSummary();
+}
+
+function refreshGroupUI(groupKey) {
+  var container = document.getElementById('grp-' + groupKey);
+  if (!container) return;
+  var opts = OPTIONS[groupKey];
+  var chips = container.querySelectorAll('.chip');
+  chips.forEach(function(chip, i) {
+    var opt = opts[i];
+    var id = typeof opt === 'string' ? opt : opt.id;
+    var selected = Array.isArray(state[groupKey]) ? state[groupKey].indexOf(id) >= 0 : state[groupKey] === id;
+    chip.classList.toggle('selected', selected);
+  });
+}
+
+function onTextInput(key, val) { state[key] = val; updateSummary(); }
+
+function labelFor(groupKey) {
+  var v = state[groupKey];
+  if (!v) return null;
+  var opt = findOpt(groupKey, v);
+  return opt ? opt.label : v;
+}
+
+function updateSummary() {
+  var list = document.getElementById('summaryList');
+  var rows = [
+    ['강의대상', labelFor('audience')],
+    ['강의시간', labelFor('timeSlot')],
+    ['총 차시', labelFor('duration')],
+    ['강의장소', labelFor('venue')],
+    ['참석인원', labelFor('capacity')],
+    ['주제분야', labelFor('topic')],
+    ['강좌명', state.courseName || null],
+    ['운영목적', labelFor('purpose')],
+    ['강사명', state.instructorName || null],
+    ['강사경력', labelFor('career')]
+  ];
+  list.innerHTML = rows.map(function(r) {
+    var v = r[1];
+    return '<div class="sum-row"><span class="k">' + esc(r[0]) + '</span><span class="v' + (v?'':' empty') + '">' + esc(v || '미선택') + '</span></div>';
+  }).join('');
+
+  var ratioOpt = state.ratio ? findOpt('ratio', state.ratio) : null;
+  var t = ratioOpt ? ratioOpt.theory : 0, p = ratioOpt ? ratioOpt.practice : 0;
+  document.getElementById('ratioTheoryBar').style.width = t + '%';
+  document.getElementById('ratioPracticeBar').style.width = p + '%';
+  document.getElementById('ratioTheoryLabel').textContent = '이론 ' + t + '%';
+  document.getElementById('ratioPracticeLabel').textContent = '실습 ' + p + '%';
+
+  var filled = 0, total = REQUIRED.length + REQUIRED_TEXT.length;
+  REQUIRED.forEach(function(k){ if(state[k]) filled++; });
+  REQUIRED_TEXT.forEach(function(k){ if(state[k] && state[k].trim()) filled++; });
+  var pct = Math.round(filled/total*100);
+  document.getElementById('progressFill').style.width = pct + '%';
+
+  updateOutputGate();
+  if (document.getElementById('stepperNav')) renderStepper();
+}
+
+function missingFields() {
+  var missing = [];
+  REQUIRED.forEach(function(k){ if(!state[k]) missing.push(LABELS[k]); });
+  REQUIRED_TEXT.forEach(function(k){ if(!state[k] || !state[k].trim()) missing.push(LABELS[k]); });
+  return missing;
+}
+
+function updateOutputGate() {
+  var missing = missingFields();
+  var warn = document.getElementById('reqWarn');
+  var btns = document.querySelectorAll('.output-card button');
+  if (missing.length > 0) {
+    warn.style.display = 'block';
+    warn.textContent = '다음 필수 항목을 먼저 선택/입력해주세요: ' + missing.join(', ');
+    btns.forEach(function(b){ b.disabled = true; });
+  } else {
+    warn.style.display = 'none';
+    btns.forEach(function(b){ b.disabled = false; });
+  }
+}
+
+// === Stepper ===
+var STEPS = [
+  {n:1, name:'기본정보'},
+  {n:2, name:'주제·목적'},
+  {n:3, name:'모듈설계'},
+  {n:4, name:'강사정보'},
+  {n:5, name:'최종산출물'}
+];
+var currentStep = 1;
+function isStepDone(n) {
+  if (n === 1) return !!(state.audience && state.timeSlot && state.duration && state.venue && state.capacity);
+  if (n === 2) return !!(state.topic && state.courseName && state.courseName.trim() && state.purpose);
+  if (n === 3) return !!state.ratio;
+  if (n === 4) return !!(state.career && state.instructorName && state.instructorName.trim());
+  if (n === 5) return !!lastDoc;
+  return false;
+}
+function renderStepper() {
+  var nav = document.getElementById('stepperNav');
+  nav.innerHTML = STEPS.map(function(s) {
+    var done = isStepDone(s.n) && s.n !== currentStep;
+    var lineFilled = s.n > 1 && isStepDone(s.n - 1);
+    var cls = 'step-tab' + (s.n===currentStep?' active':'') + (done?' done':'') + (lineFilled?' line-filled':'');
+    var node = done ? '✓' : String(s.n);
+    return '<button type="button" class="' + cls + '" onclick="goStep(' + s.n + ')"><span class="node">' + node + '</span><span class="name">' + s.name + '</span></button>';
+  }).join('');
+}
+function goStep(n) {
+  currentStep = n;
+  document.querySelectorAll('.step-panel').forEach(function(p){ p.classList.toggle('active', +p.dataset.step === n); });
+  renderStepper();
+  var prevBtn = document.getElementById('stepPrevBtn'), nextBtn = document.getElementById('stepNextBtn');
+  if (prevBtn) prevBtn.style.visibility = (n === 1) ? 'hidden' : 'visible';
+  if (nextBtn) nextBtn.textContent = (n === STEPS.length) ? '처음으로' : '다음 단계';
+  window.scrollTo({top: document.getElementById('stepperNav').getBoundingClientRect().top + window.scrollY - 90, behavior:'smooth'});
+}
+function stepNext() { if (currentStep < STEPS.length) goStep(currentStep+1); else goStep(1); }
+function stepPrev() { if (currentStep > 1) goStep(currentStep-1); }
+
+// === Sample loader ===
+function loadSample() {
+  state.audience = 'adult'; state.timeSlot='evening'; state.duration='d12'; state.venue='computer'; state.capacity='m';
+  state.topic='ai'; state.purpose='digital'; state.ratio='r3070'; state.career='c2'; state.expertise=['인공지능/디지털'];
+  state.courseName='생성형 AI 200% 활용법'; state.purposeText='생성형 AI 도구를 업무와 일상에 실전 적용할 수 있는 역량 습득';
+  state.instructorName='김강사'; state.instructorSummary='디지털 리터러시 전문 강사 5년, 평생교육원·기업 다수 출강, AI 활용 교육 강사 자격 보유';
+  syncInputsFromState();
+  ['audience','timeSlot','duration','venue','capacity','topic','purpose','ratio','career'].forEach(function(k){ refreshGroupUI(k); });
+  refreshGroupUI('expertise');
+  updateSummary();
+  showToast('예시 데이터를 불러왔습니다. 5단계에서 6종 산출물을 생성해보세요.');
+  goStep(5);
+}
+function resetAll() {
+  state = {audience:null,timeSlot:null,duration:null,venue:null,capacity:null,topic:null,purpose:null,ratio:null,career:null,expertise:[],courseName:'',purposeText:'',instructorName:'',instructorSummary:''};
+  syncInputsFromState();
+  Object.keys(OPTIONS).forEach(function(k){ refreshGroupUI(k); });
+  updateSummary();
+  document.getElementById('outputPanel').innerHTML = '';
+  document.querySelectorAll('.output-card').forEach(function(c){ c.classList.remove('done'); });
+  goStep(1);
+  showToast('빈 보드로 초기화했습니다.');
+}
+function syncInputsFromState() {
+  document.getElementById('input-courseName').value = state.courseName;
+  document.getElementById('input-purposeText').value = state.purposeText;
+  document.getElementById('input-instructorName').value = state.instructorName;
+  document.getElementById('input-instructorSummary').value = state.instructorSummary;
+}
+
+// ============================================================
+// 문서 생성 로직
+// ============================================================
+function sessionCount() { var o = findOpt('duration', state.duration); return o ? o.n : 1; }
+function ratioVals() { var o = findOpt('ratio', state.ratio); return o ? {theory:o.theory, practice:o.practice} : {theory:50,practice:50}; }
+
+function ctx() {
+  var ratio = ratioVals();
+  var theoryMin = Math.round(120 * ratio.theory / 100);
+  var practiceMin = 120 - theoryMin;
+  var cat = CATEGORY[state.topic] || CATEGORY.ai;
+  return {
+    courseName: state.courseName || '(강좌명 미입력)',
+    audienceLabel: labelFor('audience') || '(미선택)',
+    timeSlotLabel: labelFor('timeSlot') || '(미선택)',
+    durationLabel: labelFor('duration') || '(미선택)',
+    n: sessionCount(),
+    venueLabel: labelFor('venue') || '(미선택)',
+    capacityLabel: labelFor('capacity') || '(미선택)',
+    topicLabel: labelFor('topic') || '(미선택)',
+    purposeLabel: labelFor('purpose') || '(미선택)',
+    purposeText: state.purposeText || '',
+    theoryPct: ratio.theory, practicePct: ratio.practice, theoryMin: theoryMin, practiceMin: practiceMin,
+    careerLabel: labelFor('career') || '(미선택)',
+    expertiseTags: state.expertise.join(', '),
+    instructorName: state.instructorName || '(강사명 미입력)',
+    instructorSummary: state.instructorSummary || '',
+    cat: cat
+  };
+}
+
+function sessionPhase(i, n, c) {
+  if (n <= 2) return i===1 ? '오리엔테이션 · 기초' : '실습 · 종합발표';
+  if (i === 1) return '오리엔테이션 · 목표 설정';
+  if (i === n) return '종합 실습 · 발표 · 성찰';
+  var mid = n - 2, idx = i - 1;
+  return idx <= Math.ceil(mid/2) ? (c.courseName + ' 기초 다지기') : (c.courseName + ' 응용 · 확장');
+}
+
+function buildModuleRows(c) {
+  var rows = [];
+  for (var i=1; i<=c.n; i++) {
+    var phase = sessionPhase(i, c.n, c);
+    var th, pr, content, tools;
+    if (i === 1) { th = 80; pr = 40; content = '오리엔테이션, 사전 진단, 학습목표 공유, 아이스브레이킹'; tools = '실습 워크시트, 사전설문지'; }
+    else if (i === c.n && c.n > 1) { th = 10; pr = 110; content = '실습 결과물 완성, 발표, 상호 피드백, 성찰'; tools = c.cat.tools.join(', '); }
+    else { th = c.theoryMin; pr = c.practiceMin; content = phase + ' — ' + c.cat.mainActivity.name; tools = c.cat.tools.join(', '); }
+    rows.push([String(i)+'회차', phase, String(th)+'분', String(pr)+'분', content, tools]);
+  }
+  return rows;
+}
+
+// --- Document builders: return {title, sections:[{heading,type,rows/items/content}]} ---
+function docOverview(c) {
+  return { title: c.courseName + ' — 강의계획 개요서', sections: [
+    { heading:'과정 개요', type:'table', rows:[
+      ['과정명', c.courseName], ['주제 분야', c.topicLabel],
+      ['운영 목적', c.purposeLabel + (c.purposeText ? ' — ' + c.purposeText : '')],
+      ['대상', c.audienceLabel], ['운영 시간대', c.timeSlotLabel],
+      ['총 차시', c.durationLabel + ' (회당 120분 기준)'], ['장소', c.venueLabel],
+      ['정원', c.capacityLabel], ['강사', c.instructorName + ' (' + c.careerLabel + ')']
+    ]},
+    { heading:'학습 목표', type:'list', items: c.cat.goals },
+    { heading:'모듈 구성 비율', type:'text', content: '이론 ' + c.theoryPct + '% · 실습 ' + c.practicePct + '% (회당 120분 기준 → 이론 ' + c.theoryMin + '분 · 실습 ' + c.practiceMin + '분)' },
+    { heading:'강사 소개', type:'text', content: c.instructorSummary || (c.instructorName + ' 강사는 ' + c.careerLabel + ' 경력의 ' + (c.expertiseTags || c.topicLabel) + ' 분야 전문 강사입니다.') },
+    { heading:'준비물', type:'list', items: c.cat.tools },
+    { heading:'기대 효과', type:'list', items: [
+      c.audienceLabel + ' 학습자가 ' + c.topicLabel + ' 영역의 실전 역량을 갖춘다',
+      '학습자 1인당 최소 1개의 실습 결과물을 완성해 즉시 활용한다',
+      '"' + c.cat.closingQ + '"라는 질문에 스스로 답할 수 있는 수준까지 성장한다'
+    ]}
+  ]};
+}
+
+function docModule(c) {
+  return { title: c.courseName + ' — 강의 모듈안 (총 ' + c.n + '차시)', sections: [
+    { heading:'회차별 운영표', type:'table', header:['회차','구성','이론','실습','핵심 내용','준비물'], rows: buildModuleRows(c) },
+    { heading:'설계 원칙', type:'list', items:[
+      '1회차는 오리엔테이션과 사전 진단으로 진입장벽을 낮춘다',
+      '중간 회차는 이론 ' + c.theoryPct + '% · 실습 ' + c.practicePct + '% 비율을 유지한다',
+      '마지막 회차는 실습 결과 발표와 성찰로 마무리한다'
+    ]}
+  ]};
+}
+
+function docProposal(c) {
+  return { title: c.courseName + ' 강좌 개설 제안서', sections: [
+    { heading:'제안 배경', type:'text', content: c.audienceLabel + '을 대상으로 ' + c.topicLabel + ' 영역의 학습 수요가 확인되어, ' + c.purposeLabel + '을 목적으로 하는 신규(또는 개편) 강좌를 제안합니다.' + (c.purposeText ? ' ' + c.purposeText : '') },
+    { heading:'강사 프로필', type:'table', rows:[['강사명', c.instructorName], ['경력', c.careerLabel], ['전문분야', c.expertiseTags || c.topicLabel], ['소개', c.instructorSummary || '-']] },
+    { heading:'커리큘럼 요약', type:'table', rows:[['총 차시', c.durationLabel], ['회당 시간','120분'], ['모듈 비율','이론 ' + c.theoryPct + '% · 실습 ' + c.practicePct + '%'], ['핵심 산출물','실습 결과물 1건 이상 / 인']] },
+    { heading:'운영 조건', type:'table', rows:[['대상', c.audienceLabel], ['정원', c.capacityLabel], ['시간대', c.timeSlotLabel], ['장소', c.venueLabel], ['필요 장비', c.cat.tools.join(', ')]] },
+    { heading:'기대 효과', type:'list', items:[
+      '학습 수요가 확인된 ' + c.audienceLabel + '층의 참여율 제고',
+      c.topicLabel + ' 분야 평생학습 프로그램 포트폴리오 다양화',
+      '실습 결과물 기반의 성과 홍보 및 재수강·구전 효과'
+    ]},
+    { heading:'문의', type:'text', content: '강사 ' + c.instructorName + ' 드림 (경력 ' + c.careerLabel + ')' }
+  ]};
+}
+
+function docScenario(c) {
+  var mid = Math.max(1, Math.ceil(c.n/2));
+  return { title: c.courseName + ' — 수업 시나리오 (' + mid + '/' + c.n + '회차 대본)', sections: [
+    { heading:'회차 정보', type:'table', rows:[['회차', mid + '/' + c.n + '회차'], ['시간','120분'], ['장소', c.venueLabel], ['정원', c.capacityLabel]] },
+    { heading:'도입 (10분)', type:'text', content: '강사 멘트 예시: "' + c.cat.openingHook + '"\n오늘 목표와 진행 순서를 안내한다.' },
+    { heading:'전개 · 이론 (' + c.theoryMin + '분)', type:'text', content:'핵심 개념을 짧게 설명하고, 질문형 예시로 참여를 유도한다. 서술형 필기보다 눈으로 보는 예시를 우선한다.' },
+    { heading:'전개 · 실습 (' + c.practiceMin + '분)', type:'text', content:'활동명: ' + c.cat.mainActivity.name + '\n' + c.cat.mainActivity.desc },
+    { heading:'정리 (10분)', type:'text', content:'성찰 질문: "' + c.cat.closingQ + '"\n다음 회차 예고 및 과제 안내.' },
+    { heading:'유의사항', type:'text', content: c.cat.riskNote }
+  ]};
+}
+
+function docVideo(c) {
+  return { title: c.courseName + ' — 수업소개 영상 스토리보드 (35초 내외)', sections: [
+    { heading:'컷별 구성', type:'table', header:['컷','시간','화면','내레이션/자막'], rows:[
+      ['1','0~5초','강사가 카메라를 보고 인사하는 장면', '"' + c.audienceLabel + ' 여러분, 안녕하세요. ' + c.instructorName + ' 강사입니다."'],
+      ['2','5~13초', c.venueLabel + ' 실습 공간 또는 결과물 클로즈업', '"' + c.cat.openingHook + '"'],
+      ['3','13~24초','커리큘럼 요약 텍스트 애니메이션', '"이번 강좌는 총 ' + c.n + '차시, 이론 ' + c.theoryPct + '% 실습 ' + c.practicePct + '%로 구성됩니다."'],
+      ['4','24~30초','이전 학습자 실습 결과물 또는 활동 장면', '"' + c.cat.mainActivity.name + ' 실습으로 나만의 결과물을 완성합니다."'],
+      ['5','30~35초','강사 클로징 및 로고/신청 안내 자막', '"' + c.timeSlotLabel + ', ' + c.venueLabel + '에서 만나요. 지금 신청하세요!"']
+    ]},
+    { heading:'촬영/편집 지시', type:'list', items:['세로 9:16 또는 정방형 1:1 권장 (모바일 우선 노출)','자막은 3초 이상 노출, 텍스트 대비 확보','실습 장면은 손·결과물 클로즈업 위주로 촬영'] }
+  ]};
+}
+
+function docActivity(c) {
+  var rows = [
+    ['도입 아이스브레이킹','긴장 완화 및 서로 알아가기','10분','없음 또는 명찰','짝을 지어 "' + c.purposeLabel + '"과 관련된 자신의 경험을 1분씩 나눈다.','모든 참여자가 최소 한 번 이상 말할 기회를 가졌는가?'],
+    [c.cat.mainActivity.name,'핵심 실습 목표 달성', c.practiceMin + '분', c.cat.tools.join(', '), c.cat.mainActivity.desc, c.cat.closingQ],
+    ['마무리 성찰 나눔','학습 내용 내면화 및 실행 다짐','10분','포스트잇 또는 워크시트','오늘 배운 것 중 하나를 실제로 언제 적용할지 구체적으로 적고 옆 사람과 나눈다.','실행 다짐이 구체적인 날짜/행동으로 표현되었는가?']
+  ];
+  return { title: c.courseName + ' — 수업활동 기획 (활동 카드 3종)', sections:[
+    { heading:'활동 카드', type:'table', header:['활동명','목적','소요시간','준비물','진행방법','확인질문'], rows: rows }
+  ]};
+}
+
+var DOC_BUILDERS = { overview: docOverview, module: docModule, proposal: docProposal, scenario: docScenario, video: docVideo, activity: docActivity };
+var DOC_LABELS = { overview:'개요서', module:'강의 모듈안', proposal:'제안서', scenario:'수업 시나리오', video:'수업소개 영상 스토리보드', activity:'수업활동 기획' };
+
+// ============================================================
+// AI 프롬프트 생성 — [역할]→[목표]→[배경정보]→[작성 조건]→[출력 형식]→[자체 점검] 골격
+// ============================================================
+function backgroundBlock(c) {
+  return [
+    '- 강좌명: ' + c.courseName,
+    '- 주제 분야: ' + c.topicLabel,
+    '- 대상: ' + c.audienceLabel,
+    '- 운영 시간대: ' + c.timeSlotLabel + ' / 총 ' + c.durationLabel + ' (회당 120분 기준)',
+    '- 장소: ' + c.venueLabel + ' / 정원: ' + c.capacityLabel,
+    '- 운영 목적: ' + c.purposeLabel + (c.purposeText ? ' — ' + c.purposeText : ''),
+    '- 모듈 비율: 이론 ' + c.theoryPct + '% · 실습 ' + c.practicePct + '% (회당 이론 ' + c.theoryMin + '분 · 실습 ' + c.practiceMin + '분)',
+    '- 강사: ' + c.instructorName + ' (' + c.careerLabel + (c.expertiseTags ? ', ' + c.expertiseTags : '') + ')'
+  ].join('\n');
+}
+
+var PROMPT_DEFS = {
+  overview: function(c) { return {
+    role: '당신은 평생학습기관의 강좌 개요서(강의계획서)를 작성하는 교육과정 기획 전문가입니다.',
+    goal: '"' + c.courseName + '" 강좌의 개요서 최종본을 작성하세요.',
+    conditions: ['학습목표는 구체적 행동동사로 3개 작성한다','모듈 비율(이론:실습)을 반영해 운영개요에 시간 배분을 명시한다','확인되지 않은 세부정보(정확한 수강료, 담당부서 연락처 등)는 임의로 만들지 말고 [확인 필요]로 표시한다'],
+    format: '과정 개요 표 → 학습목표(3개) → 모듈 구성 비율 → 강사 소개 → 준비물 → 기대효과 순서로 작성'
+  }; },
+  module: function(c) { return {
+    role: '당신은 회차별 커리큘럼(강의 모듈)을 설계하는 교육과정 설계 전문가입니다.',
+    goal: '"' + c.courseName + '" 강좌의 총 ' + c.n + '차시 모듈안을 작성하세요.',
+    conditions: ['1회차는 오리엔테이션·사전진단, 마지막 회차는 실습 발표·성찰로 구성한다','중간 회차는 이론 ' + c.theoryPct + '% · 실습 ' + c.practicePct + '% 비율을 유지한다(회당 120분)','회차별로 핵심 내용과 준비물을 함께 제시한다'],
+    format: '회차 | 구성 | 이론(분) | 실습(분) | 핵심 내용 | 준비물 열을 가진 표'
+  }; },
+  proposal: function(c) { return {
+    role: '당신은 교육기관에 강좌 개설을 제안하는 제안서를 작성하는 전문가입니다.',
+    goal: '"' + c.courseName + '" 강좌 개설 제안서를 작성하세요.',
+    conditions: ['제안 배경에 학습 수요 근거를 포함한다','강사 프로필은 경력과 전문분야 중심으로 작성한다','예산, 정확한 수강료 등 확인되지 않은 수치는 [확인 필요]로 표시한다'],
+    format: '제안 배경 → 강사 프로필 → 커리큘럼 요약 → 운영 조건 → 기대효과 → 문의처 순서로 작성'
+  }; },
+  scenario: function(c) { return {
+    role: '당신은 실제 수업 진행 대본(교안)을 작성하는 베테랑 강사입니다.',
+    goal: '"' + c.courseName + '" 강좌의 대표 회차(120분) 수업 시나리오를 작성하세요.',
+    conditions: ['도입(10분) → 전개·이론(' + c.theoryMin + '분) → 전개·실습(' + c.practiceMin + '분) → 정리(10분) 구조를 유지한다','강사 멘트 예시를 실제 대사처럼 구체적으로 작성한다','안전/유의사항을 포함한다'],
+    format: '시간대별 소제목 구조의 진행 대본 (강사 멘트 예시 포함)'
+  }; },
+  video: function(c) { return {
+    role: '당신은 짧은 홍보 영상 스토리보드와 내레이션을 쓰는 영상 기획자입니다.',
+    goal: '"' + c.courseName + '" 강좌 소개 영상(35초 내외) 스토리보드를 작성하세요.',
+    conditions: ['5컷 내외로 구성하고 각 컷마다 시간·화면·내레이션/자막을 구분한다','모바일 세로 영상(9:16) 기준으로 작성한다','과장되거나 확인되지 않은 성과(수강생 수, 후기 등)는 넣지 않는다'],
+    format: '컷 | 시간 | 화면 | 내레이션/자막 열을 가진 표 + 촬영/편집 지시'
+  }; },
+  activity: function(c) { return {
+    role: '당신은 참여형 수업활동을 설계하는 교육 퍼실리테이터입니다.',
+    goal: '"' + c.courseName + '" 강좌에 쓸 수업활동 카드 3종(도입/핵심실습/마무리)을 작성하세요.',
+    conditions: ['각 활동에 목적, 소요시간, 준비물, 진행방법, 확인질문을 포함한다','참여자 전원이 최소 1회 이상 참여하는 구조로 설계한다'],
+    format: '활동명 | 목적 | 소요시간 | 준비물 | 진행방법 | 확인질문 열을 가진 표'
+  }; }
+};
+
+function buildPrompt(type, c) {
+  var d = PROMPT_DEFS[type](c);
+  var lines = [];
+  lines.push('[역할]', d.role, '');
+  lines.push('[목표]', d.goal, '');
+  lines.push('[배경정보]', backgroundBlock(c), '');
+  lines.push('[작성 조건]');
+  d.conditions.forEach(function(x){ lines.push('- ' + x); });
+  lines.push('');
+  lines.push('[출력 형식]', d.format, '');
+  lines.push('[자체 점검]', '작성 후, 확인되지 않은 사실(가격·통계·기관명·인물 등)이 포함되어 있다면 별도 목록으로 [확인 필요] 표시하세요.');
+  return lines.join('\n');
+}
+
+function renderDocHTML(doc, promptText) {
+  var html = '<div class="doc-frame"><div class="doc-frame-header"><h3>' + esc(doc.title) + '</h3>' +
+    '<div class="doc-actions"><button class="btn btn-ghost btn-sm" onclick="copyDoc()">초안 텍스트 복사</button><button class="btn btn-ghost btn-sm" onclick="downloadDoc()">MD 다운로드</button></div></div><div class="doc-frame-body">';
+  html += '<h4>하드코딩 요약 초안</h4>';
+  doc.sections.forEach(function(s) {
+    html += '<h4>' + esc(s.heading) + '</h4>';
+    if (s.type === 'table') {
+      html += '<table class="doc-table' + (s.header?' wide':'') + '">';
+      if (s.header) { html += '<tr>' + s.header.map(function(h){return '<th>'+esc(h)+'</th>';}).join('') + '</tr>'; }
+      s.rows.forEach(function(r) {
+        if (s.header) { html += '<tr>' + r.map(function(cell){return '<td>'+esc(cell)+'</td>';}).join('') + '</tr>'; }
+        else { html += '<tr><th>' + esc(r[0]) + '</th><td>' + esc(r[1]) + '</td></tr>'; }
+      });
+      html += '</table>';
+    } else if (s.type === 'list') {
+      html += '<ul class="doc-ul">' + s.items.map(function(it){return '<li>'+esc(it)+'</li>';}).join('') + '</ul>';
+    } else {
+      html += '<p class="doc-p">' + esc(s.content) + '</p>';
+    }
+  });
+  html += '<div class="prompt-section"><h4>AI 프롬프트 (외부 AI에 붙여넣기)</h4>' +
+    '<p class="doc-p" style="color:var(--text-secondary); font-size:0.82rem;">위 초안은 고정 템플릿으로 즉시 조립된 결과입니다. 더 풍부한 문장이 필요하면 아래 프롬프트를 복사해 ChatGPT·Gemini·Claude 등 외부 생성형 AI에 붙여넣어 다듬으세요.</p>' +
+    '<pre class="prompt-box">' + esc(promptText) + '</pre>' +
+    '<div class="doc-actions" style="margin-top:10px;">' +
+    '<button class="btn btn-outline btn-sm" onclick="copyPrompt()">프롬프트 복사</button>' +
+    '<button class="btn btn-outline btn-sm" onclick="downloadPrompt()">프롬프트 TXT 다운로드</button>' +
+    '<a class="btn btn-outline btn-sm" href="https://chat.openai.com/" target="_blank" rel="noopener">ChatGPT 열기</a>' +
+    '<a class="btn btn-outline btn-sm" href="https://gemini.google.com/app" target="_blank" rel="noopener">Gemini 열기</a>' +
+    '<a class="btn btn-outline btn-sm" href="https://claude.ai/new" target="_blank" rel="noopener">Claude 열기</a>' +
+    '</div></div>';
+  html += '</div></div>';
+  return html;
+}
+
+function docToMarkdown(doc) {
+  var lines = ['# ' + doc.title, ''];
+  doc.sections.forEach(function(s) {
+    lines.push('## ' + s.heading, '');
+    if (s.type === 'table') {
+      if (s.header) {
+        lines.push('| ' + s.header.join(' | ') + ' |');
+        lines.push('|' + s.header.map(function(){return '---';}).join('|') + '|');
+        s.rows.forEach(function(r){ lines.push('| ' + r.join(' | ') + ' |'); });
+      } else {
+        s.rows.forEach(function(r){ lines.push('- **' + r[0] + '**: ' + r[1]); });
+      }
+    } else if (s.type === 'list') {
+      s.items.forEach(function(it){ lines.push('- ' + it); });
+    } else {
+      lines.push(s.content);
+    }
+    lines.push('');
+  });
+  return lines.join('\n');
+}
+
+var lastDoc = null, lastType = null, lastPromptText = null;
+function generateDoc(type) {
+  var missing = missingFields();
+  if (missing.length > 0) { updateOutputGate(); showToast('필수 항목을 먼저 채워주세요.'); return; }
+  var c = ctx();
+  var doc = DOC_BUILDERS[type](c);
+  var promptText = buildPrompt(type, c);
+  lastDoc = doc; lastType = type; lastPromptText = promptText;
+  document.getElementById('outputPanel').innerHTML = renderDocHTML(doc, promptText);
+  document.getElementById('outputPanel').scrollIntoView({behavior:'smooth', block:'start'});
+  var card = document.getElementById('oc-' + type);
+  if (card) card.classList.add('done');
+  showToast(DOC_LABELS[type] + ' 생성 완료 (초안 + AI 프롬프트)');
+}
+
+function copyDoc() {
+  if (!lastDoc) return;
+  var md = docToMarkdown(lastDoc);
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(md).then(function(){ showToast('초안이 복사되었습니다.'); }).catch(function(){ fallbackCopy(md, '초안이 복사되었습니다.'); });
+  } else { fallbackCopy(md, '초안이 복사되었습니다.'); }
+}
+function copyPrompt() {
+  if (!lastPromptText) return;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(lastPromptText).then(function(){ showToast('프롬프트가 복사되었습니다.'); }).catch(function(){ fallbackCopy(lastPromptText, '프롬프트가 복사되었습니다.'); });
+  } else { fallbackCopy(lastPromptText, '프롬프트가 복사되었습니다.'); }
+}
+function fallbackCopy(text, msg) {
+  var ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); showToast(msg || '복사되었습니다.'); } catch(e) { showToast('복사에 실패했습니다.'); }
+  document.body.removeChild(ta);
+}
+function downloadDoc() {
+  if (!lastDoc || !lastType) return;
+  var md = docToMarkdown(lastDoc);
+  var blob = new Blob([md], {type:'text/markdown;charset=utf-8'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  var safeName = (state.courseName || 'course').replace(/[\\/:*?"<>|]/g, '');
+  a.href = url; a.download = DOC_LABELS[lastType] + '_' + safeName + '.md'; a.click();
+  URL.revokeObjectURL(url);
+}
+function downloadPrompt() {
+  if (!lastPromptText || !lastType) return;
+  var blob = new Blob([lastPromptText], {type:'text/plain;charset=utf-8'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  var safeName = (state.courseName || 'course').replace(/[\\/:*?"<>|]/g, '');
+  a.href = url; a.download = DOC_LABELS[lastType] + '_프롬프트_' + safeName + '.txt'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// === Init ===
+function init() {
+  renderGroup('audience', false); renderGroup('timeSlot', false); renderGroup('duration', false);
+  renderGroup('venue', false); renderGroup('capacity', false); renderGroup('topic', false);
+  renderGroup('purpose', false); renderGroup('ratio', false); renderGroup('career', false);
+  renderGroup('expertise', true);
+  renderStepper();
+  updateSummary();
+}
+init();
+</script>
+</body>
+</html>
