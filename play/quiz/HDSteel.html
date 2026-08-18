@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<!-- 현대제철 PM과정 Day1 복습 퀴즈. 청람M&C 단일 파일 앱 뼈대 기반. -->
+<html lang="ko" class="theme-light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Day1 복습 퀴즈 | 현대제철 PM과정</title>
+  <meta name="description" content="현대제철 R&D 프로젝트관리 PM과정 1일차 배부자료 기반 15문항 복습 퀴즈">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ===== 청람 테마 — 클래스 기반 ===== */
+    html.theme-light {
+      --bg: #FFFFFF; --surface: #F8FAFF; --surface-hover: #EEF3FD;
+      --border: rgba(22,82,216,0.08);
+      --text: #1A1A1A; --text-secondary: #666666;
+      --accent: #1652D8; --accent-secondary: #0F3D99;
+      --positive: #059669; --negative: #e11d48; --warning: #d97706;
+      --cr-light-bg: #EEF3FD;
+      --cr-dark-section: #0F0F0F;
+      --menu-bg: rgba(255,255,255,0.9);
+      --menu-bg-hover: rgba(255,255,255,0.98);
+      --menu-border: rgba(22,82,216,0.12);
+      --menu-text: #1A1A1A;
+      --menu-item-hover: rgba(22,82,216,0.06);
+    }
+    html.theme-dark {
+      --bg: #0F0F0F; --surface: #1A1A2E; --surface-hover: #252540;
+      --border: rgba(255,255,255,0.06);
+      --text: #EDEDED; --text-secondary: #888888;
+      --accent: #4B7BF5; --accent-secondary: #6B8FFF;
+      --positive: #10b981; --negative: #f43f5e; --warning: #f59e0b;
+      --cr-light-bg: #1A1A2E;
+      --cr-dark-section: #0A0A0A;
+      --menu-bg: rgba(15,15,15,0.9);
+      --menu-bg-hover: rgba(15,15,15,0.98);
+      --menu-border: rgba(75,123,245,0.15);
+      --menu-text: #EDEDED;
+      --menu-item-hover: rgba(75,123,245,0.1);
+    }
+
+    :root {
+      --space-section: clamp(48px, 4vw + 24px, 88px);
+      --space-gutter: clamp(20px, 4vw, 48px);
+      --wrap: 860px;
+      --radius: 8px;
+      --duration-fast: 150ms;
+      --duration-normal: 300ms;
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --cr-hero-text: #FFFFFF;
+      --cr-hero-eyebrow: #8FB0FF;
+      --cr-hero-highlight: #FFD84D;
+      --cr-hero-highlight-hover: #FFE480;
+      --cr-hero-highlight-text: #0F0F0F;
+    }
+
+    body {
+      font-family: 'Noto Sans KR', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg); color: var(--text);
+      line-height: 1.7; -webkit-font-smoothing: antialiased;
+      letter-spacing: -0.01em;
+      transition: background var(--duration-normal), color var(--duration-normal);
+      scrollbar-gutter: stable;
+      overflow-x: hidden;
+    }
+    h1, h2, h3 { color: var(--text); letter-spacing: -0.03em; line-height: 1.25; text-wrap: balance; }
+    h1 { font-weight: 700; font-size: clamp(2.1rem, 4.6vw, 3.1rem); }
+    h2 { font-weight: 600; font-size: clamp(1.5rem, 3vw, 1.9rem); letter-spacing: -0.02em; }
+    p, li, span, label { font-weight: 400; color: var(--text); }
+    .text-secondary { color: var(--text-secondary); }
+    :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+    .wrap { max-width: var(--wrap); margin: 0 auto; padding-inline: var(--space-gutter); }
+    .section { padding-block: var(--space-section); }
+    .eyebrow {
+      font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--accent);
+    }
+
+    .cr-square-bullet { list-style: none; padding-left: 0; }
+    .cr-square-bullet li { padding-left: 20px; position: relative; margin-bottom: 8px; }
+    .cr-square-bullet li::before {
+      content: ''; position: absolute; left: 0; top: 0.72em;
+      width: 6px; height: 6px; background: var(--accent);
+    }
+    .cr-dot-grid {
+      background-image: radial-gradient(circle, var(--cr-hero-text) 0.6px, transparent 0.6px);
+      background-size: 26px 26px; opacity: 0.09;
+      position: absolute; inset: 0; pointer-events: none;
+    }
+
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 28px;
+    }
+
+    /* ===== 히어로 ===== */
+    .hero {
+      position: relative; overflow: hidden;
+      background: var(--cr-dark-section); color: var(--cr-hero-text);
+      padding-block: clamp(56px, 7vw, 100px);
+    }
+    .hero::after {
+      content: ''; position: absolute; right: -140px; top: -140px;
+      width: 420px; height: 420px; border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 50%; pointer-events: none;
+    }
+    .hero h1 { color: var(--cr-hero-text); }
+    .hero h1 em {
+      font-style: normal; color: var(--cr-hero-highlight);
+      box-shadow: inset 0 -0.14em 0 rgba(255,216,77,0.24);
+    }
+    .hero-eyebrow { color: var(--cr-hero-eyebrow); }
+    .hero-sub {
+      margin-top: 18px; max-width: 52ch;
+      font-size: clamp(1rem, 1.4vw, 1.125rem); color: rgba(255,255,255,0.72);
+    }
+    .best-score {
+      margin-top: 22px; display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.9rem; color: rgba(255,255,255,0.66);
+      border: 1px solid rgba(255,255,255,0.18); border-radius: 100px; padding: 8px 16px;
+    }
+    .best-score strong { color: var(--cr-hero-highlight); font-weight: 700; }
+
+    /* ===== 난이도 선택 ===== */
+    .diff-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+    .diff-card {
+      flex: 1 1 200px; text-align: left; cursor: pointer;
+      background: rgba(255,255,255,0.04); border: 1.5px solid rgba(255,255,255,0.16);
+      border-radius: var(--radius); padding: 16px 18px;
+      display: flex; flex-direction: column; gap: 4px;
+      font-family: inherit; color: var(--cr-hero-text);
+      transition: border-color var(--duration-fast), background var(--duration-fast);
+    }
+    .diff-card:hover { border-color: rgba(255,255,255,0.4); }
+    .diff-card[aria-pressed="true"] { border-color: var(--cr-hero-highlight); background: rgba(255,216,77,0.1); }
+    .diff-name { font-weight: 700; font-size: 1.05rem; }
+    .diff-desc { font-size: 0.84rem; color: rgba(255,255,255,0.62); }
+    .diff-card[aria-pressed="true"] .diff-desc { color: rgba(255,216,77,0.82); }
+
+    /* ===== 버튼 ===== */
+    .cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+      font-family: inherit; font-size: 1rem; font-weight: 600; letter-spacing: -0.01em;
+      padding: 14px 26px; border-radius: 6px; border: 1px solid transparent;
+      cursor: pointer; text-decoration: none;
+      transition: transform var(--duration-fast) ease, background var(--duration-fast) ease,
+                  color var(--duration-fast) ease, border-color var(--duration-fast) ease;
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn-primary { background: var(--cr-hero-highlight); color: var(--cr-hero-highlight-text); }
+    .btn-primary:hover { background: var(--cr-hero-highlight-hover); }
+    .btn-ghost { background: transparent; color: var(--cr-hero-text); border-color: rgba(255,255,255,0.28); }
+    .btn-ghost:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.5); }
+    .btn-solid { background: var(--accent); color: #fff; }
+    .btn-solid:hover { background: var(--accent-secondary); }
+    .btn-solid:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-outline { background: transparent; color: var(--accent); border-color: var(--accent); }
+    .btn-outline:hover { background: var(--cr-light-bg); }
+
+    /* ===== 퀴즈 화면 ===== */
+    #quizScreen, #resultScreen { display: none; }
+    #quizScreen.active, #resultScreen.active { display: block; }
+    #startScreen.hidden { display: none; }
+
+    .progress-row {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; margin-bottom: 18px;
+    }
+    .progress-count { font-size: 0.875rem; color: var(--text-secondary); font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .progress-track {
+      flex: 1; height: 6px; background: var(--surface-hover); border-radius: 100px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; background: var(--accent); border-radius: 100px;
+      transition: width var(--duration-normal) var(--ease-out-expo);
+      width: 0%;
+    }
+
+    .q-tag {
+      display: inline-block; font-size: 0.75rem; font-weight: 600;
+      color: var(--accent); background: var(--cr-light-bg);
+      border-radius: 100px; padding: 4px 12px; margin-bottom: 14px;
+    }
+    .q-text { font-size: clamp(1.15rem, 2.2vw, 1.4rem); font-weight: 600; letter-spacing: -0.02em; margin-bottom: 24px; }
+
+    .options { display: flex; flex-direction: column; gap: 10px; }
+    .option {
+      display: flex; align-items: center; gap: 14px;
+      text-align: left; width: 100%;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px 18px;
+      font-family: inherit; font-size: 0.98rem; color: var(--text);
+      cursor: pointer;
+      transition: border-color var(--duration-fast), background var(--duration-fast), transform var(--duration-fast);
+    }
+    .option:hover:not(:disabled) { border-color: var(--accent); background: var(--surface-hover); }
+    .option:active:not(:disabled) { transform: translateY(1px); }
+    .option:disabled { cursor: default; }
+    .option .opt-mark {
+      flex: none; width: 26px; height: 26px; border-radius: 50%;
+      border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: 700; color: var(--text-secondary);
+    }
+    .option.correct { border-color: var(--positive); background: rgba(5,150,105,0.08); }
+    .option.correct .opt-mark { border-color: var(--positive); background: var(--positive); color: #fff; }
+    .option.incorrect { border-color: var(--negative); background: rgba(225,29,72,0.08); }
+    .option.incorrect .opt-mark { border-color: var(--negative); background: var(--negative); color: #fff; }
+
+    .explain {
+      margin-top: 20px; padding: 18px 20px; border-radius: var(--radius);
+      background: var(--cr-light-bg); border-left: 4px solid var(--accent);
+      font-size: 0.92rem; color: var(--text-secondary); line-height: 1.65;
+      display: none;
+    }
+    .explain.show { display: block; }
+    .explain strong { color: var(--text); }
+
+    .quiz-nav { margin-top: 26px; display: flex; justify-content: flex-end; }
+
+    /* ===== 결과 화면 ===== */
+    .result-hero { text-align: center; padding-block: 12px 36px; }
+    .result-score { font-family: 'Inter', sans-serif; font-weight: 800; font-size: clamp(3rem, 8vw, 4.5rem); color: var(--accent); letter-spacing: -0.03em; }
+    .result-score span { font-size: 0.4em; color: var(--text-secondary); font-weight: 600; }
+    .result-tier { margin-top: 10px; font-size: 1.05rem; font-weight: 600; }
+    .result-new-best { margin-top: 10px; font-size: 0.875rem; color: var(--positive); font-weight: 600; }
+
+    .review-item { border-top: 1px solid var(--border); padding-block: 18px; }
+    .review-item:first-child { border-top: none; }
+    .review-q { font-weight: 600; margin-bottom: 8px; }
+    .review-badge {
+      display: inline-block; font-size: 0.72rem; font-weight: 700;
+      border-radius: 100px; padding: 2px 10px; margin-bottom: 8px;
+    }
+    .review-badge.ok { background: rgba(5,150,105,0.12); color: var(--positive); }
+    .review-badge.no { background: rgba(225,29,72,0.12); color: var(--negative); }
+    .review-answer { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 4px; }
+    .review-answer b { color: var(--text); }
+
+    /* ===== 유의사항 배너 ===== */
+    .notice {
+      background: var(--cr-light-bg);
+      border-left: 4px solid var(--warning);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 20px 24px; margin-top: 28px;
+    }
+    .notice li { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.65; }
+    .notice .cr-square-bullet li::before { background: var(--warning); }
+
+    /* ===== 푸터 ===== */
+    .footer { border-top: 1px solid var(--border); padding-block: 36px; }
+    .footer-inner { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; }
+    .footer-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: -0.02em; }
+    .footer-mark { width: 10px; height: 10px; background: var(--accent); flex: none; }
+    .footer p, .footer a { font-size: 0.875rem; color: var(--text-secondary); }
+
+    /* ===== 애니메이션 ===== */
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .animate { animation: fadeInUp 0.55s ease-out both; }
+    .animate.delay-1 { animation-delay: 0.08s; }
+    .animate.delay-2 { animation-delay: 0.16s; }
+    .animate.delay-3 { animation-delay: 0.24s; }
+    .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .reveal { opacity: 1; transform: none; }
+      html { scroll-behavior: auto; }
+    }
+    html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+
+    @media print {
+      body { background: white !important; color: black !important; }
+      .viz-menu { display: none !important; }
+      .reveal { opacity: 1 !important; transform: none !important; }
+      .card { break-inside: avoid; border: 1px solid #ddd; box-shadow: none; }
+      .hero { background: var(--cr-dark-section) !important; }
+      * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    }
+    @page { margin: 1in; }
+
+    @media (max-width: 640px) {
+      .cta-row .btn { width: 100%; }
+      .progress-row { gap: 10px; }
+    }
+    @media (max-width: 375px) { body { overflow-x: hidden; } }
+
+    /* ===== 메뉴 ===== */
+    .viz-menu { position: fixed; top: 12px; right: 16px; z-index: 9999; }
+    .viz-menu-toggle {
+      width: 42px; height: 42px; border-radius: 12px;
+      background: var(--menu-bg); border: 1px solid var(--menu-border);
+      color: var(--menu-text); cursor: pointer; display: flex;
+      align-items: center; justify-content: center;
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      transition: background var(--duration-fast);
+    }
+    .viz-menu-toggle:hover { background: var(--menu-bg-hover); }
+    .viz-menu-dropdown {
+      position: absolute; top: 52px; right: 0; min-width: 200px;
+      background: var(--menu-bg); border: 1px solid var(--menu-border);
+      border-radius: 12px; padding: 8px;
+      opacity: 0; visibility: hidden; transform: translateY(-8px);
+      transition: opacity var(--duration-fast), visibility var(--duration-fast), transform var(--duration-fast);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    }
+    .viz-menu-dropdown.open { opacity: 1; visibility: visible; transform: translateY(0); }
+    .viz-menu-dropdown button {
+      width: 100%; padding: 10px 14px; border: none; border-radius: 8px;
+      background: transparent; color: var(--menu-text); font-size: 14px;
+      font-family: inherit; cursor: pointer; text-align: left;
+      display: flex; align-items: center; gap: 10px; transition: background var(--duration-fast);
+    }
+    .viz-menu-dropdown button:hover { background: var(--menu-item-hover); }
+
+    .skip-link {
+      position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; overflow: hidden;
+      z-index: 10000; padding: 8px 16px; background: var(--accent); color: white;
+      text-decoration: none; border-radius: 4px;
+    }
+    .skip-link:focus { position: fixed; left: 16px; top: 16px; width: auto; height: auto; overflow: visible; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; overflow: hidden;
+      clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">본문으로 건너뛰기</a>
+
+  <div class="viz-menu">
+    <button class="viz-menu-toggle" onclick="toggleMenu()" aria-label="메뉴 열기" aria-haspopup="true" aria-expanded="false" id="vizMenuToggle">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <line x1="3" y1="5" x2="17" y2="5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="15" x2="17" y2="15"/>
+      </svg>
+    </button>
+    <div class="viz-menu-dropdown" id="vizMenuDropdown">
+      <button onclick="cycleTheme()"><span id="themeIcon">☀️</span><span id="themeLabel">라이트</span></button>
+      <button onclick="window.print()"><span>🖨️</span><span>인쇄 / PDF</span></button>
+    </div>
+  </div>
+
+  <main id="main-content">
+
+    <!-- ⬇ 시작 화면 -->
+    <header class="hero" id="startScreen">
+      <div class="cr-dot-grid" aria-hidden="true"></div>
+      <div class="wrap">
+        <p class="eyebrow hero-eyebrow animate">현대제철 · R&amp;D 프로젝트관리 PM과정</p>
+        <h1 class="animate delay-1">Day1 배운 내용,<br>2일차 시작 전에 <em>난이도</em>를 골라 점검한다.</h1>
+        <p class="hero-sub animate delay-2">기본원칙(PMBOK 8판·AI 활용)부터 착수·계획까지 1일차 배부자료 범위를 다룹니다. 실행·통제·종료는 2일차에서 다룹니다. 문항마다 정답과 해설이 바로 나옵니다.</p>
+
+        <div class="diff-row animate delay-3">
+          <button class="diff-card" id="diffNormalBtn" type="button" onclick="selectDifficulty('normal')" aria-pressed="true">
+            <span class="diff-name">일반</span>
+            <span class="diff-desc">핵심 개념 확인 · 15문항</span>
+          </button>
+          <button class="diff-card" id="diffHighBtn" type="button" onclick="selectDifficulty('high')" aria-pressed="false">
+            <span class="diff-name">고난도</span>
+            <span class="diff-desc">응용·계산·시나리오 · 7문항</span>
+          </button>
+        </div>
+
+        <div class="cta-row animate delay-3">
+          <button class="btn btn-primary" onclick="startQuiz()">퀴즈 시작하기</button>
+        </div>
+        <div class="best-score animate delay-3" id="bestScoreBox" hidden>
+          🏆 최고 기록 <strong id="bestScoreText">-</strong>
+        </div>
+      </div>
+    </header>
+
+    <!-- ⬇ 퀴즈 화면 -->
+    <section class="section" id="quizScreen" aria-labelledby="quiz-heading">
+      <div class="wrap">
+        <h2 id="quiz-heading" class="sr-only">퀴즈 진행 화면</h2>
+        <div class="progress-row">
+          <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="15" id="progressTrack" aria-valuenow="0">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <span class="progress-count" id="progressCount">1 / 15</span>
+        </div>
+
+        <div class="card">
+          <span class="q-tag" id="qTag">기본원칙</span>
+          <p class="q-text" id="qText"></p>
+          <div class="options" id="qOptions"></div>
+          <div class="explain" id="qExplain"></div>
+        </div>
+
+        <div class="quiz-nav">
+          <button class="btn btn-solid" id="nextBtn" onclick="nextQuestion()" disabled>다음 문제</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ⬇ 결과 화면 -->
+    <section class="section" id="resultScreen" aria-labelledby="result-heading">
+      <div class="wrap">
+        <div class="result-hero">
+          <p class="eyebrow" id="result-heading">결과</p>
+          <div class="result-score"><span id="resultScoreNum">0</span><span> / 20</span></div>
+          <p class="result-tier" id="resultTier"></p>
+          <p class="result-new-best" id="resultNewBest" hidden>🎉 최고 기록을 새로 세웠습니다!</p>
+          <div class="cta-row" style="justify-content: center;">
+            <button class="btn btn-outline" onclick="restartQuiz()">다시 풀기</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-bottom: 4px;">문항별 복습</h3>
+          <p class="text-secondary" style="font-size: 0.9rem; margin-bottom: 8px;">틀린 문제는 빨간색, 맞힌 문제는 초록색으로 표시됩니다.</p>
+          <div id="reviewList"></div>
+        </div>
+
+        <div class="notice">
+          <ul class="cr-square-bullet">
+            <li>이 퀴즈는 「1일차 배부자료_현대제철_PM」 중 1일차 진행 범위(기본원칙·착수·계획)를 기준으로 출제되었습니다. 실행·통제·종료는 2일차 학습 범위입니다.</li>
+            <li>틀린 문항은 배부자료의 해당 페이지를 다시 확인한 뒤 2일차 실습에 참여하시기 바랍니다.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <p class="footer-brand"><span class="footer-mark" aria-hidden="true"></span>현대제철 PM과정</p>
+      <p>Day1 복습 퀴즈 · AI 시대의 프로젝트관리</p>
+    </div>
+  </footer>
+
+  <script>
+    // === 저장소 헬퍼 ===
+    function safeGet(key) {
+      try { return localStorage.getItem(key); }
+      catch (e) { console.warn('저장소를 읽을 수 없습니다.', e); return null; }
+    }
+    function safeSet(key, value) {
+      try { localStorage.setItem(key, value); return true; }
+      catch (e) { console.warn('저장소에 쓸 수 없습니다.', e); return false; }
+    }
+
+    // === 메뉴 ===
+    function toggleMenu() {
+      var dropdown = document.getElementById('vizMenuDropdown');
+      var toggle = document.getElementById('vizMenuToggle');
+      if (!dropdown) return;
+      var isOpen = dropdown.classList.toggle('open');
+      if (toggle) toggle.setAttribute('aria-expanded', String(isOpen));
+    }
+    function closeMenu() {
+      var dropdown = document.getElementById('vizMenuDropdown');
+      var toggle = document.getElementById('vizMenuToggle');
+      if (dropdown) dropdown.classList.remove('open');
+      if (toggle) toggle.setAttribute('aria-expanded', 'false');
+    }
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.viz-menu')) closeMenu();
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeMenu();
+    });
+
+    // === 테마 ===
+    var savedTheme = safeGet('cr-viz-theme');
+    var currentTheme = savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    function applyTheme(t) {
+      document.documentElement.className = 'theme-' + t;
+      var icon = document.getElementById('themeIcon');
+      var label = document.getElementById('themeLabel');
+      if (icon) icon.textContent = t === 'dark' ? '🌙' : '☀️';
+      if (label) label.textContent = t === 'dark' ? '다크' : '라이트';
+      safeSet('cr-viz-theme', t);
+      currentTheme = t;
+    }
+    function cycleTheme() { applyTheme(currentTheme === 'dark' ? 'light' : 'dark'); }
+    applyTheme(currentTheme);
+
+    // === 퀴즈 데이터 — 일반 난이도 ===
+    var QUESTIONS_NORMAL = [
+      {
+        tag: '기본원칙', q: 'PMBOK 8판에서 원칙(Principle)의 개수는 7판 대비 어떻게 바뀌었는가?',
+        options: ['12개 → 8개', '12개 → 6개', '8개 → 6개', '8개 → 7개'],
+        correct: 1,
+        explain: '7판의 12개 원칙이 8판에서 6개로 통합·간소화되어 실천하기 쉽게 재구성되었습니다.'
+      },
+      {
+        tag: '기본원칙', q: 'PMBOK 8판의 성과영역(Performance Domain) 개수는?',
+        options: ['5개', '6개', '7개', '8개'],
+        correct: 2,
+        explain: '7판 8개였던 성과영역이 8판에서 7개로 더 명확하고 통합된 구조로 조정되었습니다.'
+      },
+      {
+        tag: '기본원칙', q: '7판에서 제거되었던 프로세스 그룹이 8판에서 유연한 형태로 다시 등장했다. 그 개념의 이름은?',
+        options: ['Knowledge Area', 'Focus Area', 'Process Domain', 'Value Stream'],
+        correct: 1,
+        explain: '비처방적 40개 프로세스를 5개 Focus Area로 다시 묶어, 전통적 프로세스 그룹을 유연하게 부활시켰습니다.'
+      },
+      {
+        tag: '기본원칙', q: '이 과정의 흐름이기도 한 Focus Area 5단계의 올바른 순서는?',
+        options: [
+          '착수 → 실행 → 계획 → 통제 → 종료',
+          '계획 → 착수 → 실행 → 종료 → 통제',
+          '착수 → 계획 → 실행 → 모니터링&통제 → 종료',
+          '착수 → 통제 → 계획 → 실행 → 종료'
+        ],
+        correct: 2,
+        explain: '착수(Initiating) → 계획(Planning) → 실행(Executing) → 모니터링&통제(Monitoring&Controlling) → 종료(Closing) 순서입니다.'
+      },
+      {
+        tag: '기본원칙', q: 'PMI(Project Management Institute)는 몇 년에 설립되었는가?',
+        options: ['1959년', '1969년', '1979년', '1989년'],
+        correct: 1,
+        explain: 'PMI는 1969년 설립되어 170여개국이 참여하는 프로젝트관리 분야 비영리 협회입니다.'
+      },
+      {
+        tag: '기본원칙', q: '"프로젝트란 특별한 상품·서비스·결과를 얻기 위한 시작과 끝이 있는 (　) 행위이다." 빈칸에 들어갈 말은?',
+        options: ['반복적인', '영구적인', '일시적인', '선택적인'],
+        correct: 2,
+        explain: '프로젝트는 시작과 끝이 있는 "일시적인" 행위라는 점이 업무(Operation)와 구분되는 핵심 정의입니다.'
+      },
+      {
+        tag: '기본원칙', q: '강의에서 제시한 "실패한 프로젝트 요인"에 해당하지 않는 것은?',
+        options: ['비전의 부족', '의사소통의 부재', '경쟁사의 견제', '우선순위의 충돌'],
+        correct: 2,
+        explain: '실패 요인으로 제시된 것은 비전 부족·불명확한 기대사항·불충분한 자원·의사소통 부재·우선순위 충돌·지지참여 부재·시간 부족이며, "경쟁사의 견제"는 언급되지 않았습니다.'
+      },
+      {
+        tag: '기본원칙 · AI', q: 'AI를 프로젝트관리에 적용하기 전 설계해야 할 다섯 가지 요소 "AI 5H"에 속하지 않는 것은?',
+        options: ['Hand-off', 'Human judgment', 'Hallucination', 'History'],
+        correct: 2,
+        explain: 'AI 5H는 Hand-off, Human check, Human judgment, Accountability, History 다섯 가지입니다. Hallucination(환각)은 여기 속하지 않습니다.'
+      },
+      {
+        tag: '기본원칙 · AI', q: '"AI가 정확해도 판단은 틀릴 수 있다" 사례에서 강조한 핵심 메시지는?',
+        options: [
+          'AI 분석은 항상 정확하므로 그대로 신뢰해야 한다',
+          '최대 위험은 완성도 높아 보이지만 중요한 맥락이 빠진 결과다',
+          'AI는 위험이 커서 프로젝트관리에 쓰지 않는 것이 좋다',
+          'AI 분석 결과는 재확인할 필요가 없다'
+        ],
+        correct: 1,
+        explain: '표면적으로 정확해 보이는 AI 분석도 숙련된 PM의 맥락 판단과 다를 수 있습니다. 최대 위험은 "완성도 높아 보이지만 중요한 맥락이 빠진 결과"입니다.'
+      },
+      {
+        tag: '착수', q: '핵심 이해당사자(Key Stakeholder)의 5가지 특징에 해당하지 않는 것은?',
+        options: ['결정(예산에 영향)', '권위(진행 승인)', '속도(신속한 실행력)', '에너지(긍정·부정적 영향)'],
+        correct: 2,
+        explain: '핵심 이해당사자의 특징은 결정·권위·니즈·연결·에너지 다섯 가지입니다. "속도"는 포함되지 않습니다.'
+      },
+      {
+        tag: '착수', q: '핵심 이해당사자 인터뷰에서 강의가 제시한 올바른 질문 순서는?',
+        options: ['닫힌질문 → 상세질문 → 열린질문', '열린질문 → 상세질문 → 닫힌질문', '상세질문 → 열린질문 → 닫힌질문', '열린질문 → 닫힌질문 → 상세질문'],
+        correct: 1,
+        explain: '"넓게 열고, 좁히고, 확정한다" — 열린질문으로 맥락을 연 뒤 상세질문으로 구체화하고, 닫힌질문으로 확인·확정합니다.'
+      },
+      {
+        tag: '착수', q: 'R&D 프로젝트의 제약조건(프로젝트 위협요소) 6가지에 해당하지 않는 것은?',
+        options: ['범위', '품질', '조직문화', '예산'],
+        correct: 2,
+        explain: '제약조건 6가지는 범위·품질·리스크·자원·예산·시간입니다. "조직문화"는 이 목록에 없습니다.'
+      },
+      {
+        tag: '계획', q: 'WBS 작성 기법으로 언급된 MECE는 무엇의 약자인가?',
+        options: [
+          'Mutually Exclusive, Collectively Exhaustive',
+          'Most Efficient, Cost Effective',
+          'Multiple Elements, Clear Execution',
+          'Management Efficiency, Control Excellence'
+        ],
+        correct: 0,
+        explain: 'MECE는 "서로 중복이 없고(Mutually Exclusive), 누락된 것도 없음(Collectively Exhaustive)"을 뜻합니다.'
+      },
+      {
+        tag: '계획', q: 'WBS가 의미하는 것은?',
+        options: ['위험분류체계', '작업분류체계(Work Breakdown Structure)', '예산배분체계', '의사결정구조'],
+        correct: 1,
+        explain: 'WBS는 작업 분류 체계(Work Breakdown Structure)로, 큰 조각을 작은 조각으로 나누어 작업 단위를 구성하는 기법입니다.'
+      },
+      {
+        tag: '계획', q: 'PERT 기간 추정 공식 "(낙관치 + 4×가능치 + 비관치) ÷ 6"에서 가능치에 곱하는 가중치는?',
+        options: ['2', '3', '4', '6'],
+        correct: 2,
+        explain: 'PERT(Program Evaluation and Review Technique) 공식은 가장 현실적인 값인 "가능치"에 4를 곱해 비중을 크게 둡니다.'
+      }
+    ];
+
+    // === 퀴즈 데이터 — 고난도(응용·계산·시나리오) ===
+    var QUESTIONS_HIGH = [
+      {
+        tag: '계획 · 계산', q: '어떤 작업의 낙관치가 4일, 가능치가 8일, 비관치가 24일이다. PERT 공식으로 계산한 작업 기간 추정값은?',
+        options: ['8일', '9일', '10일', '12일'],
+        correct: 2,
+        explain: '(낙관치 4 + 4×가능치 8 + 비관치 24) ÷ 6 = (4+32+24) ÷ 6 = 60 ÷ 6 = 10일입니다. 가능치에 4배 가중치를 두는 이유는 "가장 현실적인 값"에 무게를 싣기 위함입니다.'
+      },
+      {
+        tag: '착수 · 시나리오', q: '안전환경팀장이 안전 검증 부족을 이유로 신공정 도입에 원칙적으로 반대하고 있다. 핵심 이해당사자 간 기대사항이 충돌할 때 강의가 제시한 접근법으로 가장 적절한 것은?',
+        options: [
+          'PM이 단독으로 판단해 반대 의견은 진행 일정에서 배제한다',
+          '핵심 이해당사자들을 모아 서로 다른 관점과 제약조건을 토론하게 하고, 팀원과 함께 옵션을 브레인스토밍해 합의를 이끈다',
+          '상위 관리자에게 즉시 보고해 결정을 위임한다',
+          '반대 의견을 회의록에만 기록하고 별도 조치 없이 계획대로 진행한다'
+        ],
+        correct: 1,
+        explain: '착수 단계 솔루션은 "이해의 폭을 넓히고 참여하게 하기"입니다. 핵심 이해당사자들을 모아 서로 다른 관점·제약조건을 토론하게 하고, 가능한 옵션을 함께 브레인스토밍해 합의를 이끌어내야 합니다.'
+      },
+      {
+        tag: '계획 · AI 활용', q: '계획단계 AI 활용 구분에서, AI가 초안을 만드는 영역이 아니라 사람이 우선순위를 판단해야 하는 영역은?',
+        options: [
+          'WBS·일정·마일스톤 초안 작성',
+          '역할분담표·자원·예산 정리',
+          '범위에 포함할 것과 제외할 것을 결정',
+          '위험등록부 초안 작성'
+        ],
+        correct: 2,
+        explain: '"AI는 초안을 짜고, 사람은 우선순위를 정한다"가 계획단계 AI 활용의 원칙입니다. 범위에 포함·제외할 것을 정하는 것은 사람의 판단 영역입니다.'
+      },
+      {
+        tag: '착수 · AI 활용', q: '착수단계 AI 활용 구분에서 "AI 지원"이 아니라 "인간 판단" 영역에 해당하는 것은?',
+        options: [
+          '제안서·자료 요약',
+          '이해관계자 후보 추출',
+          '영향력·관심도·갈등 판단',
+          '프로젝트헌장 초안 작성'
+        ],
+        correct: 2,
+        explain: '"계획보다 먼저, 문제를 제대로 정의한다"는 착수단계 AI 활용 원칙에 따르면, 이해관계자의 영향력·관심도·갈등 여부를 판단하는 것은 AI가 후보를 추출한 뒤 사람이 맡아야 할 영역입니다.'
+      },
+      {
+        tag: '계획 · MECE 응용', q: '다음 분류 중 MECE(중복 없이, 빠짐없이) 원칙에 어긋나는 것은?',
+        options: [
+          '계절 = 봄 + 여름 + 가을 + 겨울',
+          '고객유형 = 신규고객 + 기존고객 + VIP고객',
+          '요일 = 평일 + 주말',
+          '아파트 = 소형 + 중형 + 대형'
+        ],
+        correct: 1,
+        explain: 'VIP고객은 대개 기존고객에도 속하므로 "기존고객"과 "VIP고객"이 중복(Mutually Exclusive 위반)됩니다. 나머지는 중복도 누락도 없는 MECE 분류입니다.'
+      },
+      {
+        tag: '착수 · 인터뷰 응용', q: '"최종예산기준을 작년 대비 10% 증가인 50억으로 하라는 말씀이시죠?"라는 인터뷰 질문의 유형과 목적으로 가장 적절한 것은?',
+        options: [
+          '열린질문 — 프로젝트의 맥락을 넓게 여는 것이 목적',
+          '상세질문 — 기대사항을 구체화하는 것이 목적',
+          '닫힌질문 — 확인된 내용을 재확인해 합의를 확정하는 것이 목적',
+          '닫힌질문 — 새로운 정보를 추가로 끌어내는 것이 목적'
+        ],
+        correct: 2,
+        explain: '수치·기준을 짚어 "~라는 말씀이시죠?"로 되묻는 것은 닫힌질문입니다. 인터뷰의 마지막 단계에서 이해한 내용을 재확인해 합의를 확정하는 데 씁니다.'
+      },
+      {
+        tag: '기본원칙 · AI', q: '"산출 vs 판단" 구분에서, AI의 산출(🤖) 영역이 아니라 사람의 판단(👤) 영역에 해당하는 것은?',
+        options: [
+          '회의록·요약 작성',
+          '보고서 초안 작성',
+          '위험등록부 갱신',
+          '숨은 위험의 우선순위 판단'
+        ],
+        correct: 3,
+        explain: 'AI는 "무엇이 관찰되었는가"를 정리(요약·초안·위험등록부 갱신)하고, 사람은 "그래서 무엇을 해야 하는가", 즉 숨은 위험의 우선순위 판단과 같은 책임 있는 판단을 맡습니다.'
+      }
+    ];
+
+    var difficulty = 'normal';
+    var activeQuestions = QUESTIONS_NORMAL;
+    var TOTAL = activeQuestions.length;
+    var current = 0;
+    var score = 0;
+    var answers = []; // { picked, correct }
+    var answered = false;
+
+    function selectDifficulty(d) {
+      difficulty = d;
+      document.getElementById('diffNormalBtn').setAttribute('aria-pressed', String(d === 'normal'));
+      document.getElementById('diffHighBtn').setAttribute('aria-pressed', String(d === 'high'));
+      updateBestScoreDisplay();
+    }
+
+    function bestKey() {
+      return difficulty === 'high' ? 'hdsteel-day1-quiz-best-7q-high' : 'hdsteel-day1-quiz-best-15q';
+    }
+
+    function startQuiz() {
+      activeQuestions = difficulty === 'high' ? QUESTIONS_HIGH : QUESTIONS_NORMAL;
+      TOTAL = activeQuestions.length;
+      current = 0; score = 0; answers = []; answered = false;
+      document.getElementById('progressTrack').setAttribute('aria-valuemax', String(TOTAL));
+      document.getElementById('startScreen').classList.add('hidden');
+      document.getElementById('resultScreen').classList.remove('active');
+      document.getElementById('quizScreen').classList.add('active');
+      renderQuestion();
+    }
+
+    function restartQuiz() {
+      document.getElementById('resultScreen').classList.remove('active');
+      startQuiz();
+    }
+
+    function renderQuestion() {
+      var item = activeQuestions[current];
+      answered = false;
+
+      document.getElementById('qTag').textContent = item.tag;
+      document.getElementById('qText').textContent = (current + 1) + '. ' + item.q;
+
+      var pct = ((current) / TOTAL) * 100;
+      document.getElementById('progressFill').style.width = pct + '%';
+      document.getElementById('progressTrack').setAttribute('aria-valuenow', String(current));
+      document.getElementById('progressCount').textContent = (current + 1) + ' / ' + TOTAL;
+
+      var optWrap = document.getElementById('qOptions');
+      optWrap.innerHTML = '';
+      var marks = ['A', 'B', 'C', 'D'];
+      item.options.forEach(function (opt, i) {
+        var btn = document.createElement('button');
+        btn.className = 'option';
+        btn.type = 'button';
+        btn.innerHTML = '<span class="opt-mark">' + marks[i] + '</span><span>' + opt + '</span>';
+        btn.addEventListener('click', function () { selectOption(i); });
+        optWrap.appendChild(btn);
+      });
+
+      var explainBox = document.getElementById('qExplain');
+      explainBox.classList.remove('show');
+      explainBox.innerHTML = '';
+
+      var nextBtn = document.getElementById('nextBtn');
+      nextBtn.disabled = true;
+      nextBtn.textContent = (current === TOTAL - 1) ? '결과 보기' : '다음 문제';
+    }
+
+    function selectOption(i) {
+      if (answered) return;
+      answered = true;
+      var item = activeQuestions[current];
+      var isCorrect = (i === item.correct);
+      if (isCorrect) score++;
+      answers.push({ picked: i, correct: item.correct, isCorrect: isCorrect });
+
+      var opts = document.querySelectorAll('#qOptions .option');
+      opts.forEach(function (btn, idx) {
+        btn.disabled = true;
+        if (idx === item.correct) btn.classList.add('correct');
+        else if (idx === i) btn.classList.add('incorrect');
+      });
+
+      var explainBox = document.getElementById('qExplain');
+      explainBox.innerHTML = '<strong>' + (isCorrect ? '정답입니다. ' : '오답입니다. ') + '</strong>' + item.explain;
+      explainBox.classList.add('show');
+
+      document.getElementById('nextBtn').disabled = false;
+    }
+
+    function nextQuestion() {
+      if (!answered) return;
+      if (current === TOTAL - 1) {
+        finishQuiz();
+        return;
+      }
+      current++;
+      renderQuestion();
+    }
+
+    function finishQuiz() {
+      document.getElementById('progressFill').style.width = '100%';
+      document.getElementById('quizScreen').classList.remove('active');
+      document.getElementById('resultScreen').classList.add('active');
+
+      document.getElementById('resultScoreNum').textContent = String(score);
+
+      var tier;
+      var ratio = score / TOTAL;
+      if (ratio === 1) tier = '완벽합니다. Day1 전 범위를 정확히 이해했습니다.';
+      else if (ratio >= 0.8) tier = '우수합니다. 몇 가지만 다시 확인하면 완벽합니다.';
+      else if (ratio >= 0.6) tier = '양호합니다. 틀린 문항 위주로 배부자료를 다시 훑어보세요.';
+      else tier = '기본원칙과 착수~계획 흐름을 다시 한번 복습해 보세요.';
+      document.getElementById('resultTier').textContent = tier;
+
+      var bestRaw = safeGet(bestKey());
+      var best = bestRaw ? parseInt(bestRaw, 10) : 0;
+      var newBestBox = document.getElementById('resultNewBest');
+      if (score > best) {
+        safeSet(bestKey(), String(score));
+        newBestBox.hidden = false;
+      } else {
+        newBestBox.hidden = true;
+      }
+      updateBestScoreDisplay();
+
+      var reviewList = document.getElementById('reviewList');
+      reviewList.innerHTML = '';
+      activeQuestions.forEach(function (item, i) {
+        var a = answers[i];
+        var div = document.createElement('div');
+        div.className = 'review-item';
+        var marks = ['A', 'B', 'C', 'D'];
+        var badgeHtml = '<span class="review-badge ' + (a.isCorrect ? 'ok' : 'no') + '">' + (a.isCorrect ? '정답' : '오답') + ' · ' + item.tag + '</span>';
+        var pickedHtml = '<p class="review-answer">내 선택: <b>' + marks[a.picked] + '. ' + item.options[a.picked] + '</b></p>';
+        var correctHtml = a.isCorrect ? '' : '<p class="review-answer">정답: <b>' + marks[a.correct] + '. ' + item.options[a.correct] + '</b></p>';
+        div.innerHTML = badgeHtml + '<p class="review-q">' + (i + 1) + '. ' + item.q + '</p>' + pickedHtml + correctHtml + '<p class="review-answer">' + item.explain + '</p>';
+        reviewList.appendChild(div);
+      });
+    }
+
+    function updateBestScoreDisplay() {
+      var bestRaw = safeGet(bestKey());
+      var displayTotal = difficulty === 'high' ? QUESTIONS_HIGH.length : QUESTIONS_NORMAL.length;
+      var box = document.getElementById('bestScoreBox');
+      var text = document.getElementById('bestScoreText');
+      if (bestRaw !== null) {
+        text.textContent = bestRaw + ' / ' + displayTotal + ' (' + (difficulty === 'high' ? '고난도' : '일반') + ')';
+        box.hidden = false;
+      } else {
+        box.hidden = true;
+      }
+    }
+    updateBestScoreDisplay();
+  </script>
+</body>
+</html>
