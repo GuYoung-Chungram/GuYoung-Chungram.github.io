@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>자리 룰렛 | 청람M&C</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B1020;
+    --bg-2:#121A33;
+    --surface:#182347;
+    --surface-2:#1F2C58;
+    --line:rgba(255,255,255,0.10);
+    --text:#F4F6FF;
+    --text-dim:#C7CFF2;
+    --accent:#1652D8;
+    --accent-2:#4B7BF5;
+    --gold:#FFC53D;
+    --coral:#FF5D73;
+    --mint:#33D6A6;
+    --violet:#B084F5;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    background:
+      radial-gradient(circle at 12% 8%, rgba(75,123,245,0.20), transparent 45%),
+      radial-gradient(circle at 88% 85%, rgba(255,197,61,0.12), transparent 40%),
+      var(--bg);
+    color:var(--text);
+    font-family:'Noto Sans KR','Inter',sans-serif;
+    font-size:17px;
+    min-height:100vh;
+    line-height:1.65;
+    overflow-x:hidden;
+  }
+  .display{font-family:'Jua','Noto Sans KR',sans-serif;letter-spacing:0.03em;}
+  #confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:999;}
+
+  .screen{min-height:100vh;display:none;flex-direction:column;align-items:center;padding:32px 20px 60px;}
+  .screen.active{display:flex;}
+
+  /* ---------- 공통 ---------- */
+  .eyebrow{
+    font-size:0.86rem;font-weight:800;letter-spacing:0.16em;color:var(--gold);
+    text-transform:uppercase;margin-bottom:10px;
+  }
+  .btn{
+    border:none;cursor:pointer;font-family:inherit;font-weight:700;
+    border-radius:14px;transition:transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+  }
+  .btn:hover{transform:translateY(-2px);}
+  .btn:active{transform:translateY(0px) scale(0.98);}
+  .btn:disabled{opacity:0.35;cursor:not-allowed;transform:none;}
+  .btn-primary{
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    color:#fff;box-shadow:0 10px 30px rgba(22,82,216,0.45);
+  }
+  .btn-ghost{
+    background:var(--surface);color:var(--text);border:1px solid var(--line);
+  }
+  .btn-gold{
+    background:linear-gradient(135deg,#FFC53D,#FF9E3D);
+    color:#241300;box-shadow:0 10px 26px rgba(255,197,61,0.35);
+  }
+
+  /* ---------- SETUP ---------- */
+  #setup-screen{justify-content:center;text-align:center;}
+  .setup-card{
+    background:var(--surface);border:1px solid var(--line);
+    border-radius:28px;padding:44px 36px;max-width:560px;width:100%;
+    box-shadow:0 30px 70px rgba(0,0,0,0.35);
+  }
+  .setup-card h1{
+    font-size:2.6rem;margin:0 0 6px;word-break:keep-all;overflow-wrap:break-word;
+  }
+  .setup-card p.sub{color:var(--text-dim);margin:0 0 34px;font-size:1.08rem;line-height:1.7;}
+  .stepper-row{
+    display:flex;align-items:center;justify-content:space-between;
+    background:var(--bg-2);border:1px solid var(--line);border-radius:18px;
+    padding:16px 20px;margin-bottom:16px;
+  }
+  .stepper-row .label{text-align:left;}
+  .stepper-row .label b{display:block;font-size:1.1rem;font-weight:700;}
+  .stepper-row .label span{color:var(--text-dim);font-size:0.92rem;}
+  .stepper{display:flex;align-items:center;gap:14px;}
+  .stepper button{
+    width:42px;height:42px;border-radius:12px;font-size:1.3rem;
+    background:var(--surface-2);color:var(--text);border:1px solid var(--line);
+  }
+  .stepper .val{font-size:1.6rem;font-weight:900;min-width:36px;text-align:center;}
+  .total-line{
+    margin:22px 0 30px;font-size:1.05rem;color:var(--text-dim);
+  }
+  .total-line b{color:var(--gold);font-size:1.35rem;}
+  #start-btn{width:100%;padding:18px;font-size:1.2rem;border-radius:18px;}
+
+  /* ---------- GAME ---------- */
+  #game-screen{max-width:1200px;margin:0 auto;width:100%;}
+  .game-header{
+    width:100%;display:flex;justify-content:space-between;align-items:flex-end;
+    margin-bottom:26px;flex-wrap:wrap;gap:14px;
+  }
+  .game-header h2{margin:0;font-size:1.9rem;}
+  .game-header .meta{color:var(--text-dim);font-size:1rem;margin-top:4px;}
+  .reset-btn{padding:10px 18px;font-size:0.9rem;}
+
+  .board-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:14px;width:100%;margin-bottom:34px;
+  }
+  .table-card{
+    background:var(--surface);border:1px solid var(--line);border-radius:18px;
+    padding:16px;text-align:center;position:relative;overflow:hidden;
+    transition:transform .4s ease, box-shadow .4s ease, background .4s ease;
+  }
+  .table-card .tnum{
+    font-family:'Jua','Noto Sans KR',sans-serif;font-size:1.7rem;color:var(--gold);
+    letter-spacing:0.01em;
+  }
+  .table-card .seats{
+    display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin-top:12px;
+  }
+  .seat-chip{
+    background:var(--surface-2);border:1px solid var(--line);
+    border-radius:999px;padding:6px 13px;font-size:0.92rem;font-weight:600;color:var(--text-dim);
+    line-height:1.4;transition:background .3s ease, color .3s ease, border-color .3s ease;
+  }
+  .seat-chip.drawn{
+    background:rgba(51,214,166,0.18);border-color:var(--mint);color:var(--mint);font-weight:800;
+  }
+
+  /* ---------- ROULETTE STAGE ---------- */
+  .roulette-stage{
+    width:100%;background:var(--surface);border:1px solid var(--line);
+    border-radius:28px;padding:34px 24px 30px;display:flex;flex-direction:column;
+    align-items:center;box-shadow:0 30px 70px rgba(0,0,0,0.35);margin-bottom:30px;
+  }
+  .stage-title{font-size:1.3rem;font-weight:600;color:var(--text);margin-bottom:4px;text-align:center;line-height:1.5;}
+  .stage-title b{color:var(--gold);font-weight:800;}
+  .wheel-wrap{position:relative;width:min(340px,78vw);height:min(340px,78vw);margin:20px 0 22px;}
+  .pointer{
+    position:absolute;top:-6px;left:50%;transform:translateX(-50%);
+    width:0;height:0;border-left:16px solid transparent;border-right:16px solid transparent;
+    border-top:26px solid var(--gold);z-index:5;filter:drop-shadow(0 4px 6px rgba(0,0,0,.4));
+  }
+  #wheel-canvas{
+    width:100%;height:100%;border-radius:50%;
+    box-shadow:0 0 0 8px var(--bg-2), 0 0 0 10px var(--line), 0 20px 50px rgba(0,0,0,0.5);
+    transition:transform 1.7s cubic-bezier(.13,.83,.1,1);
+  }
+  .hub{
+    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    width:50px;height:50px;border-radius:50%;background:var(--gold);
+    box-shadow:0 0 0 6px var(--bg-2), 0 6px 18px rgba(0,0,0,.4);z-index:4;
+  }
+  .spin-log{
+    min-height:30px;font-size:1.2rem;font-weight:800;margin-bottom:12px;text-align:center;color:var(--text);
+  }
+  .spin-log .arrow{color:var(--gold);margin:0 6px;}
+  #spin-btn{padding:16px 40px;font-size:1.15rem;border-radius:18px;}
+
+  .auto-toggle{
+    display:flex;align-items:center;gap:9px;font-size:0.98rem;font-weight:500;color:var(--text-dim);margin-top:16px;
+  }
+  .auto-toggle input{width:18px;height:18px;accent-color:var(--gold);}
+
+  .progress-wrap{width:100%;max-width:420px;margin-top:18px;}
+  .progress-bar-track{background:var(--bg-2);border:1px solid var(--line);border-radius:999px;height:12px;overflow:hidden;}
+  .progress-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--mint));transition:width .4s ease;}
+  .progress-text{margin-top:9px;font-size:0.95rem;font-weight:600;color:var(--text-dim);text-align:center;}
+
+  .log-list{
+    width:100%;max-width:420px;margin-top:6px;display:flex;flex-direction:column-reverse;gap:6px;
+    max-height:220px;overflow-y:auto;
+  }
+  .log-item{
+    background:var(--bg-2);border:1px solid var(--line);border-radius:12px;
+    padding:11px 16px;font-size:1rem;font-weight:600;display:flex;justify-content:space-between;
+    animation:fadeIn .4s ease;flex-shrink:0;line-height:1.4;
+  }
+  @keyframes fadeIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+
+  /* ---------- FINAL ---------- */
+  #final-panel{display:none;width:100%;text-align:center;}
+  #final-panel.show{display:block;animation:fadeIn .5s ease;}
+  #final-panel h2{font-size:2.1rem;margin-bottom:8px;}
+  #final-panel p.sub{color:var(--text-dim);margin-bottom:26px;font-size:1.05rem;line-height:1.7;}
+  .final-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+    gap:16px;margin-bottom:30px;
+  }
+  .final-card{
+    background:linear-gradient(160deg,var(--surface-2),var(--surface));
+    border:1px solid var(--line);border-radius:20px;padding:20px 16px;
+    box-shadow:0 16px 36px rgba(0,0,0,0.3);
+  }
+  .final-card .tnum{font-family:'Jua','Noto Sans KR',sans-serif;font-size:2rem;color:var(--gold);}
+  .final-card .cnt{color:var(--text-dim);font-size:0.92rem;font-weight:600;margin:2px 0 12px;}
+  .final-seats{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;}
+  .final-seat{
+    background:var(--bg-2);border:1px solid var(--line);border-radius:999px;
+    padding:7px 14px;font-size:0.98rem;font-weight:700;line-height:1.4;
+    animation:popIn .5s ease backwards;
+  }
+  @keyframes popIn{from{opacity:0;transform:scale(0.6);}to{opacity:1;transform:scale(1);}}
+  .final-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+  .final-actions .btn{padding:14px 26px;font-size:1rem;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important;transition-duration:0.01ms !important;}
+  }
+  @media (max-width:480px){
+    .setup-card{padding:30px 22px;}
+    .setup-card h1{font-size:2.1rem;}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<!-- ===================== SETUP ===================== -->
+<section id="setup-screen" class="screen active">
+  <div class="setup-card">
+    <div class="eyebrow">청람M&C · 자리 이동 미니게임</div>
+    <h1 class="display">자리 룰렛 🎡</h1>
+    <p class="sub">조 개수와 조당 인원만 정하면, 룰렛이 한 명 한 명 새 조·새 자리를 뽑아드려요.</p>
+
+    <div class="stepper-row">
+      <div class="label"><b>조 개수</b><span>강의장 테이블 수</span></div>
+      <div class="stepper">
+        <button type="button" onclick="changeGroupCount(-1)">−</button>
+        <div class="val" id="group-count-val">4</div>
+        <button type="button" onclick="changeGroupCount(1)">+</button>
+      </div>
+    </div>
+
+    <div class="stepper-row">
+      <div class="label"><b>조당 인원</b><span>한 테이블 좌석 수</span></div>
+      <div class="stepper">
+        <button type="button" onclick="changeSeatCount(-1)">−</button>
+        <div class="val" id="seat-count-val">4</div>
+        <button type="button" onclick="changeSeatCount(1)">+</button>
+      </div>
+    </div>
+
+    <div class="total-line">총 참가 인원 <b id="total-people">16명</b> · <span id="table-summary">4개 테이블 × 4석</span></div>
+
+    <button class="btn btn-primary" id="start-btn" onclick="startGame()">자리 배치 시작하기 →</button>
+  </div>
+</section>
+
+<!-- ===================== GAME ===================== -->
+<section id="game-screen" class="screen">
+  <div class="game-header">
+    <div>
+      <h2 class="display">지금 자리 배치</h2>
+      <div class="meta" id="game-meta">4개 테이블 · 한 명씩 룰렛으로 새 조를 뽑아요</div>
+    </div>
+    <button class="btn btn-ghost reset-btn" onclick="goToSetup()">↺ 처음부터</button>
+  </div>
+
+  <div class="board-grid" id="board-grid"></div>
+
+  <div class="roulette-stage" id="roulette-stage">
+    <div class="stage-title" id="stage-title">다음 사람의 새 테이블을 뽑을게요: <b>1조 1번</b></div>
+
+    <div class="wheel-wrap">
+      <div class="pointer"></div>
+      <div class="hub"></div>
+      <canvas id="wheel-canvas" width="340" height="340"></canvas>
+    </div>
+
+    <div class="spin-log" id="spin-log">&nbsp;</div>
+    <button class="btn btn-gold" id="spin-btn" onclick="spinNext()">🎡 룰렛 돌리기</button>
+
+    <label class="auto-toggle">
+      <input type="checkbox" id="auto-toggle" checked>
+      자동으로 이어서 뽑기 (체크 해제하면 한 명씩 직접 진행)
+    </label>
+
+    <div class="progress-wrap">
+      <div class="progress-bar-track"><div class="progress-bar-fill" id="progress-fill"></div></div>
+      <div class="progress-text" id="progress-text">0 / 16명 완료</div>
+    </div>
+  </div>
+
+  <div class="log-list" id="log-list"></div>
+
+  <div id="final-panel">
+    <h2 class="display">🎉 최종 자리 배치 완료!</h2>
+    <p class="sub">조 구성원 자체가 새로 섞였어요. 아래 표를 보고 새 테이블로 이동해주세요!</p>
+    <div class="final-grid" id="final-grid"></div>
+    <div class="final-actions">
+      <button class="btn btn-gold" onclick="resetSameSetup()">🎡 이 인원으로 다시 섞기</button>
+      <button class="btn btn-ghost" onclick="goToSetup()">↺ 조 개수부터 다시 설정</button>
+    </div>
+  </div>
+</section>
+
+<script>
+var GROUP_MIN=2, GROUP_MAX=8, SEAT_MIN=2, SEAT_MAX=8;
+var groupCount=4, seatCount=4;
+
+var COLORS=['#1652D8','#FF5D73','#33D6A6','#FFC53D','#B084F5','#4B7BF5','#FF9E3D','#3DDCFF'];
+
+var individuals=[];      // [{group,seat,label}]  origin position, 고정 순서
+var assignment=[];       // assignment[i] = individuals[i]가 새로 배정될 테이블 번호
+var revealOrder=[];      // 뽑는 순서(개인 인덱스 셔플)
+var revealPos=0;         // 다음에 뽑을 revealOrder 위치
+var capacityLeft=[];     // capacityLeft[table] = 그 테이블에 남은 좌석 수 (1-indexed)
+var pool=[];             // 현재 룰렛에 노출되는 테이블 번호 목록(정원 남은 것만)
+var tableMembers=[];     // tableMembers[table] = [origin label, ...] 도착한 순서대로
+
+/* ---------------- SETUP SCREEN ---------------- */
+function changeGroupCount(d){
+  groupCount=Math.min(GROUP_MAX,Math.max(GROUP_MIN,groupCount+d));
+  document.getElementById('group-count-val').textContent=groupCount;
+  updateSetupSummary();
+}
+function changeSeatCount(d){
+  seatCount=Math.min(SEAT_MAX,Math.max(SEAT_MIN,seatCount+d));
+  document.getElementById('seat-count-val').textContent=seatCount;
+  updateSetupSummary();
+}
+function updateSetupSummary(){
+  document.getElementById('total-people').textContent=(groupCount*seatCount)+'명';
+  document.getElementById('table-summary').textContent=groupCount+'개 테이블 × '+seatCount+'석';
+}
+updateSetupSummary();
+
+function goToSetup(){
+  showScreen('setup-screen');
+}
+
+/* ---------------- GAME START ---------------- */
+function startGame(){
+  document.getElementById('game-meta').textContent=groupCount+'개 테이블 · 테이블당 '+seatCount+'석 · 총 '+(groupCount*seatCount)+'명 · 한 명씩 새 조로 재배정';
+  renderBoard();
+  resetRouletteState();
+  showScreen('game-screen');
+}
+function resetSameSetup(){
+  resetRouletteState();
+  document.getElementById('final-panel').classList.remove('show');
+  document.getElementById('roulette-stage').style.display='flex';
+  document.getElementById('log-list').innerHTML='';
+  renderBoard();
+}
+
+function resetRouletteState(){
+  // 1) 원래 개인 목록 구성
+  individuals=[];
+  for(var g=1; g<=groupCount; g++){
+    for(var s=1; s<=seatCount; s++){
+      individuals.push({group:g, seat:s, label:g+'조 '+s+'번'});
+    }
+  }
+  var total=individuals.length;
+
+  // 2) 새 테이블 배정(다중집합, 각 테이블 seatCount번씩) 생성 - 원래 조로는 배정되지 않도록 시도
+  assignment=buildAssignment(individuals, groupCount, seatCount);
+
+  // 3) 뽑는 순서(연출용) 셔플
+  revealOrder=[]; for(var i=0;i<total;i++) revealOrder.push(i);
+  shuffle(revealOrder);
+  revealPos=0;
+
+  // 4) 정원/풀 초기화
+  capacityLeft=[0];
+  for(var g2=1; g2<=groupCount; g2++) capacityLeft.push(seatCount);
+  pool=[]; for(var g3=1; g3<=groupCount; g3++) pool.push(g3);
+
+  tableMembers=[]; for(var g4=0; g4<=groupCount; g4++) tableMembers.push([]);
+
+  document.getElementById('spin-log').innerHTML='&nbsp;';
+  document.getElementById('spin-btn').disabled=false;
+  document.getElementById('spin-btn').textContent='🎡 룰렛 돌리기';
+  updateProgress();
+  updateStageTitle();
+  drawWheel(pool);
+  var wheel=document.getElementById('wheel-canvas');
+  wheel.style.transition='none';
+  wheel.style.transform='rotate(0deg)';
+}
+
+function buildAssignment(individuals, groupCount, seatCount){
+  var total=individuals.length;
+  var attempt=0, best=null, bestConflicts=Infinity;
+  while(attempt<400){
+    attempt++;
+    var candidate=[];
+    for(var g=1; g<=groupCount; g++){ for(var k=0;k<seatCount;k++) candidate.push(g); }
+    shuffle(candidate);
+    var conflicts=0;
+    for(var i=0;i<total;i++){ if(candidate[i]===individuals[i].group) conflicts++; }
+    if(conflicts===0){ return candidate; }
+    if(conflicts<bestConflicts){ bestConflicts=conflicts; best=candidate.slice(); }
+  }
+  // 완전한 무충돌 조합을 못 찾은 경우, 남은 충돌을 스왑으로 최대한 해소
+  for(var i2=0;i2<total;i2++){
+    if(best[i2]===individuals[i2].group){
+      for(var j=0;j<total;j++){
+        if(j===i2) continue;
+        if(best[j]!==individuals[i2].group && best[i2]!==individuals[j].group){
+          var tmp=best[i2]; best[i2]=best[j]; best[j]=tmp;
+          break;
+        }
+      }
+    }
+  }
+  return best;
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+}
+
+function shuffle(a){
+  for(var i=a.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var t=a[i]; a[i]=a[j]; a[j]=t;
+  }
+  return a;
+}
+
+/* ---------------- BOARD (원래 자리 기준 고정 표시) ---------------- */
+function renderBoard(){
+  var grid=document.getElementById('board-grid');
+  grid.innerHTML='';
+  for(var g=1; g<=groupCount; g++){
+    var card=document.createElement('div');
+    card.className='table-card';
+    card.id='table-card-'+g;
+    var seatsHtml='';
+    for(var s=1;s<=seatCount;s++){
+      seatsHtml+='<span class="seat-chip" id="chip-'+g+'-'+s+'">'+g+'조 '+s+'번</span>';
+    }
+    card.innerHTML='<div class="tnum">'+g+'번 테이블(원래)</div><div class="seats">'+seatsHtml+'</div>';
+    grid.appendChild(card);
+  }
+}
+
+function updateProgress(){
+  var total=individuals.length;
+  var pct = total? Math.round((revealPos/total)*100) : 0;
+  document.getElementById('progress-fill').style.width=pct+'%';
+  document.getElementById('progress-text').textContent=revealPos+' / '+total+'명 완료';
+}
+
+function updateStageTitle(){
+  var title=document.getElementById('stage-title');
+  if(revealPos<individuals.length){
+    var person=individuals[revealOrder[revealPos]];
+    title.innerHTML='다음 사람의 새 테이블을 뽑을게요: <b>'+person.label+'</b>';
+  }
+}
+
+/* ---------------- WHEEL DRAW ---------------- */
+function drawWheel(labelsArr){
+  var canvas=document.getElementById('wheel-canvas');
+  var ctx=canvas.getContext('2d');
+  var size=canvas.width, r=size/2;
+  ctx.clearRect(0,0,size,size);
+  var n=labelsArr.length;
+  var seg=2*Math.PI/n;
+  for(var i=0;i<n;i++){
+    var start = i*seg - seg/2 - Math.PI/2;
+    var end = start+seg;
+    ctx.beginPath();
+    ctx.moveTo(r,r);
+    ctx.arc(r,r,r-4,start,end);
+    ctx.closePath();
+    ctx.fillStyle=COLORS[i%COLORS.length];
+    ctx.fill();
+    ctx.lineWidth=3;
+    ctx.strokeStyle='#0B1020';
+    ctx.stroke();
+    ctx.save();
+    ctx.translate(r,r);
+    ctx.rotate(i*seg - Math.PI/2);
+    ctx.textAlign='right';
+    ctx.fillStyle='#fff';
+    ctx.font='800 23px "Noto Sans KR", sans-serif';
+    ctx.fillText(labelsArr[i]+'번', r-22, 8);
+    ctx.restore();
+  }
+}
+
+/* ---------------- SPIN ---------------- */
+function spinNext(){
+  if(revealPos>=individuals.length) return;
+  var btn=document.getElementById('spin-btn');
+  btn.disabled=true;
+
+  var personIdx=revealOrder[revealPos];
+  var target=assignment[personIdx];
+  var idx=pool.indexOf(target);
+  var n=pool.length;
+  var segDeg=360/n;
+  var spins=5;
+  var targetRotation = spins*360 - idx*segDeg;
+
+  var wheel=document.getElementById('wheel-canvas');
+  wheel.style.transition='none';
+  wheel.style.transform='rotate(0deg)';
+  void wheel.offsetWidth; // reflow
+  wheel.style.transition='transform 1.7s cubic-bezier(.13,.83,.1,1)';
+  wheel.style.transform='rotate('+targetRotation+'deg)';
+
+  playTick();
+
+  setTimeout(function(){ landOnPerson(personIdx, target); }, 1750);
+}
+
+function landOnPerson(personIdx, destTable){
+  var person=individuals[personIdx];
+
+  capacityLeft[destTable]--;
+  tableMembers[destTable].push(person.label);
+
+  var chip=document.getElementById('chip-'+person.group+'-'+person.seat);
+  if(chip){ chip.classList.add('drawn'); chip.textContent=person.label+' → '+destTable+'번'; }
+
+  var logList=document.getElementById('log-list');
+  var item=document.createElement('div');
+  item.className='log-item';
+  item.innerHTML='<span>'+person.label+'</span><span class="arrow">→</span><span>'+destTable+'번 테이블</span>';
+  logList.appendChild(item);
+  logList.scrollTop=logList.scrollHeight;
+
+  document.getElementById('spin-log').textContent=person.label+' → '+destTable+'번 테이블로 배정!';
+
+  if(capacityLeft[destTable]===0){
+    var pi=pool.indexOf(destTable);
+    if(pi>-1) pool.splice(pi,1);
+  }
+
+  playChime();
+
+  revealPos++;
+  updateProgress();
+
+  if(revealPos<individuals.length){
+    drawWheel(pool);
+    var wheel=document.getElementById('wheel-canvas');
+    wheel.style.transition='none';
+    wheel.style.transform='rotate(0deg)';
+    updateStageTitle();
+    document.getElementById('spin-btn').disabled=false;
+
+    var autoOn=document.getElementById('auto-toggle').checked;
+    if(autoOn){
+      setTimeout(function(){
+        if(revealPos<individuals.length) spinNext();
+      }, 550);
+    }
+  } else {
+    document.getElementById('spin-btn').textContent='완료!';
+    setTimeout(showFinal, 500);
+  }
+}
+
+/* ---------------- FINAL ---------------- */
+function showFinal(){
+  document.getElementById('roulette-stage').style.display='none';
+  var grid=document.getElementById('final-grid');
+  grid.innerHTML='';
+  for(var t=1;t<=groupCount;t++){
+    var members=tableMembers[t];
+    var card=document.createElement('div');
+    card.className='final-card';
+    var seatsHtml='';
+    for(var i=0;i<members.length;i++){
+      seatsHtml+='<span class="final-seat" style="animation-delay:'+(i*0.08)+'s">새'+(i+1)+'번석 ← 원래 '+members[i]+'</span>';
+    }
+    card.innerHTML='<div class="tnum">'+t+'번 테이블</div><div class="cnt">'+members.length+'명</div><div class="final-seats">'+seatsHtml+'</div>';
+    grid.appendChild(card);
+  }
+  document.getElementById('final-panel').classList.add('show');
+  burstConfetti();
+  playCheer();
+}
+
+/* ---------------- SOUND (Web Audio, 아주 가벼운 효과음) ---------------- */
+var audioCtx=null;
+function ensureAudio(){
+  if(!audioCtx){
+    try{ audioCtx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){}
+  }
+}
+function beep(freq,dur,type,vol){
+  ensureAudio();
+  if(!audioCtx) return;
+  var o=audioCtx.createOscillator();
+  var g=audioCtx.createGain();
+  o.type=type||'sine';
+  o.frequency.value=freq;
+  g.gain.value=vol||0.06;
+  o.connect(g); g.connect(audioCtx.destination);
+  o.start();
+  g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime+dur);
+  o.stop(audioCtx.currentTime+dur);
+}
+function playTick(){ beep(440,0.07,'square',0.025); }
+function playChime(){ beep(880,0.2,'triangle',0.045); setTimeout(function(){beep(1174,0.2,'triangle',0.035);},100); }
+function playCheer(){
+  var notes=[523,659,784,1046];
+  notes.forEach(function(f,i){ setTimeout(function(){beep(f,0.35,'triangle',0.05);}, i*90); });
+}
+
+/* ---------------- CONFETTI ---------------- */
+function burstConfetti(){
+  var canvas=document.getElementById('confetti-canvas');
+  canvas.width=window.innerWidth; canvas.height=window.innerHeight;
+  var ctx=canvas.getContext('2d');
+  var pieces=[];
+  var count=140;
+  for(var i=0;i<count;i++){
+    pieces.push({
+      x:Math.random()*canvas.width,
+      y:-20-Math.random()*canvas.height*0.4,
+      w:6+Math.random()*6,
+      h:8+Math.random()*8,
+      color:COLORS[Math.floor(Math.random()*COLORS.length)],
+      vy:2+Math.random()*3,
+      vx:-1.5+Math.random()*3,
+      rot:Math.random()*360,
+      vr:-6+Math.random()*12
+    });
+  }
+  var start=Date.now();
+  function frame(){
+    var elapsed=Date.now()-start;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(function(p){
+      p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr;
+      ctx.save();
+      ctx.translate(p.x,p.y);
+      ctx.rotate(p.rot*Math.PI/180);
+      ctx.fillStyle=p.color;
+      ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+      ctx.restore();
+    });
+    if(elapsed<3200){
+      requestAnimationFrame(frame);
+    } else {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+    }
+  }
+  requestAnimationFrame(frame);
+}
+window.addEventListener('resize', function(){
+  var c=document.getElementById('confetti-canvas');
+  c.width=window.innerWidth; c.height=window.innerHeight;
+});
+</script>
+</body>
+</html>
