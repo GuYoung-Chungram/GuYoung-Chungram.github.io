@@ -1,0 +1,833 @@
+<title>교수법 매트릭스 퀴즈</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700;900&family=Noto+Sans+KR:wght@400;500;700;900&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#F6F3EC;
+    --surface:#FFFFFF;
+    --surface-sunk:#EFEBE1;
+    --ink:#20241F;
+    --ink-soft:#5B5A4E;
+    --ink-faint:#8C8A79;
+    --line:#E1DCCC;
+    --accent:#2F4B3C;
+    --accent-ink:#F6F3EC;
+    --good:#1F8A5A;
+    --good-bg:#E4F3E9;
+    --bad:#C4432B;
+    --bad-bg:#FBE9E4;
+    --shadow: 0 1px 2px rgba(32,36,31,0.06), 0 8px 24px -12px rgba(32,36,31,0.18);
+
+    --stageA:#8B5FBF; --stageA-bg:#F1E9F9;
+    --stageB:#2E6FB8; --stageB-bg:#E7F0FA;
+    --stageC:#1B8F82; --stageC-bg:#E3F4F1;
+    --stageD:#3F8F45; --stageD-bg:#E7F4E7;
+    --stageE:#C6791E; --stageE-bg:#FBEDDB;
+    --stageF:#C24C74; --stageF-bg:#FBE7EE;
+  }
+
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#181A16;
+      --surface:#22251F;
+      --surface-sunk:#1D1F1A;
+      --ink:#EDEAE0;
+      --ink-soft:#B5B2A2;
+      --ink-faint:#83816F;
+      --line:#33362C;
+      --accent:#8FCBA6;
+      --accent-ink:#14231A;
+      --good:#7FCB9C;
+      --good-bg:#1C3325;
+      --bad:#E2917E;
+      --bad-bg:#3A241E;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 28px -14px rgba(0,0,0,0.55);
+
+      --stageA:#BC9CE6; --stageA-bg:#2C2337;
+      --stageB:#8CB8E8; --stageB-bg:#1E2C39;
+      --stageC:#7FD3C5; --stageC-bg:#173330;
+      --stageD:#9FD59F; --stageD-bg:#1E3120;
+      --stageE:#E8B36E; --stageE-bg:#382A16;
+      --stageF:#E893AE; --stageF-bg:#37202a;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#181A16;
+    --surface:#22251F;
+    --surface-sunk:#1D1F1A;
+    --ink:#EDEAE0;
+    --ink-soft:#B5B2A2;
+    --ink-faint:#83816F;
+    --line:#33362C;
+    --accent:#8FCBA6;
+    --accent-ink:#14231A;
+    --good:#7FCB9C;
+    --good-bg:#1C3325;
+    --bad:#E2917E;
+    --bad-bg:#3A241E;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 28px -14px rgba(0,0,0,0.55);
+
+    --stageA:#BC9CE6; --stageA-bg:#2C2337;
+    --stageB:#8CB8E8; --stageB-bg:#1E2C39;
+    --stageC:#7FD3C5; --stageC-bg:#173330;
+    --stageD:#9FD59F; --stageD-bg:#1E3120;
+    --stageE:#E8B36E; --stageE-bg:#382A16;
+    --stageF:#E893AE; --stageF-bg:#37202a;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Noto Sans KR","Apple SD Gothic Neo",sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+  }
+
+  .app{
+    max-width:480px;
+    margin:0 auto;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    padding:0 0 max(28px, env(safe-area-inset-bottom));
+  }
+
+  /* ---- top bar ---- */
+  .topbar{
+    position:sticky; top:0; z-index:5;
+    background:var(--bg);
+    padding:14px 20px 10px;
+    border-bottom:1px solid var(--line);
+  }
+  .topbar-row{
+    display:flex; align-items:baseline; justify-content:space-between;
+    margin-bottom:10px;
+  }
+  .brand{
+    font-family:"Noto Serif KR", serif;
+    font-weight:700;
+    font-size:15px;
+    letter-spacing:.01em;
+    color:var(--ink);
+  }
+  .counter{
+    font-family:"IBM Plex Mono", monospace;
+    font-variant-numeric: tabular-nums;
+    font-size:13px;
+    color:var(--ink-faint);
+  }
+  .progress-track{
+    height:5px;
+    background:var(--surface-sunk);
+    border-radius:99px;
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    background:var(--accent);
+    border-radius:99px;
+    width:0%;
+    transition:width .35s ease;
+  }
+
+  .screen{ display:none; padding:22px 20px 0; flex:1; }
+  .screen.active{ display:flex; flex-direction:column; }
+
+  /* ---- intro screen ---- */
+  .hero-eyebrow{
+    font-family:"IBM Plex Mono", monospace;
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin-bottom:10px;
+  }
+  h1.title{
+    font-family:"Noto Serif KR", serif;
+    font-weight:900;
+    font-size:29px;
+    line-height:1.32;
+    margin:0 0 14px;
+    text-wrap:balance;
+    color:var(--ink);
+  }
+  .lede{
+    font-size:15.5px;
+    line-height:1.72;
+    color:var(--ink-soft);
+    margin:0 0 6px;
+    max-width:44ch;
+  }
+  .lede + .lede{ margin-top:10px; }
+
+  .flow-strip{
+    display:flex;
+    gap:6px;
+    overflow-x:auto;
+    padding:18px 0 6px;
+    margin-bottom:4px;
+  }
+  .flow-chip{
+    flex:0 0 auto;
+    font-family:"IBM Plex Mono", monospace;
+    font-size:11.5px;
+    padding:7px 11px;
+    border-radius:8px;
+    white-space:nowrap;
+    font-weight:600;
+  }
+
+  .section-label{
+    font-family:"IBM Plex Mono", monospace;
+    font-size:12px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    margin:26px 0 12px;
+  }
+
+  .type-list{ display:flex; flex-direction:column; gap:8px; margin-bottom:8px; }
+  .type-item{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:14px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+  .type-head{
+    display:flex; align-items:center; gap:12px;
+    padding:13px 14px;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .type-num{
+    font-family:"IBM Plex Mono", monospace;
+    font-size:12px; font-weight:600;
+    width:26px; height:26px; flex:0 0 26px;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--surface-sunk);
+    color:var(--ink-soft);
+  }
+  .type-name{
+    font-weight:700; font-size:14.5px; flex:1;
+    color:var(--ink);
+  }
+  .type-chev{
+    color:var(--ink-faint);
+    transition:transform .2s ease;
+    font-size:12px;
+  }
+  .type-item.open .type-chev{ transform:rotate(90deg); }
+  .type-body{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .28s ease;
+  }
+  .type-item.open .type-body{ max-height:160px; }
+  .type-body-inner{
+    padding:0 14px 15px 52px;
+    font-size:13.5px;
+    line-height:1.62;
+    color:var(--ink-soft);
+  }
+
+  .cta{
+    margin-top:26px;
+    width:100%;
+    border:none;
+    border-radius:14px;
+    background:var(--accent);
+    color:var(--accent-ink);
+    font-family:"Noto Sans KR",sans-serif;
+    font-weight:700;
+    font-size:16px;
+    padding:17px;
+    cursor:pointer;
+    box-shadow:var(--shadow);
+    transition:transform .12s ease, opacity .12s ease;
+  }
+  .cta:active{ transform:scale(0.98); }
+  .cta-sub{
+    text-align:center;
+    font-size:12.5px;
+    color:var(--ink-faint);
+    margin:10px 0 30px;
+    font-family:"IBM Plex Mono",monospace;
+  }
+
+  /* ---- quiz screen ---- */
+  .stage-chip{
+    display:inline-flex;
+    align-self:flex-start;
+    align-items:center;
+    gap:6px;
+    font-family:"IBM Plex Mono", monospace;
+    font-weight:600;
+    font-size:12px;
+    padding:6px 11px;
+    border-radius:8px;
+    margin-bottom:16px;
+  }
+  .type-chip{
+    display:inline-flex;
+    align-self:flex-start;
+    font-size:12.5px;
+    font-weight:700;
+    color:var(--ink-soft);
+    background:var(--surface-sunk);
+    padding:5px 10px;
+    border-radius:7px;
+    margin-bottom:12px;
+  }
+  .question{
+    font-family:"Noto Serif KR", serif;
+    font-weight:700;
+    font-size:21px;
+    line-height:1.48;
+    margin:0 0 22px;
+    text-wrap:balance;
+    color:var(--ink);
+  }
+  .question b{ color:var(--accent); }
+
+  .choices{ display:flex; flex-direction:column; gap:10px; }
+  .choice{
+    text-align:left;
+    background:var(--surface);
+    border:1.5px solid var(--line);
+    border-radius:13px;
+    padding:15px 16px;
+    font-size:15px;
+    font-weight:500;
+    color:var(--ink);
+    cursor:pointer;
+    font-family:"Noto Sans KR",sans-serif;
+    display:flex;
+    align-items:center;
+    gap:11px;
+    transition:border-color .15s ease, background .15s ease, transform .08s ease;
+  }
+  .choice:active{ transform:scale(0.99); }
+  .choice-mark{
+    flex:0 0 22px; width:22px; height:22px;
+    border-radius:50%;
+    border:1.5px solid var(--line);
+    font-size:12px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:"IBM Plex Mono",monospace;
+    color:var(--ink-faint);
+  }
+  .choice.correct{
+    border-color:var(--good);
+    background:var(--good-bg);
+  }
+  .choice.correct .choice-mark{
+    border-color:var(--good);
+    background:var(--good);
+    color:var(--good-bg);
+  }
+  .choice.wrong{
+    border-color:var(--bad);
+    background:var(--bad-bg);
+  }
+  .choice.wrong .choice-mark{
+    border-color:var(--bad);
+    background:var(--bad);
+    color:var(--bad-bg);
+  }
+  .choice.disabled{ pointer-events:none; opacity:.55; }
+  .choice.disabled.correct, .choice.disabled.wrong{ opacity:1; }
+
+  .feedback{
+    margin-top:18px;
+    border-radius:13px;
+    padding:15px 16px;
+    font-size:14px;
+    line-height:1.6;
+    display:none;
+  }
+  .feedback.show{ display:block; }
+  .feedback.ok{ background:var(--good-bg); color:var(--good); }
+  .feedback.no{ background:var(--bad-bg); color:var(--ink); }
+  .feedback .fb-label{
+    font-family:"IBM Plex Mono",monospace;
+    font-weight:700;
+    font-size:11.5px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    display:block;
+    margin-bottom:5px;
+  }
+  .feedback.no .fb-label{ color:var(--bad); }
+  .feedback.ok .fb-label{ color:var(--good); }
+
+  .quiz-nav{
+    margin-top:auto;
+    padding-top:22px;
+    display:flex;
+    gap:10px;
+  }
+  .btn-next{
+    flex:1;
+    border:none;
+    border-radius:13px;
+    background:var(--accent);
+    color:var(--accent-ink);
+    font-weight:700;
+    font-size:15px;
+    padding:15px;
+    cursor:pointer;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .2s ease, transform .12s ease;
+    font-family:"Noto Sans KR",sans-serif;
+  }
+  .btn-next.show{ opacity:1; pointer-events:auto; }
+  .btn-next:active{ transform:scale(0.98); }
+
+  /* ---- results screen ---- */
+  .score-wrap{
+    text-align:center;
+    padding:18px 0 8px;
+  }
+  .score-eyebrow{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    margin-bottom:14px;
+  }
+  .score-num{
+    font-family:"Noto Serif KR",serif;
+    font-weight:900;
+    font-size:64px;
+    line-height:1;
+    color:var(--accent);
+  }
+  .score-den{
+    font-size:18px;
+    color:var(--ink-faint);
+    font-family:"IBM Plex Mono",monospace;
+  }
+  .score-msg{
+    font-size:15px;
+    color:var(--ink-soft);
+    margin:14px 0 26px;
+    line-height:1.6;
+  }
+
+  .breakdown{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:8px;
+    margin-bottom:26px;
+  }
+  .bd-cell{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:11px;
+    padding:10px 6px;
+    text-align:center;
+  }
+  .bd-name{
+    font-size:11px;
+    color:var(--ink-soft);
+    font-weight:700;
+    margin-bottom:5px;
+    line-height:1.3;
+    min-height:2.6em;
+  }
+  .bd-frac{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:13px;
+    font-weight:600;
+    color:var(--ink);
+  }
+
+  .review-list{ display:flex; flex-direction:column; gap:8px; margin-bottom:20px; }
+  .review-item{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-left:3px solid var(--bad);
+    border-radius:10px;
+    padding:12px 13px;
+    font-size:13px;
+    line-height:1.55;
+  }
+  .review-q{ font-weight:700; color:var(--ink); margin-bottom:4px; }
+  .review-a{ color:var(--ink-soft); }
+  .review-a b{ color:var(--good); font-weight:700; }
+
+  .btn-row{ display:flex; gap:10px; margin-top:4px; margin-bottom:30px; }
+  .btn-outline{
+    flex:1;
+    border:1.5px solid var(--line);
+    background:transparent;
+    color:var(--ink);
+    border-radius:13px;
+    font-weight:700;
+    font-size:14.5px;
+    padding:14px;
+    cursor:pointer;
+    font-family:"Noto Sans KR",sans-serif;
+  }
+  .btn-solid{
+    flex:1;
+    border:none;
+    background:var(--accent);
+    color:var(--accent-ink);
+    border-radius:13px;
+    font-weight:700;
+    font-size:14.5px;
+    padding:14px;
+    cursor:pointer;
+    font-family:"Noto Sans KR",sans-serif;
+  }
+
+  ::selection{ background:var(--accent); color:var(--accent-ink); }
+</style>
+
+<div class="app">
+
+  <div class="topbar" id="topbar" style="display:none;">
+    <div class="topbar-row">
+      <span class="brand">교수법 매트릭스 퀴즈</span>
+      <span class="counter" id="counterLabel">01 / 48</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+
+  <!-- INTRO -->
+  <div class="screen active" id="screen-intro">
+    <div class="hero-eyebrow">8 교수법 × 6단계 학습 흐름</div>
+    <h1 class="title">교수법 선택<br>매트릭스 퀴즈</h1>
+    <p class="lede">수업은 보통 관심을 끌고, 이해시키고, 적용해보고, 함께 협력하고, 결과를 공유하고, 마지막으로 성찰하는 여섯 단계로 흘러갑니다. 같은 흐름이라도 어떤 <b>교수법 유형</b>을 쓰느냐에 따라 각 단계의 활동은 완전히 달라집니다.</p>
+    <p class="lede">이 퀴즈는 8가지 교수법이 여섯 단계마다 어떤 구체적 활동으로 구현되는지 스스로 확인해보는 자가진단입니다. 문항마다 오답을 고르면 정답과 함께 짧은 설명이 바로 나타납니다.</p>
+
+    <div class="flow-strip" id="flowStrip"></div>
+
+    <div class="section-label">8대 교수법 살펴보기</div>
+    <div class="type-list" id="typeList"></div>
+
+    <button class="cta" id="startBtn">퀴즈 시작하기 · 48문항</button>
+    <div class="cta-sub">문항당 약 15초 · 스마트폰 세로 화면 최적화</div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="screen" id="screen-quiz">
+    <span class="type-chip" id="typeChip"></span>
+    <span class="stage-chip" id="stageChip"></span>
+    <p class="question" id="questionText"></p>
+    <div class="choices" id="choices"></div>
+    <div class="feedback" id="feedback">
+      <span class="fb-label" id="fbLabel"></span>
+      <span id="fbText"></span>
+    </div>
+    <div class="quiz-nav">
+      <button class="btn-next" id="nextBtn">다음 문항</button>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="screen" id="screen-results">
+    <div class="score-wrap">
+      <div class="score-eyebrow">퀴즈 완료</div>
+      <span class="score-num" id="scoreNum">0</span><span class="score-den" id="scoreDen"> / 48</span>
+      <p class="score-msg" id="scoreMsg"></p>
+    </div>
+    <div class="section-label">교수법별 정답률</div>
+    <div class="breakdown" id="breakdown"></div>
+    <div id="reviewWrap">
+      <div class="section-label" id="reviewLabel" style="display:none;">다시 볼 오답</div>
+      <div class="review-list" id="reviewList"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-outline" id="retryWrongBtn">오답만 다시 풀기</button>
+      <button class="btn-solid" id="retryAllBtn">처음부터 다시</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+
+  var STAGES = [
+    {id:'A', name:'관심 끌기',  desc:'학습에 대한 흥미와 동기를 불러일으키는 도입 단계', color:'stageA'},
+    {id:'B', name:'이해시키기', desc:'핵심 개념과 지식을 정확히 전달·습득시키는 단계',   color:'stageB'},
+    {id:'C', name:'적용하기',  desc:'배운 내용을 실제 상황에 적용해보는 단계',         color:'stageC'},
+    {id:'D', name:'협력하기',  desc:'다른 학습자와 함께 문제를 해결해가는 단계',       color:'stageD'},
+    {id:'E', name:'공유하기',  desc:'학습 결과나 산출물을 서로 나누는 단계',           color:'stageE'},
+    {id:'F', name:'성찰하기',  desc:'학습 과정을 돌아보고 정리·평가하는 단계',         color:'stageF'}
+  ];
+
+  var TYPES = [
+    { id:1, name:'아이디어 생성형', short:'생성형',
+      desc:'학습자가 스스로 생각을 떠올리고 확장하도록 돕는 교수법. 브레인스토밍과 질문 만들기로 사고의 폭을 넓힙니다.',
+      cells:{A:'브레인스토밍, AI 질문', B:'마인드맵', C:'질문 만들기(QFT)', D:'아이디어 투표', E:'생각 공유', F:'핵심 키워드 정리'} },
+    { id:2, name:'설명·전달형', short:'전달형',
+      desc:'강사가 지식과 정보를 체계적으로 전달하는 전통적 교수법. 강의와 사례연구로 개념을 명확히 이해시킵니다.',
+      cells:{A:'스토리텔링, 영상', B:'강의, 사례연구, 기사', C:'시범보이기', D:'질문·응답', E:'미니강의', F:'요약하기'} },
+    { id:3, name:'토의·의사소통형', short:'토의형',
+      desc:'학습자 간 의견을 주고받으며 사고를 정교화하는 교수법. 토론과 디베이트로 다양한 관점을 나눕니다.',
+      cells:{A:'쟁점 제시', B:'토론', C:'디베이트', D:'패널토의, 포럼', E:'토의 결과 발표', F:'피드백 토론'} },
+    { id:4, name:'협력학습형', short:'협력형',
+      desc:'팀 단위로 공동의 목표를 달성해가는 교수법. 프로젝트와 PBL로 협업 역량을 기릅니다.',
+      cells:{A:'팀 빌딩', B:'협동학습', C:'PBL', D:'프로젝트, TBL', E:'팀 발표', F:'팀 회고'} },
+    { id:5, name:'체험·실습형', short:'실습형',
+      desc:'직접 만들고 실행하며 배우는 교수법. 실험과 프로토타입 제작 등 몸으로 익히는 학습입니다.',
+      cells:{A:'실물 관찰', B:'실험', C:'프로토타입 제작', D:'현장학습', E:'실습 결과 공유', F:'실습일지'} },
+    { id:6, name:'역할수행형', short:'역할형',
+      desc:'특정 역할이나 상황을 연기하며 이해를 심화하는 교수법. 역할연기와 시뮬레이션으로 입장을 바꿔봅니다.',
+      cells:{A:'상황극', B:'역할연기', C:'시뮬레이션', D:'인터뷰', E:'연극 발표', F:'역할 피드백'} },
+    { id:7, name:'표현·공유형', short:'공유형',
+      desc:'배운 내용을 결과물로 만들어 표현하고 알리는 교수법. 포스터와 보고서로 산출물을 공유합니다.',
+      cells:{A:'포스터', B:'그림학습', C:'보고서 작성', D:'공동 제작', E:'성공사례 발표', F:'발표 피드백'} },
+    { id:8, name:'성찰·평가형', short:'평가형',
+      desc:'학습 과정과 결과를 되돌아보고 점검하는 교수법. 퀴즈와 자기평가로 배움을 확인합니다.',
+      cells:{A:'퀴즈', B:'복습', C:'자기평가', D:'동료평가', E:'성찰 저널', F:'시험'} }
+  ];
+
+  function stageOf(id){ for (var i=0;i<STAGES.length;i++) if (STAGES[i].id===id) return STAGES[i]; }
+
+  function shuffle(arr){
+    var a = arr.slice();
+    for (var i=a.length-1;i>0;i--){
+      var j = Math.floor(Math.random()*(i+1));
+      var t=a[i]; a[i]=a[j]; a[j]=t;
+    }
+    return a;
+  }
+
+  // build 48 questions: for each type × stage, correct = that cell,
+  // distractors = 3 other types' activities in the SAME stage column.
+  function buildQuestions(){
+    var qs = [];
+    TYPES.forEach(function(type){
+      STAGES.forEach(function(stage){
+        var correctText = type.cells[stage.id];
+        var pool = TYPES.filter(function(t){ return t.id !== type.id; })
+                         .map(function(t){ return t.cells[stage.id]; });
+        var distractors = shuffle(pool).slice(0,3);
+        var options = shuffle([correctText].concat(distractors));
+        qs.push({
+          type: type,
+          stage: stage,
+          correctText: correctText,
+          options: options
+        });
+      });
+    });
+    return shuffle(qs);
+  }
+
+  var ALL_QUESTIONS = buildQuestions();
+  var queue = ALL_QUESTIONS.slice();
+  var idx = 0;
+  var answers = []; // {q, chosen, correct}
+  var wrongQueue = [];
+
+  var screenIntro = document.getElementById('screen-intro');
+  var screenQuiz = document.getElementById('screen-quiz');
+  var screenResults = document.getElementById('screen-results');
+  var topbar = document.getElementById('topbar');
+
+  function showScreen(el){
+    [screenIntro, screenQuiz, screenResults].forEach(function(s){ s.classList.remove('active'); });
+    el.classList.add('active');
+    window.scrollTo(0,0);
+  }
+
+  // ---- intro render ----
+  var flowStrip = document.getElementById('flowStrip');
+  STAGES.forEach(function(s){
+    var chip = document.createElement('span');
+    chip.className = 'flow-chip';
+    chip.style.background = 'var(--'+s.color+'-bg)';
+    chip.style.color = 'var(--'+s.color+')';
+    chip.textContent = s.name;
+    flowStrip.appendChild(chip);
+  });
+
+  var typeList = document.getElementById('typeList');
+  TYPES.forEach(function(t){
+    var item = document.createElement('div');
+    item.className = 'type-item';
+    item.innerHTML =
+      '<div class="type-head">' +
+        '<span class="type-num">' + String(t.id).padStart(2,'0') + '</span>' +
+        '<span class="type-name">' + t.name + '</span>' +
+        '<span class="type-chev">▸</span>' +
+      '</div>' +
+      '<div class="type-body"><div class="type-body-inner">' + t.desc + '</div></div>';
+    item.querySelector('.type-head').addEventListener('click', function(){
+      item.classList.toggle('open');
+    });
+    typeList.appendChild(item);
+  });
+
+  document.getElementById('startBtn').addEventListener('click', function(){
+    topbar.style.display = 'block';
+    idx = 0; answers = []; queue = ALL_QUESTIONS.slice();
+    showScreen(screenQuiz);
+    renderQuestion();
+  });
+
+  // ---- quiz render ----
+  var typeChip = document.getElementById('typeChip');
+  var stageChip = document.getElementById('stageChip');
+  var questionText = document.getElementById('questionText');
+  var choicesEl = document.getElementById('choices');
+  var feedback = document.getElementById('feedback');
+  var fbLabel = document.getElementById('fbLabel');
+  var fbText = document.getElementById('fbText');
+  var nextBtn = document.getElementById('nextBtn');
+  var counterLabel = document.getElementById('counterLabel');
+  var progressFill = document.getElementById('progressFill');
+
+  function pad(n){ return String(n).padStart(2,'0'); }
+
+  function renderQuestion(){
+    var total = queue.length;
+    var q = queue[idx];
+    counterLabel.textContent = pad(idx+1) + ' / ' + pad(total);
+    progressFill.style.width = ((idx)/total*100) + '%';
+
+    typeChip.textContent = q.type.name;
+    stageChip.textContent = q.stage.id + '단계 · ' + q.stage.name;
+    stageChip.style.background = 'var(--'+q.stage.color+'-bg)';
+    stageChip.style.color = 'var(--'+q.stage.color+')';
+
+    questionText.innerHTML = '<b>' + q.type.name + '</b> 교수법에서 <b>' + q.stage.name + '</b>(' + q.stage.desc + ') 단계에 어울리는 교수 활동은 무엇일까요?';
+
+    choicesEl.innerHTML = '';
+    feedback.className = 'feedback';
+    nextBtn.className = 'btn-next';
+
+    q.options.forEach(function(opt, i){
+      var btn = document.createElement('button');
+      btn.className = 'choice';
+      btn.innerHTML = '<span class="choice-mark">' + String.fromCharCode(65+i) + '</span><span>' + opt + '</span>';
+      btn.addEventListener('click', function(){ selectAnswer(q, opt, btn); });
+      choicesEl.appendChild(btn);
+    });
+  }
+
+  function selectAnswer(q, opt, btnEl){
+    var buttons = Array.prototype.slice.call(choicesEl.children);
+    buttons.forEach(function(b){ b.classList.add('disabled'); });
+
+    var isCorrect = (opt === q.correctText);
+    buttons.forEach(function(b){
+      var label = b.querySelector('span:last-child').textContent;
+      if (label === q.correctText) b.classList.add('correct');
+    });
+    if (!isCorrect) btnEl.classList.add('wrong');
+
+    answers.push({ q:q, chosen:opt, correct:isCorrect });
+    if (!isCorrect) wrongQueue.push(q);
+
+    feedback.classList.add('show');
+    if (isCorrect){
+      feedback.className = 'feedback show ok';
+      fbLabel.textContent = '정답';
+      fbText.textContent = q.type.name + '의 ' + q.stage.name + ' 단계 활동은 "' + q.correctText + '"가 맞습니다.';
+    } else {
+      feedback.className = 'feedback show no';
+      fbLabel.textContent = '오답 노트';
+      fbText.textContent = '"' + opt + '"는 다른 교수법의 활동입니다. ' + q.type.name + '에서 ' + q.stage.name + ' 단계엔 "' + q.correctText + '"가 정답이에요.';
+    }
+    nextBtn.classList.add('show');
+  }
+
+  nextBtn.addEventListener('click', function(){
+    idx++;
+    if (idx >= queue.length){
+      renderResults();
+      showScreen(screenResults);
+    } else {
+      renderQuestion();
+    }
+  });
+
+  // ---- results ----
+  var scoreNum = document.getElementById('scoreNum');
+  var scoreDen = document.getElementById('scoreDen');
+  var scoreMsg = document.getElementById('scoreMsg');
+  var breakdown = document.getElementById('breakdown');
+  var reviewList = document.getElementById('reviewList');
+  var reviewLabel = document.getElementById('reviewLabel');
+
+  function renderResults(){
+    var relevant = answers.slice(-queue.length);
+    var correctCount = relevant.filter(function(a){ return a.correct; }).length;
+    var total = relevant.length;
+    scoreNum.textContent = correctCount;
+    scoreDen.textContent = ' / ' + total;
+
+    var pct = Math.round(correctCount/total*100);
+    var msg;
+    if (pct === 100) msg = '완벽합니다. 8대 교수법과 6단계 흐름을 정확히 꿰고 계시네요.';
+    else if (pct >= 80) msg = '탄탄합니다. 헷갈렸던 활동만 오답 노트로 짚고 넘어가면 완벽해요.';
+    else if (pct >= 50) msg = '절반 이상 맞혔어요. 매트릭스를 다시 훑어보고 오답만 다시 풀어보세요.';
+    else msg = '아직 낯선 조합이 많네요. 앞의 8대 교수법 설명부터 다시 읽어보길 추천해요.';
+    scoreMsg.textContent = msg;
+
+    breakdown.innerHTML = '';
+    TYPES.forEach(function(t){
+      var typeAnswers = relevant.filter(function(a){ return a.q.type.id === t.id; });
+      if (!typeAnswers.length) return;
+      var c = typeAnswers.filter(function(a){ return a.correct; }).length;
+      var cell = document.createElement('div');
+      cell.className = 'bd-cell';
+      cell.innerHTML = '<div class="bd-name">' + t.short + '</div><div class="bd-frac">' + c + '/' + typeAnswers.length + '</div>';
+      breakdown.appendChild(cell);
+    });
+
+    reviewList.innerHTML = '';
+    var wrongs = relevant.filter(function(a){ return !a.correct; });
+    reviewLabel.style.display = wrongs.length ? 'block' : 'none';
+    wrongs.forEach(function(a){
+      var item = document.createElement('div');
+      item.className = 'review-item';
+      item.innerHTML =
+        '<div class="review-q">' + a.q.type.name + ' · ' + a.q.stage.name + '</div>' +
+        '<div class="review-a">내 답 "' + a.chosen + '" → 정답 <b>' + a.q.correctText + '</b></div>';
+      reviewList.appendChild(item);
+    });
+
+    retryWrongBtn.style.display = wrongs.length ? 'block' : 'none';
+  }
+
+  var retryWrongBtn = document.getElementById('retryWrongBtn');
+  var retryAllBtn = document.getElementById('retryAllBtn');
+
+  retryWrongBtn.addEventListener('click', function(){
+    var relevant = answers.slice(-queue.length);
+    var wrongs = relevant.filter(function(a){ return !a.correct; }).map(function(a){ return a.q; });
+    queue = shuffle(wrongs);
+    idx = 0;
+    answers = [];
+    showScreen(screenQuiz);
+    renderQuestion();
+  });
+
+  retryAllBtn.addEventListener('click', function(){
+    queue = shuffle(ALL_QUESTIONS.slice());
+    idx = 0;
+    answers = [];
+    showScreen(screenQuiz);
+    renderQuestion();
+  });
+
+})();
+</script>
