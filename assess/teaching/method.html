@@ -117,12 +117,27 @@
     letter-spacing:.01em;
     color:var(--ink);
   }
+  .topbar-right{
+    display:flex; align-items:center; gap:10px;
+  }
   .counter{
     font-family:"IBM Plex Mono", monospace;
     font-variant-numeric: tabular-nums;
     font-size:13px;
     color:var(--ink-faint);
   }
+  .restart-btn{
+    font-family:"Noto Sans KR",sans-serif;
+    font-size:12px;
+    font-weight:700;
+    color:var(--ink-soft);
+    background:var(--surface-sunk);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:5px 9px;
+    cursor:pointer;
+  }
+  .restart-btn:active{ opacity:.7; }
   .progress-track{
     height:5px;
     background:var(--surface-sunk);
@@ -231,12 +246,31 @@
     overflow:hidden;
     transition:max-height .28s ease;
   }
-  .type-item.open .type-body{ max-height:160px; }
+  .type-item.open .type-body{ max-height:280px; }
   .type-body-inner{
     padding:0 14px 15px 52px;
     font-size:13.5px;
     line-height:1.62;
     color:var(--ink-soft);
+  }
+  .type-easy{
+    margin-top:9px;
+    padding:9px 11px;
+    border-radius:9px;
+    background:var(--surface-sunk);
+    font-size:13px;
+    line-height:1.55;
+    color:var(--ink);
+  }
+  .type-easy b{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:10.5px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--accent);
+    display:block;
+    margin-bottom:4px;
+    font-weight:700;
   }
 
   .cta{
@@ -501,7 +535,10 @@
   <div class="topbar" id="topbar" style="display:none;">
     <div class="topbar-row">
       <span class="brand">교수법 매트릭스 퀴즈</span>
-      <span class="counter" id="counterLabel">01 / 48</span>
+      <span class="topbar-right">
+        <span class="counter" id="counterLabel">01 / 48</span>
+        <button class="restart-btn" id="restartTopBtn">처음부터</button>
+      </span>
     </div>
     <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
   </div>
@@ -573,27 +610,35 @@
   var TYPES = [
     { id:1, name:'아이디어 생성형', short:'생성형',
       desc:'학습자가 스스로 생각을 떠올리고 확장하도록 돕는 교수법. 브레인스토밍과 질문 만들기로 사고의 폭을 넓힙니다.',
+      easy:'"일단 떠오르는 대로 다 꺼내보자!" — 정답보다 아이디어의 양을 먼저 쌓는 방식이에요.',
       cells:{A:'브레인스토밍, AI 질문', B:'마인드맵', C:'질문 만들기(QFT)', D:'아이디어 투표', E:'생각 공유', F:'핵심 키워드 정리'} },
     { id:2, name:'설명·전달형', short:'전달형',
       desc:'강사가 지식과 정보를 체계적으로 전달하는 전통적 교수법. 강의와 사례연구로 개념을 명확히 이해시킵니다.',
+      easy:'우리가 흔히 아는 "강의 듣기" 방식이에요. 강사가 앞에서 설명하고 학습자는 듣고 이해합니다.',
       cells:{A:'스토리텔링, 영상', B:'강의, 사례연구, 기사', C:'시범보이기', D:'질문·응답', E:'미니강의', F:'요약하기'} },
     { id:3, name:'토의·의사소통형', short:'토의형',
       desc:'학습자 간 의견을 주고받으며 사고를 정교화하는 교수법. 토론과 디베이트로 다양한 관점을 나눕니다.',
+      easy:'서로 다른 생각을 말로 부딪혀보는 방식이에요. "네 생각은 어때?"를 주고받으며 배웁니다.',
       cells:{A:'쟁점 제시', B:'토론', C:'디베이트', D:'패널토의, 포럼', E:'토의 결과 발표', F:'피드백 토론'} },
     { id:4, name:'협력학습형', short:'협력형',
       desc:'팀 단위로 공동의 목표를 달성해가는 교수법. 프로젝트와 PBL로 협업 역량을 기릅니다.',
+      easy:'팀을 짜서 함께 과제를 완성하는 방식이에요. 혼자가 아니라 "우리"가 함께 해냅니다.',
       cells:{A:'팀 빌딩', B:'협동학습', C:'PBL', D:'프로젝트, TBL', E:'팀 발표', F:'팀 회고'} },
     { id:5, name:'체험·실습형', short:'실습형',
       desc:'직접 만들고 실행하며 배우는 교수법. 실험과 프로토타입 제작 등 몸으로 익히는 학습입니다.',
+      easy:'듣기만 하지 않고 직접 손으로 해보며 배우는 방식이에요. 몸으로 익힌 건 잘 안 잊어버려요.',
       cells:{A:'실물 관찰', B:'실험', C:'프로토타입 제작', D:'현장학습', E:'실습 결과 공유', F:'실습일지'} },
     { id:6, name:'역할수행형', short:'역할형',
       desc:'특정 역할이나 상황을 연기하며 이해를 심화하는 교수법. 역할연기와 시뮬레이션으로 입장을 바꿔봅니다.',
+      easy:'다른 사람 입장이 되어 직접 연기해보는 방식이에요. "내가 그 사람이라면?"을 몸소 겪어봅니다.',
       cells:{A:'상황극', B:'역할연기', C:'시뮬레이션', D:'인터뷰', E:'연극 발표', F:'역할 피드백'} },
     { id:7, name:'표현·공유형', short:'공유형',
       desc:'배운 내용을 결과물로 만들어 표현하고 알리는 교수법. 포스터와 보고서로 산출물을 공유합니다.',
+      easy:'배운 걸 눈에 보이는 결과물로 만들어 보여주는 방식이에요. 포스터, 보고서처럼 "짜잔" 하고 내놓습니다.',
       cells:{A:'포스터', B:'그림학습', C:'보고서 작성', D:'공동 제작', E:'성공사례 발표', F:'발표 피드백'} },
     { id:8, name:'성찰·평가형', short:'평가형',
       desc:'학습 과정과 결과를 되돌아보고 점검하는 교수법. 퀴즈와 자기평가로 배움을 확인합니다.',
+      easy:'"내가 얼마나 알게 됐지?"를 스스로 점검해보는 방식이에요. 퀴즈나 시험이 대표적이에요.',
       cells:{A:'퀴즈', B:'복습', C:'자기평가', D:'동료평가', E:'성찰 저널', F:'시험'} }
   ];
 
@@ -668,7 +713,9 @@
         '<span class="type-name">' + t.name + '</span>' +
         '<span class="type-chev">▸</span>' +
       '</div>' +
-      '<div class="type-body"><div class="type-body-inner">' + t.desc + '</div></div>';
+      '<div class="type-body"><div class="type-body-inner">' + t.desc +
+        '<div class="type-easy"><b>쉽게 말하면</b>' + t.easy + '</div>' +
+      '</div></div>';
     item.querySelector('.type-head').addEventListener('click', function(){
       item.classList.toggle('open');
     });
@@ -827,6 +874,12 @@
     answers = [];
     showScreen(screenQuiz);
     renderQuestion();
+  });
+
+  document.getElementById('restartTopBtn').addEventListener('click', function(){
+    topbar.style.display = 'none';
+    idx = 0; answers = []; wrongQueue = []; queue = ALL_QUESTIONS.slice();
+    showScreen(screenIntro);
   });
 
 })();
