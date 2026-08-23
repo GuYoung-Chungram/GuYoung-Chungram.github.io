@@ -1,1 +1,75 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0E5C4C">
+  <meta name="description" content="AI와 함께 자신의 수업을 끝까지 설계하는 클릭형 교수설계 실습 도구">
+  <title>AI 교수설계 스튜디오</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Noto+Serif+KR:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#workspace">본문 바로가기</a>
+  <header class="top-app-bar">
+    <div class="brand-mark" aria-hidden="true">AI</div>
+    <div class="brand-copy">
+      <strong>교수설계 스튜디오</strong>
+      <span>AI와 함께, 내 수업을 끝까지</span>
+    </div>
+    <div class="top-actions">
+      <button class="icon-button" id="themeToggle" aria-label="다크 모드 전환" title="화면 테마 전환">◐</button>
+      <button class="outlined-button" id="resetAll" title="공용 PC라면 사용 후 눌러주세요 — 이 브라우저에만 저장된 데이터가 지워집니다">전체 초기화</button>
+      <button class="tonal-button" id="openCanvas">설계 캔버스 <span id="savedCount" class="button-badge">0</span></button>
+    </div>
+  </header>
 
+  <div class="progress-wrap" aria-label="전체 진행률">
+    <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+    <span id="progressText">1 / 10 모듈</span>
+  </div>
+
+  <div class="app-shell">
+    <aside class="journey" aria-label="수업 모듈">
+      <div class="journey-heading">
+        <span class="eyebrow">오늘의 여정</span>
+        <h2>하나의 수업을<br>완성합니다</h2>
+      </div>
+      <nav id="moduleNav"></nav>
+      <div class="journey-note">
+        <span aria-hidden="true">✦</span>
+        <p><strong>공동설계 원칙</strong><br>AI는 대신 결정하지 않고 더 좋은 판단을 돕습니다.</p>
+      </div>
+    </aside>
+
+    <main id="workspace" class="workspace" tabindex="-1">
+      <section id="moduleHero" class="module-hero"></section>
+      <section id="moduleContent" class="module-content" aria-live="polite"></section>
+      <footer class="module-footer">
+        <button class="text-button" id="prevModule">← 이전</button>
+        <span id="saveStatus" class="save-status" role="status">이 기기에 자동 저장됩니다</span>
+        <button class="filled-button" id="nextModule">다음 단계 <span aria-hidden="true">→</span></button>
+      </footer>
+    </main>
+  </div>
+
+  <div id="scrim" class="scrim" hidden></div>
+  <aside id="canvasSheet" class="side-sheet" aria-hidden="true" aria-labelledby="canvasTitle">
+    <div class="sheet-header">
+      <div><span class="eyebrow">자동으로 쌓이는</span><h2 id="canvasTitle">나의 설계 캔버스</h2></div>
+      <button class="icon-button" id="closeCanvas" aria-label="캔버스 닫기">×</button>
+    </div>
+    <div id="canvasContent" class="sheet-content"></div>
+    <div class="sheet-actions">
+      <button class="outlined-button" id="backupJson">JSON 백업</button>
+      <button class="filled-button" id="exportMarkdown">Markdown 내보내기</button>
+    </div>
+  </aside>
+
+  <div id="snackbar" class="snackbar" role="status" aria-live="polite"></div>
+  <input id="jsonImport" type="file" accept="application/json" hidden>
+  <script src="app.js"></script>
+</body>
+</html>
