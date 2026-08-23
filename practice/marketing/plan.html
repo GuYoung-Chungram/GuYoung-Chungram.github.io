@@ -1,1 +1,1363 @@
+<!DOCTYPE html>
+<html lang="ko" class="theme-light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>청람 AI 홍보실습소 | 청람M&C</title>
+<meta name="description" content="6단계 질문에 답하면 나만의 홍보 프롬프트와 실행 계획이 완성됩니다.">
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ===== 청람 테마 — 클래스 기반 ===== */
+html.theme-light {
+  --bg: #FFFFFF; --surface: #F8FAFF; --surface-hover: #EEF3FD;
+  --border: rgba(22,82,216,0.08);
+  --text: #1A1A1A; --text-secondary: #666666;
+  --accent: #1652D8; --accent-secondary: #0F3D99;
+  --positive: #059669; --negative: #e11d48; --warning: #d97706;
+  --cr-light-bg: #EEF3FD;
+  --cr-dark-section: #0F0F0F;
+  --menu-bg: rgba(255,255,255,0.9);
+  --menu-bg-hover: rgba(255,255,255,0.98);
+  --menu-border: rgba(22,82,216,0.12);
+  --menu-text: #1A1A1A;
+  --menu-item-hover: rgba(22,82,216,0.06);
+  --chip-bg: #FFFFFF;
+  --overlay: rgba(15,15,15,0.5);
+}
+html.theme-dark {
+  --bg: #0F0F0F; --surface: #1A1A2E; --surface-hover: #252540;
+  --border: rgba(255,255,255,0.06);
+  --text: #EDEDED; --text-secondary: #888888;
+  --accent: #4B7BF5; --accent-secondary: #6B8FFF;
+  --positive: #10b981; --negative: #f43f5e; --warning: #f59e0b;
+  --cr-light-bg: #1A1A2E;
+  --cr-dark-section: #0A0A0A;
+  --menu-bg: rgba(15,15,15,0.9);
+  --menu-bg-hover: rgba(15,15,15,0.98);
+  --menu-border: rgba(75,123,245,0.15);
+  --menu-text: #EDEDED;
+  --menu-item-hover: rgba(75,123,245,0.1);
+  --chip-bg: #1A1A2E;
+  --overlay: rgba(0,0,0,0.65);
+}
+
+:root {
+  --space-section: clamp(40px, 4vw + 24px, 80px);
+  --space-gutter: clamp(20px, 4vw, 48px);
+  --wrap: 1120px;
+  --radius: 8px;
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --cr-hero-text: #FFFFFF;
+  --cr-hero-eyebrow: #8FB0FF;
+  --cr-hero-highlight: #FFD84D;
+  --cr-hero-highlight-hover: #FFE480;
+  --cr-hero-highlight-text: #0F0F0F;
+  --topbar-h: 60px;
+}
+
+body {
+  font-family: 'Noto Sans KR', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg); color: var(--text);
+  line-height: 1.7; -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
+  transition: background var(--duration-normal), color var(--duration-normal);
+  scrollbar-gutter: stable;
+  overflow-x: hidden;
+}
+h1, h2, h3 { color: var(--text); letter-spacing: -0.03em; line-height: 1.25; text-wrap: balance; }
+h1 { font-weight: 700; font-size: clamp(2rem, 4.6vw, 3.25rem); }
+h2 { font-weight: 600; font-size: clamp(1.5rem, 3vw, 2rem); letter-spacing: -0.02em; }
+h3 { font-weight: 600; font-size: clamp(1.15rem, 2vw, 1.4rem); letter-spacing: -0.02em; }
+p, li, td, th, span, label { font-weight: 400; color: var(--text); }
+.text-secondary { color: var(--text-secondary); }
+a { color: var(--accent); }
+button { font-family: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+.wrap { max-width: var(--wrap); margin: 0 auto; padding-inline: var(--space-gutter); }
+.eyebrow { font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); }
+.cr-accent-underline { border-bottom: 2px solid var(--accent); padding-bottom: 6px; display: inline-block; }
+.cr-square-bullet { list-style: none; padding-left: 0; }
+.cr-square-bullet li { padding-left: 20px; position: relative; margin-bottom: 8px; }
+.cr-square-bullet li::before { content: ''; position: absolute; left: 0; top: 0.72em; width: 6px; height: 6px; background: var(--accent); }
+.cr-dot-grid { background-image: radial-gradient(circle, var(--cr-hero-text) 0.6px, transparent 0.6px); background-size: 26px 26px; opacity: 0.09; position: absolute; inset: 0; pointer-events: none; }
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; transition: box-shadow var(--duration-fast) ease, transform var(--duration-fast) ease; }
+.card:hover { box-shadow: 0 0 0 1px var(--border), 0 8px 16px rgba(0,0,0,0.08); }
+
+/* ===== 버튼 ===== */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.9375rem; font-weight: 600; letter-spacing: -0.01em; padding: 12px 22px; min-height: 44px; border-radius: 6px; border: 1px solid transparent; cursor: pointer; text-decoration: none; transition: transform var(--duration-fast) ease, background var(--duration-fast) ease, color var(--duration-fast) ease, border-color var(--duration-fast) ease, opacity var(--duration-fast) ease; }
+.btn:active { transform: translateY(1px); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover:not(:disabled) { background: var(--accent-secondary); }
+.btn-ghost { background: transparent; color: var(--text); border-color: var(--border); }
+.btn-ghost:hover:not(:disabled) { background: var(--surface-hover); }
+.btn-hero-primary { background: var(--cr-hero-highlight); color: var(--cr-hero-highlight-text); }
+.btn-hero-primary:hover { background: var(--cr-hero-highlight-hover); }
+.btn-hero-ghost { background: transparent; color: var(--cr-hero-text); border-color: rgba(255,255,255,0.28); }
+.btn-hero-ghost:hover:not(:disabled) { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.5); }
+.btn-sm { padding: 8px 14px; min-height: 36px; font-size: 0.8125rem; }
+.btn-danger-ghost { background: transparent; color: var(--negative); border-color: var(--negative); }
+.btn-danger-ghost:hover:not(:disabled) { background: rgba(225,29,72,0.08); }
+
+/* ===== 랜딩 ===== */
+.hero { position: relative; overflow: hidden; background: var(--cr-dark-section); color: var(--cr-hero-text); padding-block: clamp(56px, 8vw, 104px); }
+.hero::after { content: ''; position: absolute; right: -140px; top: -140px; width: 420px; height: 420px; border: 1px solid rgba(255,255,255,0.07); border-radius: 50%; pointer-events: none; }
+.hero h1 { color: var(--cr-hero-text); }
+.hero h1 em { font-style: normal; color: var(--cr-hero-highlight); box-shadow: inset 0 -0.14em 0 rgba(255,216,77,0.24); }
+.hero-eyebrow { color: var(--cr-hero-eyebrow); }
+.hero-sub { margin-top: 18px; max-width: 52ch; font-size: clamp(1rem, 1.4vw, 1.125rem); color: rgba(255,255,255,0.72); }
+.landing-meta { margin-top: 14px; font-size: 0.875rem; color: rgba(255,255,255,0.6); }
+
+.entry-section { padding-block: var(--space-section); }
+.entry-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 28px; }
+@media (max-width: 860px) { .entry-grid { grid-template-columns: 1fr; } }
+.entry-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 26px; display: flex; flex-direction: column; gap: 12px; }
+.entry-card h3 { display: flex; align-items: center; gap: 8px; }
+.entry-badge { display: inline-block; font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.04em; padding: 3px 8px; border-radius: 999px; background: var(--cr-light-bg); color: var(--accent); }
+.entry-card p { color: var(--text-secondary); font-size: 0.9375rem; flex: 1; }
+.entry-card.is-disabled { opacity: 0.62; }
+.entry-card.is-disabled .btn { pointer-events: none; }
+
+/* ===== 상단바 (마법사) ===== */
+.app-topbar { position: sticky; top: 0; z-index: 400; background: var(--bg); border-bottom: 1px solid var(--border); }
+.app-topbar-inner { display: flex; align-items: center; gap: 16px; padding-block: 10px; }
+.app-logo { font-weight: 700; letter-spacing: -0.02em; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+.app-logo-mark { width: 9px; height: 9px; background: var(--accent); flex: none; }
+.autosave-status { margin-left: auto; font-size: 0.75rem; color: var(--text-secondary); white-space: nowrap; display: flex; align-items: center; gap: 6px; }
+.autosave-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--positive); flex: none; }
+.autosave-dot.is-saving { background: var(--warning); }
+
+/* ===== 단계 표시기 ===== */
+.step-indicator { display: flex; gap: 4px; overflow-x: auto; padding: 10px var(--space-gutter) 4px; scrollbar-width: thin; }
+.step-dot { flex: none; display: flex; flex-direction: column; align-items: center; gap: 6px; background: transparent; border: none; cursor: pointer; padding: 6px 8px; border-radius: 8px; color: var(--text-secondary); }
+.step-dot:hover:not(:disabled) { background: var(--surface-hover); }
+.step-dot:disabled { cursor: not-allowed; opacity: 0.4; }
+.step-dot-num { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; background: var(--surface); border: 1px solid var(--border); }
+.step-dot.is-current .step-dot-num { background: var(--accent); color: #fff; border-color: var(--accent); }
+.step-dot.is-done .step-dot-num { background: var(--cr-light-bg); color: var(--accent); border-color: var(--accent); }
+.step-dot-label { font-size: 0.6875rem; white-space: nowrap; }
+.step-dot.is-current .step-dot-label { color: var(--accent); font-weight: 600; }
+
+/* ===== 위저드 레이아웃 ===== */
+.wizard-main { padding-block: 28px; }
+.wizard-grid { display: grid; grid-template-columns: 300px 1fr; gap: 28px; align-items: start; }
+@media (max-width: 900px) { .wizard-grid { grid-template-columns: 1fr; } }
+.wizard-grid.is-full { grid-template-columns: 1fr; max-width: 820px; margin: 0 auto; }
+
+.summary-panel { position: sticky; top: calc(var(--topbar-h) + 56px); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; max-height: calc(100vh - 140px); overflow-y: auto; }
+@media (max-width: 900px) { .summary-panel { position: static; max-height: none; } }
+.summary-toggle { display: none; width: 100%; }
+@media (max-width: 900px) { .summary-toggle { display: flex; } .summary-panel { display: none; } .summary-panel.is-open { display: block; } }
+.summary-title { font-size: 0.8125rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary); margin-bottom: 12px; }
+.summary-row { margin-bottom: 12px; }
+.summary-row dt { font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 2px; }
+.summary-row dd { font-size: 0.875rem; word-break: break-word; }
+.summary-empty { font-size: 0.875rem; color: var(--text-secondary); }
+.summary-chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.summary-mini-chip { font-size: 0.75rem; background: var(--cr-light-bg); color: var(--accent); padding: 2px 8px; border-radius: 999px; }
+.summary-example-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: 700; color: var(--warning); background: rgba(217,119,6,0.12); padding: 4px 10px; border-radius: 999px; margin-bottom: 14px; }
+
+.step-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: clamp(20px, 3vw, 32px); }
+.step-head { margin-bottom: 22px; }
+.step-head .eyebrow { display: block; margin-bottom: 6px; }
+.step-head p { color: var(--text-secondary); margin-top: 6px; font-size: 0.9375rem; }
+
+/* ===== 폼 요소 ===== */
+.field { margin-bottom: 22px; }
+.field-label { display: block; font-weight: 600; font-size: 0.9375rem; margin-bottom: 6px; }
+.field-required { color: var(--negative); margin-left: 2px; }
+.field-hint { font-size: 0.8125rem; color: var(--text-secondary); margin-bottom: 8px; }
+.field-examples { font-size: 0.8125rem; margin-bottom: 8px; display: flex; flex-direction: column; gap: 4px; }
+.field-examples .good { color: var(--positive); }
+.field-examples .bad { color: var(--negative); }
+.input, .textarea, .select {
+  width: 100%; font-family: inherit; font-size: 0.9375rem; color: var(--text);
+  background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+  padding: 11px 14px; transition: border-color var(--duration-fast);
+}
+.input:focus, .textarea:focus, .select:focus { border-color: var(--accent); }
+.textarea { min-height: 96px; resize: vertical; line-height: 1.6; }
+.textarea.is-lg { min-height: 140px; }
+.field-error { display: none; color: var(--negative); font-size: 0.8125rem; margin-top: 6px; align-items: center; gap: 6px; }
+.field.has-error .input, .field.has-error .textarea { border-color: var(--negative); }
+.field.has-error .field-error { display: flex; }
+
+.chip-group { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 9px 16px;
+  border-radius: 999px; border: 1px solid var(--border); background: var(--chip-bg);
+  color: var(--text); font-size: 0.875rem; cursor: pointer; transition: all var(--duration-fast);
+}
+.chip:hover { border-color: var(--accent); }
+.chip.is-active { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; }
+
+.radio-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+.radio-card { position: relative; display: flex; align-items: flex-start; gap: 10px; padding: 14px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; background: var(--bg); min-height: 44px; }
+.radio-card:hover { border-color: var(--accent); }
+.radio-card.is-active { border-color: var(--accent); background: var(--cr-light-bg); }
+.radio-card:has(input:focus-visible) { outline: 3px solid var(--accent); outline-offset: 2px; }
+.radio-card .rc-dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--border); flex: none; margin-top: 2px; position: relative; }
+.radio-card.is-active .rc-dot { border-color: var(--accent); }
+.radio-card.is-active .rc-dot::after { content: ''; position: absolute; inset: 2px; border-radius: 50%; background: var(--accent); }
+.radio-card .rc-label { font-size: 0.9375rem; font-weight: 500; }
+
+.field-group-title { font-size: 0.875rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.06em; margin: 26px 0 12px; }
+
+.wizard-nav { display: flex; justify-content: space-between; gap: 12px; margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+/* ===== 알림 ===== */
+.notice { background: var(--cr-light-bg); border-left: 4px solid var(--warning); border-radius: 0 var(--radius) var(--radius) 0; padding: 16px 20px; margin-bottom: 20px; }
+.notice p, .notice li { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.6; }
+.notice.is-danger { border-left-color: var(--negative); }
+.notice-title { font-weight: 700; color: var(--text); font-size: 0.9375rem; margin-bottom: 4px; }
+
+/* ===== 콘텐츠 유형 카드 (4단계) ===== */
+.type-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.type-card { border: 2px solid var(--border); border-radius: 10px; padding: 20px; cursor: pointer; background: var(--bg); transition: all var(--duration-fast); }
+.type-card:hover { border-color: var(--accent); }
+.type-card.is-active { border-color: var(--accent); background: var(--cr-light-bg); }
+.type-card h3 { margin-bottom: 8px; }
+.type-meta { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+.type-meta span { font-size: 0.75rem; background: var(--surface); border: 1px solid var(--border); padding: 3px 9px; border-radius: 999px; color: var(--text-secondary); }
+.type-card p { font-size: 0.875rem; color: var(--text-secondary); }
+
+/* ===== 프롬프트 화면 ===== */
+.prompt-toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+.prompt-box-wrap { position: relative; }
+.prompt-textarea { width: 100%; min-height: 420px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.8125rem; line-height: 1.7; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 18px; color: var(--text); white-space: pre-wrap; resize: vertical; }
+.prompt-dirty-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--warning); margin-bottom: 10px; }
+.external-ai-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.external-ai-row a.btn { text-decoration: none; }
+.explain-panel { margin-top: 18px; display: none; }
+.explain-panel.is-open { display: block; }
+.explain-item { padding: 12px 0; border-bottom: 1px solid var(--border); }
+.explain-item:last-child { border-bottom: none; }
+.explain-item .eb-tag { font-family: ui-monospace, monospace; font-weight: 700; color: var(--accent); font-size: 0.8125rem; }
+.explain-item p { font-size: 0.875rem; color: var(--text-secondary); margin-top: 4px; }
+
+/* ===== 완료 / 실행 ===== */
+.review-summary { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 16px; margin-top: 8px; }
+.review-summary dt { font-size: 0.75rem; color: var(--text-secondary); }
+.review-summary dd { font-size: 0.9375rem; margin-top: 2px; }
+.commitment-list { display: flex; flex-direction: column; gap: 8px; }
+
+.complete-wrap { max-width: 720px; margin: 0 auto; text-align: center; padding-block: var(--space-section); }
+.complete-icon { width: 64px; height: 64px; border-radius: 50%; background: var(--positive); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; margin: 0 auto 20px; }
+.complete-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 26px; }
+.complete-summary { text-align: left; margin-top: 30px; }
+
+/* ===== 모달 / 토스트 ===== */
+.modal-overlay { position: fixed; inset: 0; background: var(--overlay); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
+.modal-overlay.is-open { display: flex; }
+.modal-box { background: var(--bg); border-radius: 10px; padding: 26px; max-width: 420px; width: 100%; border: 1px solid var(--border); }
+.modal-box h3 { margin-bottom: 10px; }
+.modal-box p { color: var(--text-secondary); font-size: 0.9375rem; margin-bottom: 20px; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--text); color: var(--bg); padding: 12px 20px; border-radius: 8px; font-size: 0.875rem; font-weight: 600; z-index: 900; opacity: 0; pointer-events: none; transition: opacity var(--duration-fast), transform var(--duration-fast); }
+html.theme-dark .toast { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+.toast.is-visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ===== 애니메이션 ===== */
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.animate { animation: fadeInUp 0.5s ease-out both; }
+.animate.delay-1 { animation-delay: 0.08s; }
+.animate.delay-2 { animation-delay: 0.16s; }
+.animate.delay-3 { animation-delay: 0.24s; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  html { scroll-behavior: auto; }
+}
+html { scroll-behavior: smooth; }
+
+@media print {
+  .app-topbar, .viz-menu, .wizard-nav, .step-indicator, .summary-panel, .modal-overlay, .toast { display: none !important; }
+}
+
+/* ===== 사이트 푸터 ===== */
+.site-footer { background: var(--accent); color: rgba(255,255,255,0.92); padding-block: 22px; }
+.site-footer .wrap { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.site-footer-mark { width: 8px; height: 8px; background: #fff; flex: none; }
+.site-footer p { color: rgba(255,255,255,0.92); font-size: 0.875rem; font-weight: 600; letter-spacing: -0.01em; }
+.site-footer-link { display: block; text-decoration: none; color: inherit; transition: opacity var(--duration-fast); }
+.site-footer-link:hover { opacity: 0.82; }
+
+/* ===== 메뉴 ===== */
+.viz-menu { position: fixed; top: 12px; right: 16px; z-index: 9999; }
+.viz-menu-toggle { width: 42px; height: 42px; border-radius: 12px; background: var(--menu-bg); border: 1px solid var(--menu-border); color: var(--menu-text); cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transition: background var(--duration-fast); }
+.viz-menu-toggle:hover { background: var(--menu-bg-hover); }
+.viz-menu-dropdown { position: absolute; top: 52px; right: 0; min-width: 190px; background: var(--menu-bg); border: 1px solid var(--menu-border); border-radius: 12px; padding: 8px; opacity: 0; visibility: hidden; transform: translateY(-8px); transition: opacity var(--duration-fast), visibility var(--duration-fast), transform var(--duration-fast); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: 0 8px 32px rgba(0,0,0,0.12); }
+.viz-menu-dropdown.open { opacity: 1; visibility: visible; transform: translateY(0); }
+.viz-menu-dropdown button { width: 100%; padding: 10px 14px; border: none; border-radius: 8px; background: transparent; color: var(--menu-text); font-size: 14px; font-family: inherit; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 10px; transition: background var(--duration-fast); }
+.viz-menu-dropdown button:hover { background: var(--menu-item-hover); }
+
+.skip-link { position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; overflow: hidden; z-index: 10000; padding: 8px 16px; background: var(--accent); color: white; text-decoration: none; border-radius: 4px; }
+.skip-link:focus { position: fixed; left: 16px; top: 16px; width: auto; height: auto; overflow: visible; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+<a href="#main-content" class="skip-link">본문으로 건너뛰기</a>
+
+<div class="viz-menu">
+  <button class="viz-menu-toggle" onclick="toggleMenu()" aria-label="메뉴 열기" aria-haspopup="true" aria-expanded="false" id="vizMenuToggle">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="3" y1="5" x2="17" y2="5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="15" x2="17" y2="15"/></svg>
+  </button>
+  <div class="viz-menu-dropdown" id="vizMenuDropdown">
+    <button onclick="cycleTheme()"><span id="themeIcon">☀️</span><span id="themeLabel">라이트</span></button>
+    <button onclick="window.print()"><span>🖨️</span><span>인쇄 / PDF</span></button>
+  </div>
+</div>
+
+<main id="main-content">
+
+<!-- ============ 랜딩 ============ -->
+<section id="screen-landing">
+  <header class="hero">
+    <div class="cr-dot-grid" aria-hidden="true"></div>
+    <div class="wrap">
+      <p class="eyebrow hero-eyebrow animate">청람 AI 홍보실습소</p>
+      <h1 class="animate delay-1">질문에 답하면<br><em>수업용 홍보 프롬프트</em>가 완성됩니다.</h1>
+      <p class="hero-sub animate delay-2">6단계 질문으로 내 사업·기관 정보를 정리하고, 바로 쓸 수 있는 AI 프롬프트와 실행 계획까지 한 번에 완성하세요.</p>
+      <p class="landing-meta animate delay-2">예상 소요 시간 30~40분 · 최종 산출물: 홍보 프롬프트 + 실행 약속(Markdown)</p>
+      <div class="entry-grid" style="margin-top:32px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));" role="group" aria-label="시작 방법 선택">
+        <div class="entry-card animate delay-3" style="background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.14);">
+          <h3 style="color:#fff;">내 프로젝트로 시작</h3>
+          <p style="color:rgba(255,255,255,0.68);">빈 양식에서 시작해 내 사업·기관 정보로 직접 채워갑니다. 수업 코드 입력 후 시작됩니다.</p>
+          <button class="btn btn-hero-primary" onclick="openClassCodeModal('startOwn')">내 프로젝트로 시작</button>
+        </div>
+        <div class="entry-card animate delay-3" style="background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.14);">
+          <h3 style="color:#fff;">예시로 5분 체험</h3>
+          <p style="color:rgba(255,255,255,0.68);">예시 데이터가 채워진 상태로 전체 흐름을 빠르게 둘러봅니다.</p>
+          <button class="btn btn-hero-ghost" onclick="startExample()">예시로 5분 체험</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="entry-section">
+    <div class="wrap">
+      <h2 data-reveal><span class="cr-accent-underline">이렇게 진행됩니다</span></h2>
+      <div class="entry-grid" data-reveal style="margin-top:24px;">
+        <div class="entry-card">
+          <span class="entry-badge">1~3단계</span>
+          <h3>정보 정리</h3>
+          <p>브랜드·고객·핵심 메시지를 질문에 답하며 구조화합니다.</p>
+        </div>
+        <div class="entry-card">
+          <span class="entry-badge">4~5단계</span>
+          <h3>프롬프트 완성</h3>
+          <p>콘텐츠 유형을 고르면 구조화된 AI 프롬프트가 자동으로 만들어집니다.</p>
+        </div>
+        <div class="entry-card">
+          <span class="entry-badge">6단계</span>
+          <h3>실행</h3>
+          <p>실행 약속과 예정일을 정하고 결과물을 제출합니다.</p>
+        </div>
+      </div>
+      <div class="notice" data-reveal style="margin-top:32px;">
+        <p class="notice-title">개인정보 안내</p>
+        <ul class="cr-square-bullet">
+          <li>이 실습은 로그인 없이 진행되며 입력한 내용은 이 브라우저의 localStorage에만 저장됩니다.</li>
+          <li>서버로 전송되지 않으며, 외부 AI 서비스에 붙여 넣는 내용은 각 서비스의 개인정보 처리방침을 따릅니다.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</section>
+
+<!-- ============ 위저드 ============ -->
+<section id="screen-wizard" class="hidden">
+  <div class="app-topbar">
+    <div class="wrap app-topbar-inner">
+      <span class="app-logo"><span class="app-logo-mark" aria-hidden="true"></span>청람 AI 홍보실습소</span>
+      <span class="autosave-status" id="autosaveStatus" aria-live="polite"><span class="autosave-dot" id="autosaveDot"></span><span id="autosaveText">저장됨</span></span>
+      <button class="btn btn-ghost btn-sm" onclick="openRestartModal()">다시 시작</button>
+    </div>
+    <div class="wrap">
+      <div class="step-indicator" id="stepIndicator" role="tablist" aria-label="실습 단계"></div>
+    </div>
+  </div>
+
+  <div class="wrap wizard-main">
+    <div id="exampleBanner" class="notice hidden" style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+      <div>
+        <p class="notice-title">예시 체험 모드</p>
+        <p>지금 보고 있는 값은 예시 데이터입니다. 내용을 자유롭게 둘러본 뒤, 내 프로젝트로 전환해 직접 입력할 수 있습니다.</p>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="openClassCodeModal('switchToOwnFromExample')">내 프로젝트로 새로 시작</button>
+    </div>
+
+    <div class="wizard-grid" id="wizardGrid">
+      <div>
+        <button class="btn btn-ghost summary-toggle" id="summaryToggleBtn" onclick="toggleSummaryPanel()">현재까지 입력한 정보 요약 보기</button>
+        <aside class="summary-panel" id="summaryPanel" aria-label="입력 요약"></aside>
+      </div>
+
+      <div class="step-panel" id="stepPanel"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 완료 ============ -->
+<section id="screen-complete" class="hidden">
+  <div class="wrap complete-wrap">
+    <div class="complete-icon" aria-hidden="true">✓</div>
+    <h1 style="font-size: clamp(1.75rem,4vw,2.25rem);">실습을 제출했습니다</h1>
+    <p class="text-secondary" style="margin-top:10px;">오늘 완성한 산출물과 실행 약속입니다. 아래에서 결과물을 다시 내려받거나 새 콘텐츠를 만들 수 있습니다.</p>
+    <div class="complete-actions">
+      <button class="btn btn-primary" onclick="downloadMarkdown()">결과물 다시 다운로드</button>
+      <button class="btn btn-ghost" onclick="makeAnotherContent()">같은 정보로 다른 콘텐츠 만들기</button>
+      <button class="btn btn-ghost" onclick="openRestartModal()">처음부터 다시 시작</button>
+    </div>
+    <div class="card complete-summary" id="completeSummary"></div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <a class="site-footer-link" href="https://www.crmc.co.kr" target="_blank" rel="noopener noreferrer" aria-label="청람M&C 홈페이지로 이동">
+    <div class="wrap">
+      <span class="site-footer-mark" aria-hidden="true"></span>
+      <p>청람 AI 홍보실습소 · 2026</p>
+    </div>
+  </a>
+</footer>
+
+<!-- ============ 모달 ============ -->
+<div class="modal-overlay" id="restartModal" role="dialog" aria-modal="true" aria-labelledby="restartModalTitle">
+  <div class="modal-box">
+    <h3 id="restartModalTitle">처음부터 다시 시작할까요?</h3>
+    <p>지금까지 입력한 모든 내용이 삭제되고 랜딩 화면으로 돌아갑니다. 이 동작은 되돌릴 수 없습니다.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeRestartModal()">취소</button>
+      <button class="btn btn-danger-ghost" onclick="confirmRestart()">모두 지우고 다시 시작</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="classCodeModal" role="dialog" aria-modal="true" aria-labelledby="classCodeModalTitle">
+  <div class="modal-box">
+    <h3 id="classCodeModalTitle">수업 코드를 입력해주세요</h3>
+    <p>담당 강사에게 안내받은 수업 코드를 입력하면 내 프로젝트로 시작할 수 있습니다.</p>
+    <div class="field" style="margin-bottom:8px;">
+      <input class="input" type="text" id="classCodeInputField" placeholder="수업 코드" inputmode="numeric" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();confirmClassCode();}">
+      <p class="field-error" id="classCodeError">⚠ 수업 코드가 올바르지 않습니다. 다시 확인해 주세요.</p>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeClassCodeModal()">취소</button>
+      <button class="btn btn-primary" onclick="confirmClassCode()">확인하고 시작</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+'use strict';
+
+/* ===================== 저장소 헬퍼 ===================== */
+function safeGet(key) { try { return localStorage.getItem(key); } catch (e) { console.warn('저장소를 읽을 수 없습니다.', e); return null; } }
+function safeSet(key, value) { try { localStorage.setItem(key, value); return true; } catch (e) { console.warn('저장소에 쓸 수 없습니다.', e); return false; } }
+function safeRemove(key) { try { localStorage.removeItem(key); } catch (e) { console.warn('저장소에서 삭제할 수 없습니다.', e); } }
+
+/* ===================== 메뉴 / 테마 ===================== */
+function toggleMenu() {
+  var dropdown = document.getElementById('vizMenuDropdown');
+  var toggle = document.getElementById('vizMenuToggle');
+  if (!dropdown) return;
+  var isOpen = dropdown.classList.toggle('open');
+  if (toggle) toggle.setAttribute('aria-expanded', String(isOpen));
+}
+function closeMenu() {
+  var dropdown = document.getElementById('vizMenuDropdown');
+  var toggle = document.getElementById('vizMenuToggle');
+  if (dropdown) dropdown.classList.remove('open');
+  if (toggle) toggle.setAttribute('aria-expanded', 'false');
+}
+document.addEventListener('click', function (e) { if (!e.target.closest('.viz-menu')) closeMenu(); });
+document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeMenu(); closeRestartModal(); closeClassCodeModal(); } });
+
+/* ===================== 수업 코드 ===================== */
+var CLASS_CODE = '2026';
+var CLASS_CODE_ACTIONS = { startOwn: startOwn, switchToOwnFromExample: switchToOwnFromExample };
+var classCodePendingAction = 'startOwn';
+function openClassCodeModal(action) {
+  classCodePendingAction = action || 'startOwn';
+  var modal = document.getElementById('classCodeModal');
+  var input = document.getElementById('classCodeInputField');
+  var err = document.getElementById('classCodeError');
+  if (input) input.value = '';
+  if (err) err.style.display = 'none';
+  if (modal) modal.classList.add('is-open');
+  setTimeout(function () { if (input) input.focus(); }, 50);
+}
+function closeClassCodeModal() {
+  var modal = document.getElementById('classCodeModal');
+  if (modal) modal.classList.remove('is-open');
+}
+function confirmClassCode() {
+  var input = document.getElementById('classCodeInputField');
+  var err = document.getElementById('classCodeError');
+  var val = input ? input.value.trim() : '';
+  if (val === CLASS_CODE) {
+    closeClassCodeModal();
+    var fn = CLASS_CODE_ACTIONS[classCodePendingAction] || startOwn;
+    fn();
+  } else {
+    if (err) err.style.display = 'flex';
+    if (input) { input.focus(); input.select(); }
+  }
+}
+
+var currentTheme;
+function applyTheme(t) {
+  document.documentElement.className = 'theme-' + t;
+  var icon = document.getElementById('themeIcon');
+  var label = document.getElementById('themeLabel');
+  if (icon) icon.textContent = t === 'dark' ? '🌙' : '☀️';
+  if (label) label.textContent = t === 'dark' ? '다크' : '라이트';
+  safeSet('cr-viz-theme', t);
+  currentTheme = t;
+}
+function cycleTheme() { applyTheme(currentTheme === 'dark' ? 'light' : 'dark'); }
+(function initTheme() {
+  var saved = safeGet('cr-viz-theme');
+  var theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  applyTheme(theme);
+})();
+
+/* ===================== 옵션 데이터 ===================== */
+var INDUSTRY_OPTIONS = [
+  { v: 'food', l: '요식업' }, { v: 'cafe', l: '카페·디저트' }, { v: 'beauty', l: '뷰티·미용' },
+  { v: 'lifeservice', l: '생활서비스' }, { v: 'edu', l: '교육·학원' }, { v: 'health', l: '의료·건강' },
+  { v: 'culture', l: '문화·예술' }, { v: 'travel', l: '관광·숙박' }, { v: 'public', l: '공공·행정' }, { v: 'etc', l: '기타' }
+];
+var OBJECTIVE_OPTIONS = [
+  { v: 'awareness', l: '인지도 향상' }, { v: 'visit', l: '방문 유도' }, { v: 'inquiry', l: '문의·상담 전환' },
+  { v: 'sales', l: '판매 촉진' }, { v: 'event', l: '이벤트·행사 홍보' }, { v: 'trust', l: '브랜드 신뢰 구축' }
+];
+var CHANNEL_OPTIONS = [
+  { v: 'instagram', l: '인스타그램' }, { v: 'naverblog', l: '네이버 블로그' }, { v: 'kakao', l: '카카오채널' },
+  { v: 'youtube', l: '유튜브 숏폼' }, { v: 'community', l: '지역 카페·커뮤니티' }, { v: 'offline', l: '오프라인 전단·현수막' }
+];
+var TONE_OPTIONS = [
+  { v: 'friendly', l: '친근하고 편안한' }, { v: 'expert', l: '전문적이고 신뢰감 있는' }, { v: 'lively', l: '유쾌하고 발랄한' },
+  { v: 'calm', l: '차분하고 정중한' }, { v: 'passionate', l: '열정적이고 강렬한' }
+];
+var CONTENT_TYPES = {
+  oneLiner: {
+    label: '한 줄 핵심 소개', category: 'text', goal: '무엇을 하는 곳인지 한 문장으로 명확히 전달하는 연습', difficulty: '입문', time: '5분',
+    outputDesc: '한 줄 소개 후보 5개, 추천 후보와 이유, 확인 필요 항목',
+    condition: '- 15~40자 내외 한 줄 소개 후보를 5개 제시하세요.\n- 각 후보가 강조하는 핵심 초점(가격/신뢰/속도 등)을 함께 표시하세요.\n- 전문용어 없이 누구나 이해할 수 있게 쓰세요.',
+    outputSchema: '1) 한 줄 소개 후보 5개(핵심 초점 표시)\n2) 추천 후보 1개와 이유\n3) 확인 필요 항목 목록'
+  },
+  sns: {
+    label: 'SNS 홍보글', category: 'text', goal: '짧고 강한 한 편의 홍보 카피를 쓰는 연습', difficulty: '입문', time: '8~10분',
+    outputDesc: '본문, 카드뉴스 1~5장 문구, CTA, 해시태그 10개, 확인 필요 항목',
+    condition: '- 200~400자 내외 SNS 본문과 카드뉴스 1~5장 문구를 함께 작성하세요.\n- 첫 문장에서 타깃의 관심을 끌어야 합니다.\n- 해시태그 10개를 포함하세요.',
+    outputSchema: '1) 본문\n2) 카드뉴스 문구(1~5장)\n3) CTA 문구\n4) 해시태그 10개\n5) 확인 필요 항목 목록'
+  },
+  blog: {
+    label: '블로그 콘텐츠', category: 'text', goal: '검색 유입을 고려한 정보형 글쓰기 연습', difficulty: '기본', time: '10~12분',
+    outputDesc: '검색 의도, 제목 5개, 목차, 본문, CTA, 메타 설명, 확인 필요 항목',
+    condition: '- 검색 사용자의 의도를 먼저 정의하세요.\n- 제목 후보 5개를 제시하세요.\n- 목차를 만들고 목차에 따라 본문을 작성하세요.\n- 메타 설명(120자 내외)을 작성하세요.',
+    outputSchema: '1) 검색 의도\n2) 제목 후보 5개\n3) 목차\n4) 본문\n5) CTA\n6) 메타 설명\n7) 확인 필요 항목 목록'
+  },
+  image: {
+    label: '홍보 이미지', category: 'image', goal: '이미지 생성 AI에 바로 쓸 수 있는 상세 프롬프트를 설계하는 연습', difficulty: '기본', time: '10분',
+    outputDesc: '주인공·배경·구도·조명·색상·스타일·비율·제외 요소를 포함한 이미지 프롬프트',
+    condition: '- 주인공, 배경, 구도, 조명, 색상, 스타일, 비율을 각각 구체적으로 지정하세요.\n- 실제 존재하지 않는 인증마크·상장·간판 글자는 만들지 마세요.\n- 제외해야 할 요소(예: 워터마크, 왜곡된 손 등)를 명시하세요.',
+    outputSchema: '1) 이미지 프롬프트 본문(주인공/배경/구도/조명/색상/스타일/비율)\n2) 제외 요소 목록\n3) 대체 프롬프트 1개(다른 구도)\n4) 확인 필요 항목 목록'
+  },
+  shortform: {
+    label: '숏폼 영상 시나리오', category: 'video', goal: '8~30초 영상의 장면과 대사를 설계하는 연습', difficulty: '심화', time: '12~15분',
+    outputDesc: '8~30초 타임라인, 장면, 화면 문구, 대사/내레이션, 촬영 지시, CTA',
+    condition: '- 8~30초 분량의 장면별 타임라인을 작성하세요.\n- 각 장면마다 화면 문구, 대사/내레이션, 촬영 지시(구도·움직임)를 함께 제시하세요.\n- 영상 생성 AI 프롬프트로 바로 옮길 수 있게 장면 묘사를 구체적으로 쓰세요.',
+    outputSchema: '1) 장면별 타임라인(시간·장면 설명·화면 문구·대사·촬영 지시)\n2) 전체 스토리보드 요약\n3) CTA 문구\n4) 확인 필요 항목 목록'
+  },
+  detailPage: {
+    label: '홍보 상세페이지', category: 'text', goal: '신뢰를 쌓고 행동을 유도하는 상세페이지 흐름을 설계하는 연습', difficulty: '심화', time: '12분',
+    outputDesc: '헤드라인, 문제 공감, 해결 제시, 근거, FAQ, CTA, 확인 필요 항목',
+    condition: '- 문제→해결→근거→행동 순서로 설득 흐름이 이어지게 구성하세요.\n- 근거 섹션에는 검증된 사실만 쓰고 나머지는 [확인 필요]로 표시하세요.\n- 예상 질문(FAQ) 3개를 포함하세요.',
+    outputSchema: '1) 헤드라인\n2) 문제 공감 문단\n3) 해결·제공 가치\n4) 근거/신뢰 요소\n5) FAQ 3개\n6) CTA\n7) 확인 필요 항목 목록'
+  },
+  planSummary: {
+    label: '기획서/계획서 요약', category: 'text', goal: '담당자·심사자가 한눈에 이해할 수 있는 요약본을 쓰는 연습', difficulty: '기본', time: '10분',
+    outputDesc: '배경/목적, 핵심 내용, 기대효과, 실행 일정, 확인 필요 항목',
+    condition: '- 한 페이지 분량으로 핵심만 압축하세요.\n- 수치·일정은 확인된 정보만 쓰고 나머지는 [확인 필요]로 표시하세요.\n- 심사자가 결정을 내릴 수 있도록 기대 효과를 구체적으로 제시하세요.',
+    outputSchema: '1) 배경/목적\n2) 핵심 내용 요약\n3) 기대 효과\n4) 실행 일정(개략)\n5) 확인 필요 항목 목록'
+  },
+  monthPlan: {
+    label: '한 달 홍보계획', category: 'text', goal: '4주 분량의 콘텐츠 주제와 채널 일정을 설계하는 연습', difficulty: '심화', time: '12분',
+    outputDesc: '주차별 주제·채널·콘텐츠 유형·목표, 우선순위 TOP3',
+    condition: '- 4주(1~4주차) 각각 주제, 채널, 콘텐츠 유형, 목표를 표로 정리하세요.\n- 각 주차 주제가 겹치지 않게 다양화하세요.\n- 실행 가능한 수준으로 구체적으로 쓰세요.',
+    outputSchema: '1) 4주 계획표(주차/주제/채널/콘텐츠 유형/목표)\n2) 우선순위 TOP3 콘텐츠\n3) 확인 필요 항목 목록'
+  }
+};
+var CATEGORY_LABELS = { text: '텍스트', image: '이미지', video: '영상' };
+var EXTERNAL_AI_LINKS = {
+  text: [
+    { name: 'ChatGPT', url: 'https://chat.openai.com/', note: '' },
+    { name: 'Gemini', url: 'https://gemini.google.com/', note: '' },
+    { name: 'Claude', url: 'https://claude.ai/', note: '' }
+  ],
+  image: [
+    { name: 'Ideogram', url: 'https://ideogram.ai/', note: '문구가 들어간 이미지에 강함 · 무료 크레딧' },
+    { name: 'Leonardo AI', url: 'https://leonardo.ai/', note: '무료 크레딧 제공' },
+    { name: 'Gemini', url: 'https://gemini.google.com/', note: '이미지 생성 내장' }
+  ],
+  video: [
+    { name: 'Kling AI', url: 'https://klingai.com/', note: '가입 시 무료 크레딧 제공 · 안정적인 글로벌 서비스' },
+    { name: 'Google Flow', url: 'https://labs.google/fx/tools/flow', note: '구글 공식 · 무료 체험은 제한적' },
+    { name: 'Luma Dream Machine', url: 'https://lumalabs.ai/dream-machine', note: '무료 체험 크레딧 제공' },
+    { name: 'Runway', url: 'https://runwayml.com/', note: '무료 체험 크레딧 제공' }
+  ]
+};
+var COMMITMENT_OPTIONS = [
+  '오늘 안에 SNS 채널에 게시한다', '이번 주 안에 블로그에 발행한다', '수정본을 담당자에게 검토 요청한다', '직접 입력'
+];
+var STEP_LABELS = ['기본 정보', '고객 이해', '핵심 메시지', '콘텐츠 선택', '프롬프트 완성', '실행'];
+
+var EXAMPLE_BRAND = {
+  projectName: '밀담 베이커리', region: '서울 성동구 성수동',
+  industries: ['cafe'], offering: '매일 아침 굽는 천연발효 식빵과 소금빵, 직접 로스팅한 원두로 내린 드립커피를 판매합니다.',
+  heroItem: '통밀 사워도우 식빵',
+  audience: '성수동 인근 2030 직장인과 주말 방문객', audienceProblem: '근처에 믿을 만한 천연발효빵집이 없고, 유명 빵집은 대기줄이 길다.',
+  solution: '매일 아침 소량 생산으로 신선함을 유지하고, 네이버 예약 후 대기 없이 픽업할 수 있게 한다.',
+  differentiator: '국내산 밀가루와 매일 직접 배양한 천연발효종만 사용하고 방부제·개량제를 넣지 않는다.',
+  evidence: '2025년 성동구 소상공인 우수 베이커리 선정, 재구매율 62%(자체 포스 데이터 기준)', evidenceDate: '',
+  objective: 'visit', channels: ['instagram', 'naverblog'], tone: 'friendly',
+  factualDetails: '평일 오전 8시 오픈, 식빵 1개 7,500원, 성수역 3번 출구 도보 5분', prohibited: '국내 1위, 100% 건강에 좋음 같은 과장 표현', requiredCopy: '천연발효 100%'
+};
+
+/* ===================== 상태 ===================== */
+var LS_KEY = 'hongboon-class-state-v1';
+
+function defaultState() {
+  return {
+    mode: null, step: 1, maxStep: 1,
+    brand: { projectName: '', region: '', industries: [], offering: '', heroItem: '', audience: '', audienceProblem: '', solution: '', differentiator: '', evidence: '', evidenceDate: '', objective: '', channels: [], tone: '', factualDetails: '', prohibited: '', requiredCopy: '' },
+    contentType: null,
+    prompt: { text: '', sourceHash: '', dirty: false },
+    commitment: '', commitmentCustom: '', dueDate: '', privacyAck: false, submittedAt: null
+  };
+}
+var state = defaultState();
+var saveTimer = null;
+
+function scheduleSave() {
+  var dot = document.getElementById('autosaveDot');
+  var text = document.getElementById('autosaveText');
+  if (dot) dot.classList.add('is-saving');
+  if (text) text.textContent = '저장 중…';
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(function () {
+    var ok = safeSet(LS_KEY, JSON.stringify(state));
+    if (dot) dot.classList.remove('is-saving');
+    if (text) text.textContent = ok ? '저장됨' : '저장 실패 — 이 브라우저에서는 자동저장을 쓸 수 없습니다';
+  }, 1000);
+}
+function loadState() {
+  var raw = safeGet(LS_KEY);
+  if (!raw) return null;
+  try { return JSON.parse(raw); } catch (e) { console.warn('저장된 상태를 읽지 못했습니다.', e); return null; }
+}
+
+/* ===================== 유틸 ===================== */
+function escapeHtml(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+function josa(word, withBatchim, withoutBatchim) {
+  var w = String(word || '');
+  var last = w.charAt(w.length - 1);
+  var code = last.charCodeAt(0) - 0xAC00;
+  if (code < 0 || code > 11171) return withBatchim;
+  return (code % 28) !== 0 ? withBatchim : withoutBatchim;
+}
+function labelOf(list, v) { for (var i = 0; i < list.length; i++) { if (list[i].v === v) return list[i].l; } return v; }
+function labelsOf(list, arr) { return (arr || []).map(function (v) { return labelOf(list, v); }); }
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('is-visible');
+  setTimeout(function () { t.classList.remove('is-visible'); }, 2200);
+}
+function copyText(text, successMsg) {
+  function done(ok) { showToast(ok ? (successMsg || '복사했습니다') : '복사에 실패했습니다. 텍스트를 길게 눌러 직접 복사해 주세요.'); }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function () { done(true); }).catch(function () { fallbackCopy(text, done); });
+  } else { fallbackCopy(text, done); }
+}
+function fallbackCopy(text, cb) {
+  try {
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    var ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    cb(ok);
+  } catch (e) { cb(false); }
+}
+function downloadTextFile(filename, content) {
+  var blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+}
+
+/* ===================== 프롬프트 생성 ===================== */
+function promptSourceHash() {
+  return JSON.stringify([state.brand, state.contentType]);
+}
+function buildPromptText() {
+  var b = state.brand;
+  var ct = CONTENT_TYPES[state.contentType];
+  if (!ct) return '';
+  var industryLabels = labelsOf(INDUSTRY_OPTIONS, b.industries).join('·');
+  var channelLabels = labelsOf(CHANNEL_OPTIONS, b.channels).join('·');
+  var toneLabel = labelOf(TONE_OPTIONS, b.tone);
+  var objectiveLabel = labelOf(OBJECTIVE_OPTIONS, b.objective);
+  var lines = [];
+  lines.push('[역할]');
+  lines.push('당신은 ' + (industryLabels || '해당 분야') + ' 홍보를 지원하는 전문 콘텐츠 마케터입니다.');
+  lines.push('');
+  lines.push('[목표]');
+  lines.push((objectiveLabel || '') + josa(objectiveLabel, '을', '를') + ' 달성할 수 있는 ' + ct.label + ' 최종본을 작성하세요.');
+  lines.push('');
+  lines.push('[홍보 정보]');
+  lines.push('- 이름: ' + b.projectName);
+  lines.push('- 지역/분야: ' + b.region + ', ' + industryLabels);
+  lines.push('- 주요 내용: ' + b.offering);
+  lines.push('- 대표 항목: ' + b.heroItem);
+  lines.push('- 타깃: ' + b.audience);
+  lines.push('- 타깃의 문제: ' + b.audienceProblem);
+  lines.push('- 해결 방법: ' + b.solution);
+  lines.push('- 차별점: ' + b.differentiator);
+  lines.push('- 검증된 근거: ' + b.evidence + (b.evidenceDate ? (' (확인일: ' + b.evidenceDate + ')') : ''));
+  lines.push('- 채널/말투: ' + channelLabels + ', ' + toneLabel);
+  if (b.factualDetails) lines.push('- 정확한 사실 정보: ' + b.factualDetails);
+  if (b.requiredCopy) lines.push('- 꼭 포함할 문구: ' + b.requiredCopy);
+  lines.push('');
+  lines.push('[작성 조건]');
+  lines.push('- 확인되지 않은 사실, 수치, 후기, 인증, 가격, 연락처를 만들지 마세요.');
+  lines.push('- 정보가 부족하면 임의로 채우지 말고 [확인 필요]로 표시하세요.');
+  lines.push('- 타깃의 상황과 얻는 이익을 중심으로 작성하세요.');
+  lines.push('- 구체적인 CTA를 포함하세요.');
+  if (b.prohibited) lines.push('- 다음 표현은 사용하지 마세요: ' + b.prohibited);
+  lines.push(ct.condition);
+  lines.push('');
+  lines.push('[출력 형식]');
+  lines.push(ct.outputSchema);
+  lines.push('');
+  lines.push('[자체 점검]');
+  lines.push('작성 후 사실 확인이 필요한 표현을 별도 목록으로 제시하세요.');
+  return lines.join('\n');
+}
+var PROMPT_EXPLAIN = [
+  { tag: '[역할]', text: 'AI에게 어떤 전문가처럼 답해야 하는지 알려줍니다. 역할이 없으면 답변의 톤과 깊이가 들쭉날쭉해집니다.' },
+  { tag: '[목표]', text: '이 프롬프트로 무엇을 달성하려는지 명확히 합니다. 목표가 흐리면 AI는 일반적인 답을 내놓습니다.' },
+  { tag: '[홍보 정보]', text: '1~3단계에서 입력한 사실 정보입니다. AI가 지어내지 않고 이 정보를 근거로 쓰게 만듭니다.' },
+  { tag: '[작성 조건]', text: '과장·허위 방지, 확인 필요 표시 등 결과물의 품질과 안전을 지키는 규칙입니다.' },
+  { tag: '[출력 형식]', text: '콘텐츠 유형에 맞는 구조를 지정해 결과를 바로 활용할 수 있게 합니다.' },
+  { tag: '[자체 점검]', text: 'AI 스스로 사실 확인이 필요한 부분을 표시하게 해, 사람이 검증할 지점을 줄여 줍니다.' }
+];
+
+/* ===================== 검증 ===================== */
+function validateStep(step) {
+  var b = state.brand;
+  if (step === 1) return !!(b.projectName.trim() && b.region.trim() && b.industries.length && b.offering.trim() && b.heroItem.trim());
+  if (step === 2) return !!(b.audience.trim() && b.audienceProblem.trim() && b.solution.trim());
+  if (step === 3) return !!(b.differentiator.trim() && b.evidence.trim() && b.objective && b.channels.length && b.tone);
+  if (step === 4) return !!state.contentType;
+  if (step === 5) return true;
+  if (step === 6) {
+    var commitOk = state.commitment === '직접 입력' ? !!(state.commitmentCustom || '').trim() : !!state.commitment;
+    return !!(commitOk && state.dueDate && state.privacyAck);
+  }
+  return true;
+}
+
+/* ===================== 네비게이션 ===================== */
+function goStep(n) {
+  if (n > state.maxStep) return;
+  state.step = n;
+  scheduleSave();
+  renderWizard();
+  window.scrollTo({ top: 0, behavior: 'auto' });
+}
+function nextStep() {
+  var s = state.step;
+  if (!validateStep(s)) { renderStepPanel(); return; }
+  if (s === 6) { submitFinal(); return; }
+  state.step = s + 1;
+  if (state.maxStep < state.step) state.maxStep = state.step;
+  scheduleSave();
+  renderWizard();
+  window.scrollTo({ top: 0, behavior: 'auto' });
+}
+function prevStep() {
+  if (state.step <= 1) return;
+  state.step -= 1;
+  scheduleSave();
+  renderWizard();
+  window.scrollTo({ top: 0, behavior: 'auto' });
+}
+
+/* ===================== 랜딩 진입 ===================== */
+function startOwn() {
+  state = defaultState();
+  state.mode = 'own';
+  scheduleSave();
+  showScreen('wizard');
+  renderWizard();
+}
+function startExample() {
+  state = defaultState();
+  state.mode = 'example';
+  state.brand = Object.assign({}, EXAMPLE_BRAND, { industries: EXAMPLE_BRAND.industries.slice(), channels: EXAMPLE_BRAND.channels.slice() });
+  state.contentType = 'sns';
+  state.maxStep = 7;
+  scheduleSave();
+  showScreen('wizard');
+  renderWizard();
+}
+function switchToOwnFromExample() {
+  state = defaultState();
+  state.mode = 'own';
+  scheduleSave();
+  renderWizard();
+  showToast('내 프로젝트로 새로 시작합니다');
+}
+function showScreen(name) {
+  document.getElementById('screen-landing').classList.toggle('hidden', name !== 'landing');
+  document.getElementById('screen-wizard').classList.toggle('hidden', name !== 'wizard');
+  document.getElementById('screen-complete').classList.toggle('hidden', name !== 'complete');
+}
+
+/* ===================== 재시작 모달 ===================== */
+function openRestartModal() { document.getElementById('restartModal').classList.add('is-open'); }
+function closeRestartModal() { document.getElementById('restartModal').classList.remove('is-open'); }
+function confirmRestart() {
+  state = defaultState();
+  safeRemove(LS_KEY);
+  closeRestartModal();
+  showScreen('landing');
+}
+
+/* ===================== 요약 패널 ===================== */
+var summaryOpen = false;
+function toggleSummaryPanel() {
+  summaryOpen = !summaryOpen;
+  document.getElementById('summaryPanel').classList.toggle('is-open', summaryOpen);
+  document.getElementById('summaryToggleBtn').textContent = summaryOpen ? '요약 숨기기' : '현재까지 입력한 정보 요약 보기';
+}
+function renderSummaryPanel() {
+  var b = state.brand;
+  var html = '';
+  if (state.mode === 'example') html += '<span class="summary-example-badge">예시 데이터</span>';
+  html += '<p class="summary-title">현재까지 입력한 정보</p>';
+  var rows = [
+    ['프로젝트명', b.projectName], ['지역', b.region],
+    ['업종/분야', labelsOf(INDUSTRY_OPTIONS, b.industries).join(', ')],
+    ['주요 내용', b.offering], ['대표 항목', b.heroItem],
+    ['주요 고객', b.audience], ['고객 문제', b.audienceProblem], ['해결 방법', b.solution],
+    ['차별점', b.differentiator], ['신뢰 근거', b.evidence],
+    ['홍보 목적', labelOf(OBJECTIVE_OPTIONS, b.objective)],
+    ['채널', labelsOf(CHANNEL_OPTIONS, b.channels).join(', ')],
+    ['브랜드 말투', labelOf(TONE_OPTIONS, b.tone)]
+  ];
+  var any = false;
+  rows.forEach(function (r) {
+    if (!r[1]) return;
+    any = true;
+    html += '<div class="summary-row"><dt>' + r[0] + '</dt><dd>' + escapeHtml(r[1]) + '</dd></div>';
+  });
+  if (state.contentType) { any = true; html += '<div class="summary-row"><dt>콘텐츠 유형</dt><dd>' + CONTENT_TYPES[state.contentType].label + '</dd></div>'; }
+  if (!any) html += '<p class="summary-empty">입력을 시작하면 여기에 요약이 표시됩니다.</p>';
+  document.getElementById('summaryPanel').innerHTML = html;
+}
+
+/* ===================== 단계 표시기 ===================== */
+function renderStepIndicator() {
+  var wrap = document.getElementById('stepIndicator');
+  var html = '';
+  for (var i = 1; i <= 6; i++) {
+    var cls = 'step-dot';
+    if (i === state.step) cls += ' is-current';
+    else if (i < state.step || (i <= state.maxStep && validateStep(i))) cls += ' is-done';
+    var disabled = i > state.maxStep ? 'disabled' : '';
+    html += '<button type="button" class="' + cls + '" ' + disabled + ' onclick="goStep(' + i + ')" role="tab" aria-selected="' + (i === state.step) + '">' +
+      '<span class="step-dot-num">' + i + '</span><span class="step-dot-label">' + STEP_LABELS[i - 1] + '</span></button>';
+  }
+  wrap.innerHTML = html;
+}
+
+/* ===================== 필드 바인딩 헬퍼 ===================== */
+function bindText(id, getVal, setVal, opts) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.value = getVal() || '';
+  el.addEventListener('input', function () {
+    setVal(el.value);
+    scheduleSave();
+    if (opts && opts.onInput) opts.onInput();
+    clearFieldError(id);
+    renderSummaryPanel();
+  });
+}
+function clearFieldError(inputId) {
+  var el = document.getElementById(inputId);
+  if (!el) return;
+  var field = el.closest('.field');
+  if (field) field.classList.remove('has-error');
+}
+function markFieldError(inputId) {
+  var el = document.getElementById(inputId);
+  if (!el) return;
+  var field = el.closest('.field');
+  if (field) field.classList.add('has-error');
+}
+
+/* ===================== 단계별 렌더 ===================== */
+function renderWizard() {
+  document.getElementById('exampleBanner').classList.toggle('hidden', state.mode !== 'example');
+  document.getElementById('wizardGrid').classList.toggle('is-full', state.step >= 5);
+  document.querySelector('.summary-toggle').style.display = state.step <= 4 ? '' : 'none';
+  document.getElementById('summaryPanel').style.display = state.step <= 4 ? '' : 'none';
+  renderStepIndicator();
+  renderSummaryPanel();
+  renderStepPanel();
+}
+
+function fieldTemplate(opts) {
+  return '<div class="field" id="fieldwrap-' + opts.id + '">' +
+    '<label class="field-label" for="' + opts.id + '">' + opts.label + (opts.required ? '<span class="field-required">*</span>' : '') + '</label>' +
+    (opts.hint ? '<p class="field-hint">' + opts.hint + '</p>' : '') +
+    (opts.examples ? '<div class="field-examples">' + opts.examples + '</div>' : '') +
+    (opts.type === 'textarea'
+      ? '<textarea class="textarea' + (opts.lg ? ' is-lg' : '') + '" id="' + opts.id + '" placeholder="' + (opts.placeholder || '') + '"></textarea>'
+      : opts.type === 'date'
+        ? '<input class="input" type="date" id="' + opts.id + '">'
+        : '<input class="input" type="text" id="' + opts.id + '" placeholder="' + (opts.placeholder || '') + '">') +
+    '<p class="field-error" id="fielderr-' + opts.id + '">⚠ ' + (opts.errorMsg || '필수 입력 항목입니다.') + '</p>' +
+    '</div>';
+}
+function chipGroupHtml(id, options, selectedArr, multi) {
+  var html = '<div class="chip-group" id="' + id + '">';
+  options.forEach(function (o) {
+    var active = selectedArr.indexOf(o.v) !== -1;
+    html += '<button type="button" class="chip' + (active ? ' is-active' : '') + '" data-v="' + o.v + '" aria-pressed="' + active + '">' + o.l + '</button>';
+  });
+  html += '</div>';
+  return html;
+}
+function bindChipGroup(id, getArr, setArr, multi) {
+  var wrap = document.getElementById(id);
+  if (!wrap) return;
+  wrap.querySelectorAll('.chip').forEach(function (chip) {
+    chip.addEventListener('click', function () {
+      var v = chip.getAttribute('data-v');
+      var arr = getArr().slice();
+      if (multi) {
+        var idx = arr.indexOf(v);
+        if (idx === -1) arr.push(v); else arr.splice(idx, 1);
+      } else {
+        arr = [v];
+      }
+      setArr(multi ? arr : arr[0]);
+      scheduleSave();
+      clearFieldError(id);
+      renderStepPanel();
+      renderSummaryPanel();
+    });
+  });
+}
+
+function renderStepPanel() {
+  var panel = document.getElementById('stepPanel');
+  var s = state.step;
+  var html = '';
+  if (s === 1) html = stepHtml1();
+  else if (s === 2) html = stepHtml2();
+  else if (s === 3) html = stepHtml3();
+  else if (s === 4) html = stepHtml4();
+  else if (s === 5) html = stepHtml5();
+  else if (s === 6) html = stepHtml6();
+  panel.innerHTML = html;
+  bindStep(s);
+  applyValidationHighlight(s);
+}
+
+function navHtml(labelNext, disabledExtra) {
+  var s = state.step;
+  return '<div class="wizard-nav">' +
+    (s > 1 ? '<button class="btn btn-ghost" onclick="prevStep()">← 이전</button>' : '<span></span>') +
+    '<button class="btn btn-primary" id="nextBtn" onclick="nextStep()">' + (labelNext || '다음 →') + '</button>' +
+    '</div>';
+}
+
+/* --- STEP 1 --- */
+function stepHtml1() {
+  return '<div class="step-head"><span class="eyebrow">1 / 6</span><h2>기본 정보</h2><p>홍보 대상을 정의합니다. 사업·기관의 기본 사실을 채워주세요.</p></div>' +
+    fieldTemplate({ id: 'f-projectName', label: '프로젝트명 / 브랜드명', required: true, placeholder: '예: 밀담 베이커리' }) +
+    fieldTemplate({ id: 'f-region', label: '지역', required: true, placeholder: '예: 서울 성동구 성수동' }) +
+    '<div class="field" id="fieldwrap-f-industries"><label class="field-label">업종/분야 (복수 선택)<span class="field-required">*</span></label>' +
+    chipGroupHtml('f-industries', INDUSTRY_OPTIONS, state.brand.industries, true) +
+    '<p class="field-error" id="fielderr-f-industries">⚠ 최소 1개를 선택하세요.</p></div>' +
+    fieldTemplate({ id: 'f-offering', label: '주요 제품·서비스·사업 내용', required: true, type: 'textarea', hint: '무엇을 판매하거나 제공하는지 구체적으로 적어주세요.',
+      examples: '<span class="good">좋은 예: 매일 아침 굽는 천연발효 식빵과 드립커피를 판매합니다.</span><span class="bad">피해야 할 예: 맛있는 빵집입니다.</span>' }) +
+    fieldTemplate({ id: 'f-heroItem', label: '대표 홍보 항목', required: true, placeholder: '예: 통밀 사워도우 식빵' }) +
+    navHtml();
+}
+function bindStep1() {
+  bindText('f-projectName', function () { return state.brand.projectName; }, function (v) { state.brand.projectName = v; });
+  bindText('f-region', function () { return state.brand.region; }, function (v) { state.brand.region = v; });
+  bindChipGroup('f-industries', function () { return state.brand.industries; }, function (v) { state.brand.industries = v; }, true);
+  bindText('f-offering', function () { return state.brand.offering; }, function (v) { state.brand.offering = v; });
+  bindText('f-heroItem', function () { return state.brand.heroItem; }, function (v) { state.brand.heroItem = v; });
+}
+
+/* --- STEP 2 --- */
+function stepHtml2() {
+  return '<div class="step-head"><span class="eyebrow">2 / 6</span><h2>고객 이해</h2><p>홍보 대상이 아니라 고객의 입장에서 생각합니다.</p></div>' +
+    fieldTemplate({ id: 'f-audience', label: '주요 고객', required: true, type: 'textarea',
+      examples: '<span class="good">좋은 예: 성수동 인근 2030 직장인과 주말 방문객</span><span class="bad">피해야 할 예: 모든 사람</span>' }) +
+    fieldTemplate({ id: 'f-audienceProblem', label: '고객의 어려움 또는 필요', required: true, type: 'textarea' }) +
+    fieldTemplate({ id: 'f-solution', label: '해결 방법 / 제공 가치', required: true, type: 'textarea' }) +
+    navHtml();
+}
+function bindStep2() {
+  bindText('f-audience', function () { return state.brand.audience; }, function (v) { state.brand.audience = v; });
+  bindText('f-audienceProblem', function () { return state.brand.audienceProblem; }, function (v) { state.brand.audienceProblem = v; });
+  bindText('f-solution', function () { return state.brand.solution; }, function (v) { state.brand.solution = v; });
+}
+
+/* --- STEP 3 --- */
+function stepHtml3() {
+  return '<div class="step-head"><span class="eyebrow">3 / 6</span><h2>핵심 메시지</h2><p>무엇으로 신뢰를 얻고, 무엇을 목표로 어떤 톤으로 말할지 정합니다.</p></div>' +
+    fieldTemplate({ id: 'f-differentiator', label: '차별점', required: true, type: 'textarea' }) +
+    fieldTemplate({ id: 'f-evidence', label: '검증 가능한 신뢰 근거', required: true, type: 'textarea', hint: '수상·인증·데이터 등 사실로 확인 가능한 근거만 적어주세요.' }) +
+    fieldTemplate({ id: 'f-evidenceDate', label: '근거 확인일 (선택)', type: 'date' }) +
+    '<div class="field"><span class="field-label" id="f-objective-label">홍보 목적<span class="field-required">*</span></span>' +
+    '<div class="radio-cards" id="f-objective" role="radiogroup" aria-labelledby="f-objective-label">' + radioCardsHtml('objective', OBJECTIVE_OPTIONS, state.brand.objective) +
+    '</div><p class="field-error" id="fielderr-f-objective">⚠ 하나를 선택하세요.</p></div>' +
+    '<div class="field" id="fieldwrap-f-channels"><label class="field-label">주 사용 채널 (복수 선택)<span class="field-required">*</span></label>' +
+    chipGroupHtml('f-channels', CHANNEL_OPTIONS, state.brand.channels, true) +
+    '<p class="field-error" id="fielderr-f-channels">⚠ 최소 1개를 선택하세요.</p></div>' +
+    '<div class="field"><span class="field-label" id="f-tone-label">브랜드 말투<span class="field-required">*</span></span>' +
+    '<div class="radio-cards" id="f-tone" role="radiogroup" aria-labelledby="f-tone-label">' + radioCardsHtml('tone', TONE_OPTIONS, state.brand.tone) +
+    '</div><p class="field-error" id="fielderr-f-tone">⚠ 하나를 선택하세요.</p></div>' +
+    '<p class="field-group-title">추가 정보 (선택)</p>' +
+    fieldTemplate({ id: 'f-factualDetails', label: '정확한 가격·기간·장소·운영시간·연락처', type: 'textarea' }) +
+    fieldTemplate({ id: 'f-prohibited', label: '금지 표현', type: 'textarea', hint: '절대 쓰면 안 되는 과장·비교 표현이 있다면 적어주세요.' }) +
+    fieldTemplate({ id: 'f-requiredCopy', label: '필수 포함 문구', type: 'textarea' }) +
+    navHtml();
+}
+function radioCardsHtml(name, options, currentVal) {
+  return options.map(function (o) {
+    var active = currentVal === o.v;
+    return '<label class="radio-card' + (active ? ' is-active' : '') + '"><input type="radio" class="sr-only" name="' + name + '" value="' + o.v + '"' + (active ? ' checked' : '') + '><span class="rc-dot" aria-hidden="true"></span><span class="rc-label">' + o.l + '</span></label>';
+  }).join('');
+}
+function bindRadioCards(id, getVal, setVal) {
+  var wrap = document.getElementById(id);
+  if (!wrap) return;
+  wrap.querySelectorAll('input[type="radio"]').forEach(function (input) {
+    input.addEventListener('change', function () {
+      setVal(input.value);
+      scheduleSave();
+      clearFieldError(id);
+      renderStepPanel();
+      renderSummaryPanel();
+    });
+  });
+}
+function bindStep3() {
+  bindText('f-differentiator', function () { return state.brand.differentiator; }, function (v) { state.brand.differentiator = v; });
+  bindText('f-evidence', function () { return state.brand.evidence; }, function (v) { state.brand.evidence = v; });
+  bindText('f-evidenceDate', function () { return state.brand.evidenceDate; }, function (v) { state.brand.evidenceDate = v; });
+  bindRadioCards('f-objective', function () { return state.brand.objective; }, function (v) { state.brand.objective = v; });
+  bindChipGroup('f-channels', function () { return state.brand.channels; }, function (v) { state.brand.channels = v; }, true);
+  bindRadioCards('f-tone', function () { return state.brand.tone; }, function (v) { state.brand.tone = v; });
+  bindText('f-factualDetails', function () { return state.brand.factualDetails; }, function (v) { state.brand.factualDetails = v; });
+  bindText('f-prohibited', function () { return state.brand.prohibited; }, function (v) { state.brand.prohibited = v; });
+  bindText('f-requiredCopy', function () { return state.brand.requiredCopy; }, function (v) { state.brand.requiredCopy = v; });
+}
+
+/* --- STEP 4 --- */
+function stepHtml4() {
+  var html = '<div class="step-head"><span class="eyebrow">4 / 6</span><h2>콘텐츠 유형 선택</h2><p>이번 실습에서 완성할 산출물을 고르세요.</p></div><div class="type-grid">';
+  Object.keys(CONTENT_TYPES).forEach(function (key) {
+    var ct = CONTENT_TYPES[key];
+    var active = state.contentType === key;
+    html += '<div class="type-card' + (active ? ' is-active' : '') + '" data-v="' + key + '" tabindex="0" role="button" aria-pressed="' + active + '">' +
+      '<h3>' + ct.label + '</h3>' +
+      '<div class="type-meta"><span>출력 ' + CATEGORY_LABELS[ct.category] + '</span><span>난이도 ' + ct.difficulty + '</span><span>예상 ' + ct.time + '</span></div>' +
+      '<p>' + ct.goal + '</p>' +
+      '<p class="text-secondary" style="margin-top:8px; font-size:0.8125rem;">출력: ' + ct.outputDesc + '</p>' +
+      '</div>';
+  });
+  html += '</div><p class="field-error" id="fielderr-f-contentType" style="display:' + (state.contentType ? 'none' : 'none') + ';">⚠ 콘텐츠 유형을 선택하세요.</p>';
+  html += navHtml();
+  return html;
+}
+function bindStep4() {
+  document.querySelectorAll('.type-card').forEach(function (card) {
+    function pick() {
+      state.contentType = card.getAttribute('data-v');
+      state.prompt.text = ''; state.prompt.sourceHash = '';
+      scheduleSave();
+      renderStepPanel();
+      renderSummaryPanel();
+    }
+    card.addEventListener('click', pick);
+    card.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
+  });
+}
+
+/* --- STEP 5 --- */
+function stepHtml5() {
+  var hash = promptSourceHash();
+  if (!state.prompt.text || state.prompt.sourceHash !== hash) {
+    state.prompt.text = buildPromptText();
+    state.prompt.sourceHash = hash;
+    state.prompt.dirty = false;
+  }
+  return '<div class="step-head"><span class="eyebrow">5 / 6</span><h2>프롬프트 완성</h2><p>구조화된 프롬프트가 자동으로 만들어졌습니다. 직접 편집할 수 있고, 앞 단계를 수정하면 새로 생성됩니다.</p></div>' +
+    (state.prompt.dirty ? '<p class="prompt-dirty-badge">✎ 직접 편집한 상태입니다. "초기화"를 누르면 원래 생성값으로 되돌립니다.</p>' : '') +
+    '<div class="prompt-toolbar">' +
+    '<button class="btn btn-primary btn-sm" onclick="copyPrompt()">프롬프트 복사</button>' +
+    '<button class="btn btn-ghost btn-sm" onclick="resetPrompt()">초기화</button>' +
+    '<button class="btn btn-ghost btn-sm" onclick="savePromptFile()">TXT/MD로 저장</button>' +
+    '<button class="btn btn-ghost btn-sm" onclick="toggleExplain()">학습 해설 보기</button>' +
+    '</div>' +
+    '<div class="prompt-box-wrap"><textarea class="prompt-textarea" id="promptTextarea">' + escapeHtml(state.prompt.text) + '</textarea></div>' +
+    '<div class="notice" style="margin-top:16px;"><p class="notice-title">붙여넣기 전 확인</p><p>프롬프트에 실명·연락처 등 민감정보가 포함되어 있는지 확인한 뒤 외부 AI에 붙여 넣으세요.</p></div>' +
+    '<p class="field-group-title">"' + CONTENT_TYPES[state.contentType].label + '"에 어울리는 AI 사이트</p>' +
+    '<div class="external-ai-row">' + EXTERNAL_AI_LINKS[CONTENT_TYPES[state.contentType].category].map(function (a) {
+      return '<a class="btn btn-ghost" href="' + a.url + '" target="_blank" rel="noopener noreferrer" title="' + escapeHtml(a.note) + '">' + a.name + '에서 열기 ↗</a>';
+    }).join('') + '</div>' +
+    (CONTENT_TYPES[state.contentType].category === 'video' ? '<p class="field-hint" style="margin-top:8px;">영상 생성 AI는 서비스마다 무료 크레딧 정책이 자주 바뀝니다. 가입 전 각 서비스의 최신 무료 이용 조건을 확인하세요.</p>' : '') +
+    '<div class="explain-panel" id="explainPanel">' + PROMPT_EXPLAIN.map(function (e) {
+      return '<div class="explain-item"><span class="eb-tag">' + e.tag + '</span><p>' + e.text + '</p></div>';
+    }).join('') + '</div>' +
+    navHtml('실행 약속 정하기 →');
+}
+function bindStep5() {
+  var ta = document.getElementById('promptTextarea');
+  if (ta) ta.addEventListener('input', function () {
+    state.prompt.text = ta.value;
+    state.prompt.dirty = true;
+    scheduleSave();
+  });
+}
+function copyPrompt() { copyText(document.getElementById('promptTextarea').value, '프롬프트를 복사했습니다'); }
+function resetPrompt() { state.prompt.text = buildPromptText(); state.prompt.sourceHash = promptSourceHash(); state.prompt.dirty = false; scheduleSave(); renderStepPanel(); }
+function savePromptFile() {
+  var name = (state.brand.projectName || '홍보실습') + '_' + CONTENT_TYPES[state.contentType].label + '_프롬프트.md';
+  downloadTextFile(name, document.getElementById('promptTextarea').value);
+  showToast('파일로 저장했습니다');
+}
+function toggleExplain() { document.getElementById('explainPanel').classList.toggle('is-open'); }
+
+/* --- STEP 6 --- */
+function stepHtml6() {
+  var b = state.brand;
+  var html = '<div class="step-head"><span class="eyebrow">6 / 6</span><h2>실행 약속 &amp; 제출</h2><p>오늘 실습을 실제 행동으로 연결합니다.</p></div>';
+
+  html += '<div class="field"><span class="field-label" id="commitmentList-label">실행 약속<span class="field-required">*</span></span><div class="commitment-list" id="commitmentList" role="radiogroup" aria-labelledby="commitmentList-label">';
+  COMMITMENT_OPTIONS.forEach(function (opt) {
+    var active = state.commitment === opt;
+    html += '<label class="radio-card' + (active ? ' is-active' : '') + '"><input type="radio" class="sr-only" name="commitment" value="' + escapeHtml(opt) + '"' + (active ? ' checked' : '') + '><span class="rc-dot" aria-hidden="true"></span><span class="rc-label">' + opt + '</span></label>';
+  });
+  html += '</div><p class="field-error" id="fielderr-commitmentList">⚠ 실행 약속을 선택하세요.</p></div>';
+  if (state.commitment === '직접 입력') {
+    html += fieldTemplate({ id: 'f-commitmentCustom', label: '실행 약속 직접 입력', required: true });
+  }
+  html += fieldTemplate({ id: 'f-dueDate', label: '실행 예정일', required: true, type: 'date' });
+
+  html += '<p class="field-group-title">최종 제출물 요약</p><dl class="review-summary">' +
+    reviewRow('프로젝트명', b.projectName) + reviewRow('지역', b.region) +
+    reviewRow('콘텐츠 유형', state.contentType ? CONTENT_TYPES[state.contentType].label : '—') +
+    reviewRow('실행 예정일', state.dueDate || '—') +
+    '</dl>';
+
+  html += '<div class="notice" style="margin-top:20px;"><label style="display:flex; gap:10px; align-items:flex-start; cursor:pointer;"><input type="checkbox" id="privacyAckBox" style="margin-top:4px; width:18px; height:18px;"><span>이 실습 결과물에 실제 개인정보·영업정보가 포함될 수 있음을 확인했으며, 민감정보를 불필요하게 포함하지 않았습니다.</span></label></div>';
+
+  html += navHtml('제출하기');
+  return html;
+}
+function reviewRow(k, v) { return '<div><dt>' + k + '</dt><dd>' + escapeHtml(v || '—') + '</dd></div>'; }
+function bindStep6() {
+  document.querySelectorAll('#commitmentList input[type="radio"]').forEach(function (input) {
+    input.addEventListener('change', function () {
+      state.commitment = input.value;
+      scheduleSave();
+      renderStepPanel();
+    });
+  });
+  bindText('f-commitmentCustom', function () { return state.commitmentCustom; }, function (v) { state.commitmentCustom = v; });
+  bindText('f-dueDate', function () { return state.dueDate; }, function (v) { state.dueDate = v; });
+  var ack = document.getElementById('privacyAckBox');
+  if (ack) { ack.checked = !!state.privacyAck; ack.addEventListener('change', function () { state.privacyAck = ack.checked; scheduleSave(); }); }
+}
+
+function bindStep(s) {
+  if (s === 1) bindStep1();
+  else if (s === 2) bindStep2();
+  else if (s === 3) bindStep3();
+  else if (s === 4) bindStep4();
+  else if (s === 5) bindStep5();
+  else if (s === 6) bindStep6();
+}
+
+function applyValidationHighlight(s) {
+  // 실시간 입력 중에는 표시하지 않고, '다음' 시도 실패 시에만 하이라이트한다. nextStep()에서 처리.
+}
+
+/* nextStep에서 실패 시 관련 필드 강조 */
+var ORIGINAL_NEXT = nextStep;
+nextStep = function () {
+  var s = state.step;
+  if (!validateStep(s)) {
+    highlightInvalidFields(s);
+    return;
+  }
+  ORIGINAL_NEXT();
+};
+function highlightInvalidFields(s) {
+  var b = state.brand;
+  if (s === 1) {
+    if (!b.projectName.trim()) markFieldError('f-projectName');
+    if (!b.region.trim()) markFieldError('f-region');
+    if (!b.industries.length) markFieldError('f-industries');
+    if (!b.offering.trim()) markFieldError('f-offering');
+    if (!b.heroItem.trim()) markFieldError('f-heroItem');
+  } else if (s === 2) {
+    if (!b.audience.trim()) markFieldError('f-audience');
+    if (!b.audienceProblem.trim()) markFieldError('f-audienceProblem');
+    if (!b.solution.trim()) markFieldError('f-solution');
+  } else if (s === 3) {
+    if (!b.differentiator.trim()) markFieldError('f-differentiator');
+    if (!b.evidence.trim()) markFieldError('f-evidence');
+    if (!b.objective) markFieldError('f-objective');
+    if (!b.channels.length) markFieldError('f-channels');
+    if (!b.tone) markFieldError('f-tone');
+  } else if (s === 6) {
+    if (!state.commitment || (state.commitment === '직접 입력' && !(state.commitmentCustom || '').trim())) markFieldError('commitmentList');
+    if (!state.dueDate) markFieldError('f-dueDate');
+    if (!state.privacyAck) showToast('민감정보 확인란에 체크해주세요');
+  }
+  var firstErr = document.querySelector('.field.has-error, #fielderr-commitmentList');
+  if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+/* ===================== 최종 제출 ===================== */
+function buildFinalMarkdown() {
+  var b = state.brand;
+  var ct = state.contentType ? CONTENT_TYPES[state.contentType] : null;
+  var lines = [];
+  lines.push('# 청람 AI 홍보실습소 실습 제출물');
+  lines.push('');
+  lines.push('제출일: ' + (state.submittedAt || new Date().toISOString().slice(0, 10)));
+  lines.push('');
+  lines.push('## 브랜드 요약');
+  lines.push('- 프로젝트명: ' + b.projectName);
+  lines.push('- 지역: ' + b.region);
+  lines.push('- 업종/분야: ' + labelsOf(INDUSTRY_OPTIONS, b.industries).join(', '));
+  lines.push('- 주요 내용: ' + b.offering);
+  lines.push('- 대표 항목: ' + b.heroItem);
+  lines.push('- 주요 고객: ' + b.audience);
+  lines.push('- 고객 문제: ' + b.audienceProblem);
+  lines.push('- 해결 방법: ' + b.solution);
+  lines.push('- 차별점: ' + b.differentiator);
+  lines.push('- 신뢰 근거: ' + b.evidence);
+  lines.push('- 홍보 목적: ' + labelOf(OBJECTIVE_OPTIONS, b.objective));
+  lines.push('- 채널: ' + labelsOf(CHANNEL_OPTIONS, b.channels).join(', '));
+  lines.push('- 브랜드 말투: ' + labelOf(TONE_OPTIONS, b.tone));
+  lines.push('');
+  lines.push('## 콘텐츠 유형');
+  lines.push(ct ? ct.label : '—');
+  lines.push('');
+  lines.push('## 원본 프롬프트');
+  lines.push('```');
+  lines.push(state.prompt.text);
+  lines.push('```');
+  lines.push('');
+  lines.push('## 실행 약속');
+  lines.push('- 약속: ' + (state.commitment === '직접 입력' ? state.commitmentCustom : state.commitment));
+  lines.push('- 실행 예정일: ' + state.dueDate);
+  return lines.join('\n');
+}
+function downloadMarkdown() {
+  var safeName = (state.brand.projectName || '홍보실습').replace(/[\\/:*?"<>|]/g, '_');
+  downloadTextFile(safeName + '_실습결과.md', buildFinalMarkdown());
+  showToast('결과물을 다운로드했습니다');
+}
+function submitFinal() {
+  state.submittedAt = new Date().toISOString().slice(0, 10);
+  scheduleSave();
+  downloadMarkdown();
+  showScreen('complete');
+  renderComplete();
+}
+function renderComplete() {
+  var b = state.brand;
+  document.getElementById('completeSummary').innerHTML =
+    '<h3>' + escapeHtml(b.projectName) + '</h3>' +
+    '<dl class="review-summary" style="margin-top:14px;">' +
+    reviewRow('콘텐츠 유형', state.contentType ? CONTENT_TYPES[state.contentType].label : '—') +
+    reviewRow('실행 약속', state.commitment === '직접 입력' ? state.commitmentCustom : state.commitment) +
+    reviewRow('실행 예정일', state.dueDate) +
+    '</dl>';
+}
+function makeAnotherContent() {
+  state.contentType = state.contentType === 'sns' ? 'blog' : 'sns';
+  state.prompt = { text: '', sourceHash: '', dirty: false };
+  state.commitment = ''; state.commitmentCustom = ''; state.dueDate = ''; state.privacyAck = false;
+  state.step = 4; state.maxStep = Math.max(state.maxStep, 4);
+  scheduleSave();
+  showScreen('wizard');
+  renderWizard();
+}
+
+/* ===================== 등장 애니메이션 (랜딩) ===================== */
+document.querySelectorAll('[data-reveal]').forEach(function (el) { el.classList.add('reveal'); el.style.opacity = '0'; el.style.transform = 'translateY(20px)'; el.style.transition = 'opacity .5s ease, transform .5s ease'; });
+var revealObserver = new IntersectionObserver(function (entries) {
+  entries.forEach(function (e) { if (e.isIntersecting) { e.target.style.opacity = '1'; e.target.style.transform = 'none'; revealObserver.unobserve(e.target); } });
+}, { threshold: 0.12 });
+document.querySelectorAll('[data-reveal]').forEach(function (el) { revealObserver.observe(el); });
+setTimeout(function () { document.querySelectorAll('[data-reveal]').forEach(function (el) { el.style.opacity = '1'; el.style.transform = 'none'; }); }, 1200);
+
+/* ===================== 초기화 / 복구 ===================== */
+function restoreOnLoad() {
+  var saved = loadState();
+  if (saved && saved.mode) {
+    state = Object.assign(defaultState(), saved);
+    state.brand = Object.assign(defaultState().brand, saved.brand || {});
+    showScreen(state.submittedAt ? 'complete' : 'wizard');
+    if (state.submittedAt) renderComplete();
+    renderWizard();
+  } else {
+    showScreen('landing');
+  }
+}
+window.addEventListener('pageshow', restoreOnLoad);
+restoreOnLoad();
+</script>
+</body>
+</html>
