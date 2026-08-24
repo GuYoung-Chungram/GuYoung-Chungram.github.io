@@ -1,12 +1,3 @@
-
-
-mobile-traffic-light.html
-
-페이지
-1
-/
-1
-100%
 <!doctype html>
 <html lang="ko">
 <head>
@@ -60,6 +51,7 @@ mobile-traffic-light.html
       font-size: 16px;
       font-weight: 800;
       cursor: pointer;
+      flex-shrink: 0;
     }
 
     .home-button:active { transform: scale(.97); }
@@ -73,11 +65,60 @@ mobile-traffic-light.html
       white-space: nowrap;
     }
 
+    .count-button {
+      margin-left: auto;
+      min-width: 56px;
+      height: 42px;
+      border: 1px solid rgba(255,255,255,.25);
+      border-radius: 12px;
+      padding: 0 14px;
+      color: #fff;
+      background: rgba(255,255,255,.08);
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .count-button:active { transform: scale(.97); }
+
+    .count-panel {
+      display: none;
+      position: fixed;
+      z-index: 15;
+      top: calc(var(--header-height) + env(safe-area-inset-top) + 8px);
+      right: 16px;
+      background: #1c1f27;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 16px;
+      padding: 10px;
+      box-shadow: 0 12px 32px rgba(0,0,0,.4);
+      gap: 8px;
+      flex-wrap: wrap;
+      max-width: 220px;
+    }
+
+    .count-panel.open { display: flex; }
+
+    .count-option {
+      width: 42px;
+      height: 42px;
+      border: 0;
+      border-radius: 10px;
+      background: rgba(255,255,255,.1);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .count-option.active { background: #fff; color: #17191e; }
+    .count-option:active { transform: scale(.95); }
+
     .signal-list {
       min-height: 100dvh;
       padding-top: calc(var(--header-height) + env(safe-area-inset-top));
       display: grid;
-      grid-template-rows: repeat(3, 1fr);
       gap: 12px;
       padding-left: 16px;
       padding-right: 16px;
@@ -93,9 +134,6 @@ mobile-traffic-light.html
     }
 
     .color-button:active { transform: scale(.98); filter: brightness(.88); }
-    .red { background: #ef233c; }
-    .green { background: #20bf6b; }
-    .blue { background: #2f80ed; }
 
     .fullscreen-color {
       display: none;
@@ -107,6 +145,7 @@ mobile-traffic-light.html
 
     body.fullscreen-mode .signal-list { display: none; }
     body.fullscreen-mode .fullscreen-color { display: block; }
+    body.fullscreen-mode .count-panel { display: none !important; }
     body.fullscreen-mode .topbar {
       background: rgba(0, 0, 0, .18);
       border-bottom-color: rgba(255,255,255,.2);
@@ -132,13 +171,12 @@ mobile-traffic-light.html
     <header class="topbar">
       <button id="homeButton" class="home-button" type="button" aria-label="홈으로 돌아가기">홈</button>
       <span class="title">색 신호등</span>
+      <button id="countButton" class="count-button" type="button" aria-label="색상 개수 선택">개수</button>
     </header>
 
-    <section class="signal-list" aria-label="색 선택">
-      <button class="color-button red" type="button" data-color="#ef233c" aria-label="빨강 전체화면"></button>
-      <button class="color-button green" type="button" data-color="#20bf6b" aria-label="초록 전체화면"></button>
-      <button class="color-button blue" type="button" data-color="#2f80ed" aria-label="파랑 전체화면"></button>
-    </section>
+    <div id="countPanel" class="count-panel" aria-label="색상 개수 선택 패널"></div>
+
+    <section id="signalList" class="signal-list" aria-label="색 선택"></section>
 
     <div id="fullscreenColor" class="fullscreen-color" aria-label="색상 전체화면"></div>
     <span class="hint">화면을 누르거나 홈을 누르세요</span>
@@ -147,8 +185,60 @@ mobile-traffic-light.html
   <script>
     const body = document.body;
     const homeButton = document.getElementById('homeButton');
+    const countButton = document.getElementById('countButton');
+    const countPanel = document.getElementById('countPanel');
+    const signalList = document.getElementById('signalList');
     const fullscreenColor = document.getElementById('fullscreenColor');
-    const colorButtons = document.querySelectorAll('.color-button');
+
+    // 사용 가능한 색상 팔레트 (개수 늘어날 때 순서대로 추가됨)
+    const palette = [
+      { hex: '#ef233c', label: '빨강' },
+      { hex: '#20bf6b', label: '초록' },
+      { hex: '#2f80ed', label: '파랑' },
+      { hex: '#f7b731', label: '노랑' },
+      { hex: '#9b59b6', label: '보라' },
+      { hex: '#ff7f50', label: '주황' },
+    ];
+
+    const MIN_COUNT = 2;
+    const MAX_COUNT = palette.length;
+
+    let currentCount = 3;
+
+    function renderCountOptions() {
+      countPanel.innerHTML = '';
+      for (let n = MIN_COUNT; n <= MAX_COUNT; n++) {
+        const btn = document.createElement('button');
+        btn.className = 'count-option' + (n === currentCount ? ' active' : '');
+        btn.type = 'button';
+        btn.textContent = n;
+        btn.setAttribute('aria-label', `색상 ${n}개로 설정`);
+        btn.addEventListener('click', () => setCount(n));
+        countPanel.appendChild(btn);
+      }
+    }
+
+    function renderSignalList() {
+      signalList.style.gridTemplateRows = `repeat(${currentCount}, 1fr)`;
+      signalList.innerHTML = '';
+      palette.slice(0, currentCount).forEach((color) => {
+        const btn = document.createElement('button');
+        btn.className = 'color-button';
+        btn.type = 'button';
+        btn.style.background = color.hex;
+        btn.dataset.color = color.hex;
+        btn.setAttribute('aria-label', `${color.label} 전체화면`);
+        btn.addEventListener('click', () => showColor(color.hex));
+        signalList.appendChild(btn);
+      });
+    }
+
+    function setCount(n) {
+      currentCount = n;
+      renderCountOptions();
+      renderSignalList();
+      countPanel.classList.remove('open');
+    }
 
     function showHome() {
       body.classList.remove('fullscreen-mode');
@@ -162,8 +252,14 @@ mobile-traffic-light.html
       document.querySelector('meta[name="theme-color"]').content = color;
     }
 
-    colorButtons.forEach((button) => {
-      button.addEventListener('click', () => showColor(button.dataset.color));
+    countButton.addEventListener('click', () => {
+      countPanel.classList.toggle('open');
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!countPanel.contains(event.target) && event.target !== countButton) {
+        countPanel.classList.remove('open');
+      }
     });
 
     homeButton.addEventListener('click', showHome);
@@ -172,7 +268,9 @@ mobile-traffic-light.html
     window.addEventListener('keydown', (event) => {
       if (event.key === 'Escape') showHome();
     });
+
+    renderCountOptions();
+    renderSignalList();
   </script>
 </body>
 </html>
-mobile-traffic-light.html 표시 중입니다.
