@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>우정사업본부 바이브코딩 실습허브 · 공공 데이터 분석</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root, [data-theme="light"] {
+      --color-bg:#f6f7f3; --color-surface:#fcfcfa; --color-surface-2:#f0f2ed; --color-surface-3:#e7ebe3;
+      --color-text:#161814; --color-muted:#5f655d; --color-faint:#889086; --color-border:rgba(22,24,20,.12);
+      --color-primary:#0b6b4f; --color-primary-2:#d9efe6; --color-accent:#b8ff5a; --color-accent-2:#23351a;
+      --color-warn:#a3540b; --color-warn-2:#fbe9d6; --color-danger:#b3261e; --color-danger-2:#fbe4e2;
+      --shadow-sm:0 6px 20px rgba(20,30,18,.06); --shadow-md:0 16px 40px rgba(20,30,18,.1);
+      --radius-sm:12px; --radius-md:18px; --radius-lg:28px; --radius-full:999px;
+      --space-1:.25rem; --space-2:.5rem; --space-3:.75rem; --space-4:1rem; --space-5:1.25rem; --space-6:1.5rem; --space-8:2rem; --space-10:2.5rem; --space-12:3rem; --space-16:4rem; --space-20:5rem;
+      --text-xs:clamp(.75rem,.72rem + .2vw,.85rem); --text-sm:clamp(.9rem,.85rem + .25vw,1rem); --text-base:clamp(1rem,.96rem + .25vw,1.1rem); --text-lg:clamp(1.2rem,1.05rem + .8vw,1.6rem); --text-xl:clamp(1.6rem,1.2rem + 1.6vw,2.7rem); --text-2xl:clamp(2.25rem,1.4rem + 3vw,4.2rem);
+      --font-body:'Pretendard', system-ui, sans-serif; --font-mono:'IBM Plex Mono', monospace;
+    }
+    [data-theme="dark"] {
+      --color-bg:#121411; --color-surface:#181b17; --color-surface-2:#1d211c; --color-surface-3:#242923;
+      --color-text:#edf0ea; --color-muted:#b6beb3; --color-faint:#7c867b; --color-border:rgba(237,240,234,.11);
+      --color-primary:#58c59a; --color-primary-2:#173428; --color-accent:#b8ff5a; --color-accent-2:#202c14;
+      --color-warn:#e3a35c; --color-warn-2:#2c2011; --color-danger:#e9847c; --color-danger-2:#2c1816;
+      --shadow-sm:0 8px 24px rgba(0,0,0,.25); --shadow-md:0 20px 48px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;font-family:var(--font-body);font-size:var(--text-base);line-height:1.65;background:var(--color-bg);color:var(--color-text)}
+    a{color:inherit;text-decoration:none} button,input,textarea,select{font:inherit;color:inherit} img{max-width:100%;display:block}
+    .shell{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
+    .sidebar{position:sticky;top:0;height:100vh;overflow:auto;padding:var(--space-6) var(--space-5);background:linear-gradient(180deg,var(--color-surface),var(--color-surface-2));border-right:1px solid var(--color-border);display:flex;flex-direction:column;gap:var(--space-5)}
+    .brand{display:flex;flex-direction:column;gap:.8rem;padding-bottom:var(--space-5);border-bottom:1px solid var(--color-border)}
+    .brand-logo-wrap{background:#fff;border:1px solid var(--color-border);border-radius:14px;padding:.7rem 1rem;box-shadow:var(--shadow-sm);display:inline-flex;align-self:flex-start}
+    .brand-logo-wrap svg{width:100%;max-width:172px;height:auto;display:block}
+    .brand-title{margin:0;color:var(--color-text);font-size:1.05rem;font-weight:800;letter-spacing:-.01em;word-break:keep-all;line-height:1.4}
+    .brand-sub{margin:.15rem 0 0;color:var(--color-muted);font-size:var(--text-xs);font-weight:700;letter-spacing:.02em;word-break:keep-all;line-height:1.5}
+    .toggle{width:40px;height:40px;border-radius:12px;border:1px solid var(--color-border);background:var(--color-surface-2);color:var(--color-text);cursor:pointer;flex-shrink:0}
+    .theme-fab{position:fixed;top:1rem;right:1rem;z-index:60;box-shadow:var(--shadow-md)}
+    .nav{display:grid;gap:.35rem}.nav a{padding:.65rem .85rem;border-radius:12px;color:var(--color-muted);font-weight:600;font-size:var(--text-sm)}.nav a:hover,.nav a.active{background:var(--color-surface-3);color:var(--color-text)}
+    .nav .navnum{display:inline-block;width:1.4em;margin-right:.6em;color:var(--color-primary);font-weight:800}
+    .side-card{padding:var(--space-4);background:var(--color-surface-2);border:1px solid var(--color-border);border-radius:var(--radius-md);box-shadow:var(--shadow-sm)}
+    .side-card h3{margin:0 0 .4rem;font-size:.88rem}.side-card p{margin:0;color:var(--color-muted);font-size:var(--text-xs)}
+    .main{padding:var(--space-8);display:grid;gap:var(--space-10);max-width:1180px}
+    .hero{padding:clamp(1.6rem,3vw,2.6rem);background:radial-gradient(circle at top right, rgba(184,255,90,.18), transparent 28%), linear-gradient(135deg,var(--color-surface),var(--color-surface-2));border:1px solid var(--color-border);border-radius:28px;box-shadow:var(--shadow-md);display:grid;grid-template-columns:1.15fr .95fr;gap:var(--space-8)}
+    .eyebrow{display:inline-flex;gap:.5rem;align-items:center;padding:.4rem .75rem;border-radius:999px;background:var(--color-primary-2);color:var(--color-primary);font-size:var(--text-xs);font-weight:700;margin-bottom:var(--space-3)}
+    .hero h2{margin:0 0 var(--space-3);font-size:var(--text-2xl);line-height:1.18;letter-spacing:-.02em;word-break:keep-all}.hero p{margin:0 0 var(--space-4);color:var(--color-muted);max-width:58ch}
+    .cta-row{display:flex;flex-wrap:wrap;gap:10px}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.8rem 1.05rem;border-radius:999px;border:1px solid transparent;font-weight:700;cursor:pointer;font-size:var(--text-sm)}
+    .btn-primary{background:var(--color-primary);color:#fff}.btn-secondary{background:transparent;border-color:var(--color-border);color:var(--color-text)}
+    .hero-panel,.section-card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:22px;box-shadow:var(--shadow-sm)}
+    .hero-panel{padding:var(--space-5);display:grid;gap:var(--space-4)} .mini-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .stat{padding:.9rem;border-radius:16px;background:var(--color-surface-2);border:1px solid var(--color-border)} .stat strong{display:block;font-size:1.2rem}.stat span{font-size:var(--text-xs);color:var(--color-muted)}
+    .openchat-card{display:flex;gap:1rem;align-items:center;padding:1rem;border-radius:16px;background:var(--color-surface-2);border:1px solid var(--color-border)}
+    .openchat-card img{width:88px;height:88px;border-radius:12px;flex-shrink:0;border:1px solid var(--color-border);background:#fff}
+    .openchat-card .oc-text{display:grid;gap:.35rem}
+    .openchat-card .oc-text strong{font-size:var(--text-sm)}
+    .openchat-card .oc-text span{font-size:var(--text-xs);color:var(--color-muted)}
+    .grid-2,.grid-3{display:grid;gap:var(--space-4)} .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))} .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .section-head{display:flex;justify-content:space-between;align-items:end;gap:var(--space-4);margin-bottom:var(--space-4)} .section-head>div{flex:1;min-width:0} .section-head h2{margin:0;font-size:var(--text-xl);letter-spacing:-.02em} .section-head p{margin:.35rem 0 0;color:var(--color-muted)}
+    .badge{display:inline-flex;align-items:center;gap:6px;padding:.3rem .65rem;border-radius:999px;font-size:var(--text-xs);font-weight:800}
+    .badge-must{background:var(--color-danger-2);color:var(--color-danger)}.badge-rec{background:var(--color-warn-2);color:var(--color-warn)}.badge-opt{background:var(--color-surface-3);color:var(--color-muted)}
+    .section-card{padding:var(--space-5)} .kicker{font-size:var(--text-xs);font-weight:800;color:var(--color-primary);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem}
+    .checklist,.steps,.prompt-list{display:grid;gap:.7rem;padding:0;margin:0;list-style:none}.checklist li,.steps li{padding:.9rem .9rem .9rem 2.7rem;position:relative;background:var(--color-surface-2);border:1px solid var(--color-border);border-radius:16px;font-size:var(--text-sm)}
+    .checklist li::before,.steps li::before{content:"";position:absolute;left:.9rem;top:.95rem;width:22px;height:22px;border-radius:999px;background:var(--color-primary-2)}
+    .steps li b{display:block;margin-bottom:.15rem}
+    .tag-row{display:flex;flex-wrap:wrap;gap:8px}.tag{display:inline-flex;padding:.38rem .65rem;border-radius:999px;background:var(--color-surface-2);border:1px solid var(--color-border);font-size:var(--text-xs);font-weight:700;color:var(--color-muted)}
+    .accordion{display:grid;gap:10px}.accordion details{background:var(--color-surface);border:1px solid var(--color-border);border-radius:16px;padding:.9rem 1rem}.accordion summary{cursor:pointer;font-weight:700}.accordion p{color:var(--color-muted);margin:.7rem 0 0;font-size:var(--text-sm)}
+    .prompt-box{padding:1rem;border-radius:16px;background:#101510;border:1px solid var(--color-border)}
+    .prompt-box pre,.prompt-box code{white-space:pre-wrap;font-family:var(--font-mono);font-size:.85rem;color:#dff7de;margin:0;display:block}
+    .copy-btn{margin-top:.7rem;background:var(--color-accent);color:#152a10;border:none;border-radius:999px;padding:.5rem 1rem;font-weight:800;font-size:var(--text-xs);cursor:pointer}
+    .footer-note{padding:1rem 1.1rem;border-radius:16px;background:var(--color-accent-2);color:var(--color-accent);font-weight:700;font-size:var(--text-sm)}
+    .callout{padding:1rem 1.1rem;border-radius:16px;border:1px solid var(--color-border);font-size:var(--text-sm)}
+    .callout.warn{background:var(--color-warn-2);color:var(--color-warn)}
+    .callout.danger{background:var(--color-danger-2);color:var(--color-danger)}
+    .prompt-card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:20px;padding:var(--space-5);display:grid;gap:.6rem}
+    .prompt-card h3{margin:0;font-size:1.02rem;display:flex;align-items:center;gap:8px}
+    .prompt-card .when{font-size:var(--text-sm);color:var(--color-muted)}
+    .prompt-card .fillguide{font-size:var(--text-xs);color:var(--color-primary);background:var(--color-primary-2);padding:.6rem .75rem;border-radius:12px}
+    .field{display:grid;gap:.4rem;margin-bottom:.9rem}.field label{font-weight:700;font-size:var(--text-sm)}
+    textarea,input[type=text]{width:100%;padding:.7rem .85rem;border-radius:12px;border:1px solid var(--color-border);background:var(--color-surface-2);color:var(--color-text)}
+    .chk-row{display:flex;align-items:flex-start;gap:.6rem;padding:.75rem .85rem;border-radius:14px;background:var(--color-surface-2);border:1px solid var(--color-border);margin-bottom:.55rem}
+    .chk-row input{margin-top:.2rem}
+    .chk-row .t{font-weight:700;font-size:var(--text-sm)}.chk-row .d{font-size:var(--text-xs);color:var(--color-muted)}
+    table.mode-table{width:100%;border-collapse:collapse;font-size:var(--text-sm)}
+    table.mode-table th,table.mode-table td{padding:.65rem .7rem;border-bottom:1px solid var(--color-border);text-align:left;vertical-align:top}
+    table.mode-table th{color:var(--color-muted);font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.04em}
+    .dl-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:.8rem}
+    .topbar{display:none}
+    @media (max-width:1100px){.shell{grid-template-columns:1fr}.sidebar{display:none}.topbar{display:flex;position:sticky;top:0;z-index:20;padding:1rem;background:rgba(246,247,243,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--color-border);align-items:center;justify-content:space-between}.hero,.grid-2,.grid-3{grid-template-columns:1fr}.main{padding:1rem}}
+    @media (max-width:640px){.hero h2{font-size:clamp(1.8rem,9vw,2.6rem)} .section-card{padding:1rem} .hero{padding:1.1rem;border-radius:22px}.cta-row{flex-direction:column}.btn{width:100%}}
+  </style>
+</head>
+<body>
+  <a href="#main" style="position:absolute;left:-9999px;top:auto;">본문 바로가기</a>
+  <button class="toggle theme-fab" data-theme-toggle aria-label="테마 전환">☾</button>
+  <div class="topbar">
+    <strong>바이브코딩 실습허브</strong>
+  </div>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-logo-wrap" aria-label="우정사업본부 로고">
+          <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="1220.8265" height="300" viewBox="0 0 1220.8265 300"><path d="M86.063 134.808h295.386v72.437H86.062Z" style="fill:#ee2722;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:.1" transform="matrix(1.33333 0 0 -1.33333 -26.375 685.358)"/><path d="M209.605 354.966c.094 0 .162.071.162.161v2.07a.162.162 0 0 1-.162.161h-26.626a.167.167 0 0 1-.163-.161v-2.07c0-.09.075-.161.163-.161h11.098v-9.869c0-.086.072-.163.16-.163h4.145c.094 0 .161.077.161.163v9.869h11.062M190.015 361.582c1.73-1.425 3.838-2.146 6.277-2.146 2.464 0 4.588.721 6.31 2.146 1.725 1.418 2.594 3.158 2.594 5.165 0 2.012-.869 3.755-2.594 5.186-1.722 1.439-3.846 2.165-6.31 2.165-2.439 0-4.547-.726-6.277-2.165-1.717-1.431-2.588-3.174-2.588-5.186 0-2.007.871-3.747 2.588-5.165zm3.129 8.656c.832.954 1.894 1.44 3.148 1.44 1.257 0 2.323-.486 3.168-1.44.835-.948 1.27-2.125 1.27-3.491 0-1.336-.435-2.507-1.27-3.47-.845-.968-1.911-1.453-3.168-1.453-1.255 0-2.319.485-3.153 1.459-.825.957-1.244 2.128-1.244 3.464 0 1.371.419 2.543 1.249 3.491M234.017 357.546c0-.087.069-.159.162-.159h4.145c.086 0 .164.072.164.159v15.961a.166.166 0 0 1-.164.165h-4.145a.16.16 0 0 1-.162-.165v-5.887h-5.397a.162.162 0 0 1-.162-.16v-2.072c0-.086.076-.156.162-.156h5.397v-7.686M235.292 355.044c-1.49 1.295-3.331 1.951-5.463 1.951-2.113 0-3.937-.656-5.432-1.951-1.484-1.292-2.238-2.873-2.238-4.698 0-1.821.754-3.402 2.236-4.675 1.491-1.285 3.321-1.938 5.434-1.938 2.132 0 3.973.653 5.463 1.938 1.49 1.273 2.243 2.854 2.243 4.675 0 1.825-.753 3.406-2.243 4.698zm-3.15-7.561c-.648-.856-1.425-1.291-2.313-1.291-.864 0-1.633.435-2.292 1.291a4.56 4.56 0 0 0-.98 2.863 4.74 4.74 0 0 0 .975 2.921c.664.865 1.432 1.303 2.297 1.303.888 0 1.665-.438 2.313-1.307a4.79 4.79 0 0 0 .962-2.917 4.665 4.665 0 0 0-.962-2.863M272.789 366.747h-4.588v6.806a.161.161 0 0 1-.161.162h-4.144a.164.164 0 0 1-.163-.162v-28.527c0-.09.077-.159.163-.159h4.144a.16.16 0 0 1 .161.159v19.333h4.588a.16.16 0 0 1 .161.161v2.071a.159.159 0 0 1-.161.156M261.928 357.597a7.574 7.574 0 0 0-2.25 1.048c-.883.597-1.706 1.395-2.462 2.406-1.489 2.001-2.243 4.429-2.243 7.212v5.29a.162.162 0 0 1-.159.162h-4.252a.156.156 0 0 1-.158-.162v-5.29c0-2.783-.762-5.211-2.249-7.212-.754-1.011-1.577-1.809-2.462-2.406a7.495 7.495 0 0 0-2.25-1.048c-.072-.015-.097-.163 0-.244l1.729-1.526c.072-.063.318-.096.409-.081 1.408.197 2.815.838 4.205 1.916.401.311.764.641 1.101.983.905.937 1.551 1.957 1.802 2.913.248-.956.89-1.976 1.799-2.913.334-.342.696-.672 1.097-.983 1.389-1.078 2.797-1.719 4.202-1.916.095-.015.342.018.413.081.341.307 1.27 1.121 1.728 1.526.096.081.073.229 0 .244M300.613 373.715h-4.143a.16.16 0 0 1-.165-.162v-5.571h-4.254c-.062 0-.125.041-.137.105-.417 1.627-1.343 2.982-2.762 4.034-1.419 1.062-3.114 1.594-5.02 1.594-2.155 0-4.038-.719-5.584-2.126-1.548-1.405-2.329-3.128-2.329-5.12 0-1.989.781-3.713 2.329-5.118 1.546-1.411 3.429-2.132 5.584-2.132 2.025 0 3.792.615 5.261 1.82 1.466 1.199 2.345 2.688 2.625 4.433a.14.14 0 0 0 .138.119h4.149v-6.524c0-.088.07-.162.165-.162h4.143c.089 0 .165.074.165.162v14.486a.164.164 0 0 1-.165.162zm-14.025-10.71c-.692-.941-1.522-1.425-2.456-1.425-.935 0-1.756.484-2.431 1.425-.674.938-1.015 2.086-1.015 3.424 0 1.343.344 2.496 1.032 3.43.692.949 1.504 1.429 2.414 1.429.962 0 1.788-.48 2.478-1.431.666-.935 1.006-2.087 1.006-3.428 0-1.338-.345-2.486-1.028-3.424M364.221 357.883h-26.314a.158.158 0 0 1-.158-.161v-2.103a.16.16 0 0 1 .158-.163h10.928v-10.41a.16.16 0 0 1 .156-.163h4.149a.16.16 0 0 1 .156.163v10.41h10.925c.082 0 .16.072.16.163v2.103c0 .09-.078.161-.16.161M330.658 347.277h-15.045v5.181c0 .092-.066.164-.153.164h-4.149c-.094 0-.158-.072-.158-.164v-4.548c0-.94.293-1.684.884-2.221.596-.536 1.346-.806 2.245-.806h16.376c.087 0 .162.074.162.163v2.067a.166.166 0 0 1-.162.164M333.507 357.883h-10.925v3.664h7.439c.089 0 .163.067.163.158v11.848a.162.162 0 0 1-.163.162h-4.146a.162.162 0 0 1-.161-.162v-3.635h-10.767v3.635a.16.16 0 0 1-.156.162h-4.148a.164.164 0 0 1-.164-.162v-9.023c0-.892.292-1.619.854-2.16.568-.548 1.337-.823 2.28-.823h4.502v-3.664h-10.923a.16.16 0 0 1-.162-.161v-2.103a.16.16 0 0 1 .162-.161h26.315c.085 0 .16.07.16.161v2.103c0 .09-.075.161-.16.161zm-18.56 6.047v3.597h10.767v-3.597h-10.767M360.738 373.715h-4.154a.163.163 0 0 1-.155-.162v-3.668h-10.772v3.668a.158.158 0 0 1-.157.162h-4.141a.16.16 0 0 1-.16-.162v-10.006c0-.892.286-1.62.854-2.169.57-.541 1.331-.817 2.27-.817h16.415a.16.16 0 0 1 .161.156v12.836a.16.16 0 0 1-.161.162zm-4.309-10.765h-10.772v4.499h10.772v-4.499M300.613 356.727h-4.143a.165.165 0 0 1-.165-.162v-3.324h-10.096v3.324a.169.169 0 0 1-.163.162h-4.142a.162.162 0 0 1-.16-.162v-8.672c0-.898.288-1.628.871-2.182.578-.559 1.361-.844 2.329-.844h15.669c.089 0 .165.069.165.159v11.539a.169.169 0 0 1-.165.162zm-4.308-9.432h-10.096v3.517h10.096v-3.517" style="fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:.1" transform="matrix(4.13018 0 0 -4.13018 -355.04 1616.736)"/><path d="M231.65 360.106c-.241.072-.475.163-.72.244a6.582 6.582 0 0 0-1.116.447c-1.335.67-2.442 1.713-3.345 2.888-.651.842-1.08 1.818-1.389 2.827-.342 1.099-.479 2.247-.475 3.396v.741h5.222c.085 0 .162.072.162.159v2.067a.164.164 0 0 1-.162.163H214.86c-.089 0-.156-.071-.156-.163v-2.067c0-.087.067-.159.156-.159h5.222l.003-.741c.003-1.149-.135-2.297-.474-3.396-.317-1.009-.743-1.985-1.389-2.827-.902-1.175-2.014-2.218-3.346-2.888a6.859 6.859 0 0 0-1.116-.447c-.239-.081-.481-.172-.722-.244-.087-.021-.1-.081-.032-.14l1.825-1.552a.417.417 0 0 1 .285-.078c1.474.255 2.994.891 4.254 1.763 1.516 1.062 2.595 2.364 2.963 3.572 0-.011.006-.02.013-.026.003.006.008.015.008.026.359-1.208 1.456-2.51 2.961-3.572 1.265-.872 2.777-1.508 4.258-1.763a.416.416 0 0 1 .286.078l1.824 1.552c.073.059.057.119-.033.14" style="fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:.1" transform="matrix(4.13018 0 0 -4.13018 -355.04 1616.736)"/><path d="M104.754 362.842c-.133-.072-.14-.196-.013-.28l11.49-7.588 3.291 15.484-14.768-7.616" style="fill:#ee2722;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:.1" transform="matrix(4.13018 0 0 -4.13018 -355.04 1616.736)"/><path d="M172.787 370.466h-2.905c-.151 0-.385-.06-.518-.129l-14.564-7.502c-.135-.067-.14-.195-.015-.28l11.298-7.435a1.13 1.13 0 0 1 .505-.146h2.905c.153 0 .17.063.045.146l-11.531 7.588 14.812 7.629c.133.069.118.129-.032.129" style="fill:#f47216;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:.1" transform="matrix(4.13018 0 0 -4.13018 -355.04 1616.736)"/><path d="M166.564 370.466h-20.242l-3.289-15.492h20.238c.153 0 .17.063.045.146l-11.511 7.588 14.79 7.629c.133.069.118.129-.031.129" style="fill:#ee2722;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:.1" transform="matrix(4.13018 0 0 -4.13018 -355.04 1616.736)"/><path d="M179 370.466h-2.905c-.15 0-.38-.06-.518-.129l-14.562-7.502c-.135-.067-.137-.195-.013-.28l11.297-7.435a1.1 1.1 0 0 1 .503-.146h2.906c.151 0 .174.063.045.146l-11.53 7.588 14.809 7.629c.135.069.122.129-.032.129" style="fill:#fab20b;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:.1" transform="matrix(4.13018 0 0 -4.13018 -355.04 1616.736)"/><path d="M165.667 380.601h-47.65c-2.661 0-4.521-1.673-4.963-3.741-.239-1.139.193-2.145 1.067-2.84l17.121-11.301.011.005.004-.005 34.44 17.759c.137.067.124.123-.03.123M158.11 344.983l-26.853 17.736-.006-.006-.009.006-21.929-11.307c-1.167-.688-2.028-1.702-2.267-2.838-.444-2.064.703-3.741 3.367-3.741h47.652c.151 0 .172.069.045.15M158.042 336.613a2.465 2.465 0 0 1-1.04.846c-.445.198-.976.295-1.59.295-1.246 0-2.279-.374-3.12-1.111-.848-.739-1.398-1.738-1.669-2.986-.27-1.259-.152-2.265.365-3.014.518-.755 1.393-1.133 2.639-1.133.623 0 1.207.103 1.727.306a4.402 4.402 0 0 1 1.416.86c.415.37.754.811 1.033 1.316.275.496.488 1.054.623 1.665.127.595.151 1.149.095 1.654-.073.507-.23.935-.479 1.302zm-1.648-4.039a3.782 3.782 0 0 0-.589-.924 2.639 2.639 0 0 0-.838-.648 2.262 2.262 0 0 0-1.065-.248c-.4 0-.72.081-.973.248a1.421 1.421 0 0 0-.553.648c-.12.274-.182.587-.188.924-.014.35.017.709.109 1.083.075.361.198.715.348 1.057.169.331.365.637.604.909.247.281.522.494.846.646.32.161.671.241 1.042.241.378 0 .696-.08.952-.241.245-.152.428-.361.552-.637.129-.268.193-.574.213-.914.015-.34-.02-.7-.099-1.061a5.16 5.16 0 0 0-.361-1.083" style="fill:#ee2722;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:.1" transform="matrix(4.13018 0 0 -4.13018 -355.04 1616.736)"/><path d="M118.669 336.613c-.251.365-.59.648-1.042.846-.438.198-.973.295-1.587.295-1.244 0-2.282-.373-3.122-1.111-.842-.739-1.394-1.738-1.665-2.986-.264-1.258-.142-2.265.365-3.014.518-.755 1.393-1.133 2.645-1.133.621 0 1.197.103 1.73.306.528.203.999.488 1.409.86.408.37.756.811 1.036 1.316.279.496.479 1.056.618 1.665.127.595.157 1.149.099 1.654-.073.509-.232.935-.486 1.302zm-1.645-4.039a3.696 3.696 0 0 0-.591-.923 2.57 2.57 0 0 0-.833-.649 2.283 2.283 0 0 0-1.073-.248c-.386 0-.713.081-.968.248-.25.152-.433.374-.555.649-.114.274-.18.586-.187.923-.006.35.026.709.11 1.083.073.361.198.715.354 1.057.166.331.361.638.606.909.234.281.518.494.84.646.318.161.664.241 1.053.241.371 0 .683-.08.93-.241.258-.152.445-.361.565-.637.127-.268.194-.574.211-.914.013-.339-.02-.7-.108-1.061a4.577 4.577 0 0 0-.354-1.083" style="fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:.1" transform="matrix(4.13018 0 0 -4.13018 -355.04 1616.736)"/><path d="M164.67 337.492s-.72.174-.737.172c-.412.088-.742.09-1.083.09-.378 0-.741-.045-1.102-.14a3.504 3.504 0 0 1-.997-.423 2.771 2.771 0 0 1-.806-.761 3.029 3.029 0 0 1-.481-1.108c-.071-.361-.086-.665-.015-.918.062-.257.183-.473.342-.647.167-.168.348-.311.552-.414.195-.114.447-.229.745-.356.447-.181.767-.357.965-.511.185-.158.251-.389.185-.685-.073-.334-.273-.588-.617-.764-.666-.346-1.439-.315-2.131-.075a5.386 5.386 0 0 0-.595.262c-.037.024-.069.004-.086-.032 0 0-.413-1.259-.423-1.298-.013-.043.01-.078.053-.088.052-.014.219-.058.415-.099a7.138 7.138 0 0 1 1.534-.187c.427 0 .831.043 1.218.137.387.091.741.231 1.066.42.322.199.599.453.825.765.225.309.389.671.489 1.092.076.373.082.691.009.957-.069.26-.187.477-.359.66a2.128 2.128 0 0 1-.565.419c-.199.11-.46.225-.767.356-.434.177-.739.335-.926.478-.187.141-.247.345-.187.607a1.265 1.265 0 0 0 .606.864c.148.086.295.145.456.185.462.116.952.06 1.405-.075l.575-.183c.033-.015.076.006.089.046l.395 1.168c.013.041-.013.081-.047.086M150.112 336.368a1.464 1.464 0 0 1-.567.747c-.273.182-.595.31-.971.382-.383.08-.8.117-1.257.117h-1.953c-.039 0-.08-.027-.086-.064l-1.693-7.827c-.004-.041.017-.073.06-.073h1.439c.043 0 .078.032.086.073l.623 2.849c1.103.002 1.981.2 2.426.389v.004c.213.081.408.178.595.296.325.198.593.467.821.787.221.332.38.722.477 1.173.107.447.107.824 0 1.147zm-1.68-1.238c-.095-.435-.297-.734-.613-.913-.132-.07-.704-.322-1.744-.322l.535 2.47h.567c.449 0 .793-.1 1.038-.288.232-.205.309-.519.217-.947M171.706 336.365c.032 0 .073.031.084.07l.24 1.115c.005.037-.015.064-.058.064h-6.002c-.043 0-.086-.027-.089-.064l-.23-1.115c-.006-.035.014-.07.057-.07h2.131c.034 0 .062-.028.047-.066l-1.414-6.576c-.006-.041.017-.073.052-.073h1.455c.036 0 .075.032.081.073l1.42 6.576a.086.086 0 0 0 .084.066h2.142" style="fill:#ee2722;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:.1" transform="matrix(4.13018 0 0 -4.13018 -355.04 1616.736)"/><path d="M126.023 336.658a1.29 1.29 0 0 1-.678.644c-.307.146-.664.225-1.057.261-.398.034-.905.051-1.515.051h-1.65a.099.099 0 0 1-.092-.064l-1.691-7.827c-.005-.041.019-.073.056-.073h1.448c.036 0 .073.032.081.073l.707 3.246h.516c.32 0 .545-.064.668-.175.118-.12.21-.334.273-.644l.412-2.427a.09.09 0 0 1 .086-.073h1.629c.041 0 .069.033.06.073l-.591 3.042a1.687 1.687 0 0 1-.232.573.57.57 0 0 1-.438.263c.52.069.966.29 1.342.62.376.351.602.756.714 1.235.11.506.088.902-.048 1.202zm-1.651-1.332a1.266 1.266 0 0 0-.269-.579 1.282 1.282 0 0 0-.46-.334 2.456 2.456 0 0 0-.571-.161 4.933 4.933 0 0 0-.638-.035h-.536l.467 2.148h.529c.249 0 .459-.007.642-.029.185-.021.348-.073.492-.139a.671.671 0 0 0 .324-.322c.058-.134.073-.328.02-.549M133.092 337.55c.004.037-.017.064-.054.064h-4.621c-.041 0-.08-.027-.088-.064l-1.697-7.827c-.005-.041.021-.073.057-.073h4.652c.036 0 .071.032.084.073l.238 1.109c.009.041-.017.075-.056.075h-3.052l.485 2.243h2.767c.039 0 .08.028.08.066l.247 1.109c.009.037-.013.071-.054.071h-2.771l.425 1.969h3.027c.043 0 .08.031.093.07l.238 1.115M111.9 337.614h-2.099a.205.205 0 0 1-.123-.047l-3.564-3.382.726 3.365c0 .037-.021.064-.058.064h-1.444c-.04 0-.072-.027-.086-.064l-1.69-7.827a.055.055 0 0 1 .051-.073h1.446c.039 0 .08.032.092.073l.791 3.624 2.052-3.636a.125.125 0 0 1 .103-.061h1.936c.043 0 .058.025.038.061l-2.305 3.95 4.153 3.906c.026.026.019.047-.019.047M138.815 337.546a.084.084 0 0 1-.081.068h-1.564c-.041 0-.093-.027-.104-.059l-4.595-7.844c-.024-.036-.004-.061.041-.061h1.414c.043 0 .092.025.109.061l1.266 2.263a.133.133 0 0 0 .107.063h2.604c.034 0 .071-.033.071-.069v-.004l.283-2.241c.007-.041.032-.073.082-.073h1.528c.045 0 .073.032.062.073zm-2.711-4.263c-.043 0-.051.034-.043.067l1.47 2.616c.012.031.055.031.064-.008l.318-2.604c.011-.036-.017-.071-.06-.071h-1.749" style="fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:.1" transform="matrix(4.13018 0 0 -4.13018 -355.04 1616.736)"/></svg>
+        </div>
+        <p class="brand-title">바이브코딩 실습허브</p>
+        <p class="brand-sub">공공 데이터 분석</p>
+      </div>
+      <nav class="nav" aria-label="섹션 이동">
+        <a class="active" href="#overview"><span class="navnum">00</span>개요</a>
+        <a href="#install"><span class="navnum">01</span>설치 가이드</a>
+        <a href="#kit"><span class="navnum">02</span>비기닝 키트</a>
+        <a href="#preprocess"><span class="navnum">03</span>데이터 정리</a>
+        <a href="#design"><span class="navnum">04</span>내 프롬프트 만들기</a>
+        <a href="#aimode"><span class="navnum">05</span>AI 연결 방식</a>
+        <a href="#prompts"><span class="navnum">06</span>코딩 상황별 프롬프트</a>
+        <a href="#finish"><span class="navnum">07</span>완료 체크</a>
+      </nav>
+      <div class="side-card">
+        <h3>오늘 만드는 것</h3>
+        <p>내 부서 데이터를 정리하고, 이미 만들어진 정책분석 도구를 내 의사결정 질문에 맞게 고쳐서, 시각화 결과물 1건을 완성합니다.</p>
+      </div>
+      <div class="side-card">
+        <h3>혼자 진행합니다</h3>
+        <p>보조강사 없이 리드강사 1인 체제입니다. 막히면 06번 카드를 먼저 펼쳐보세요 — 대부분 거기서 해결됩니다.</p>
+      </div>
+    </aside>
+
+    <main class="main" id="main">
+      <section class="hero" id="overview">
+        <div>
+          <div class="eyebrow">우정사업본부 × Claude Code × 바이브코딩</div>
+          <h2>엑셀 데이터를 내 의사결정 질문에 맞는 분석도구 앱 만들기</h2>
+          <p>수업 안에서 자신만의 완성된 결과물을 얻을 수 있도록, <b>이 수업을 위해 맞춤식으로 설계된</b> 데이터 전처리 도구와 정책분석 도구를 1차로 준비해두었습니다. 여러분은 이를 바탕으로 부서 데이터·의사결정 질문에 맞게 <b>세부를 완성해 가는</b> 방식으로 진행합니다. 목표는 "AI가 다 만들어준 앱"이 아니라, 여러분이 직접 요청하고 검증하며 <b>바이브코딩이 무엇인지 체감하는 것</b>입니다.</p>
+          <div class="cta-row">
+            <a class="btn btn-primary" href="#install">설치부터 시작</a>
+            <a class="btn btn-secondary" href="#design">내 프롬프트 바로 만들기</a>
+          </div>
+          <div class="tag-row" style="margin-top:1rem">
+            <span class="tag">바이브코딩 처음이어도 OK</span>
+            <span class="tag">Windows 중심 · Mac 병행</span>
+            <span class="tag">보조강사 없이 자립 진행</span>
+            <span class="tag">전원 브릿지 모드</span>
+          </div>
+        </div>
+        <div class="hero-panel">
+          <div class="stat" style="background:var(--color-primary-2);border-color:transparent"><strong>M1 · 50분</strong><span>AI 트렌드·활용 전략 (리드 단독 강의)</span></div>
+          <div class="mini-grid">
+            <div class="stat"><strong>M2 · 50분</strong><span>개발환경 구축</span></div>
+            <div class="stat"><strong>M3 · 50분</strong><span>데이터 정리 실습</span></div>
+            <div class="stat"><strong>M4 · 50분</strong><span>통계분석·검증</span></div>
+            <div class="stat"><strong>M5 · 50분</strong><span>시각화 완성</span></div>
+          </div>
+          <div class="openchat-card">
+            <img src="open-chatQR.png" alt="오픈채팅방 QR 코드">
+            <div class="oc-text">
+              <strong>막히면 바로 질문하세요</strong>
+              <span>실습 중 오픈채팅방에서 실시간으로 도와드립니다</span>
+              <a class="btn btn-primary" href="https://open.kakao.com/o/gkgdZOJi" target="_blank" style="width:fit-content;margin-top:.3rem">💬 오픈채팅방 입장</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="install">
+        <div class="section-head">
+          <div>
+            <h2>01 · 설치 가이드</h2>
+            <p>Claude Code가 이미 켜져 있는지부터 확인합니다. 이 넷 중 하나라도 안 되어 있으면 다음 단계로 못 넘어갑니다.</p>
+          </div>
+        </div>
+        <div class="grid-2">
+          <article class="section-card">
+            <div class="kicker">STEP 01 · 사전 확인</div>
+            <ul class="checklist">
+              <li>터미널에 <code>claude --version</code> 입력 — 버전 번호가 뜨면 통과</li>
+              <li>Claude 계정 로그인·구독 확인 (Claude Pro면 충분)</li>
+              <li>내 PC에 프로그램 설치 권한이 있는지 확인 — 막혀 있으면 개인 노트북 지참</li>
+              <li>터미널(윈도우: PowerShell, CMD 아님 / 맥: 터미널) 열 수 있는지 확인</li>
+              <li>터미널에 <code>git --version</code> 입력 — 버전이 안 뜨면 Git 설치 필요 (특히 Windows, 아래 STEP 02에서 설치)</li>
+            </ul>
+          </article>
+          <article class="section-card">
+            <div class="kicker">STEP 02 · Claude Code 설치</div>
+            <p style="margin:0 0 .8rem;color:var(--color-muted);font-size:var(--text-sm)">아직 없다면 터미널에 한 줄만 붙여넣으면 끝납니다. <b>대부분 Windows</b>이니 아래 Windows 버튼을 먼저 확인하세요. 맥·윈도우 버튼이 따로 있으니 내 OS에 맞는 것만 눌러 복사하세요.</p>
+            <div class="kicker" style="margin-bottom:.4rem">🪟 Windows (PowerShell, 반드시 CMD 아님)</div>
+            <p style="margin:0 0 .3rem;font-weight:700;font-size:var(--text-xs);color:var(--color-muted)">① Git 설치 (Windows 필수 — 없으면 로컬 세션 실행 안 됨)</p>
+            <div class="prompt-box"><pre id="install-win-git">winget install --id Git.Git -e --source winget</pre></div>
+            <button class="copy-btn" onclick="copyPrompt('install-win-git', this)">📋 Git 설치 명령 복사하기</button>
+            <div class="callout warn" style="margin-top:.6rem">Claude Code 데스크톱 앱을 쓰고 있다면, Git 설치 후 <b>앱을 완전히 껐다가 다시 켜야</b> Git을 인식합니다.</div>
+            <p style="margin:1rem 0 .3rem;font-weight:700;font-size:var(--text-xs);color:var(--color-muted)">② Claude Code 설치</p>
+            <div class="prompt-box"><pre id="install-win">irm https://claude.ai/install.ps1 | iex</pre></div>
+            <button class="copy-btn" onclick="copyPrompt('install-win', this)">📋 Windows 명령 복사하기</button>
+            <div class="kicker" style="margin:1rem 0 .4rem">🍎 macOS</div>
+            <div class="prompt-box"><pre id="install-mac">curl -fsSL https://claude.ai/install.sh | bash</pre></div>
+            <button class="copy-btn" onclick="copyPrompt('install-mac', this)">📋 macOS 명령 복사하기</button>
+            <div class="callout warn" style="margin-top:1rem">설치 명령 실행이 끝났으면 <b>터미널 창을 완전히 닫았다가 새로 여세요</b>. 열려있던 창에는 설치 경로(PATH)가 바로 반영되지 않아 <code>claude --version</code>이 안 먹힐 수 있습니다.</div>
+          </article>
+        </div>
+      </section>
+
+      <section id="kit">
+        <div class="section-head">
+          <div>
+            <h2>02 · 비기닝 키트 설치</h2>
+            <p>스킬 4개 + 에이전트 2개를 내 컴퓨터에 한 번만 복사하면, 어떤 폴더에서 새 대화를 열어도 자동으로 켜집니다.</p>
+          </div>
+        </div>
+        <article class="section-card" style="margin-bottom:1rem">
+          <div class="kicker">STEP 00 · 실습키트 다운로드</div>
+          <p style="margin:0 0 .8rem;color:var(--color-muted);font-size:var(--text-sm)">아래 링크에서 실습키트 압축파일을 내려받아 압축을 풀어두세요. 압축 도구에 따라 폴더가 한 겹 더 감싸져 나올 수 있으니, <b>skills 폴더가 직접 보이는 위치</b>까지 들어간 다음 그 자리에서 터미널을 열어야 아래 ①~⑤ 명령이 정상 동작합니다.</p>
+          <div class="dl-row">
+            <a class="btn btn-primary" href="https://drive.google.com/drive/folders/1YFIYf0OjGFDlgcPq8BhzJx4C6-bDfEuC?usp=sharing" target="_blank">📂 구글 드라이브에서 실습키트 받기</a>
+          </div>
+          <p style="margin:.7rem 0 0;font-size:var(--text-xs);color:var(--color-muted)">드라이브 페이지가 열리면 폴더를 더블클릭해서 들어가지 말고, 폴더 위에 마우스를 올린 뒤 우측의 점 3개(⋮) 아이콘 클릭 → <b>다운로드</b> 버튼을 눌러야 폴더 전체가 압축파일로 받아집니다.</p>
+        </article>
+        <div class="callout warn" style="margin-bottom:1rem"><b>한 줄씩</b> 복사 → 터미널에 붙여넣기 → 실행 완료 확인 → 다음 줄 복사, 순서로 진행하세요. 5줄을 한 번에 복사해서 붙여넣으면 안 됩니다.</div>
+        <div class="grid-2">
+          <article class="section-card">
+            <div class="kicker">Windows (PowerShell)</div>
+            <p style="margin:0 0 .3rem;font-weight:700;font-size:var(--text-xs);color:var(--color-muted)">⓪ 압축 푼 폴더에서 터미널 열기</p>
+            <p style="margin:0 0 1rem;font-size:var(--text-sm);color:var(--color-muted)">탐색기에서 압축을 푼 폴더로 이동 → <b>skills 폴더가 보이는지 확인</b>(폴더 하나가 더 있으면 그 안으로 이동) → 주소창 클릭 → <code>powershell</code> 입력 후 Enter</p>
+            <p style="margin:0 0 .3rem;font-weight:700;font-size:var(--text-xs);color:var(--color-muted)">① 폴더 만들기</p>
+            <div class="prompt-box"><pre id="kit-win-1">New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.claude\skills" | Out-Null</pre></div>
+            <button class="copy-btn" onclick="copyPrompt('kit-win-1', this)">📋 ① 복사하기</button>
+            <p style="margin:1rem 0 .3rem;font-weight:700;font-size:var(--text-xs);color:var(--color-muted)">② vibe-coding-beginning-kit</p>
+            <div class="prompt-box"><pre id="kit-win-2">Copy-Item -Recurse -Force "skills\vibe-coding-beginning-kit" "$env:USERPROFILE\.claude\skills\"</pre></div>
+            <button class="copy-btn" onclick="copyPrompt('kit-win-2', this)">📋 ② 복사하기</button>
+            <p style="margin:1rem 0 .3rem;font-weight:700;font-size:var(--text-xs);color:var(--color-muted)">③ single-html-builder</p>
+            <div class="prompt-box"><pre id="kit-win-3">Copy-Item -Recurse -Force "skills\single-html-builder" "$env:USERPROFILE\.claude\skills\"</pre></div>
+            <button class="copy-btn" onclick="copyPrompt('kit-win-3', this)">📋 ③ 복사하기</button>
+            <p style="margin:1rem 0 .3rem;font-weight:700;font-size:var(--text-xs);color:var(--color-muted)">④ public-service-app-builder</p>
+            <div class="prompt-box"><pre id="kit-win-4">Copy-Item -Recurse -Force "skills\public-service-app-builder" "$env:USERPROFILE\.claude\skills\"</pre></div>
+            <button class="copy-btn" onclick="copyPrompt('kit-win-4', this)">📋 ④ 복사하기</button>
+            <p style="margin:1rem 0 .3rem;font-weight:700;font-size:var(--text-xs);color:var(--color-muted)">⑤ data-decision-report-builder</p>
+            <div class="prompt-box"><pre id="kit-win-5">Copy-Item -Recurse -Force "skills\data-decision-report-builder" "$env:USERPROFILE\.claude\skills\"</pre></div>
+            <button class="copy-btn" onclick="copyPrompt('kit-win-5', this)">📋 ⑤ 복사하기</button>
+          </article>
+          <article class="section-card">
+            <div class="kicker">macOS / Linux</div>
+            <p style="margin:0 0 .3rem;font-weight:700;font-size:var(--text-xs);color:var(--color-muted)">⓪ 압축 푼 폴더에서 터미널 열기</p>
+            <p style="margin:0 0 1rem;font-size:var(--text-sm);color:var(--color-muted)">Finder에서 압축을 푼 폴더를 열어 <b>skills 폴더가 보이는지 확인</b>(폴더 하나가 더 있으면 그 안으로 이동) → 터미널에서 <code>cd </code>(공백 포함) 입력 → 그 폴더를 터미널 창으로 드래그 → Enter</p>
+            <p style="margin:0 0 .3rem;font-weight:700;font-size:var(--text-xs);color:var(--color-muted)">① 폴더 만들기</p>
+            <div class="prompt-box"><pre id="kit-mac-1">mkdir -p ~/.claude/skills</pre></div>
+            <button class="copy-btn" onclick="copyPrompt('kit-mac-1', this)">📋 ① 복사하기</button>
+            <p style="margin:1rem 0 .3rem;font-weight:700;font-size:var(--text-xs);color:var(--color-muted)">② vibe-coding-beginning-kit</p>
+            <div class="prompt-box"><pre id="kit-mac-2">cp -R skills/vibe-coding-beginning-kit ~/.claude/skills/</pre></div>
+            <button class="copy-btn" onclick="copyPrompt('kit-mac-2', this)">📋 ② 복사하기</button>
+            <p style="margin:1rem 0 .3rem;font-weight:700;font-size:var(--text-xs);color:var(--color-muted)">③ single-html-builder</p>
+            <div class="prompt-box"><pre id="kit-mac-3">cp -R skills/single-html-builder ~/.claude/skills/</pre></div>
+            <button class="copy-btn" onclick="copyPrompt('kit-mac-3', this)">📋 ③ 복사하기</button>
+            <p style="margin:1rem 0 .3rem;font-weight:700;font-size:var(--text-xs);color:var(--color-muted)">④ public-service-app-builder</p>
+            <div class="prompt-box"><pre id="kit-mac-4">cp -R skills/public-service-app-builder ~/.claude/skills/</pre></div>
+            <button class="copy-btn" onclick="copyPrompt('kit-mac-4', this)">📋 ④ 복사하기</button>
+            <p style="margin:1rem 0 .3rem;font-weight:700;font-size:var(--text-xs);color:var(--color-muted)">⑤ data-decision-report-builder</p>
+            <div class="prompt-box"><pre id="kit-mac-5">cp -R skills/data-decision-report-builder ~/.claude/skills/</pre></div>
+            <button class="copy-btn" onclick="copyPrompt('kit-mac-5', this)">📋 ⑤ 복사하기</button>
+          </article>
+        </div>
+        <div class="footer-note" style="margin-top:1rem">
+          설치가 끝났으면 토큰 쓰는 실제 대화 대신, 터미널에 아래 명령으로 먼저 확인하세요. 버전 번호가 나오면 설치 성공입니다.
+          <div class="prompt-box" style="margin-top:.6rem"><pre id="verify-cmd">claude --version</pre></div>
+          <button class="copy-btn" onclick="copyPrompt('verify-cmd', this)">📋 확인 명령 복사하기</button>
+        </div>
+      </section>
+
+      <section id="preprocess">
+        <div class="section-head">
+          <div>
+            <h2>03 · 데이터 정리 (1단계 — AI 사용 안 함)</h2>
+            <p><b>이 단계에서는 Claude Code를 쓰지 않습니다.</b> 브라우저에서 파일만 올리면 자동으로 정리되고, 인터넷으로 아무것도 전송되지 않습니다. 개인정보(이름·연락처 등)는 여기서 자동으로 가려집니다.</p>
+          </div>
+        </div>
+        <div class="grid-2">
+          <article class="section-card">
+            <div class="kicker">내 데이터로 하기</div>
+            <ul class="steps">
+              <li><b>① 파일 올리기</b> 데이터전처리툴.html을 열고 내 부서 엑셀/CSV를 올립니다</li>
+              <li><b>② 결측·중복 자동 정리</b> 빈 값, 소계행, 중복행을 기계가 셉니다 — AI 판단 없음</li>
+              <li><b>③ 개인정보 확인</b> 이름·연락처 등이 자동 표시되면 눈으로 한 번 확인합니다</li>
+              <li><b>④ 카탈로그 채우기</b> 데이터셋명·출처·기준시점 4칸을 반드시 채웁니다 — 비우면 2단계에서 보고서 각주가 안 만들어집니다</li>
+              <li><b>⑤ 정제본 JSON 내려받기</b> 이 파일을 다음 단계(04)에서 씁니다</li>
+            </ul>
+            <div class="dl-row">
+              <a class="btn btn-primary" href="datapreset.html" target="_blank">🗂 데이터 전처리툴 열기</a>
+            </div>
+            <p style="margin:.6rem 0 0;color:var(--color-muted);font-size:var(--text-xs)">폴더를 따로 찾지 않아도 됩니다 — 이 버튼이 허브 안에서 바로 열어줍니다.</p>
+          </article>
+          <article class="section-card">
+            <div class="kicker">내 데이터가 없거나 시간이 부족하면</div>
+            <p style="color:var(--color-muted);font-size:var(--text-sm);margin:0 0 .8rem">아래 샘플 정제본을 바로 받아서 04단계부터 시작하세요. 60분 걸리는 ①~⑤ 과정을 건너뜁니다.</p>
+            <div class="dl-row">
+              <a class="btn btn-secondary" href="샘플데이터_정제본_공공서비스만족도.json" download>⬇ 공공서비스 만족도 (60행)</a>
+              <a class="btn btn-secondary" href="샘플데이터_정제본_강의문의응답.json" download>⬇ 강의문의 응답 (29행)</a>
+            </div>
+            <div class="callout warn" style="margin-top:1rem">두 샘플 모두 개인정보 처리(가명화) 완료된 정제본입니다.</div>
+          </article>
+        </div>
+      </section>
+
+      <section id="design">
+        <div class="section-head">
+          <div>
+            <h2>04 · 내 프롬프트 만들기</h2>
+            <div class="tag-row" style="margin:.4rem 0 0"><span class="badge badge-rec">2단계 · 여기서 Claude Code를 씁니다</span></div>
+            <p>정책분석마스터.html은 <b>나만의 정책분석 자동화 페이지를 구축하기 위해 뼈대가 될 수 있는</b> 도구입니다. 지금 어떤 모습인지 먼저 열어보고 밑그림을 파악한 다음, 내 의사결정 질문에 맞게 고쳐 씁니다. 아래 두 가지만 채우면 Claude Code에 붙여넣을 프롬프트가 자동으로 만들어집니다. 이 뼈대는 1~9단계 전체 흐름과 «전체 실행» 버튼, 2단계의 «Claude로 공공데이터 찾아오기»(claude.ai 채팅, 무료 계정도 가능)까지 갖추고 있습니다 — 다만 오늘 수업에서 실습으로 다루는 범위는 여전히 1~4단계입니다.</p>
+            <div class="dl-row">
+              <a class="btn btn-secondary" href="publicmaster.html" target="_blank">🔍 초안(정책분석마스터.html) 미리보기</a>
+            </div>
+          </div>
+        </div>
+        <div class="grid-2">
+          <article class="section-card">
+            <div class="field">
+              <label>① 내 의사결정 질문</label>
+              <textarea id="q-decision" rows="3" placeholder="예: 우리 부서 민원 처리시간이 최근 왜 늘었는지 알고 싶다"></textarea>
+            </div>
+            <div class="field">
+              <label>② 오늘 다룰 단계 고르기</label>
+              <div class="chk-row"><input type="checkbox" checked disabled><div><div class="t">1·2·3단계 — 정의·데이터·현황 <span class="badge badge-must">필수</span></div><div class="d">항상 포함됩니다. 의사결정 질문을 고정하지 않으면 나머지가 흔들립니다</div></div></div>
+              <div class="chk-row"><input type="checkbox" id="chk-diag" checked><div><div class="t">4단계 — 문제 진단 <span class="badge badge-rec">권장</span></div><div class="d">AI 브릿지 모드를 처음 체험하는 단계입니다 (05번 참고)</div></div></div>
+              <div class="chk-row"><input type="checkbox" id="chk-cases"><div><div class="t">5단계 — 정책 사례 <span class="badge badge-opt">선택</span></div><div class="d">외부 사례 조사가 필요해 시간이 오래 걸립니다 — 시간이 남을 때만</div></div></div>
+              <div class="chk-row"><input type="checkbox" id="chk-alt"><div><div class="t">6단계 — 대안 비교 <span class="badge badge-opt">선택</span></div><div class="d">이미 만들어진 슬라이더라 5분 데모로 대체해도 됩니다. 7~9단계(재원·리스크·보고서)는 오늘 다루지 않지만, «전체 실행» 버튼으로 수업 후 이어서 자동 진행해볼 수 있습니다</div></div></div>
+            </div>
+            <button class="btn btn-primary" onclick="generatePrompt()">내 프롬프트 만들기 →</button>
+          </article>
+          <article class="section-card" id="genBox">
+            <div class="kicker">Claude Code에 그대로 붙여넣으세요</div>
+            <div class="prompt-box"><pre id="genOut">← 왼쪽에서 ① 의사결정 질문과 ② 단계를 고른 뒤 "내 프롬프트 만들기 →"를 누르면 여기에 프롬프트가 만들어집니다.</pre></div>
+            <button class="copy-btn" onclick="copyPrompt('genOut', this)">📋 복사하기</button>
+            <label style="display:flex;align-items:center;gap:8px;margin-top:1rem;font-size:var(--text-xs);color:var(--color-muted)">
+              <input type="checkbox" id="safety-toggle" checked> 복사할 때 "기존 코드 건드리지 마세요" 안전 문구 자동으로 붙이기
+            </label>
+          </article>
+        </div>
+      </section>
+
+      <section id="aimode">
+        <div class="section-head">
+          <div>
+            <h2>05 · AI 연결 방식 — 왜 오늘은 "브릿지"로만 하나요</h2>
+            <p>정책분석마스터.html의 4단계(문제 진단)는 AI에 연결하는 방법이 두 가지입니다. 둘 다 알아두면 나중에 내 업무에 맞게 다르게 설계할 수 있습니다.</p>
+          </div>
+        </div>
+        <article class="section-card">
+          <table class="mode-table">
+            <thead><tr><th>기준</th><th>🔗 브릿지 (복사·붙여넣기)</th><th>🔌 API 직접 연동</th></tr></thead>
+            <tbody>
+              <tr><td>준비물</td><td>이미 쓰는 Claude 계정만 있으면 끝</td><td>API 키를 별도로 발급받아 입력해야 함</td></tr>
+              <tr><td>세종청사 내부망</td><td>문제 없음 — 브라우저 밖으로 안 나감</td><td>외부망이 막혀 있으면 아예 작동하지 않음</td></tr>
+              <tr><td>비용·토큰</td><td>이미 내는 구독료 안에서 해결, 추가 과금 0원</td><td>부를 때마다 별도 토큰 비용 발생</td></tr>
+              <tr><td>속도</td><td>복사 → 붙여넣기 → 결과 다시 붙여넣기, 수작업</td><td>버튼 한 번으로 자동 완료</td></tr>
+              <tr><td>안전 확인</td><td>보내기 전에 내용을 사람이 직접 봄</td><td>앱이 알아서 보내서 볼 기회가 적음</td></tr>
+              <tr><td>오늘 수업</td><td><b>✅ 기본값 — 전원 이 방식</b></td><td>개념만 소개, 실습은 안 함</td></tr>
+            </tbody>
+          </table>
+          <div class="callout warn" style="margin-top:1rem"><b>오늘은 전원 브릿지 모드로 통일합니다.</b> 이유 셋 — 세종청사 내부망에서도 100% 동작하고, 추가 비용이 0원이고, AI에게 무엇을 보내는지 직접 눈으로 보고 배우는 쪽이 "바이브코딩을 이해하는 것"이라는 오늘 수업의 목적에 더 맞기 때문입니다.</div>
+          <div class="callout" style="margin-top:.7rem"><b>그럼 API는 언제 쓰나요?</b> 오늘 만든 도구를 실제 업무에 정착시켜 여러 데이터셋을 반복적으로, 자동으로 처리하고 싶어질 때입니다. 그때는 부서 차원의 API 키 발급과 보안심의를 먼저 검토한 뒤 전환을 고려하세요. 오늘의 선택이 전부가 아니라, 상황에 따라 설계를 바꿀 수 있다는 것이 핵심입니다.</div>
+        </article>
+      </section>
+
+      <section id="prompts">
+        <div class="section-head">
+          <div>
+            <h2>06 · 코딩 상황별 프롬프트</h2>
+            <p>04번에서 만든 프롬프트를 넣고 작업하다가 아래 상황을 만나면, 해당 카드를 그대로 복사해서 붙여넣으세요. 대괄호 <code>[ ]</code> 부분만 내 상황으로 바꾸면 됩니다.</p>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="prompt-card">
+            <h3>🛠 에러가 났을 때</h3>
+            <div class="when">화면이 하얗게 뜨거나, 콘솔에 빨간 글씨 에러가 보일 때</div>
+            <div class="fillguide">💡 무엇을 바꿔요? <code>[에러 메시지]</code>에 화면에 뜬 에러 문구를 있는 그대로 복사해서 붙이기만 하면 됩니다. 나머지는 그대로 두세요.</div>
+            <div class="prompt-box"><pre id="p-error">아래 에러 메시지를 읽고, 원인과 수정 위치, 바꿀 코드만 간단히 알려줘.
+
+[에러 메시지]
+
+기존에 잘 되던 다른 부분은 건드리지 마.</pre></div>
+            <button class="copy-btn" onclick="copyPrompt('p-error', this)">📋 복사하기</button>
+          </div>
+
+          <div class="prompt-card">
+            <h3>✋ AI가 너무 많이 고쳤을 때</h3>
+            <div class="when">요청한 것보다 화면이 훨씬 많이 바뀌어서 당황스러울 때</div>
+            <div class="fillguide">💡 무엇을 바꿔요? <code>[문제]</code>에 "정말 고치고 싶은 것 하나"만 짧게 적으세요. 나머지 문장은 손댈 것이 없습니다.</div>
+            <div class="prompt-box"><pre id="p-toomuch">방금 작업한 변경 내용이 지나쳐. 아래 하나만 다시 수정하고, 나머지는 방금 작업 전 상태로 되돌려줘.
+
+[문제 — 예: 버튼 색만 바꾸고 싶었어]
+
+이번엔 이것 하나만 최소한으로 고치고, 나머지 코드는 방금 전 상태로 되돌려줘.</pre></div>
+            <button class="copy-btn" onclick="copyPrompt('p-toomuch', this)">📋 복사하기</button>
+          </div>
+
+          <div class="prompt-card">
+            <h3>✅ 다 됐다 싶을 때 (완료 검증)</h3>
+            <div class="when">화면이 그럴듯해 보여서 "이제 끝난 건가?" 싶을 때</div>
+            <div class="fillguide">💡 무엇을 바꿔요? 채울 것이 없습니다. 그대로 복사해서 붙여넣으면 AI가 스스로 체크리스트를 돌립니다.</div>
+            <div class="prompt-box"><pre id="p-done">지금까지 구현한 기능이 완료되었는지 검증해줘.
+
+완료 조건:
+- 요구사항 충족
+- 콘솔에 에러 없음
+- 화면 새로고침해도 상태 유지됨
+- 기존 기능에 영향 없음</pre></div>
+            <button class="copy-btn" onclick="copyPrompt('p-done', this)">📋 복사하기</button>
+          </div>
+
+          <div class="prompt-card">
+            <h3>🆘 막혔을 때 만능 프롬프트</h3>
+            <div class="when">뭘 물어봐야 할지도 모르게 막막할 때</div>
+            <div class="fillguide">💡 무엇을 바꿔요? <code>[목표]</code> <code>[현재까지 된 것]</code> <code>[막힌 부분]</code>에 육하원칙 없이 편하게, 생각나는 대로 적으면 됩니다.</div>
+            <div class="prompt-box"><pre id="p-stuck">현재 목표는 [목표]야.
+
+현재 상태: [현재까지 된 것]
+문제: [막힌 부분]
+
+지금까지의 접근에 얽매이지 말고 문제를 분석해줘. 다만 기존에 정상 작동하는 부분은 최대한 보존해줘.
+
+먼저 1) 현재 상황 요약 2) 문제의 핵심 3) 가장 단순한 해결 방법 4) 구현 순서를 제안하고, 그다음 한 단계씩 구현해줘.</pre></div>
+            <button class="copy-btn" onclick="copyPrompt('p-stuck', this)">📋 복사하기</button>
+          </div>
+        </div>
+        <div class="footer-note" style="margin-top:1rem">위 04번 상단의 "안전 문구 자동으로 붙이기"를 켜두면, 여기 카드를 복사할 때도 "기존 코드는 건드리지 말고 최소한만 바꿔줘" 문장이 자동으로 따라붙습니다.</div>
+      </section>
+
+      <section id="finish">
+        <div class="section-head">
+          <div>
+            <h2>07 · 완료 체크 · 발표 준비</h2>
+            <p>이 넷을 통과하면 오늘의 결과물이 완성된 것입니다.</p>
+          </div>
+        </div>
+        <div class="grid-2">
+          <article class="section-card">
+            <div class="kicker">확인 4단계</div>
+            <ul class="checklist">
+              <li>콘솔 에러 0건 (F12 → Console 탭 확인)</li>
+              <li>반응형 — 화면 크기를 줄여도 깨지지 않는지</li>
+              <li>라이트·다크 모드 둘 다 정상 작동</li>
+              <li>새로고침해도 방금 작업 내용이 그대로 남아있는지</li>
+            </ul>
+          </article>
+          <article class="section-card">
+            <div class="kicker">실제로 있었던 AI 실수 — 검증이 왜 필요한가</div>
+            <p style="font-size:var(--text-sm);color:var(--color-muted);margin:0 0 .6rem">이 도구를 만드는 과정에서 실제로 AI가 이렇게 틀렸습니다.</p>
+            <div class="callout danger">AI가 "대기시간과 만족도가 함께 움직입니다"라고 썼지만, 실제 상관계수는 <b>−0.94</b>였습니다. 즉 대기시간이 길수록 만족도는 <b>낮아진다</b>는 뜻인데, 문장은 정반대로 읽혔습니다. AI가 만든 문장에 "미검증" 표시가 붙는 이유입니다 — 사람이 원본 수치를 한 번 더 봐야 합니다.</div>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head">
+          <div>
+            <h2>수업 진행 FAQ</h2>
+          </div>
+        </div>
+        <div class="accordion">
+          <details><summary>코딩을 한 번도 안 해본 사람도 가능한가요?</summary><p>가능합니다. 이미 완성된 도구를 "고쳐 쓰는" 실습이라, 처음부터 코드를 짜는 것보다 훨씬 부담이 적습니다.</p></details>
+          <details><summary>제 엑셀 파일이 안 열리면 어떻게 하나요?</summary><p>03번 섹션의 샘플 정제본을 바로 받아서 04번부터 시작하세요. CSV로 저장해서 다시 올려보는 것도 방법입니다.</p></details>
+          <details><summary>보조강사가 없는데 여러 명이 동시에 막히면 어떻게 하나요?</summary><p>06번 "코딩 상황별 프롬프트"를 먼저 펼쳐서 스스로 해결을 시도해보세요. 그래도 안 되면 손을 들어주세요.</p></details>
+          <details><summary>오늘 다 못 끝내면 어떻게 하나요?</summary><p>04번에서 만든 프롬프트와 진행 상황을 HANDOVER.md에 남기고 마칩니다. 다음에 "HANDOVER.md 읽고 이어서 진행해줘"라고 하면 이어집니다.</p></details>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script>
+    (function(){
+      const root=document.documentElement;
+      const buttons=document.querySelectorAll('[data-theme-toggle]');
+      let mode=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+      root.setAttribute('data-theme',mode);
+      function sync(){buttons.forEach(btn=>btn.textContent=mode==='dark'?'☀':'☾');}
+      sync();
+      buttons.forEach(btn=>btn.addEventListener('click',()=>{mode=mode==='dark'?'light':'dark';root.setAttribute('data-theme',mode);sync();}));
+      const links=[...document.querySelectorAll('.nav a')];
+      const map=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
+      const io=new IntersectionObserver((entries)=>{entries.forEach(entry=>{if(entry.isIntersecting){links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+entry.target.id));}})},{rootMargin:'-40% 0px -45% 0px'});
+      map.forEach(section=>io.observe(section));
+    })();
+
+    const SAFETY_SUFFIX = "기존에 정상적으로 동작하는 부분은 건드리지 말고, 가장 단순한 방법으로 최소한의 변경만 해줘. 수정 후 무엇이 바뀌었는지 설명하고, 확인해야 할 테스트 방법도 알려줘.";
+
+    function generatePrompt(){
+      const q = document.getElementById('q-decision').value.trim() || '[여기에 내 의사결정 질문을 적어주세요]';
+      const diag = document.getElementById('chk-diag').checked;
+      const cases = document.getElementById('chk-cases').checked;
+      const alt = document.getElementById('chk-alt').checked;
+      const steps = [
+        '[필수] 1. 프로젝트 정의 — 의사결정 질문을 화면 상단에 반영해줘',
+        '[필수] 2. 데이터 불러오기 — 내가 올릴 정제본 JSON을 연결하고 카탈로그가 화면에 뜨는지 확인해줘',
+        '[필수] 3. 데이터 현황 — 자동 스캔 신호는 이미 동작하니, 카드 제목과 색만 내 데이터에 맞게 다듬어줘'
+      ];
+      if(diag) steps.push('[권장] 4. 문제 진단 — 신호 1~2개만 골라서 AI 브릿지로 진단 문장까지 만들어줘');
+      if(cases) steps.push('[선택] 5. 정책 사례 — 시간이 남으면 사례 카드 1개만 채워줘');
+      if(alt) steps.push('[선택] 6. 대안 비교 — 이미 만들어진 가중치 슬라이더로 5분 데모만 보여줘');
+      const text = "정책분석마스터.html을 B(빠른 프로토타입) 모드로 커스터마이즈해줘.\n\n"
+        + "내 의사결정 질문: " + q + "\n\n"
+        + "오늘 다룰 단계:\n" + steps.map(s=>'- '+s).join('\n') + "\n\n"
+        + "지켜줘:\n"
+        + "- STEPS 배열 구조와 정제본 JSON 스키마는 그대로 두고, 화면 문구·색만 내 상황에 맞게 바꿔줘\n"
+        + "- 오늘 고르지 않은 단계는 건드리지 마\n"
+        + "- 기존에 잘 동작하는 부분은 최소한만 바꿔줘";
+      document.getElementById('genOut').textContent = text;
+    }
+
+    function copyPrompt(id, btn){
+      const box = document.getElementById(id);
+      let text = box.innerText;
+      const toggle = document.getElementById('safety-toggle');
+      if(toggle && toggle.checked && id !== 'genOut' && id.indexOf('install')===-1 && id.indexOf('kit')===-1){
+        text += '\n\n' + SAFETY_SUFFIX;
+      }
+      navigator.clipboard.writeText(text).then(function(){
+        const old = btn.textContent; btn.textContent='✅ 복사됨';
+        setTimeout(function(){btn.textContent=old;},1500);
+      });
+    }
+  </script>
+</body>
+</html>
