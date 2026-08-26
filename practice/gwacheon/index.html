@@ -469,15 +469,15 @@ footer strong { color: var(--accent); }
 <!-- 네비게이션 -->
 <nav class="nav-bar" role="navigation" aria-label="섹션 이동">
   <div class="nav-inner">
-    <button class="nav-btn" onclick="scrollTo('sec-guide')">📋 활용 가이드</button>
-    <button class="nav-btn" onclick="scrollTo('sec01')">01 공문서·보고서</button>
-    <button class="nav-btn" onclick="scrollTo('sec02')">02 홍보·보도자료</button>
-    <button class="nav-btn" onclick="scrollTo('sec03')">03 민원 응대</button>
-    <button class="nav-btn" onclick="scrollTo('sec04')">04 정책·사업 기획</button>
-    <button class="nav-btn" onclick="scrollTo('sec05')">05 회의·행사</button>
-    <button class="nav-btn" onclick="scrollTo('sec06')">06 자료 조사·분석</button>
-    <button class="nav-btn" onclick="scrollTo('sec07')">07 조직 관리·소통</button>
-    <button class="nav-btn" onclick="scrollTo('sec-ailinks')" style="color:var(--accent);font-weight:700;">🔗 AI 바로가기</button>
+    <button class="nav-btn" onclick="goToSection('sec-guide')">📋 활용 가이드</button>
+    <button class="nav-btn" onclick="goToSection('sec01')">01 공문서·보고서</button>
+    <button class="nav-btn" onclick="goToSection('sec02')">02 홍보·보도자료</button>
+    <button class="nav-btn" onclick="goToSection('sec03')">03 민원 응대</button>
+    <button class="nav-btn" onclick="goToSection('sec04')">04 정책·사업 기획</button>
+    <button class="nav-btn" onclick="goToSection('sec05')">05 회의·행사</button>
+    <button class="nav-btn" onclick="goToSection('sec06')">06 자료 조사·분석</button>
+    <button class="nav-btn" onclick="goToSection('sec07')">07 조직 관리·소통</button>
+    <button class="nav-btn" onclick="goToSection('sec-ailinks')" style="color:var(--accent);font-weight:700;">🔗 AI 바로가기</button>
   </div>
 </nav>
 
@@ -1555,10 +1555,11 @@ function cycleTheme() {
   var isDark = html.classList.contains('theme-dark');
   html.classList.toggle('theme-dark', !isDark);
   html.classList.toggle('theme-light', isDark);
-  localStorage.setItem(THEME_KEY, isDark ? 'light' : 'dark');
+  try { localStorage.setItem(THEME_KEY, isDark ? 'light' : 'dark'); } catch (e) {}
 }
 (function(){
-  var saved = localStorage.getItem(THEME_KEY);
+  var saved = null;
+  try { saved = localStorage.getItem(THEME_KEY); } catch (e) {}
   if (!saved) {
     saved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   }
@@ -1567,7 +1568,7 @@ function cycleTheme() {
 })();
 
 // ===== SCROLL NAV =====
-function scrollTo(id) {
+function goToSection(id) {
   var el = document.getElementById(id);
   if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
 }
@@ -1628,7 +1629,7 @@ function downloadPage() {
       if (entry.isIntersecting) {
         var id = entry.target.id;
         navBtns.forEach(function(btn){ btn.classList.remove('active'); });
-        var active = document.querySelector('.nav-btn[onclick="scrollTo(\'' + id + '\')"]');
+        var active = document.querySelector('.nav-btn[onclick="goToSection(\'' + id + '\')"]');
         if (active) active.classList.add('active');
       }
     });
