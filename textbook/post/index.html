@@ -172,12 +172,17 @@
           <article class="section-card">
             <div class="kicker">STEP 01 · 사전 확인</div>
             <ul class="checklist">
-              <li>터미널에 <code>claude --version</code> 입력 — 버전 번호가 뜨면 통과</li>
+              <li>PowerShell 열 수 있는지 확인 (시작 메뉴에서 "PowerShell" 검색 — CMD 아님)</li>
+              <li>PowerShell에 <code>claude --version</code> 입력 — 버전 번호가 뜨면 통과</li>
+              <li>PowerShell에 <code>git --version</code> 입력 — 버전이 안 뜨면 Git 설치 필요 (STEP 02에서 설치)</li>
               <li>Claude 계정 로그인·구독 확인 (Claude Pro면 충분)</li>
-              <li>내 PC에 프로그램 설치 권한이 있는지 확인 — 막혀 있으면 개인 노트북 지참</li>
-              <li>터미널(윈도우: PowerShell, CMD 아님 / 맥: 터미널) 열 수 있는지 확인</li>
-              <li>터미널에 <code>git --version</code> 입력 — 버전이 안 뜨면 Git 설치 필요 (특히 Windows, 아래 STEP 02에서 설치)</li>
+              <li>카카오톡 데스크톱 버전 설치 확인 (안 되어 있으면 <a href="https://lk.kakaocdn.net/talkpc/talk/win32/x64/KakaoTalk_Setup.exe" target="_blank" rel="noopener">설치하기</a>)</li>
             </ul>
+            <div class="callout warn" style="margin-top:1rem">
+              <b>노트북 최소 사양 (Windows)</b> — OS Windows 10(1903+)/11 · x64(ARM Surface 불가) · Intel i5 8세대/Ryzen5 2000 이상 · RAM 8GB 이상(16GB 권장) · 저장공간 15GB 여유<br>
+              확인법: 시작 우클릭 → 시스템 → 정보 → "장치 사양"에서 RAM·시스템 종류(x64) 확인<br>
+              진행 불가: RAM 4GB 이하, Windows on ARM(Surface Pro X 등), 크롬북, 태블릿
+            </div>
           </article>
           <article class="section-card">
             <div class="kicker">STEP 02 · Claude Code 설치</div>
@@ -190,6 +195,12 @@
             <p style="margin:1rem 0 .3rem;font-weight:700;font-size:var(--text-xs);color:var(--color-muted)">② Claude Code 설치</p>
             <div class="prompt-box"><pre id="install-win">irm https://claude.ai/install.ps1 | iex</pre></div>
             <button class="copy-btn" onclick="copyPrompt('install-win', this)">📋 Windows 명령 복사하기</button>
+            <p style="margin:1rem 0 .3rem;font-weight:700;font-size:var(--text-xs);color:var(--color-muted)">③ 데스크톱 앱 설치 (선택 — 아이콘으로 켜고 싶으면)</p>
+            <p style="margin:0 0 .5rem;font-size:var(--text-sm);color:var(--color-muted)">①②는 터미널에서 <code>claude</code> 명령을 쓰기 위한 설치입니다. 아이콘 클릭으로 켜는 GUI가 필요하면 아래에서 따로 설치하세요 — 둘 다 설치해도 되고, 하나만 써도 됩니다.</p>
+            <div class="dl-row">
+              <a class="btn btn-secondary" href="https://claude.ai/api/desktop/win32/x64/setup/latest/redirect?utm_source=claude_code&utm_medium=docs" target="_blank">🖥 데스크톱 앱 다운로드 (Windows)</a>
+            </div>
+            <p style="margin:.6rem 0 0;font-size:var(--text-sm);color:var(--color-muted)">클릭하면 설치 파일(예: <code>Claude-Setup-x64.exe</code>)이 다운로드 폴더에 저장됩니다. 다운로드 폴더에서 그 파일을 더블클릭 → 설치 진행 → 끝나면 자동으로 앱이 열립니다. Anthropic 계정으로 로그인하면 완료입니다.</p>
             <div class="kicker" style="margin:1rem 0 .4rem">🍎 macOS</div>
             <div class="prompt-box"><pre id="install-mac">curl -fsSL https://claude.ai/install.sh | bash</pre></div>
             <button class="copy-btn" onclick="copyPrompt('install-mac', this)">📋 macOS 명령 복사하기</button>
@@ -289,8 +300,8 @@
             <div class="kicker">내 데이터가 없거나 시간이 부족하면</div>
             <p style="color:var(--color-muted);font-size:var(--text-sm);margin:0 0 .8rem">아래 샘플 정제본을 바로 받아서 04단계부터 시작하세요. 60분 걸리는 ①~⑤ 과정을 건너뜁니다.</p>
             <div class="dl-row">
-              <a class="btn btn-secondary" href="샘플데이터_정제본_공공서비스만족도.json" download>⬇ 공공서비스 만족도 (60행)</a>
-              <a class="btn btn-secondary" href="샘플데이터_정제본_강의문의응답.json" download>⬇ 강의문의 응답 (29행)</a>
+              <a class="btn btn-secondary" href="sample-satisfaction.json" download>⬇ 공공서비스 만족도 (60행)</a>
+              <a class="btn btn-secondary" href="sample-inquiry.json" download>⬇ 강의문의 응답 (29행)</a>
             </div>
             <div class="callout warn" style="margin-top:1rem">두 샘플 모두 개인정보 처리(가명화) 완료된 정제본입니다.</div>
           </article>
