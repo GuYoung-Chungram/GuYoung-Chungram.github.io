@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>평생학습 강사를 위한 AI 안전활용 가이드북 - 오픈북 퀴즈</title>
+<style>
+  :root{
+    --orange:#F5821F;
+    --orange-dark:#D96B12;
+    --orange-light:#FFF1E2;
+    --ink:#26221D;
+    --sub:#6B6258;
+    --line:#EAE1D4;
+    --card:#FFFFFF;
+    --bg:#FBF7F0;
+    --ok:#1F8A4C;
+    --ok-bg:#E9F7EF;
+    --bad:#D64545;
+    --bad-bg:#FDEDED;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+    line-height:1.55;
+    padding-bottom:80px;
+  }
+  .hero{
+    background:linear-gradient(135deg,var(--orange) 0%, #FFA24D 100%);
+    color:#fff;
+    padding:44px 20px 36px;
+    text-align:left;
+  }
+  .hero-inner{max-width:760px;margin:0 auto;}
+  .badge{
+    display:inline-block;
+    background:rgba(255,255,255,0.22);
+    padding:5px 14px;
+    border-radius:999px;
+    font-size:12.5px;
+    font-weight:700;
+    letter-spacing:.3px;
+    margin-bottom:14px;
+  }
+  .hero h1{
+    font-size:26px;
+    margin:0 0 8px;
+    font-weight:800;
+    letter-spacing:-0.3px;
+  }
+  .hero p{margin:0;font-size:14.5px;opacity:.95;}
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px;}
+
+  .guide-box{
+    background:#fff;
+    border:1px solid var(--line);
+    border-left:5px solid var(--orange);
+    border-radius:10px;
+    padding:18px 20px;
+    margin:-20px auto 26px;
+    max-width:720px;
+    box-shadow:0 6px 18px rgba(60,40,10,0.06);
+  }
+  .guide-box h2{
+    font-size:14px;
+    color:var(--orange-dark);
+    margin:0 0 8px;
+    font-weight:800;
+    letter-spacing:.2px;
+  }
+  .guide-box ol{margin:0;padding-left:18px;font-size:13.8px;color:var(--ink);}
+  .guide-box li{margin-bottom:4px;}
+  .guide-box .note{
+    margin-top:10px;
+    font-size:12.8px;
+    color:var(--sub);
+    background:var(--orange-light);
+    border-radius:8px;
+    padding:8px 12px;
+  }
+
+  .progress-bar{
+    position:sticky; top:0; z-index:20;
+    background:#fff;
+    border-bottom:1px solid var(--line);
+    padding:10px 20px;
+  }
+  .progress-inner{max-width:760px;margin:0 auto;display:flex;align-items:center;gap:12px;}
+  .progress-track{flex:1;height:8px;background:var(--line);border-radius:999px;overflow:hidden;}
+  .progress-fill{height:100%;width:0%;background:var(--orange);border-radius:999px;transition:width .25s ease;}
+  .progress-text{font-size:12.5px;color:var(--sub);white-space:nowrap;font-weight:600;}
+
+  .section-title{
+    max-width:760px;margin:34px auto 12px;padding:0 20px;
+    display:flex;align-items:baseline;gap:10px;
+  }
+  .section-title .num{
+    background:var(--ink);color:#fff;font-size:11.5px;font-weight:800;
+    padding:3px 9px;border-radius:6px;
+  }
+  .section-title h2{font-size:16.5px;margin:0;font-weight:800;}
+  .section-title .pages{margin-left:auto;font-size:12px;color:var(--sub);font-weight:600;}
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:22px 22px 20px;
+    margin:0 auto 16px;
+    max-width:760px;
+    box-shadow:0 2px 10px rgba(60,40,10,0.04);
+  }
+  .qhead{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;}
+  .qnum{
+    flex-shrink:0;
+    width:28px;height:28px;border-radius:8px;
+    background:var(--orange-light);color:var(--orange-dark);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;font-size:13px;
+  }
+  .qtext{font-size:15.5px;font-weight:700;color:var(--ink);flex:1;}
+  .qmeta{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 14px 38px;}
+  .tag{
+    font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;
+    border:1px solid var(--line);color:var(--sub);background:#FBF9F5;
+  }
+  .tag.page{
+    background:var(--orange);color:#fff;border-color:var(--orange);
+  }
+  .options{margin-left:38px;display:flex;flex-direction:column;gap:8px;}
+  .opt{
+    display:flex;align-items:center;gap:10px;
+    border:1.5px solid var(--line);
+    border-radius:10px;
+    padding:10px 14px;
+    cursor:pointer;
+    font-size:14.3px;
+    transition:.15s;
+    background:#fff;
+  }
+  .opt:hover{border-color:var(--orange);background:var(--orange-light);}
+  .opt input{accent-color:var(--orange);width:16px;height:16px;flex-shrink:0;}
+  .opt.selected{border-color:var(--orange);background:var(--orange-light);font-weight:700;}
+  .opt.correct{border-color:var(--ok);background:var(--ok-bg);font-weight:700;}
+  .opt.incorrect{border-color:var(--bad);background:var(--bad-bg);font-weight:700;}
+  .opt .mark{margin-left:auto;font-size:13px;font-weight:800;}
+  .opt .mark.ok-mark{color:var(--ok);}
+  .opt .mark.bad-mark{color:var(--bad);}
+
+  .fill-wrap{margin-left:38px;}
+  .fill-wrap input[type=text]{
+    width:100%;
+    padding:11px 14px;
+    border:1.5px solid var(--line);
+    border-radius:10px;
+    font-size:14.3px;
+    font-family:inherit;
+  }
+  .fill-wrap input[type=text]:focus{outline:none;border-color:var(--orange);}
+  .fill-hint{font-size:12px;color:var(--sub);margin-top:6px;}
+
+  .explain{
+    margin:14px 0 0 38px;
+    padding:12px 14px;
+    border-radius:10px;
+    font-size:13.3px;
+    display:none;
+  }
+  .explain.show{display:block;}
+  .explain.ok{background:var(--ok-bg);color:#1a6b3c;border:1px solid #c9ead6;}
+  .explain.bad{background:var(--bad-bg);color:#a83232;border:1px solid #f3caca;}
+  .explain b{font-weight:800;}
+  .explain .pageref{
+    display:inline-block;margin-top:6px;font-size:12px;font-weight:700;
+    color:var(--orange-dark);
+  }
+
+  .footer-bar{
+    position:fixed;bottom:0;left:0;right:0;
+    background:#fff;border-top:1px solid var(--line);
+    padding:14px 20px;
+    box-shadow:0 -6px 18px rgba(60,40,10,0.08);
+    z-index:30;
+  }
+  .footer-inner{
+    max-width:760px;margin:0 auto;
+    display:flex;align-items:center;gap:14px;
+  }
+  .footer-info{font-size:13px;color:var(--sub);flex:1;}
+  .footer-info b{color:var(--ink);font-size:15px;}
+  .btn{
+    border:none;border-radius:10px;
+    padding:12px 22px;
+    font-size:14.5px;font-weight:800;
+    cursor:pointer;
+    transition:.15s;
+  }
+  .btn-primary{background:var(--orange);color:#fff;}
+  .btn-primary:hover{background:var(--orange-dark);}
+  .btn-ghost{background:#fff;color:var(--sub);border:1.5px solid var(--line);}
+  .btn-ghost:hover{border-color:var(--orange);color:var(--orange-dark);}
+
+  .result-modal-bg{
+    display:none;
+    position:fixed;inset:0;background:rgba(38,34,29,0.55);
+    z-index:50;align-items:center;justify-content:center;padding:20px;
+  }
+  .result-modal-bg.show{display:flex;}
+  .result-modal{
+    background:#fff;border-radius:16px;max-width:380px;width:100%;
+    padding:30px 26px;text-align:center;
+    box-shadow:0 20px 60px rgba(0,0,0,0.25);
+  }
+  .result-modal .score{
+    font-size:44px;font-weight:900;color:var(--orange);margin:6px 0 2px;
+  }
+  .result-modal .score span{font-size:20px;color:var(--sub);font-weight:700;}
+  .result-modal .msg{font-size:14px;color:var(--sub);margin:10px 0 20px;}
+  .result-modal .btn{width:100%;}
+
+  @media print{
+    .progress-bar,.footer-bar,.result-modal-bg{display:none !important;}
+    body{padding-bottom:0;background:#fff;}
+    .card{box-shadow:none;break-inside:avoid;}
+  }
+  @media (max-width:480px){
+    .hero h1{font-size:21px;}
+    .qmeta,.options,.fill-wrap,.explain{margin-left:0;}
+    .qhead{flex-direction:column;}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <span class="badge">OPEN BOOK QUIZ · 오픈북 퀴즈</span>
+    <h1>평생학습 강사를 위한 AI 안전활용 가이드북</h1>
+    <p>가이드북(총 20p)을 옆에 두고 참고 페이지를 확인하며 풀어보세요. 총 20문항입니다.</p>
+  </div>
+</div>
+
+<div class="guide-box">
+  <h2>📖 진행 방법</h2>
+  <ol>
+    <li>배부받은 «평생학습 강사를 위한 AI 안전활용 가이드북»을 옆에 펼쳐두세요.</li>
+    <li>각 문항 아래의 <b style="color:#D96B12;">주황색 페이지 표시</b>를 보고 해당 페이지에서 정답 근거를 찾으세요.</li>
+    <li>객관식은 보기를 클릭, OX는 O/X를 클릭, 빈칸형은 직접 입력하세요.</li>
+    <li>모두 답한 뒤 화면 하단의 <b>[채점하기]</b> 버튼을 누르면 정답과 해설이 표시됩니다.</li>
+  </ol>
+  <div class="note">💡 정답을 몰라도 괜찮습니다. 가이드북에서 "찾아내는 연습"이 이 퀴즈의 목적입니다.</div>
+</div>
+
+<div class="progress-bar">
+  <div class="progress-inner">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-text" id="progressText">0 / 20 답변</div>
+  </div>
+</div>
+
+<div id="quizRoot"></div>
+
+<div class="footer-bar">
+  <div class="footer-inner">
+    <div class="footer-info"><b id="answeredCount">0</b> / 20 문항 답변 완료</div>
+    <button class="btn btn-ghost" onclick="window.print()">인쇄</button>
+    <button class="btn btn-primary" onclick="gradeQuiz()">채점하기</button>
+  </div>
+</div>
+
+<div class="result-modal-bg" id="resultModal">
+  <div class="result-modal">
+    <div style="font-size:13px;color:#6B6258;font-weight:700;">채점 결과</div>
+    <div class="score" id="scoreText">0<span> / 20</span></div>
+    <div class="msg" id="scoreMsg">수고하셨습니다!</div>
+    <button class="btn btn-primary" onclick="closeModal()">문항별 해설 보기</button>
+  </div>
+</div>
+
+<script>
+const sections = [
+  { title: "이 가이드북을 사용하는 방법", pages: "p.02", num:"START" },
+  { title: "AI 활용 3원칙", pages: "p.04-06", num:"01" },
+  { title: "안전한 프롬프트 작성", pages: "p.07-09", num:"02" },
+  { title: "학습자 정보 비식별화", pages: "p.10-13", num:"03" },
+  { title: "AI 결과 검증", pages: "p.14-16", num:"04" },
+  { title: "평생학습 업무별 예시", pages: "p.17-18", num:"05" },
+  { title: "실행 체크리스트", pages: "p.19", num:"06" }
+];
+
+const questions = [
+// -------- START (p.2) --------
+{
+  sectionIndex:0,
+  type:"mc",
+  q:"이 가이드북의 목적을 가장 정확하게 설명한 것은?",
+  options:[
+    "AI가 강사를 대신해 최종 판단을 내리게 한다",
+    "AI가 강의 기획과 자료 제작을 돕고, 학습자 보호와 교육적 판단은 강사가 책임진다",
+    "학습자가 스스로 AI를 사용하도록 유도한다",
+    "AI 결과를 검증 없이 바로 수업에 적용한다"
+  ],
+  answer:1,
+  page:"p.02",
+  explain:"가이드북 목적: \"AI가 강사를 대신 판단하게 하는 것이 아니라, 강의 기획과 자료 제작을 돕게 하면서 학습자 보호와 교육적 판단은 강사가 책임지는 방법을 안내합니다.\""
+},
+// -------- CH01 AI 활용 3원칙 (p.4-6) --------
+{
+  sectionIndex:1,
+  type:"ox",
+  q:"AI는 최종 선택과 교육적 책임을 지는 주체이다.",
+  answer:false,
+  page:"p.04",
+  explain:"AI는 수업 아이디어·설명 초안·활동 구조를 제안하는 '보조자'이며, 최종 선택과 교육적 책임은 강사에게 있습니다."
+},
+{
+  sectionIndex:1,
+  type:"fill",
+  q:"한 문장 원칙을 완성하세요: \"AI가 (　　)하고, 강사가 (　　)하고, 학습자와 함께 완성합니다.\"",
+  accepted:["제안, 설계","제안,설계","제안 설계"],
+  hintAnswer:"제안 / 설계",
+  page:"p.04",
+  explain:"정답: 제안 · 설계 — \"AI가 제안하고, 강사가 설계하고, 학습자와 함께 완성합니다.\""
+},
+{
+  sectionIndex:1,
+  type:"mc",
+  q:"다음 중 강사가 직접 판단해야 할 일로 분류된 것은?",
+  options:[
+    "수업 아이디어와 토론 질문 목록 만들기",
+    "공개 교육자료 요약과 난이도 조절",
+    "학습자 명단·상담 기록·연락처 업로드",
+    "활동지·퀴즈·홍보 문안 초안 작성"
+  ],
+  answer:2,
+  page:"p.05",
+  explain:"'학습자 명단·상담 기록·연락처 업로드'는 강사가 직접 판단할 일로 명시되어 있습니다. 나머지는 AI에게 맡겨도 되는 일입니다."
+},
+{
+  sectionIndex:1,
+  type:"mc",
+  q:"학습목표에서 수업 적용까지 기본 흐름 5단계 중 3번째 단계는?",
+  options:["정보 비식별화","수업 초안 생성","내용 검토","강사·기관 확인"],
+  answer:1,
+  page:"p.06",
+  explain:"기본 흐름: ①학습목표 정의 → ②정보 비식별화 → ③수업 초안 생성 → ④내용 검토 → ⑤강사·기관 확인"
+},
+// -------- CH02 안전한 프롬프트 작성 (p.7-9) --------
+{
+  sectionIndex:2,
+  type:"mc",
+  q:"좋은 프롬프트를 만드는 다섯 요소에 해당하지 않는 것은?",
+  options:["역할","목적","저작권","제약"],
+  answer:2,
+  page:"p.07",
+  explain:"다섯 요소는 역할·목적·맥락·제약·형식입니다. '저작권'은 다섯 요소에 포함되지 않습니다."
+},
+{
+  sectionIndex:2,
+  type:"mc",
+  q:"프롬프트를 쓰기 전 점검하는 '입력 전 묻는 다섯 질문'에 해당하지 않는 것은?",
+  options:[
+    "이 정보 없이도 강의 준비가 가능한가?",
+    "실명 대신 학습자A·모둠B처럼 바꿀 수 있는가?",
+    "AI가 이 정보를 기억하고 있는가?",
+    "교육기관에서 승인한 AI 도구인가?"
+  ],
+  answer:2,
+  page:"p.08",
+  explain:"다섯 질문은 정보 없이도 준비 가능한지, 가명 대체 가능한지, 원문 전체 대신 필요한 부분만 쓸 수 있는지, 승인된 도구인지, 외부 공개되어도 괜찮은 정보인지입니다."
+},
+{
+  sectionIndex:2,
+  type:"fill",
+  q:"평생학습 수업용 프롬프트 템플릿의 '금지 문구'를 완성하세요: \"새로운 사실을 만들지 말고 개인정보를 (　　)하거나 (　　)하지 마세요.\"",
+  accepted:["추정, 복원","추정,복원","추정 복원"],
+  hintAnswer:"추정 / 복원",
+  page:"p.09",
+  explain:"정답: 추정 · 복원 — \"새로운 사실을 만들지 말고 개인정보를 추정하거나 복원하지 마세요.\""
+},
+// -------- CH03 학습자 정보 비식별화 (p.10-13) --------
+{
+  sectionIndex:3,
+  type:"mc",
+  q:"다음 중 '민감정보·고위험 정보'가 아니라 일반 '개인정보'로 분류된 것은?",
+  options:[
+    "건강·장애·유전 정보",
+    "정치·종교·노동조합 정보",
+    "이름·연락처·이메일",
+    "주민등록번호·여권번호"
+  ],
+  answer:2,
+  page:"p.10",
+  explain:"'이름·연락처·이메일'은 일반 개인정보입니다. 나머지 셋은 민감정보·고위험 정보로 분류됩니다."
+},
+{
+  sectionIndex:3,
+  type:"ox",
+  q:"이름이 없어도 연령·지역·강좌·날짜가 결합되면 개인을 알아볼 수 있으므로, '식별 가능성'을 기준으로 판단해야 한다.",
+  answer:true,
+  page:"p.10",
+  explain:"핵심 원칙: \"이름이 없어도 연령·지역·강좌·날짜가 결합되면 개인을 알아볼 수 있습니다. '식별 가능성'을 기준으로 판단하세요.\""
+},
+{
+  sectionIndex:3,
+  type:"mc",
+  q:"\"68세 → 60대\"로 바꾸는 비식별화 방법은 다섯 가지 중 무엇인가?",
+  options:["삭제","가명","범주화","코드화"],
+  answer:2,
+  page:"p.11",
+  explain:"비식별화 다섯 방법: 삭제(연락처 삭제)·가명(김민수→학습자A)·범주화(68세→60대)·일반화(강남구→서울)·코드화(김OO→L001). 68세→60대는 범주화입니다."
+},
+{
+  sectionIndex:3,
+  type:"mc",
+  q:"문서를 비식별화하는 실제 순서 5단계 중 가장 먼저 해야 할 일은?",
+  options:[
+    "재식별 위험 점검",
+    "원문 복사본 만들기",
+    "삭제·대체·범주화",
+    "승인된 자료만 입력"
+  ],
+  answer:1,
+  page:"p.12",
+  explain:"순서: ①원문 복사본 만들기 → ②식별정보 찾기 → ③삭제·대체·범주화 → ④재식별 위험 점검 → ⑤승인된 자료만 입력"
+},
+{
+  sectionIndex:3,
+  type:"mc",
+  q:"\"연락처는 010-1234-5678이다\"라는 문장을 비식별화 후 예시에서는 어떻게 처리했는가?",
+  options:["연령대로 범주화","광역 지역으로 일반화","수업 목적에 불필요하여 삭제","가명으로 대체"],
+  answer:2,
+  page:"p.13",
+  explain:"비식별화 전후 비교 표에 따르면 전화번호는 '수업 목적에 불필요하여 삭제'로 처리되었습니다."
+},
+// -------- CH04 AI 결과 검증 (p.14-16) --------
+{
+  sectionIndex:4,
+  type:"mc",
+  q:"AI 결과를 검증하는 다섯 단계에 해당하지 않는 것은?",
+  options:["사실","출처","인기도","강사 확인"],
+  answer:2,
+  page:"p.14",
+  explain:"다섯 단계는 사실·출처·최신성·수업 맥락·강사 확인입니다. '인기도'는 포함되지 않습니다."
+},
+{
+  sectionIndex:4,
+  type:"ox",
+  q:"AI에게 \"스스로 검증하라\"고 요청하면 충분하며, 강사가 원문을 다시 확인할 필요는 없다.",
+  answer:false,
+  page:"p.15",
+  explain:"한계: \"AI에게 '스스로 검증하라'고만 요청하는 것은 충분하지 않습니다. 실제 원문은 강사가 직접 확인해야 합니다.\""
+},
+{
+  sectionIndex:4,
+  type:"mc",
+  q:"신뢰도 우선순위를 올바르게 나열한 것은?",
+  options:[
+    "커뮤니티·AI답변 → 언론·해설 → 전문기관·학술자료 → 공식 원문·1차 자료",
+    "공식 원문·1차 자료 → 전문기관·학술자료 → 언론·해설 → 커뮤니티·AI답변",
+    "언론·해설 → 공식 원문·1차 자료 → 커뮤니티·AI답변 → 전문기관·학술자료",
+    "전문기관·학술자료 → 커뮤니티·AI답변 → 공식 원문·1차 자료 → 언론·해설"
+  ],
+  answer:1,
+  page:"p.16",
+  explain:"신뢰도 우선순위: 공식 원문·1차 자료 → 전문기관·학술자료 → 언론·해설 → 커뮤니티·AI 답변"
+},
+// -------- CH05 평생학습 업무별 예시 (p.17-18) --------
+{
+  sectionIndex:5,
+  type:"mc",
+  q:"강의계획서에 AI 초안을 활용한 뒤, 반드시 확인해야 할 항목은?",
+  options:[
+    "글씨체와 색상",
+    "대상 수준·수업시간·기관 양식에 맞게 수정했는지",
+    "AI의 응답 속도",
+    "파일 용량"
+  ],
+  answer:1,
+  page:"p.17",
+  explain:"강의계획서 확인 항목: \"대상 수준·수업시간·기관 양식에 맞게 수정\"입니다. 공통 원칙: 초안은 AI가 만들 수 있지만 선택·수정하는 사람은 강사입니다."
+},
+{
+  sectionIndex:5,
+  type:"mc",
+  q:"다음 중 '고위험 업무'로 분류되어 설명 가능성·공정성·이의 제기 기회를 확보해야 하는 것은?",
+  options:[
+    "강좌 홍보 문안 초안",
+    "자주 묻는 질문(FAQ) 안내 문구",
+    "학습자의 성취·참여에 대한 평가",
+    "활동지 형식 변환"
+  ],
+  answer:2,
+  page:"p.18",
+  explain:"고위험 업무: \"학습자의 성취·참여 판단에는 설명 가능성·공정성·이의 제기 기회를 확보합니다.\" 학습자 평가는 AI 단독 평가 금지, 강사의 근거·맥락 확인이 필요합니다."
+},
+// -------- CH06 실행 체크리스트 (p.19) --------
+{
+  sectionIndex:6,
+  type:"mc",
+  q:"수업 자료 업로드 전 체크리스트의 '멈춤 기준'은 무엇인가?",
+  options:[
+    "시간이 없으면 체크리스트를 생략하고 진행한다",
+    "체크하지 못한 항목이 하나라도 있으면 업로드와 배포를 멈추고 확인한다",
+    "관리자에게 사후 보고만 하면 된다",
+    "다음 수업 시간에 수정하면 된다"
+  ],
+  answer:1,
+  page:"p.19",
+  explain:"멈춤 기준: \"체크하지 못한 항목이 하나라도 있으면 업로드와 배포를 멈추고 확인합니다.\""
+},
+{
+  sectionIndex:6,
+  type:"ox",
+  q:"체크리스트에는 '기관에서 승인한 AI 서비스와 계정을 사용한다'는 항목이 포함되어 있다.",
+  answer:true,
+  page:"p.19",
+  explain:"체크리스트 2번째 항목: \"기관에서 승인한 AI 서비스와 계정을 사용한다.\""
+}
+];
+
+const root = document.getElementById('quizRoot');
+let html = "";
+let lastSection = -1;
+
+questions.forEach((qq, idx) => {
+  if (qq.sectionIndex !== lastSection) {
+    const s = sections[qq.sectionIndex];
+    html += `<div class="section-title"><span class="num">${s.num}</span><h2>${s.title}</h2><span class="pages">참고 ${s.pages}</span></div>`;
+    lastSection = qq.sectionIndex;
+  }
+
+  html += `<div class="card" id="card-${idx}" data-idx="${idx}">`;
+  html += `<div class="qhead"><div class="qnum">${idx+1}</div><div class="qtext">${qq.q}</div></div>`;
+
+  let typeLabel = qq.type === 'mc' ? '객관식' : (qq.type === 'ox' ? 'O/X' : '빈칸 채우기');
+  html += `<div class="qmeta"><span class="tag">${typeLabel}</span><span class="tag page">📖 ${qq.page}</span></div>`;
+
+  if (qq.type === 'mc') {
+    html += `<div class="options" data-type="mc">`;
+    qq.options.forEach((opt, oi) => {
+      html += `<label class="opt" data-oi="${oi}">
+        <input type="radio" name="q${idx}" value="${oi}" onchange="selectOption(${idx}, this)">
+        <span>${opt}</span>
+      </label>`;
+    });
+    html += `</div>`;
+  } else if (qq.type === 'ox') {
+    html += `<div class="options" data-type="ox">
+      <label class="opt" data-oi="true">
+        <input type="radio" name="q${idx}" value="true" onchange="selectOption(${idx}, this)">
+        <span>O (맞다)</span>
+      </label>
+      <label class="opt" data-oi="false">
+        <input type="radio" name="q${idx}" value="false" onchange="selectOption(${idx}, this)">
+        <span>X (틀리다)</span>
+      </label>
+    </div>`;
+  } else if (qq.type === 'fill') {
+    html += `<div class="fill-wrap">
+      <input type="text" id="fill-${idx}" placeholder="가이드북 ${qq.page}를 참고하여 입력하세요" oninput="onFillInput(${idx})">
+      <div class="fill-hint">쉼표(,)로 구분해 입력하세요. 예: 단어1, 단어2</div>
+    </div>`;
+  }
+
+  html += `<div class="explain" id="explain-${idx}"></div>`;
+  html += `</div>`;
+});
+
+root.innerHTML = html;
+
+const answered = {};
+
+function selectOption(idx, inputEl) {
+  answered[idx] = true;
+  const card = document.getElementById(`card-${idx}`);
+  card.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+  inputEl.closest('.opt').classList.add('selected');
+  updateProgress();
+}
+
+function onFillInput(idx) {
+  const val = document.getElementById(`fill-${idx}`).value.trim();
+  answered[idx] = val.length > 0;
+  updateProgress();
+}
+
+function updateProgress() {
+  const count = Object.values(answered).filter(Boolean).length;
+  document.getElementById('answeredCount').textContent = count;
+  document.getElementById('progressText').textContent = `${count} / ${questions.length} 답변`;
+  document.getElementById('progressFill').style.width = (count / questions.length * 100) + '%';
+}
+
+function normalize(s) {
+  return s.toLowerCase().replace(/\s+/g,'').replace(/[.·,]/g,'');
+}
+
+function gradeQuiz() {
+  let score = 0;
+
+  questions.forEach((qq, idx) => {
+    const card = document.getElementById(`card-${idx}`);
+    const explainEl = document.getElementById(`explain-${idx}`);
+    let isCorrect = false;
+    let userAnswerText = "";
+
+    if (qq.type === 'mc') {
+      const checked = card.querySelector(`input[name="q${idx}"]:checked`);
+      const opts = card.querySelectorAll('.opt');
+      opts.forEach(o => o.classList.remove('selected'));
+      if (checked) {
+        const selIdx = parseInt(checked.value, 10);
+        isCorrect = selIdx === qq.answer;
+        userAnswerText = qq.options[selIdx];
+        opts[selIdx].classList.add(isCorrect ? 'correct' : 'incorrect');
+      }
+      opts[qq.answer].classList.add('correct');
+    } else if (qq.type === 'ox') {
+      const checked = card.querySelector(`input[name="q${idx}"]:checked`);
+      const opts = card.querySelectorAll('.opt');
+      opts.forEach(o => o.classList.remove('selected'));
+      if (checked) {
+        const val = checked.value === 'true';
+        isCorrect = val === qq.answer;
+        userAnswerText = val ? 'O' : 'X';
+        opts[val === true ? 0 : 1].classList.add(isCorrect ? 'correct' : 'incorrect');
+      }
+      opts[qq.answer === true ? 0 : 1].classList.add('correct');
+    } else if (qq.type === 'fill') {
+      const val = document.getElementById(`fill-${idx}`).value.trim();
+      userAnswerText = val;
+      const normVal = normalize(val);
+      isCorrect = qq.accepted.some(a => normalize(a) === normVal);
+    }
+
+    if (isCorrect) score++;
+
+    explainEl.className = 'explain show ' + (isCorrect ? 'ok' : 'bad');
+    let head = isCorrect ? '✅ 정답입니다!' : '❌ 다시 확인해보세요.';
+    if (qq.type === 'fill') {
+      head += ` 정답: <b>${qq.hintAnswer}</b>`;
+    }
+    explainEl.innerHTML = `<div>${head}</div><div style="margin-top:6px;">${qq.explain}</div><div class="pageref">📖 근거: 가이드북 ${qq.page}</div>`;
+  });
+
+  document.getElementById('scoreText').innerHTML = `${score}<span> / ${questions.length}</span>`;
+  let msg = "";
+  if (score === questions.length) msg = "완벽합니다! 가이드북 내용을 정확히 파악하셨네요. 🎉";
+  else if (score >= questions.length * 0.7) msg = "잘하셨습니다! 틀린 문항은 해설에서 페이지를 다시 확인해보세요.";
+  else msg = "괜찮습니다. 문항별 해설과 페이지 참조를 보며 가이드북을 다시 살펴보세요.";
+  document.getElementById('scoreMsg').textContent = msg;
+  document.getElementById('resultModal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('resultModal').classList.remove('show');
+  const firstExplain = document.querySelector('.explain.show');
+  if (firstExplain) firstExplain.scrollIntoView({behavior:'smooth', block:'center'});
+}
+</script>
+</body>
+</html>
