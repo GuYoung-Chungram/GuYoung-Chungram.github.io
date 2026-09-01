@@ -1,1 +1,850 @@
+<!DOCTYPE html>
+<html lang="ko">
 
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>CHEONGRAM M&C | 동대문구 AI 보고서킷 실습 가이드</title>
+  <meta name="theme-color" content="#0B0F19">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-main: #0B0F19;
+      --bg-card: #151D2A;
+      --bg-card-hover: #1E293B;
+      --accent-indigo: #6366F1;
+      --accent-purple: #8B5CF6;
+      --accent-cyan: #06B6D4;
+      --accent-emerald: #10B981;
+      --accent-amber: #F59E0B;
+      --text-white: #F8FAFC;
+      --text-muted: #94A3B8;
+      --text-dim: #64748B;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-active: rgba(99, 102, 241, 0.4);
+    }
+
+    body {
+      font-family: 'Pretendard', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-main);
+      color: var(--text-white);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 60px;
+    }
+
+    .wrapper {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    /* Cheongram Brand Bar */
+    .brand-top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .brand-logo-tag {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--accent-amber);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .brand-logo-tag:hover {
+      opacity: 0.85;
+      transform: translateY(-1px);
+    }
+
+    .brand-sub-tag {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 24px 0 20px;
+      text-align: left;
+      position: relative;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: #A5B4FC;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 30px;
+      margin-bottom: 14px;
+    }
+
+    .hero-badge .sparkle {
+      color: var(--accent-amber);
+    }
+
+    .hero h1 {
+      font-size: 1.85rem;
+      font-weight: 900;
+      line-height: 1.3;
+      letter-spacing: -0.03em;
+      background: linear-gradient(135deg, #FFFFFF 0%, #CBD5E1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-top: 10px;
+      line-height: 1.55;
+    }
+
+    /* Timer Widget */
+    .timer-widget {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .timer-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .timer-icon {
+      font-size: 1.2rem;
+    }
+
+    .timer-display {
+      font-family: monospace;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--accent-amber);
+    }
+
+    .timer-controls {
+      display: flex;
+      gap: 6px;
+    }
+
+    .timer-btn {
+      background: #1E293B;
+      border: 1px solid #334155;
+      color: var(--text-white);
+      font-weight: 700;
+      font-size: 0.75rem;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .timer-btn:active {
+      background: var(--accent-indigo);
+    }
+
+    /* Main Download CTA Box */
+    .download-cta {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(139, 92, 246, 0.12) 100%);
+      border: 1px solid var(--border-active);
+      border-radius: 20px;
+      padding: 22px;
+      margin-bottom: 24px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .cta-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .cta-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--accent-indigo), var(--accent-purple));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+    }
+
+    .cta-text h3 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #FFFFFF;
+    }
+
+    .cta-text p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .download-btn-main {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);
+      color: #FFFFFF;
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 800;
+      padding: 14px 20px;
+      border-radius: 14px;
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+      transition: all 0.2s ease;
+    }
+
+    .download-btn-main:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
+    }
+
+    /* Progress Widget */
+    .tracker-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      padding: 18px 20px;
+      margin-bottom: 24px;
+    }
+
+    .tracker-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .tracker-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tracker-status {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--accent-cyan);
+    }
+
+    .progress-track {
+      height: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent-cyan) 0%, var(--accent-emerald) 100%);
+      border-radius: 8px;
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Checklist Cards Stack */
+    .checklist-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .card-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 20px;
+      transition: all 0.25s ease;
+      position: relative;
+    }
+
+    .card-item.checked {
+      background: rgba(16, 185, 129, 0.06);
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+
+    .card-item-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      cursor: pointer;
+    }
+
+    .card-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .step-tag {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--accent-indigo);
+      letter-spacing: 0.05em;
+    }
+
+    .card-item.checked .step-tag {
+      color: var(--accent-emerald);
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #FFFFFF;
+    }
+
+    .card-item.checked .card-title {
+      color: #A7F3D0;
+      text-decoration: line-through;
+    }
+
+    /* Check Toggle Button */
+    .check-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 10px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.04);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      color: transparent;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .card-item.checked .check-btn {
+      background: var(--accent-emerald);
+      border-color: var(--accent-emerald);
+      color: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    }
+
+    /* Card Details Body */
+    .card-body {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    .card-body ol {
+      padding-left: 18px;
+    }
+
+    .card-body li {
+      margin-bottom: 8px;
+    }
+
+    .tip-box {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      color: #FDE68A;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 0.82rem;
+      margin-top: 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .code-box-wrapper {
+      position: relative;
+      margin-top: 10px;
+    }
+
+    .code-box {
+      background: #090D16;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #38BDF8;
+      padding: 12px 14px;
+      padding-right: 70px;
+      border-radius: 10px;
+      font-family: monospace;
+      font-size: 0.8rem;
+      word-break: break-all;
+    }
+
+    .copy-btn {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #1E293B;
+      border: 1px solid #334155;
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .copy-btn:hover, .copy-btn:active {
+      background: var(--accent-indigo);
+      color: #FFFFFF;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--accent-emerald);
+      color: #FFFFFF;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-weight: 800;
+      font-size: 0.85rem;
+      box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 100;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Footer Reset & Cheongram Signature */
+    .footer-bar {
+      margin-top: 40px;
+      text-align: center;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      color: var(--text-dim);
+      font-size: 0.8rem;
+    }
+
+    .reset-link {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      text-decoration: underline;
+      cursor: pointer;
+      font-size: 0.78rem;
+      margin-top: 8px;
+    }
+
+    .brand-footer-text {
+      margin-top: 12px;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      letter-spacing: 0.05em;
+    }
+
+    .brand-footer-link {
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .brand-footer-link:hover {
+      color: var(--accent-amber);
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="goldCanvas" style="position:fixed; top:0; left:0; width:100vw; height:100vh; pointer-events:none; z-index:0; opacity:0.85;"></canvas>
+  
+  <div class="wrapper" style="position:relative; z-index:1;">
+
+    <!-- Cheongram Brand Bar -->
+    <div class="brand-top-bar">
+      <a href="https://www.crmc.co.kr" target="_blank" rel="noopener" class="brand-logo-tag">CHEONGRAM M&C ↗</a>
+      <span class="brand-sub-tag">Interactive Lab Kit v2.2</span>
+    </div>
+
+    <!-- Hero Section -->
+    <header class="hero">
+      <div class="hero-badge">
+        <span class="sparkle">✦</span> 동대문구청 6급 실무과정
+      </div>
+      <h1>AI 보고서킷 구축<br>실습 가이드 & 체크리스트</h1>
+      <p>단계별 가이드를 따라 자신의 구글 계정으로 나만의 보고서 서버를 5분 만에 세팅하고 완료 상태를 확인하세요.</p>
+    </header>
+
+    <!-- Timer Widget -->
+    <div class="timer-widget">
+      <div class="timer-info">
+        <span class="timer-icon">⏱️</span>
+        <div>
+          <div style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">권장 실습 타이머</div>
+          <div class="timer-display" id="timerDisplay">10:00</div>
+        </div>
+      </div>
+      <div class="timer-controls">
+        <button class="timer-btn" id="startTimerBtn" onclick="toggleTimer()">시작</button>
+        <button class="timer-btn" onclick="resetTimer()">초기화</button>
+      </div>
+    </div>
+
+    <!-- Main Download CTA Box -->
+    <div class="download-cta">
+      <div class="cta-header">
+        <div class="cta-icon">📦</div>
+        <div class="cta-text">
+          <h3>실습 전용 소스 파일 패키지</h3>
+          <p>index.html, Code.gs, sample-prompts.csv 통합본</p>
+        </div>
+      </div>
+      <a href="https://drive.google.com/file/d/1DVO7DYh9x7C72z1teMJbVUu3D4cHnGTb/view?usp=sharing" target="_blank"
+        rel="noopener" class="download-btn-main">
+        <span>📥 실습 파일 전체 다운로드 (ZIP)</span>
+      </a>
+    </div>
+
+    <!-- Progress Tracker -->
+    <div class="tracker-card">
+      <div class="tracker-row">
+        <span class="tracker-title">⚡ 실습 달성률</span>
+        <span class="tracker-status" id="statusText">0% Completed</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+
+    <!-- Interactive Checklist Stack -->
+    <div class="checklist-stack">
+
+      <!-- STEP 01 -->
+      <div class="card-item" id="item1">
+        <div class="card-item-header" onclick="toggleItem(1)">
+          <div class="card-meta">
+            <span class="step-tag">STEP 01</span>
+            <h3 class="card-title">구글 스프레드시트 템플릿 생성</h3>
+          </div>
+          <div class="check-btn">✓</div>
+        </div>
+        <div class="card-body">
+          <ol>
+            <li>본인 구글 드라이브 접속 ➔ <b>새 구글 스프레드시트</b> 생성</li>
+            <li>하단 시트 탭 이름을 <b><code>prompts</code></b>로 변경 (소문자 필수)</li>
+            <li><code>파일</code> ➔ <code>가져오기</code> ➔ <code>업로드</code> 탭에서 다운로드받은 <b><code>sample-prompts.csv</code></b> 선택</li>
+            <li>가져오기 위치: <b>'현재 시트 바꿈'</b> 선택 후 데이터 가져오기 클릭</li>
+          </ol>
+          <div class="tip-box">
+            💡 텍스트를 그냥 복사-붙여넣기 하지 마시고 파일 가져오기를 사용해야 프롬프트 쉼표(,)가 분절되지 않습니다.
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 02 -->
+      <div class="card-item" id="item2">
+        <div class="card-item-header" onclick="toggleItem(2)">
+          <div class="card-meta">
+            <span class="step-tag">STEP 02</span>
+            <h3 class="card-title">Google Apps Script 코드 연동</h3>
+          </div>
+          <div class="check-btn">✓</div>
+        </div>
+        <div class="card-body">
+          <ol>
+            <li>생성한 구글 시트 상단 메뉴 ➔ <b><code>확장 프로그램</code> ➔ <code>Apps Script</code></b> 클릭</li>
+            <li>기존 <code>Code.gs</code> 기본 코드를 전체 삭제</li>
+            <li>다운로드한 <b><code>Code.gs</code></b> 파일의 스크립트 전체를 복사하여 붙여넣기</li>
+            <li>상단 <b>저장 (Ctrl+S / Cmd+S)</b> 클릭</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- STEP 03 -->
+      <div class="card-item" id="item3">
+        <div class="card-item-header" onclick="toggleItem(3)">
+          <div class="card-meta">
+            <span class="step-tag">STEP 03</span>
+            <h3 class="card-title">웹 앱(Web App) 배포 및 URL 복사</h3>
+          </div>
+          <div class="check-btn">✓</div>
+        </div>
+        <div class="card-body">
+          <ol>
+            <li>우측 상단 <b><code>배포</code> ➔ <code>새 배포</code></b> 클릭</li>
+            <li>유형 선택(⚙️) ➔ <b><code>웹 앱</code></b> 선택</li>
+            <li><b>실행 계정</b>: <code>나 (My Account)</code></li>
+            <li><b>액세스 권한</b>: <b><code>모든 사용자 (Anyone)</code></b> ⚠️ (핵심 설정!)</li>
+            <li><code>배포</code> 클릭 ➔ 경고 발생 시 <b><code>고급</code> ➔ <code>안전하지 않음으로 이동</code> ➔ <code>허용</code></b></li>
+            <li>생성된 <b>웹 앱 URL (https://script.google.com/macros/s/...)</b>을 복사</li>
+          </ol>
+          <div class="tip-box">
+            ⚠️ 액세스 권한을 '모든 사용자'로 지정해야 프론트엔드 앱에서 로그인 없이 데이터 연동이 가능합니다.
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 04 -->
+      <div class="card-item" id="item4">
+        <div class="card-item-header" onclick="toggleItem(4)">
+          <div class="card-meta">
+            <span class="step-tag">STEP 04</span>
+            <h3 class="card-title">index.html 연동 & 최종 테스트</h3>
+          </div>
+          <div class="check-btn">✓</div>
+        </div>
+        <div class="card-body">
+          <ol>
+            <li><code>index.html</code> 파일 편집기(메모장 또는 IDE)로 열기</li>
+            <li>상단 script 영역의 <code>APPS_SCRIPT_URL</code> 변수에 본인 복사 URL 대입:</li>
+          </ol>
+          <div class="code-box-wrapper">
+            <div class="code-box" id="targetCode">var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_URL/exec';</div>
+            <button class="copy-btn" onclick="copyPromptText('var APPS_SCRIPT_URL = \'https://script.google.com/macros/s/YOUR_URL/exec\';')">복사 📋</button>
+          </div>
+          <ol start="3" style="margin-top:12px;">
+            <li>저장 후 <code>index.html</code>을 브라우저로 실행</li>
+            <li>상단 칩에 <b>"구글시트 연동됨"</b> 표시를 확인하면 완벽 성공! 🎉</li>
+          </ol>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer-bar">
+      <p>동대문구청 6급 실무주사 AI 활용 보고서킷 구축 과정</p>
+      <button class="reset-link" onclick="resetItems()">체크리스트 상태 리셋</button>
+      <div class="brand-footer-text">
+        <a href="https://www.crmc.co.kr" target="_blank" rel="noopener" class="brand-footer-link">© CHEONGRAM M&C. All Rights Reserved.</a>
+        <span style="opacity:0.4;">>>></span>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Toast Feed -->
+  <div class="toast" id="toast">복사 완료! (✓)</div>
+
+  <script>
+    var TOTAL_ITEMS = 4;
+    var state = [false, false, false, false];
+
+    function loadState() {
+      try {
+        var saved = localStorage.getItem('cheongram_lab_guide_state');
+        if (saved) state = JSON.parse(saved);
+      } catch (e) { }
+      render();
+    }
+
+    function toggleItem(num) {
+      var idx = num - 1;
+      state[idx] = !state[idx];
+      saveState();
+      render();
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem('cheongram_lab_guide_state', JSON.stringify(state));
+      } catch (e) { }
+    }
+
+    function resetItems() {
+      if (confirm('체크리스트 상태를 초기화하시겠습니까?')) {
+        state = [false, false, false, false];
+        saveState();
+        render();
+      }
+    }
+
+    function render() {
+      var doneCount = 0;
+      for (var i = 0; i < TOTAL_ITEMS; i++) {
+        var num = i + 1;
+        var el = document.getElementById('item' + num);
+        if (state[i]) {
+          el.classList.add('checked');
+          doneCount++;
+        } else {
+          el.classList.remove('checked');
+        }
+      }
+      var pct = Math.round((doneCount / TOTAL_ITEMS) * 100);
+      document.getElementById('progressFill').style.width = pct + '%';
+      document.getElementById('statusText').textContent = pct + '% Completed (' + doneCount + '/' + TOTAL_ITEMS + ')';
+    }
+
+    // ===== 1-Click 복사 기능 =====
+    function copyPromptText(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(showToast);
+      } else {
+        var textArea = document.createElement('textarea');
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try { document.execCommand('copy'); showToast(); } catch (err) {}
+        document.body.removeChild(textArea);
+      }
+    }
+
+    function showToast() {
+      var toast = document.getElementById('toast');
+      toast.classList.add('show');
+      setTimeout(function() {
+        toast.classList.remove('show');
+      }, 2000);
+    }
+
+    // ===== 실습 카운트다운 타이머 (10분) =====
+    var timeLeft = 600; // 10분
+    var timerInterval = null;
+
+    function updateTimerDisplay() {
+      var mins = Math.floor(timeLeft / 60);
+      var secs = timeLeft % 60;
+      document.getElementById('timerDisplay').textContent = 
+        (mins < 10 ? '0' + mins : mins) + ':' + (secs < 10 ? '0' + secs : secs);
+    }
+
+    function toggleTimer() {
+      var btn = document.getElementById('startTimerBtn');
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        btn.textContent = '일시정지됨';
+      } else {
+        btn.textContent = '정지';
+        timerInterval = setInterval(function() {
+          if (timeLeft > 0) {
+            timeLeft--;
+            updateTimerDisplay();
+          } else {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            btn.textContent = '완료!';
+          }
+        }, 1000);
+      }
+    }
+
+    function resetTimer() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+      timeLeft = 600;
+      updateTimerDisplay();
+      document.getElementById('startTimerBtn').textContent = '시작';
+    }
+
+    loadState();
+
+    // ===== 황금색 픽셀 상승 백그라운드 시각효과 (Golden Rising Pixels) =====
+    (function initGoldenPixels() {
+      var canvas = document.getElementById('goldCanvas');
+      if (!canvas) return;
+      var ctx = canvas.getContext('2d');
+      var width = canvas.width = window.innerWidth;
+      var height = canvas.height = window.innerHeight;
+
+      window.addEventListener('resize', function () {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      });
+
+      var PARTICLE_COUNT = 55;
+      var particles = [];
+      var colors = [
+        'rgba(245, 158, 11, ',   // Amber Gold
+        'rgba(251, 191, 36, ',   // Bright Gold
+        'rgba(217, 119, 6, ',    // Deep Gold
+        'rgba(253, 224, 71, '    // Light Yellow Gold
+      ];
+
+      for (var i = 0; i < PARTICLE_COUNT; i++) {
+        particles.push(createParticle(true));
+      }
+
+      function createParticle(randomY) {
+        return {
+          x: Math.random() * width,
+          y: randomY ? Math.random() * height : height + 15,
+          size: Math.random() * 2.8 + 1.2,
+          vy: -(Math.random() * 0.65 + 0.25),
+          vx: (Math.random() - 0.5) * 0.25,
+          alpha: Math.random() * 0.65 + 0.2,
+          colorPrefix: colors[Math.floor(Math.random() * colors.length)],
+          swingSpeed: Math.random() * 0.02 + 0.01,
+          swingAngle: Math.random() * Math.PI * 2
+        };
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, width, height);
+
+        for (var i = 0; i < particles.length; i++) {
+          var p = particles[i];
+          p.y += p.vy;
+          p.swingAngle += p.swingSpeed;
+          p.x += Math.sin(p.swingAngle) * 0.35 + p.vx;
+
+          if (p.y < -20) {
+            particles[i] = createParticle(false);
+          }
+
+          ctx.fillStyle = p.colorPrefix + p.alpha + ')';
+          ctx.shadowBlur = 8;
+          ctx.shadowColor = 'rgba(245, 158, 11, 0.7)';
+          ctx.fillRect(p.x, p.y, p.size, p.size);
+        }
+
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+    })();
+  </script>
+</body>
+
+</html>
