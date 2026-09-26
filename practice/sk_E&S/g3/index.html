@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI, 개인의 역량인가 팀의 자산인가</title>
+<style>
+  :root{
+    --accent:#1652D8;
+    --accent-dark:#0F3DA6;
+    --accent-light:#E8EEFC;
+    --ink:#1A2233;
+    --sub:#5B6472;
+    --line:#D9DEE7;
+    --bg:#F4F6FA;
+    --white:#FFFFFF;
+    --warn:#C0392B;
+    --good:#1E8E5A;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; padding:24px; background:var(--bg);
+    font-family:"Noto Sans KR","Malgun Gothic",sans-serif;
+    color:var(--ink); line-height:1.6;
+  }
+  .toolbar{ position:fixed; top:16px; right:16px; z-index:100; }
+  .toolbar button{
+    background:var(--accent); color:#fff; border:none; border-radius:8px;
+    padding:10px 16px; font-size:14px; font-weight:700; cursor:pointer;
+    box-shadow:0 4px 12px rgba(0,0,0,.18);
+  }
+  .toolbar button:hover{ background:var(--accent-dark); }
+
+  .page{
+    width:210mm; min-height:297mm; margin:0 auto 24px; padding:16mm;
+    background:var(--white); box-shadow:0 2px 16px rgba(0,0,0,.10);
+    position:relative;
+  }
+
+  .banner{
+    background:var(--accent); color:#fff; padding:22px 26px; border-radius:10px 10px 0 0;
+    display:flex; flex-direction:column; gap:4px; margin-bottom:20px;
+  }
+  .banner .kicker{ font-size:13px; letter-spacing:2px; opacity:.85; font-weight:700; }
+  .banner h1{ margin:0; font-size:24px; font-weight:800; }
+  .banner .subtitle{ font-size:14px; opacity:.9; }
+
+  .section-title{
+    font-size:15px; font-weight:800; color:var(--accent);
+    border-bottom:2px solid var(--accent); padding-bottom:6px; margin:22px 0 10px;
+  }
+  .role-narrative p{ margin:0 0 10px; font-size:14px; }
+  .role-narrative b{ color:var(--accent-dark); }
+
+  .cast-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin:12px 0; }
+  .cast-card{ border:1px solid var(--line); border-radius:10px; padding:12px; display:flex; gap:10px; align-items:flex-start; }
+  .cast-card svg{ width:46px; height:46px; flex-shrink:0; }
+  .cast-card .name{ font-weight:800; font-size:14px; }
+  .cast-card .role{ font-size:12px; color:var(--sub); margin:2px 0; }
+  .cast-card .note{ font-size:12px; color:var(--ink); background:var(--accent-light); border-radius:6px; padding:2px 6px; display:inline-block; margin-top:4px;}
+
+  .mailbox{ border:1px solid var(--line); border-radius:10px; overflow:hidden; margin:12px 0; }
+  .mailbox .mailhead{ background:var(--accent-light); font-weight:800; font-size:13px; padding:8px 14px; color:var(--accent-dark); }
+  .mailbox table{ width:100%; border-collapse:collapse; }
+  .mailbox td{ padding:8px 14px; font-size:13px; border-top:1px solid var(--line); vertical-align:top; }
+  .mailbox td.label{ width:90px; color:var(--sub); font-weight:700; background:#FAFBFD; }
+  .mailbox .body{ padding:14px; font-size:13.5px; border-top:1px solid var(--line); white-space:pre-line; }
+
+  table.data{ width:100%; border-collapse:collapse; margin:10px 0 16px; font-size:12.5px; }
+  table.data th{ background:var(--accent); color:#fff; padding:8px; text-align:left; }
+  table.data td{ padding:7px 8px; border-bottom:1px solid var(--line); }
+  table.data tr:nth-child(even) td{ background:#FAFBFD; }
+  .grade-hi{ color:var(--good); font-weight:700; }
+  .grade-lo{ color:var(--warn); font-weight:700; }
+
+  .chart-wrap{ margin:12px 0 18px; }
+  .chart-wrap .chart-title{ font-size:12.5px; font-weight:700; color:var(--sub); margin-bottom:4px; }
+  .chart-note{ font-size:11px; color:var(--sub); margin-top:2px; }
+  .bar-label{ font-size:11px; fill:var(--sub); }
+  .bar-value{ font-size:11px; fill:var(--ink); font-weight:700; }
+
+  .clip-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:10px 0; }
+  .clip-card{ border:1px solid var(--line); border-radius:8px; padding:10px 12px; }
+  .clip-card .country{ font-weight:800; font-size:12.5px; color:var(--accent-dark); margin-bottom:4px; }
+  .clip-card ul{ margin:0; padding-left:16px; font-size:11.5px; color:var(--ink); }
+  .clip-card li{ margin-bottom:2px; }
+
+  .dialogue{ display:flex; gap:10px; margin:14px 0; align-items:flex-start; }
+  .dialogue svg{ width:40px; height:40px; flex-shrink:0; }
+  .dialogue .bubble{ position:relative; background:var(--accent-light); border-radius:0 12px 12px 12px; padding:12px 14px; font-size:13px; max-width:100%; }
+  .dialogue .speaker{ font-weight:800; font-size:12.5px; color:var(--accent-dark); margin-bottom:4px; }
+
+  .ft-note{ background:#FFF7E6; border:1px solid #F0D28A; border-radius:8px; padding:10px 14px; font-size:12.5px; margin:10px 0; }
+  .info-box{ background:var(--accent-light); border:1px solid #C7D3F2; border-radius:8px; padding:10px 14px; font-size:12.5px; margin:10px 0; }
+  .info-box ul{ margin:6px 0 0; padding-left:18px; }
+  .info-box li{ margin-bottom:2px; }
+
+  .page-footer{ position:absolute; bottom:10mm; right:16mm; font-size:10px; color:var(--sub); }
+
+  @media print{
+    body{ background:#fff; padding:0; }
+    .toolbar{ display:none; }
+    .page{ box-shadow:none; margin:0; width:auto; min-height:auto; page-break-after:always; }
+    .page:last-child{ page-break-after:auto; }
+  }
+  @page{ size:A4; margin:0; }
+</style>
+</head>
+<body>
+
+<div class="toolbar"><button onclick="window.print()">🖨 인쇄 / PDF로 저장</button></div>
+
+<!-- ══════════════════ PAGE 1 ══════════════════ -->
+<div class="page">
+  <div class="banner">
+    <span class="kicker">CASE STUDY · G3 중점육성그룹교육</span>
+    <h1>AI, 개인의 역량인가 팀의 자산인가</h1>
+    <span class="subtitle">영남에너지서비스 고객지원팀, 신기술 수용의 다음 장면을 그리다</span>
+  </div>
+
+  <div class="role-narrative">
+    <p>귀하의 역할은 <b>영남에너지서비스(포항) 고객지원팀 사원 최지훈</b>입니다. 입사 3년차입니다.</p>
+    <p>영남에너지서비스는 SK이노베이션 계열의 도시가스 공급사로, 임직원 약 100명 규모입니다. 도시가스 공급, 가스기기 제조·판매·설비시공을 주력 사업으로 하며, 전반적으로 장기근속자가 많은 안정적인 조직문화를 갖고 있습니다.</p>
+    <div class="info-box">
+      <b>사내 AI 활용 환경</b> — 업무는 내부 클라우드 안에서 이뤄지며, 사내 AI 게이트웨이를 통해 GPT-5.4·Claude-4.6·Gemini 3.1 등 여러 모델을 자유롭게 골라 쓸 수 있습니다(파일 업로드·화면 캡처 가능). 다만 화면에는 늘 이런 안내문이 떠 있습니다.
+      <ul>
+        <li>법령(개인정보보호법 등)에 의해 보호받는 정보 입력 금지</li>
+        <li>AI 답변의 부정확성·저작권 위반 가능성 — 사전 검증 필수</li>
+        <li>내부 자료를 외부로 반출하려면 팀장 승인 필요</li>
+      </ul>
+      도구는 활짝 열려 있지만, 이를 얼마나·어떻게 쓰는지는 여전히 개인과 팀마다 편차가 큽니다.
+    </div>
+    <p>귀하는 최근 몇 달간 AI를 활용해 민원 응대 스크립트를 빠르게 작성하면서 처리시간을 눈에 띄게 줄였습니다. 성과는 분명한데, 그만큼 고민도 커졌습니다. 이 노하우를 팀에 알려야 할지, 알린다면 어디까지 알려야 할지 스스로 정리되지 않은 채로, 박은정 팀장으로부터 다음 주 팀회의에서 이 사례를 공유해달라는 메일을 받았습니다.</p>
+    <p><b>귀하는 다음 주 팀회의에서 이 노하우를 어떻게 공유하시겠습니까? 그리고 이 선택이 만들어낼 '다음 장면'은 어떤 모습이길 기대하십니까?</b></p>
+  </div>
+
+  <div class="section-title">등장인물</div>
+  <div class="cast-grid">
+    <div class="cast-card">
+      <svg><use href="#avatar-m-jr"/></svg>
+      <div>
+        <div class="name">최지훈 사원 (학습자 역할)</div>
+        <div class="role">고객지원팀, 경력 3년</div>
+        <span class="note">AI 활용으로 성과는 냈지만 공유 여부·수준을 고민 중</span>
+      </div>
+    </div>
+    <div class="cast-card">
+      <svg><use href="#avatar-f-mid"/></svg>
+      <div>
+        <div class="name">박은정 팀장</div>
+        <div class="role">고객지원팀, 경력 15년 (현부서 6년)</div>
+        <span class="note">AI 결과물 검증이 조심스럽고, 사내·외부 AI 결과 차이에도 혼란</span>
+      </div>
+    </div>
+    <div class="cast-card">
+      <svg><use href="#avatar-f-jr"/></svg>
+      <div>
+        <div class="name">정수아 대리</div>
+        <div class="role">고객지원팀, 경력 4년</div>
+        <span class="note">뒤처지는 느낌은 있지만 물어보기 민망해 기존 방식 고수</span>
+      </div>
+    </div>
+    <div class="cast-card">
+      <svg><use href="#avatar-m-sr"/></svg>
+      <div>
+        <div class="name">최영도 선임</div>
+        <div class="role">고객지원팀, 경력 17년</div>
+        <span class="note">후배들의 AI 활용 결과물을 보며 묘한 긴장을 느낌</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">받은메일함</div>
+  <div class="mailbox">
+    <div class="mailhead">✉ 새 메일</div>
+    <table>
+      <tr><td class="label">보낸사람</td><td>박은정 팀장 (고객지원팀)</td></tr>
+      <tr><td class="label">받는사람</td><td>최지훈 사원</td></tr>
+      <tr><td class="label">제목</td><td>다음 주 팀회의 - AI 활용 사례 공유 요청</td></tr>
+    </table>
+    <div class="body">지훈 님, 요즘 민원 처리 속도가 눈에 띄게 빨라졌다고 들었습니다. AI를 활용해서 스크립트를 작성한다고 들었는데, 다른 팀원들도 참고할 수 있게 다음 주 화요일 팀회의 때 10분 정도 공유해줄 수 있을까요?
+
+거창하게 준비할 필요는 없습니다. 다만 어떤 방식으로 활용했는지, 그리고 결과물을 그대로 쓰는지 아니면 검토·수정을 거치는지 정도는 팀원들이 궁금해할 것 같습니다. 저도 요즘 AI 결과물을 어디까지 믿어야 할지 판단이 잘 안 서서, 이번 기회에 팀 전체가 같이 고민해보면 좋겠습니다.
+
+편한 형식으로 준비해주세요. 화요일에 뵙겠습니다.
+
+박은정 드림</div>
+  </div>
+
+  <div class="section-title">영남에너지서비스 사업 개요</div>
+  <table class="data">
+    <tr><th>사업분야</th><th>사업개요</th><th>역량수준</th><th>운영경험</th></tr>
+    <tr><td>도시가스 공급</td><td>포항 권역 가정·산업체 대상 도시가스 배관공급</td><td class="grade-hi">매우우수</td><td class="grade-hi">매우우수(장기운영)</td></tr>
+    <tr><td>가스기기·설비시공</td><td>가스보일러 등 가스기기 판매 및 설비 시공</td><td>보통</td><td>우수</td></tr>
+  </table>
+  <div class="page-footer">1 / 4</div>
+</div>
+
+<!-- ══════════════════ PAGE 2 ══════════════════ -->
+<div class="page">
+  <div class="banner">
+    <span class="kicker">CASE STUDY</span>
+    <h1 style="font-size:20px;">신기술 도입, 우리 업계와 우리 조직은 지금 어디쯤인가</h1>
+  </div>
+
+  <div class="section-title">업계 동향 비교 (가상 자료)</div>
+  <table class="data">
+    <tr><th>비교 대상</th><th>AI 도구 도입률</th><th>도입 후 개인 활용에 머무는 비율</th></tr>
+    <tr><td>국내 에너지·유틸리티 업계 평균</td><td>61%</td><td>68%</td></tr>
+    <tr><td>영남에너지서비스 (추정)</td><td>58%</td><td>72%</td></tr>
+  </table>
+
+  <div class="chart-wrap">
+    <div class="chart-title">민원 1건당 평균 처리시간 비교 (분)</div>
+    <svg viewBox="0 0 420 150" width="100%" height="150">
+      <rect x="60"  y="68" width="40" height="62" fill="var(--accent)"/>
+      <text x="80" y="64" text-anchor="middle" class="bar-value">8분</text>
+      <text x="80" y="146" text-anchor="middle" class="bar-label">최지훈(AI 활용)</text>
+
+      <rect x="180" y="30" width="40" height="100" fill="#C7D3F2"/>
+      <text x="200" y="26" text-anchor="middle" class="bar-value">13분</text>
+      <text x="200" y="146" text-anchor="middle" class="bar-label">팀 평균</text>
+
+      <rect x="300" y="53" width="40" height="77" fill="#8FA8E8"/>
+      <text x="320" y="49" text-anchor="middle" class="bar-value">10분</text>
+      <text x="320" y="146" text-anchor="middle" class="bar-label">팀 목표</text>
+    </svg>
+    <div class="chart-note">※ 가상 자료 — 실제 통계 아님</div>
+  </div>
+
+  <div class="section-title">관련 기사 클립 (가상 헤드라인)</div>
+  <div class="clip-grid">
+    <div class="clip-card">
+      <div class="country">① 국내 에너지업계</div>
+      <ul>
+        <li>'도시가스 공급사, AI 민원분석 도입 후 처리시간 20% 단축'</li>
+        <li>'에너지업계 AI 활용, 부서 간 온도차는 여전히 숙제'</li>
+      </ul>
+    </div>
+    <div class="clip-card">
+      <div class="country">② 타 산업</div>
+      <ul>
+        <li>'제조 현장, "AI 잘 쓰는 사람만 잘 쓴다"는 딜레마'</li>
+        <li>'금융권, AI 노하우 공유에 인센티브 제도 확산'</li>
+      </ul>
+    </div>
+  </div>
+  <div class="page-footer">2 / 4</div>
+</div>
+
+<!-- ══════════════════ PAGE 3 ══════════════════ -->
+<div class="page">
+  <div class="section-title">고객지원팀 구성원 현황</div>
+  <table class="data">
+    <tr><th>성명</th><th>근속년수</th><th>담당업무</th><th>업무량</th><th>특징</th></tr>
+    <tr><td>최지훈 사원</td><td>3년</td><td>민원 응대</td><td>중</td><td>AI 활용으로 처리속도 개선</td></tr>
+    <tr><td>박은정 팀장</td><td>15년</td><td>팀 총괄</td><td>상</td><td>AI 결과물 검증 기준에 대한 확신 부족</td></tr>
+    <tr><td>정수아 대리</td><td>4년</td><td>민원 응대</td><td>상</td><td>기존 방식 고수, AI 문의를 주저함</td></tr>
+    <tr><td>최영도 선임</td><td>17년</td><td>민원 응대·현장 연계</td><td>중</td><td>후배들의 AI 활용을 지켜보며 복잡한 심정</td></tr>
+  </table>
+
+  <div class="chart-wrap">
+    <div class="chart-title">조직문화 진단 결과 (5점 만점, 고객지원팀 vs 전사평균)</div>
+    <svg viewBox="0 0 420 150" width="100%" height="150">
+      <rect x="20"  y="38" width="28" height="92" fill="var(--accent)"/>
+      <text x="34" y="34" text-anchor="middle" class="bar-value">4.6</text>
+      <rect x="52"  y="42" width="28" height="88" fill="#C7D3F2"/>
+      <text x="66" y="38" text-anchor="middle" class="bar-value">4.4</text>
+      <text x="50" y="146" text-anchor="middle" class="bar-label">안정성</text>
+
+      <rect x="130" y="40" width="28" height="90" fill="var(--accent)"/>
+      <text x="144" y="36" text-anchor="middle" class="bar-value">4.5</text>
+      <rect x="162" y="48" width="28" height="82" fill="#C7D3F2"/>
+      <text x="176" y="44" text-anchor="middle" class="bar-value">4.1</text>
+      <text x="160" y="146" text-anchor="middle" class="bar-label">관계친밀도</text>
+
+      <rect x="240" y="82" width="28" height="48" fill="var(--accent)"/>
+      <text x="254" y="78" text-anchor="middle" class="bar-value">2.4</text>
+      <rect x="272" y="64" width="28" height="66" fill="#C7D3F2"/>
+      <text x="286" y="60" text-anchor="middle" class="bar-value">3.3</text>
+      <text x="270" y="146" text-anchor="middle" class="bar-label">지식공유</text>
+    </svg>
+    <div class="chart-note">■ 고객지원팀 &nbsp; ▢ 전사평균 &nbsp;·&nbsp; 가상 자료 — 실제 통계 아님. 안정성·관계친밀도는 전사평균보다 높으나, 지식공유는 오히려 낮은 편임.</div>
+  </div>
+
+  <div class="section-title">이해관계자 발언</div>
+
+  <div class="dialogue">
+    <svg><use href="#avatar-f-mid"/></svg>
+    <div>
+      <div class="bubble">
+        <div class="speaker">박은정 팀장</div>
+        솔직히 요즘 후배들이 AI로 만든 결과물을 가져오면 마음이 복잡해요. "이거 AI가 만든 건데 어떻게 검증했어?"라고 물어보고 싶은데, 그러면 제가 후배를 못 믿는 것처럼 보일까 봐 조심스럽습니다. 게이트웨이에 모델이 여러 개 있잖아요, GPT랑 Claude랑 Gemini 결과가 서로 다르게 나올 때도 있는데 뭘 기준으로 믿어야 할지도 잘 모르겠고요. 그리고 화면에 늘 뜨는 "보호정보 입력 금지" 안내, 그거 보면서도 민원 내용엔 고객 이름이나 연락처가 들어갈 때가 많아서 마음에 걸립니다. 팀장이니까 뭔가 기준을 세워줘야 할 것 같은데, 저부터가 헷갈리는 상황입니다.
+      </div>
+    </div>
+  </div>
+
+  <div class="dialogue">
+    <svg><use href="#avatar-f-jr"/></svg>
+    <div>
+      <div class="bubble">
+        <div class="speaker">정수아 대리</div>
+        지훈 씨가 AI로 빠르게 처리하는 걸 보면 저만 뒤처지는 것 같아서 조바심이 나요. 근데 이제 와서 "AI 어떻게 쓰는 거야?"라고 물어보기도 민망하잖아요. 4년차나 됐는데 그런 것도 모르냐는 소리 들을까 봐요. 그래서 그냥 혼자 끙끙대다가 예전 방식대로 처리하고 마는데, 이게 맞는 건지 아닌지도 사실 잘 모르겠어요.
+      </div>
+    </div>
+  </div>
+
+  <div class="dialogue">
+    <svg><use href="#avatar-m-sr"/></svg>
+    <div>
+      <div class="bubble">
+        <div class="speaker">최영도 선임</div>
+        후배들이 AI로 뚝딱 결과물을 만들어내는 걸 보면 솔직히 마음이 편하지만은 않습니다. 제가 17년 걸려 몸으로 익힌 감각을, 후배들은 툴 하나로 훌쩍 넘어서는 건가 싶어서요. 나쁘게 보려는 건 아닌데, 저도 모르게 자꾸 긴장하게 됩니다. 이게 저만 겪는 감정인지, 다들 비슷한지도 궁금하고요.
+      </div>
+    </div>
+  </div>
+  <div class="page-footer">3 / 4</div>
+</div>
+
+<!-- ══════════════════ PAGE 4 ══════════════════ -->
+<div class="page">
+  <div class="section-title">토의 질문</div>
+  <ol>
+    <li>최지훈이 느끼는 부담("나만 편해지는 것 아닌가")은 어디에서 비롯되는가? 이것이 반드시 지훈 혼자 짊어져야 할 문제인가?</li>
+    <li>박은정 팀장이 AI 결과물을 검증하려는 것과, 후배를 믿지 못하는 것은 어떻게 다른가?</li>
+    <li>정수아 대리의 "물어보기 민망함"과 최영도 선임의 "긴장", 서로 다른 감정처럼 보이지만 어떤 공통점이 있을까?</li>
+    <li>네 사람 각자의 '다음 장면'을 그려본다면, 그 변화는 저절로 오는가, 아니면 누군가 '이렇게 읽고 이렇게 선택하겠다'고 정하는 순간부터 시작되는가?</li>
+    <li>사내 게이트웨이 화면에 항상 떠 있는 "보호정보 입력 금지·사전 검증 필수" 안내는 왜 있는 걸까? 이걸 형식적으로 지나치지 않고 습관으로 만들려면 무엇이 필요할까?</li>
+  </ol>
+  <div class="page-footer">4 / 4</div>
+</div>
+
+<!-- ══════════════════ 아바타 심볼 라이브러리 ══════════════════ -->
+<svg width="0" height="0" style="position:absolute">
+<defs>
+  <symbol id="avatar-f-jr" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="48" fill="#E8EEFC"/>
+    <path d="M50 30a14 14 0 100 28 14 14 0 000-28z" fill="#8FA8E8"/>
+    <path d="M50 28c-9 0-15 6-16 14-1 4 1 6 3 7 1-8 5-12 13-12s12 4 13 12c2-1 4-3 3-7-1-8-7-14-16-14z" fill="#3B4A6B"/>
+    <path d="M26 92c3-16 12-24 24-24s21 8 24 24z" fill="#1652D8"/>
+  </symbol>
+  <symbol id="avatar-f-mid" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="48" fill="#E8EEFC"/>
+    <path d="M50 30a14 14 0 100 28 14 14 0 000-28z" fill="#8FA8E8"/>
+    <path d="M48 27c-10 1-17 8-17 17 0 3 1 5 2 6 1-9 6-14 15-15 9 1 14 6 15 15 1-1 2-3 2-6 0-9-7-16-17-17z" fill="#2B2B2B"/>
+    <path d="M26 92c3-16 12-24 24-24s21 8 24 24z" fill="#0F3DA6"/>
+  </symbol>
+  <symbol id="avatar-f-sr" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="48" fill="#E8EEFC"/>
+    <path d="M50 30a14 14 0 100 28 14 14 0 000-28z" fill="#B9C4D8"/>
+    <path d="M50 28c-8 0-14 5-15 12 1 1 3 2 5 1 3-1 6-2 10-2s7 1 10 2c2 1 4 0 5-1-1-7-7-12-15-12z" fill="#AAB2BE"/>
+    <path d="M26 92c3-16 12-24 24-24s21 8 24 24z" fill="#5B6472"/>
+  </symbol>
+  <symbol id="avatar-m-jr" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="48" fill="#E8EEFC"/>
+    <path d="M50 30a14 14 0 100 28 14 14 0 000-28z" fill="#F0C39E"/>
+    <path d="M35 33c4-5 10-7 15-7s11 2 15 7c-1 3-3 4-5 4-3-3-6-4-10-4s-7 1-10 4c-2 0-4-1-5-4z" fill="#3B2A1E"/>
+    <path d="M24 92c4-17 13-25 26-25s22 8 26 25z" fill="#1652D8"/>
+  </symbol>
+  <symbol id="avatar-m-mid" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="48" fill="#E8EEFC"/>
+    <path d="M50 30a14 14 0 100 28 14 14 0 000-28z" fill="#E3B58C"/>
+    <path d="M36 32c4-4 9-6 14-6s10 2 14 6c0 2-1 4-3 4-3-2-7-3-11-3s-8 1-11 3c-2 0-3-2-3-4z" fill="#2B2B2B"/>
+    <path d="M24 92c4-17 13-25 26-25s22 8 26 25z" fill="#0F3DA6"/>
+    <rect x="44" y="70" width="12" height="10" fill="#D9DEE7"/>
+  </symbol>
+  <symbol id="avatar-m-sr" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="48" fill="#E8EEFC"/>
+    <path d="M50 30a14 14 0 100 28 14 14 0 000-28z" fill="#D8B08A"/>
+    <path d="M37 33c4-3 8-4 13-4s9 1 13 4c0 1-1 3-2 3-4-2-6-2-11-2s-7 0-11 2c-1 0-2-2-2-3z" fill="#AAB2BE"/>
+    <path d="M24 92c4-17 13-25 26-25s22 8 26 25z" fill="#3B4A6B"/>
+  </symbol>
+</defs>
+</svg>
+
+</body>
+</html>
