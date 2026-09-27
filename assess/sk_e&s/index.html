@@ -1,1 +1,680 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AI 개인역량 진단 | 청람M&amp;C</title>
+<meta name="description" content="6개 영역 18문항으로 나의 AI 활용 역량을 진단하고 결과 리포트를 받아보세요.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧭</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#1652D8; --accent-2:#0F3D99; --text:#1A1A1A; --sub:#666666;
+    --light:#EEF3FD; --border:#D0D9F5; --bg:#F6F8FD; --white:#FFFFFF;
+    --font:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:var(--font); background:var(--bg); color:var(--text);
+    line-height:1.6; letter-spacing:-0.01em; -webkit-font-smoothing:antialiased; word-break:keep-all; overflow-wrap:break-word;
+    padding-bottom:env(safe-area-inset-bottom,0px); min-height:100vh;
+  }
+  button,input,textarea{font-family:inherit;font-size:inherit;color:inherit}
+  a{color:inherit}
+  .wrap{max-width:720px;margin:0 auto;padding:0 20px}
 
+  /* ===== Hero ===== */
+  .cr-hero-blue{
+    --hero-text:#FFFFFF; --hero-text-soft:rgba(255,255,255,0.86); --hero-border:rgba(255,255,255,0.4);
+    background:linear-gradient(135deg,var(--accent) 0%,var(--accent-2) 100%);
+    color:var(--hero-text); position:relative; overflow:hidden;
+    padding:calc(44px + env(safe-area-inset-top,0px)) 0 96px;
+  }
+  .dot-grid{position:absolute;inset:0;pointer-events:none;opacity:.12;
+    background-image:radial-gradient(circle,#fff 1px,transparent 1px);background-size:22px 22px;
+    -webkit-mask-image:linear-gradient(90deg,transparent 55%,#000);mask-image:linear-gradient(90deg,transparent 55%,#000)}
+  .hero .brand{font-size:.85rem;font-weight:700;color:var(--hero-text-soft);text-decoration:none;letter-spacing:.02em}
+  .hero .eyebrow{display:inline-block;margin-top:18px;font-size:.78rem;font-weight:700;letter-spacing:.06em;
+    padding:6px 12px;border-radius:999px;color:var(--hero-text);border:1px solid var(--hero-border);background:rgba(255,255,255,.08)}
+  .hero h1{color:var(--hero-text);font-size:clamp(1.7rem,6.2vw,2.5rem);font-weight:800;line-height:1.3;letter-spacing:-.03em;margin:16px 0 12px}
+  .hero .lead{color:var(--hero-text-soft);font-size:1rem;max-width:560px}
+  .course-chip{display:inline-block;margin-top:18px;font-size:.85rem;font-weight:500;color:var(--hero-text);
+    background:rgba(255,255,255,.14);border:1px solid var(--hero-border);border-radius:8px;padding:6px 12px}
+
+  /* ===== Cards & form ===== */
+  .card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:24px;box-shadow:0 10px 28px rgba(22,82,216,.07)}
+  .pull-up{margin-top:-60px;position:relative;z-index:2}
+  .field{margin-bottom:16px}
+  .field label{display:block;font-weight:700;font-size:.92rem;margin-bottom:6px}
+  .field input{width:100%;height:50px;border:1.5px solid var(--border);border-radius:10px;padding:0 14px;background:#fff;font-size:1rem}
+  .field input:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(22,82,216,.15)}
+  .meta{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:6px 0 18px}
+  .meta div{background:var(--light);border-radius:10px;padding:10px 6px;text-align:center}
+  .meta b{display:block;color:var(--accent);font-size:1.15rem;font-weight:800;line-height:1.2}
+  .meta span{font-size:.78rem;color:var(--sub)}
+  .note{font-size:.8rem;color:var(--sub);margin-top:12px;text-align:center}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:52px;padding:0 22px;border-radius:12px;
+    border:1.5px solid transparent;font-weight:700;font-size:1rem;cursor:pointer;transition:all .15s;width:100%}
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-primary:hover:not(:disabled){background:var(--accent-2)}
+  .btn-outline{background:#fff;color:var(--accent);border-color:var(--border)}
+  .btn-outline:hover{background:var(--light)}
+  .btn:disabled{opacity:.38;cursor:not-allowed}
+
+  /* ===== Survey ===== */
+  .topbar{position:sticky;top:0;z-index:20;background:var(--accent);color:#fff;padding:calc(12px + env(safe-area-inset-top,0px)) 0 12px}
+  .topbar .row{display:flex;justify-content:space-between;align-items:center;font-size:.85rem;font-weight:700}
+  .topbar .row span:last-child{opacity:.85;font-weight:500}
+  .progress{height:6px;background:rgba(255,255,255,.25);border-radius:99px;margin-top:8px;overflow:hidden}
+  .progress i{display:block;height:100%;background:#fff;border-radius:99px;transition:width .3s}
+  .section-head{padding:28px 0 16px}
+  .section-head .tag{display:inline-block;background:var(--light);color:var(--accent);font-weight:800;font-size:.8rem;padding:4px 10px;border-radius:6px}
+  .section-head h2{font-size:1.45rem;font-weight:800;letter-spacing:-.02em;margin-top:10px;display:inline-block;border-bottom:2px solid var(--accent);padding-bottom:4px}
+  .section-head p{color:var(--sub);font-size:.92rem;margin-top:8px}
+  .q{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px;transition:border-color .2s}
+  .q.answered{border-color:rgba(22,82,216,.45)}
+  .q-num{font-weight:800;color:var(--accent);font-size:.82rem}
+  .q-text{font-weight:500;margin:4px 0 14px;font-size:1rem;word-break:keep-all}
+  .scale{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  .scale button{height:48px;border:1.5px solid var(--border);background:var(--light);color:var(--accent);
+    border-radius:10px;font-weight:800;font-size:1.05rem;cursor:pointer;transition:all .12s}
+  .scale button:hover{border-color:var(--accent)}
+  .scale button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff;transform:translateY(-1px)}
+  .scale-ends{display:flex;justify-content:space-between;font-size:.74rem;color:var(--sub);margin-top:6px}
+  .nav{display:grid;grid-template-columns:1fr 2fr;gap:10px;margin:22px 0 12px}
+  .hint{font-size:.82rem;color:var(--sub);text-align:center;margin-bottom:36px;min-height:1.2em}
+  textarea{width:100%;min-height:110px;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;resize:vertical;line-height:1.6;font-size:1rem;background:#fff}
+  .optional{font-weight:500;color:var(--sub);font-size:.8rem;margin-left:4px}
+
+  /* ===== Result ===== */
+  .result-hero{padding-bottom:88px}
+  .result-hero h1{font-size:clamp(1.5rem,5.4vw,2.1rem)}
+  .who{margin-top:6px;color:var(--hero-text-soft);font-size:.95rem}
+  .score-card{display:grid;grid-template-columns:1fr 1.3fr;gap:18px;align-items:center}
+  .score-big{font-size:3.4rem;font-weight:800;color:var(--accent);line-height:1}
+  .score-big small{font-size:1.1rem;color:var(--sub);font-weight:700;margin-left:4px}
+  .score-avg{font-size:.88rem;color:var(--sub);margin-top:8px}
+  .label-s{font-size:.8rem;color:var(--sub);font-weight:700;margin-bottom:6px}
+  .level-name{font-size:1.6rem;font-weight:800;line-height:1.2}
+  .level-en{color:var(--accent);font-weight:700;font-size:.85rem}
+  .level-desc{font-size:.9rem;color:#333;margin-top:6px;word-break:keep-all}
+  .block{margin-top:18px}
+  .block h3{font-size:1.1rem;font-weight:800;display:inline-block;border-bottom:2px solid var(--accent);padding-bottom:3px;margin-bottom:14px}
+  .radar-wrap{display:flex;justify-content:center}
+  .radar-wrap svg{width:100%;max-width:480px;height:auto}
+  .bar-row{display:grid;grid-template-columns:110px 1fr 44px;gap:10px;align-items:center;margin:10px 0}
+  .bar-row .nm{font-weight:700;font-size:.9rem}
+  .bar-row .nm em{font-style:normal;color:var(--accent);margin-right:4px}
+  .bar-track{height:12px;background:var(--light);border-radius:99px;overflow:hidden}
+  .bar-track i{display:block;height:100%;background:var(--accent);border-radius:99px}
+  .bar-row .val{text-align:right;font-weight:800;color:var(--accent)}
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .pick{border:1px solid var(--border);border-top:5px solid var(--accent);border-radius:12px;padding:16px;background:#fff}
+  .pick.growth{border-top-color:var(--accent-2);background:var(--light)}
+  .pick .k{font-size:.78rem;font-weight:800;color:var(--accent);letter-spacing:.04em}
+  .pick.growth .k{color:var(--accent-2)}
+  .pick .t{font-size:1.15rem;font-weight:800;margin:4px 0 6px}
+  .pick p{font-size:.9rem;word-break:keep-all}
+  .open-a{background:var(--light);border-radius:10px;padding:12px 14px;margin-bottom:10px}
+  .open-a .qq{font-size:.8rem;color:var(--sub);font-weight:700}
+  .open-a .aa{font-size:.95rem;white-space:pre-wrap;word-break:keep-all;margin-top:2px}
+  .sq-list{list-style:none}
+  .sq-list li{position:relative;padding-left:18px;margin-bottom:10px;font-size:.95rem;word-break:keep-all}
+  .sq-list li::before{content:'';position:absolute;left:0;top:.62em;width:6px;height:6px;background:var(--accent)}
+  .actions{display:grid;gap:10px;margin:22px 0 8px}
+
+  /* ===== Footer ===== */
+  footer{padding:36px 20px 44px;text-align:center}
+  .footer-badge{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:.95rem;letter-spacing:.02em;color:var(--accent);
+    text-decoration:none;padding:10px 24px;border:1px solid var(--border);border-radius:999px;background:var(--light);transition:all .18s}
+  .footer-badge:hover{background:var(--accent);color:#fff;box-shadow:0 6px 16px rgba(22,82,216,.18);transform:translateY(-1px)}
+  .footer-badge-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+
+  /* ===== Modal ===== */
+  .modal{position:fixed;inset:0;z-index:100;background:rgba(15,15,15,.72);display:none;align-items:flex-start;justify-content:center;overflow-y:auto;
+    padding:calc(20px + env(safe-area-inset-top,0px)) 16px calc(20px + env(safe-area-inset-bottom,0px))}
+  .modal.open{display:flex}
+  .modal-box{background:#fff;border-radius:14px;max-width:560px;width:100%;padding:18px}
+  .modal-box h4{font-size:1.05rem;font-weight:800;margin-bottom:4px}
+  .modal-box p{font-size:.85rem;color:var(--sub);margin-bottom:12px}
+  .modal-box img{width:100%;border:1px solid var(--border);border-radius:8px;display:block}
+  .modal-box .actions{grid-template-columns:1fr 1fr;margin:14px 0 0}
+  .loading{color:#fff;font-weight:700;align-self:center}
+
+  @media (max-width:520px){
+    .score-card{grid-template-columns:1fr}
+    .duo{grid-template-columns:1fr}
+    .bar-row{grid-template-columns:96px 1fr 40px}
+    .card{padding:20px}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<footer>
+  <a class="footer-badge" href="https://www.crmc.co.kr" target="_blank" rel="noopener"><span class="footer-badge-dot"></span>청람M&amp;C</a>
+</footer>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="결과 이미지 저장">
+  <div class="modal-box" id="modalBox"></div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ================= 진단 콘텐츠 ================= */
+  var AREAS = [
+    { key:'A', name:'활용 습관', sub:'얼마나 자주, 넓게 쓰고 있는가',
+      items:[
+        '최근 한 달간 업무에 생성형 AI를 주 3회 이상 사용했다.',
+        '문서 작성 외에 정보 정리나 아이디어 도출 등 두 가지 이상의 용도로 AI를 써봤다.',
+        '업무 성격에 따라 GPT·Claude·Gemini 중 모델을 골라 써본 적이 있다.'
+      ],
+      strength:'일상 업무에 AI를 자연스럽게 끌어들이고 있습니다. 어떤 업무에 어떻게 쓰는지 동료에게 보여주는 것만으로도 좋은 자극이 됩니다.',
+      tip:'반복 업무 하나를 정해, 이번 주에는 매번 AI로 초안부터 시작해 보세요.' },
+    { key:'B', name:'지시 역량', sub:'원하는 결과를 얻도록 요청하고 있는가',
+      items:[
+        'AI에게 요청할 때 배경, 역할, 원하는 결과 형식을 함께 알려준다.',
+        '첫 답변이 마음에 들지 않으면 질문을 고쳐 두세 번 이상 다시 요청한다.',
+        '자주 쓰는 요청은 나만의 템플릿으로 저장해 다시 쓴다.'
+      ],
+      strength:'AI에게 맥락과 형식을 갖춰 요청하는 힘이 있습니다. 잘 된 프롬프트를 템플릿으로 모아 팀과 나눠 보세요.',
+      tip:'요청하기 전에 배경·역할·원하는 형식, 이 세 줄을 먼저 적는 습관을 들여 보세요.' },
+    { key:'C', name:'검증 역량', sub:'결과물을 믿기 전에 확인하고 있는가',
+      items:[
+        'AI 답변의 수치·법령·사실관계를 원문이나 사내 자료로 확인한 뒤 사용한다.',
+        'AI 결과물을 그대로 쓰지 않고 우리 회사 상황에 맞게 고쳐 쓴다.',
+        '"이 결과물, 어떻게 검증했어?"라는 질문을 받으면 구체적으로 답할 수 있다.'
+      ],
+      strength:'AI 결과물을 그대로 믿지 않고 확인하는 습관이 있습니다. 나만의 검증 포인트를 팀의 기준으로 제안해 보세요.',
+      tip:'결과물을 쓰기 전 수치·출처·우리 회사 맥락, 이 세 가지만 확인해 보세요.' },
+    { key:'D', name:'보안·책임', sub:'정보를 지키며 책임 있게 쓰고 있는가',
+      items:[
+        '고객 이름·연락처·주소 같은 개인정보를 지우거나 가린 뒤 AI에 입력한다.',
+        '사내 자료를 외부로 옮기거나 AI에 넣을 때의 사내 규정(승인 절차 등)을 알고 지킨다.',
+        '필요할 때는 AI로 만든 결과물이라는 사실을 동료나 상사에게 밝힌다.'
+      ],
+      strength:'정보 보호와 투명성에 대한 감각이 좋습니다. 팀에서 안전한 AI 활용의 기준점 역할을 할 수 있습니다.',
+      tip:'AI에 입력하기 전, "이름·연락처·주소가 들어 있나?" 한 번 멈춰 확인하세요.' },
+    { key:'E', name:'업무 재설계', sub:'일하는 방식 자체를 바꾸고 있는가',
+      items:[
+        'AI로 줄일 수 있는 내 반복 업무가 무엇인지 구체적으로 말할 수 있다.',
+        'AI 덕분에 생긴 시간을 더 가치 있는 일(응대 품질, 개선 과제 등)에 쓰고 있다.',
+        'AI를 활용해 기존 업무 순서나 방식을 실제로 바꿔본 적이 있다.'
+      ],
+      strength:'AI를 도구를 넘어 일하는 방식을 바꾸는 계기로 쓰고 있습니다. 바뀐 업무 흐름을 사례로 정리해 두면 좋은 자산이 됩니다.',
+      tip:'AI로 줄일 수 있는 반복 작업 하나를 적고, 아낀 시간을 어디에 쓸지 먼저 정해 보세요.' },
+    { key:'F', name:'공유·확산', sub:'나의 노하우가 팀의 자산이 되고 있는가',
+      items:[
+        '내가 알게 된 AI 활용 팁을 동료에게 공유한 적이 있다.',
+        'AI 사용법을 모를 때 동료에게 부담 없이 물어볼 수 있다.',
+        '우리 팀에는 AI 활용 노하우를 함께 쌓는 방식(공유 폴더, 회의 안건 등)이 있다.'
+      ],
+      strength:'나의 노하우를 팀과 나누는 데 열려 있습니다. 개인의 역량을 팀의 자산으로 바꾸는 연결자가 될 수 있습니다.',
+      tip:'이번 달 안에 나만의 AI 활용 팁 하나를 팀에 공유해 보세요.' }
+  ];
+  var OPEN_Q = [
+    'AI를 업무에 쓸 때 지금 가장 막히는 지점 한 가지는 무엇인가요?',
+    '동료에게 알려줄 수 있는 나만의 AI 활용 팁 한 가지를 적어주세요.'
+  ];
+  var LEVELS = [
+    { min:4.2, name:'확산형', en:'AI Multiplier', desc:'AI를 능숙하게 쓰는 데서 나아가, 팀의 활용 수준을 함께 끌어올릴 수 있는 단계입니다.' },
+    { min:3.4, name:'활용형', en:'AI Practitioner', desc:'AI를 업무 도구로 안정적으로 쓰고 있습니다. 검증과 공유를 더하면 한 단계 올라섭니다.' },
+    { min:2.6, name:'적응형', en:'AI Explorer', desc:'AI를 시도하며 감을 잡아가는 단계입니다. 반복 업무 하나부터 습관으로 만들어 보세요.' },
+    { min:0,   name:'입문형', en:'AI Starter', desc:'출발선에 선 단계입니다. 작은 업무 하나에 AI를 써보는 것만으로도 변화가 시작됩니다.' }
+  ];
+  var TOTAL_ITEMS = AREAS.length * 3;
+  var MAX_SCORE = TOTAL_ITEMS * 5;
+  var OPEN_STEP = AREAS.length + 1;
+  var RESULT_STEP = AREAS.length + 2;
+
+  /* ================= 과정 정보 (URL 파라미터) ================= */
+  var params = new URLSearchParams(location.search);
+  var ORG = (params.get('org') || '').trim();
+  var COURSE = (params.get('course') || '').trim();
+  var COURSE_LINE = [ORG, COURSE].filter(Boolean).join(' · ');
+  var STORE_KEY = 'crmc-ai-diag::' + COURSE_LINE;
+
+  /* ================= 상태 ================= */
+  function blank(){ return { name:'', dept:'', answers:{}, open:['',''], step:0, date:'' }; }
+  var state = load() || blank();
+  function load(){ try{ var s = localStorage.getItem(STORE_KEY); return s ? JSON.parse(s) : null; }catch(e){ return null; } }
+  function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){} }
+
+  var app = document.getElementById('app');
+
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function today(){ var d=new Date(); return d.getFullYear()+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0'); }
+  function qid(a,i){ return a.key + (i+1); }
+  function answeredCount(){ return Object.keys(state.answers).length; }
+
+  function go(step){ state.step = step; save(); render(); window.scrollTo(0,0); }
+
+  /* ================= 화면 ================= */
+  function render(){
+    if(state.step === 0) return renderIntro();
+    if(state.step >= 1 && state.step <= AREAS.length) return renderSection(state.step - 1);
+    if(state.step === OPEN_STEP) return renderOpen();
+    return renderResult();
+  }
+
+  function renderIntro(){
+    app.innerHTML =
+      '<header class="cr-hero-blue hero"><div class="dot-grid"></div><div class="wrap" style="position:relative">' +
+        '<a class="brand" href="https://www.crmc.co.kr" target="_blank" rel="noopener">청람M&amp;C</a><br>' +
+        '<span class="eyebrow">AI 개인역량 진단</span>' +
+        '<h1>나의 AI 활용 역량,<br>지금 어디쯤일까요?</h1>' +
+        '<p class="lead">6개 영역 18문항으로 나의 AI 활용 모습을 점검하고, 결과 리포트를 조원들과 나란히 놓고 비교해 보세요.</p>' +
+        (COURSE_LINE ? '<span class="course-chip">' + esc(COURSE_LINE) + '</span>' : '') +
+      '</div></header>' +
+      '<main class="wrap"><div class="card pull-up">' +
+        '<div class="meta"><div><b>6</b><span>진단 영역</span></div><div><b>18</b><span>문항</span></div><div><b>5분</b><span>소요 시간</span></div></div>' +
+        '<div class="field"><label for="inName">이름</label><input id="inName" autocomplete="name" maxlength="20" placeholder="예: 홍길동" value="' + esc(state.name) + '"></div>' +
+        '<div class="field"><label for="inDept">소속</label><input id="inDept" maxlength="30" placeholder="예: 고객지원팀" value="' + esc(state.dept) + '"></div>' +
+        '<button class="btn btn-primary" id="btnStart">' + (answeredCount() ? '이어서 진단하기' : '진단 시작하기') + '</button>' +
+        (answeredCount() ? '<button class="btn btn-outline" id="btnReset" style="margin-top:10px">처음부터 다시 하기</button>' : '') +
+        '<p class="note">응답은 이 기기 안에서만 처리되며, 어디로도 전송되지 않습니다.</p>' +
+      '</div></main>';
+
+    var n = document.getElementById('inName'), d = document.getElementById('inDept'), b = document.getElementById('btnStart');
+    function check(){ b.disabled = !(n.value.trim() && d.value.trim()); }
+    n.addEventListener('input', check); d.addEventListener('input', check); check();
+    b.addEventListener('click', function(){
+      state.name = n.value.trim(); state.dept = d.value.trim();
+      go(firstIncompleteStep());
+    });
+    var r = document.getElementById('btnReset');
+    if(r) r.addEventListener('click', function(){
+      if(!confirm('지금까지의 응답을 지우고 처음부터 시작할까요?')) return;
+      var nm = n.value.trim(), dp = d.value.trim();
+      state = blank(); state.name = nm; state.dept = dp; save(); render();
+    });
+  }
+
+  function firstIncompleteStep(){
+    for(var s=0; s<AREAS.length; s++){
+      for(var i=0; i<3; i++){ if(!state.answers[qid(AREAS[s],i)]) return s+1; }
+    }
+    return state.date ? RESULT_STEP : OPEN_STEP;
+  }
+
+  function topbar(label){
+    var pct = Math.round(answeredCount() / TOTAL_ITEMS * 100);
+    return '<div class="topbar"><div class="wrap"><div class="row"><span>' + label + '</span><span>' + esc(state.name) + ' · ' + esc(state.dept) + '</span></div>' +
+      '<div class="progress" aria-hidden="true"><i id="progBar" style="width:' + pct + '%"></i></div></div></div>';
+  }
+
+  function renderSection(idx){
+    var a = AREAS[idx];
+    var html = topbar('진단 ' + (idx+1) + ' / ' + (AREAS.length+1)) +
+      '<main class="wrap"><div class="section-head"><span class="tag">영역 ' + a.key + '</span><h2>' + esc(a.name) + '</h2><p>' + esc(a.sub) + '</p></div>';
+    a.items.forEach(function(text, i){
+      var id = qid(a,i), v = state.answers[id] || 0, no = idx*3 + i + 1;
+      html += '<div class="q' + (v ? ' answered' : '') + '" id="q-' + id + '">' +
+        '<div class="q-num">Q' + no + '</div><div class="q-text">' + esc(text) + '</div>' +
+        '<div class="scale" role="group" aria-label="Q' + no + ' 응답">';
+      for(var s=1; s<=5; s++){
+        html += '<button type="button" data-q="' + id + '" data-v="' + s + '" aria-pressed="' + (v===s) + '" aria-label="' + s + '점">' + s + '</button>';
+      }
+      html += '</div><div class="scale-ends"><span>전혀 아니다</span><span>매우 그렇다</span></div></div>';
+    });
+    html += '<div class="nav"><button class="btn btn-outline" id="btnPrev">이전</button><button class="btn btn-primary" id="btnNext">다음</button></div>' +
+      '<p class="hint" id="hint"></p></main>';
+    app.innerHTML = html;
+
+    function refreshNav(){
+      var done = a.items.every(function(_,i){ return state.answers[qid(a,i)]; });
+      document.getElementById('btnNext').disabled = !done;
+      document.getElementById('hint').textContent = done ? '' : '세 문항 모두 응답하면 다음으로 넘어갈 수 있어요.';
+      document.getElementById('progBar').style.width = Math.round(answeredCount()/TOTAL_ITEMS*100) + '%';
+    }
+    refreshNav();
+
+    app.querySelectorAll('.scale button').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var id = btn.getAttribute('data-q'), v = +btn.getAttribute('data-v');
+        var wasEmpty = !state.answers[id];
+        state.answers[id] = v; save();
+        var card = document.getElementById('q-' + id);
+        card.classList.add('answered');
+        card.querySelectorAll('button').forEach(function(b){ b.setAttribute('aria-pressed', String(+b.getAttribute('data-v') === v)); });
+        refreshNav();
+        if(wasEmpty){
+          var next = card.nextElementSibling;
+          if(next && next.classList.contains('q') && !next.classList.contains('answered')){
+            setTimeout(function(){ if(next.isConnected) next.scrollIntoView({behavior:'smooth', block:'center'}); }, 150);
+          } else if(!next || !next.classList.contains('q')){
+            setTimeout(function(){ var bn = document.getElementById('btnNext'); if(bn) bn.scrollIntoView({behavior:'smooth', block:'center'}); }, 150);
+          }
+        }
+      });
+    });
+    document.getElementById('btnPrev').addEventListener('click', function(){ go(idx); });
+    document.getElementById('btnNext').addEventListener('click', function(){ go(idx + 2); });
+  }
+
+  function renderOpen(){
+    app.innerHTML = topbar('진단 ' + (AREAS.length+1) + ' / ' + (AREAS.length+1)) +
+      '<main class="wrap"><div class="section-head"><span class="tag">마무리</span><h2>나의 생각 적기</h2><p>짧게 적어도 괜찮아요. 결과 리포트에 함께 담깁니다.</p></div>' +
+      OPEN_Q.map(function(q,i){
+        return '<div class="q"><div class="q-num">서술 ' + (i+1) + '<span class="optional">(선택)</span></div><div class="q-text">' + esc(q) + '</div>' +
+          '<textarea id="open' + i + '" maxlength="200" placeholder="200자 이내로 적어주세요">' + esc(state.open[i]) + '</textarea></div>';
+      }).join('') +
+      '<div class="nav"><button class="btn btn-outline" id="btnPrev">이전</button><button class="btn btn-primary" id="btnDone">결과 보기</button></div><p class="hint"></p></main>';
+    [0,1].forEach(function(i){
+      document.getElementById('open'+i).addEventListener('input', function(e){ state.open[i] = e.target.value; save(); });
+    });
+    document.getElementById('btnPrev').addEventListener('click', function(){ go(AREAS.length); });
+    document.getElementById('btnDone').addEventListener('click', function(){ state.date = today(); go(RESULT_STEP); });
+  }
+
+  /* ================= 계산 ================= */
+  function compute(){
+    var areas = AREAS.map(function(a){
+      var sum = 0; a.items.forEach(function(_,i){ sum += (state.answers[qid(a,i)] || 0); });
+      return { key:a.key, name:a.name, sub:a.sub, strength:a.strength, tip:a.tip, sum:sum, avg:sum/a.items.length };
+    });
+    var total = areas.reduce(function(s,a){ return s + a.sum; }, 0);
+    var avg = total / TOTAL_ITEMS;
+    var level = LEVELS.filter(function(l){ return avg >= l.min; })[0];
+    var sorted = areas.slice().sort(function(x,y){ return y.avg - x.avg; });
+    return { areas:areas, total:total, avg:avg, level:level, best:sorted[0], weak:sorted[sorted.length-1], flat:sorted[0].avg === sorted[sorted.length-1].avg };
+  }
+  function f1(n){ return (Math.round(n*10)/10).toFixed(1); }
+
+  /* ================= 레이더 (SVG) ================= */
+  function radarSVG(areas){
+    var S = 520, cx = S/2, cy = 215, R = 130, n = areas.length, out = '';
+    function pt(i, r){ var ang = -Math.PI/2 + i*2*Math.PI/n; return [cx + r*Math.cos(ang), cy + r*Math.sin(ang)]; }
+    for(var lv=1; lv<=5; lv++){
+      var pts = []; for(var i=0;i<n;i++){ pts.push(pt(i, R*lv/5).join(',')); }
+      out += '<polygon points="' + pts.join(' ') + '" fill="' + (lv===5 ? '#F6F8FD' : 'none') + '" stroke="#D0D9F5" stroke-width="1"/>';
+    }
+    for(var j=0;j<n;j++){ var e = pt(j,R); out += '<line x1="'+cx+'" y1="'+cy+'" x2="'+e[0]+'" y2="'+e[1]+'" stroke="#D0D9F5"/>'; }
+    var dp = areas.map(function(a,i){ return pt(i, R*a.avg/5).join(','); });
+    out += '<polygon points="' + dp.join(' ') + '" fill="rgba(22,82,216,0.18)" stroke="#1652D8" stroke-width="2.5" stroke-linejoin="round"/>';
+    areas.forEach(function(a,i){ var p = pt(i, R*a.avg/5); out += '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="4.5" fill="#1652D8"/>'; });
+    areas.forEach(function(a,i){
+      var p = pt(i, R + 34), c = Math.cos(-Math.PI/2 + i*2*Math.PI/n);
+      var anchor = c > 0.3 ? 'start' : (c < -0.3 ? 'end' : 'middle');
+      var dx = c > 0.3 ? -14 : (c < -0.3 ? 14 : 0);
+      out += '<text x="'+(p[0]+dx)+'" y="'+p[1]+'" text-anchor="'+anchor+'" font-size="17" font-weight="700" fill="#1A1A1A">'+esc(a.key+'. '+a.name)+'</text>' +
+             '<text x="'+(p[0]+dx)+'" y="'+(p[1]+20)+'" text-anchor="'+anchor+'" font-size="16" font-weight="800" fill="#1652D8">'+f1(a.avg)+'</text>';
+    });
+    return '<svg viewBox="0 0 ' + S + ' 440" role="img" aria-label="영역별 역량 레이더 차트" style="font-family:var(--font)">' + out + '</svg>';
+  }
+
+  /* ================= 결과 화면 ================= */
+  function renderResult(){
+    var r = compute();
+    var bars = r.areas.map(function(a){
+      return '<div class="bar-row"><div class="nm"><em>' + a.key + '</em>' + esc(a.name) + '</div>' +
+        '<div class="bar-track"><i style="width:' + (a.avg/5*100) + '%"></i></div><div class="val">' + f1(a.avg) + '</div></div>';
+    }).join('');
+    var opens = OPEN_Q.map(function(q,i){
+      var t = (state.open[i]||'').trim(); if(!t) return '';
+      return '<div class="open-a"><div class="qq">' + esc(q) + '</div><div class="aa">' + esc(t) + '</div></div>';
+    }).join('');
+
+    app.innerHTML =
+      '<header class="cr-hero-blue hero result-hero"><div class="dot-grid"></div><div class="wrap" style="position:relative">' +
+        '<a class="brand" href="https://www.crmc.co.kr" target="_blank" rel="noopener">청람M&amp;C</a><br>' +
+        '<span class="eyebrow">AI 개인역량 진단 결과</span>' +
+        '<h1>' + esc(state.name) + '님의 AI 활용 프로필</h1>' +
+        '<p class="who">' + esc(state.dept) + ' · ' + esc(state.date) + (COURSE_LINE ? ' · ' + esc(COURSE_LINE) : '') + '</p>' +
+      '</div></header>' +
+      '<main class="wrap">' +
+        '<div class="card pull-up score-card">' +
+          '<div><div class="label-s">종합 점수</div><div class="score-big">' + r.total + '<small>/ ' + MAX_SCORE + '</small></div><div class="score-avg">문항 평균 ' + f1(r.avg) + ' / 5.0</div></div>' +
+          '<div><div class="label-s">나의 유형</div><div class="level-name">' + r.level.name + '</div><div class="level-en">' + r.level.en + '</div><p class="level-desc">' + r.level.desc + '</p></div>' +
+        '</div>' +
+        '<div class="card block"><h3>영역별 프로필</h3><div class="radar-wrap">' + radarSVG(r.areas) + '</div>' + bars + '</div>' +
+        '<div class="block duo">' +
+          '<div class="pick"><div class="k">나의 강점 영역</div><div class="t">' + r.best.key + '. ' + esc(r.best.name) + '</div><p>' + esc(r.best.strength) + '</p></div>' +
+          '<div class="pick growth"><div class="k">다음 한 걸음</div><div class="t">' + r.weak.key + '. ' + esc(r.weak.name) + '</div><p>' + esc(r.weak.tip) + '</p></div>' +
+        '</div>' +
+        (r.flat ? '<p class="note" style="text-align:left">※ 영역 간 점수 차이가 없어 강점과 보완 영역은 순서대로 표시했습니다.</p>' : '') +
+        (opens ? '<div class="card block"><h3>나의 생각</h3>' + opens + '</div>' : '') +
+        '<div class="card block"><h3>조원과 함께 이야기해 보세요</h3><ul class="sq-list">' +
+          '<li>나와 가장 높은 영역이 같은 조원은 누구인가요? 가장 낮은 영역은요?</li>' +
+          '<li>내가 약한 영역에서 점수가 높은 조원에게, 그 영역의 비결 한 가지를 물어보세요.</li>' +
+          '<li>우리 조가 공통으로 낮은 영역은 어디인가요? 그 이유는 개인의 문제일까요, 팀의 문제일까요?</li>' +
+        '</ul></div>' +
+        '<div class="actions"><button class="btn btn-primary" id="btnPng">결과 리포트 이미지(PNG) 저장</button>' +
+        '<button class="btn btn-outline" id="btnEdit">응답 수정하기</button>' +
+        '<button class="btn btn-outline" id="btnNew">새로 진단하기</button></div>' +
+      '</main>';
+
+    document.getElementById('btnPng').addEventListener('click', openPng);
+    document.getElementById('btnEdit').addEventListener('click', function(){ go(1); });
+    document.getElementById('btnNew').addEventListener('click', function(){
+      if(!confirm('현재 결과를 지우고 새로 진단할까요? (다른 사람이 이 기기로 진단할 때도 이 버튼을 눌러주세요)')) return;
+      state = blank(); save(); go(0);
+    });
+  }
+
+  /* ================= PNG 리포트 (Canvas) ================= */
+  var FONT = '"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif';
+  function font(w, s){ return w + ' ' + s + 'px ' + FONT; }
+  function rr(ctx, x, y, w, h, r){
+    ctx.beginPath(); ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+    ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h); ctx.lineTo(x+r,y+h);
+    ctx.quadraticCurveTo(x,y+h,x,y+h-r); ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath();
+  }
+  function wrap(ctx, text, maxW){
+    var out = [];
+    String(text || '').split('\n').forEach(function(p){
+      var words = p.split(' '), line = '';
+      words.forEach(function(w){
+        var test = line ? line + ' ' + w : w;
+        if(ctx.measureText(test).width <= maxW){ line = test; return; }
+        if(line){ out.push(line); line = ''; }
+        if(ctx.measureText(w).width <= maxW){ line = w; return; }
+        var chunk = '';
+        Array.from(w).forEach(function(ch){
+          if(ctx.measureText(chunk + ch).width > maxW){ out.push(chunk); chunk = ch; } else chunk += ch;
+        });
+        line = chunk;
+      });
+      out.push(line);
+    });
+    return out;
+  }
+  function fit(ctx, text, maxW){
+    if(ctx.measureText(text).width <= maxW) return text;
+    var t = text; while(t.length && ctx.measureText(t + '…').width > maxW){ t = t.slice(0,-1); }
+    return t + '…';
+  }
+  function sectionTitle(ctx, text, x, y){
+    ctx.fillStyle = '#1A1A1A'; ctx.font = font(800, 30); ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    ctx.fillText(text, x, y);
+    var w = ctx.measureText(text).width;
+    ctx.fillStyle = '#1652D8'; ctx.fillRect(x, y + 12, w, 3);
+  }
+
+  function drawReport(ctx, W){
+    var r = compute(), P = 64, y, CW = W - P*2;
+    ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'left';
+    ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, W, 6000);
+
+    /* 헤더 */
+    var HH = 290;
+    var g = ctx.createLinearGradient(0, 0, W, HH); g.addColorStop(0, '#1652D8'); g.addColorStop(1, '#0F3D99');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, HH);
+    ctx.fillStyle = 'rgba(255,255,255,0.14)';
+    for(var gx = W - 300; gx < W; gx += 24){ for(var gy = 20; gy < HH; gy += 24){ ctx.beginPath(); ctx.arc(gx, gy, 1.6, 0, Math.PI*2); ctx.fill(); } }
+    ctx.fillStyle = 'rgba(255,255,255,0.86)'; ctx.font = font(700, 22);
+    ctx.fillText('청람M&C  ·  AI 개인역량 진단', P, 70);
+    ctx.fillStyle = '#FFFFFF'; ctx.font = font(800, 50);
+    ctx.fillText(fit(ctx, state.name + '님의 AI 활용 프로필', CW), P, 144);
+    ctx.font = font(500, 26); ctx.fillStyle = 'rgba(255,255,255,0.92)';
+    ctx.fillText(fit(ctx, state.dept + '  ·  ' + state.date, CW), P, 200);
+    if(COURSE_LINE){ ctx.font = font(400, 21); ctx.fillStyle = 'rgba(255,255,255,0.78)'; ctx.fillText(fit(ctx, COURSE_LINE, CW), P, 244); }
+    y = HH + 44;
+
+    /* 점수 카드 */
+    ctx.font = font(400, 21);
+    var descX = P + CW*0.44, descW = CW*0.56 - 32;
+    var descLines = wrap(ctx, r.level.desc, descW);
+    var cardH = Math.max(210, 132 + descLines.length*32 + 28);
+    rr(ctx, P, y, CW, cardH, 18); ctx.fillStyle = '#EEF3FD'; ctx.fill(); ctx.strokeStyle = '#D0D9F5'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = '#666666'; ctx.font = font(700, 20); ctx.fillText('종합 점수', P + 36, y + 50);
+    ctx.fillStyle = '#1652D8'; ctx.font = font(800, 84); ctx.fillText(String(r.total), P + 36, y + 138);
+    var tw = ctx.measureText(String(r.total)).width;
+    ctx.fillStyle = '#666666'; ctx.font = font(700, 28); ctx.fillText('/ ' + MAX_SCORE, P + 36 + tw + 10, y + 138);
+    ctx.font = font(500, 20); ctx.fillText('문항 평균 ' + f1(r.avg) + ' / 5.0', P + 36, y + 176);
+    ctx.fillStyle = '#D0D9F5'; ctx.fillRect(descX - 24, y + 32, 2, cardH - 64);
+    ctx.fillStyle = '#666666'; ctx.font = font(700, 20); ctx.fillText('나의 유형', descX, y + 50);
+    ctx.fillStyle = '#1A1A1A'; ctx.font = font(800, 42); ctx.fillText(r.level.name, descX, y + 102);
+    var lw = ctx.measureText(r.level.name).width;
+    ctx.fillStyle = '#1652D8'; ctx.font = font(700, 20); ctx.fillText(r.level.en, descX + lw + 14, y + 100);
+    ctx.fillStyle = '#333333'; ctx.font = font(400, 21);
+    descLines.forEach(function(l, i){ ctx.fillText(l, descX, y + 144 + i*32); });
+    y += cardH + 70;
+
+    /* 레이더 */
+    sectionTitle(ctx, '영역별 프로필', P, y); y += 50;
+    var R = 205, cx = W/2, cy = y + R + 60, n = r.areas.length;
+    function pt(i, rad){ var a = -Math.PI/2 + i*2*Math.PI/n; return [cx + rad*Math.cos(a), cy + rad*Math.sin(a)]; }
+    for(var lv = 5; lv >= 1; lv--){
+      ctx.beginPath();
+      for(var i = 0; i < n; i++){ var p = pt(i, R*lv/5); if(i) ctx.lineTo(p[0], p[1]); else ctx.moveTo(p[0], p[1]); }
+      ctx.closePath(); if(lv === 5){ ctx.fillStyle = '#F6F8FD'; ctx.fill(); }
+      ctx.strokeStyle = '#D0D9F5'; ctx.lineWidth = 1.5; ctx.stroke();
+    }
+    for(var j = 0; j < n; j++){ var e = pt(j, R); ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(e[0], e[1]); ctx.stroke(); }
+    ctx.beginPath();
+    r.areas.forEach(function(a, i){ var p = pt(i, R*a.avg/5); if(i) ctx.lineTo(p[0], p[1]); else ctx.moveTo(p[0], p[1]); });
+    ctx.closePath(); ctx.fillStyle = 'rgba(22,82,216,0.18)'; ctx.fill(); ctx.strokeStyle = '#1652D8'; ctx.lineWidth = 4; ctx.lineJoin = 'round'; ctx.stroke();
+    r.areas.forEach(function(a, i){ var p = pt(i, R*a.avg/5); ctx.beginPath(); ctx.arc(p[0], p[1], 7, 0, Math.PI*2); ctx.fillStyle = '#1652D8'; ctx.fill(); });
+    r.areas.forEach(function(a, i){
+      var p = pt(i, R + 44), c = Math.cos(-Math.PI/2 + i*2*Math.PI/n), s = Math.sin(-Math.PI/2 + i*2*Math.PI/n);
+      ctx.textAlign = c > 0.3 ? 'left' : (c < -0.3 ? 'right' : 'center');
+      var dx = c > 0.3 ? -18 : (c < -0.3 ? 18 : 0), dy = s < -0.9 ? -14 : (s > 0.9 ? 14 : 0);
+      ctx.fillStyle = '#1A1A1A'; ctx.font = font(700, 22); ctx.fillText(a.key + '. ' + a.name, p[0] + dx, p[1] + dy);
+      ctx.fillStyle = '#1652D8'; ctx.font = font(800, 22); ctx.fillText(f1(a.avg), p[0] + dx, p[1] + dy + 28);
+    });
+    ctx.textAlign = 'left';
+    y = cy + R + 160;
+
+    /* 막대 */
+    sectionTitle(ctx, '영역별 점수', P, y); y += 56;
+    var bx = P + 240, bw = CW - 240 - 90;
+    r.areas.forEach(function(a){
+      ctx.fillStyle = '#1652D8'; ctx.font = font(800, 23); ctx.fillText(a.key, P, y + 9);
+      ctx.fillStyle = '#1A1A1A'; ctx.font = font(700, 23); ctx.fillText(a.name, P + 30, y + 9);
+      rr(ctx, bx, y - 9, bw, 20, 10); ctx.fillStyle = '#EEF3FD'; ctx.fill();
+      if(a.avg > 0){ rr(ctx, bx, y - 9, Math.max(20, bw*a.avg/5), 20, 10); ctx.fillStyle = '#1652D8'; ctx.fill(); }
+      ctx.fillStyle = '#1652D8'; ctx.font = font(800, 24); ctx.textAlign = 'right'; ctx.fillText(f1(a.avg), W - P, y + 10); ctx.textAlign = 'left';
+      y += 54;
+    });
+    y += 36;
+
+    /* 강점 / 다음 한 걸음 */
+    var bw2 = (CW - 24) / 2;
+    ctx.font = font(400, 21);
+    var l1 = wrap(ctx, r.best.strength, bw2 - 56), l2 = wrap(ctx, r.weak.tip, bw2 - 56);
+    var bh = 150 + Math.max(l1.length, l2.length) * 32;
+    [[P, '나의 강점 영역', r.best, l1, '#FFFFFF', '#1652D8'], [P + bw2 + 24, '다음 한 걸음', r.weak, l2, '#EEF3FD', '#0F3D99']].forEach(function(b){
+      rr(ctx, b[0], y, bw2, bh, 16); ctx.fillStyle = b[4]; ctx.fill(); ctx.strokeStyle = '#D0D9F5'; ctx.lineWidth = 2; ctx.stroke();
+      ctx.save(); rr(ctx, b[0], y, bw2, bh, 16); ctx.clip(); ctx.fillStyle = b[5]; ctx.fillRect(b[0], y, bw2, 8); ctx.restore();
+      ctx.fillStyle = b[5]; ctx.font = font(800, 19); ctx.fillText(b[1], b[0] + 28, y + 52);
+      ctx.fillStyle = '#1A1A1A'; ctx.font = font(800, 30); ctx.fillText(b[2].key + '. ' + b[2].name, b[0] + 28, y + 96);
+      ctx.fillStyle = '#333333'; ctx.font = font(400, 21);
+      b[3].forEach(function(l, i){ ctx.fillText(l, b[0] + 28, y + 140 + i*32); });
+    });
+    y += bh + 70;
+
+    /* 서술 응답 */
+    var opens = OPEN_Q.map(function(q, i){ return [q, (state.open[i] || '').trim()]; }).filter(function(o){ return o[1]; });
+    if(opens.length){
+      sectionTitle(ctx, '나의 생각', P, y); y += 44;
+      opens.forEach(function(o){
+        ctx.font = font(400, 21);
+        var lines = wrap(ctx, o[1], CW - 56);
+        if(lines.length > 5){ lines = lines.slice(0, 5); lines[4] = fit(ctx, lines[4] + '…', CW - 56); }
+        ctx.font = font(700, 18);
+        var ql = wrap(ctx, o[0], CW - 56);
+        var h = 34 + ql.length*28 + 12 + lines.length*32 + 22;
+        rr(ctx, P, y, CW, h, 14); ctx.fillStyle = '#EEF3FD'; ctx.fill();
+        ctx.fillStyle = '#666666'; ctx.font = font(700, 18);
+        ql.forEach(function(l, i){ ctx.fillText(l, P + 28, y + 44 + i*28); });
+        var ty = y + 44 + ql.length*28 + 14;
+        ctx.fillStyle = '#1A1A1A'; ctx.font = font(400, 21);
+        lines.forEach(function(l, i){ ctx.fillText(l, P + 28, ty + i*32); });
+        y += h + 18;
+      });
+      y += 40;
+    }
+
+    /* 푸터 */
+    ctx.fillStyle = '#D0D9F5'; ctx.fillRect(P, y, CW, 2); y += 58;
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#1652D8'; ctx.font = font(800, 24); ctx.fillText('청람M&C', W/2, y);
+    ctx.fillStyle = '#666666'; ctx.font = font(400, 18); ctx.fillText('www.crmc.co.kr', W/2, y + 32);
+    ctx.textAlign = 'left';
+    return y + 72;
+  }
+
+  function buildCanvas(){
+    var W = 1080, S = 2;
+    // 1) 사용 글자 수집 → 2) 해당 글꼴 로드 → 3) 높이 측정 → 4) 실제 그리기
+    var probe = document.createElement('canvas'); probe.width = 4; probe.height = 4;
+    var pctx = probe.getContext('2d'), chars = [];
+    var orig = pctx.fillText.bind(pctx);
+    pctx.fillText = function(t, x, y){ chars.push(t); return orig(t, x, y); };
+    drawReport(pctx, W);
+    var text = chars.join(' ');
+    var loads = document.fonts ? Promise.all(['400','500','700','800'].map(function(w){
+      return document.fonts.load(w + ' 24px "Noto Sans KR"', text).catch(function(){});
+    })) : Promise.resolve();
+    return loads.then(function(){
+      var m = document.createElement('canvas'); m.width = 4; m.height = 4;
+      var H = drawReport(m.getContext('2d'), W);
+      var c = document.createElement('canvas'); c.width = W*S; c.height = Math.ceil(H*S);
+      var ctx = c.getContext('2d'); ctx.scale(S, S); drawReport(ctx, W);
+      return c;
+    });
+  }
+
+  var modal = document.getElementById('modal'), modalBox = document.getElementById('modalBox');
+  function closeModal(){ modal.classList.remove('open'); modalBox.innerHTML = ''; }
+  modal.addEventListener('click', function(e){ if(e.target === modal) closeModal(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeModal(); });
+
+  function openPng(){
+    modal.classList.add('open');
+    modalBox.innerHTML = '<p style="margin:0;text-align:center;padding:24px 0">결과 리포트를 만들고 있어요…</p>';
+    buildCanvas().then(function(c){
+      var fname = 'AI역량진단_' + state.name.replace(/[\\\/:*?"<>|\s]/g,'') + '_' + state.date.replace(/\./g,'') + '.png';
+      var dataUrl = c.toDataURL('image/png');
+      modalBox.innerHTML = '<h4>결과 리포트</h4><p>저장이 안 되면 이미지를 길게 눌러 사진에 저장하세요.</p>' +
+        '<img src="' + dataUrl + '" alt="AI 개인역량 진단 결과 리포트">' +
+        '<div class="actions"><button class="btn btn-outline" id="mClose">닫기</button><button class="btn btn-primary" id="mSave">PNG 저장</button></div>';
+      document.getElementById('mClose').addEventListener('click', closeModal);
+      document.getElementById('mSave').addEventListener('click', function(){
+        c.toBlob(function(blob){
+          var url = URL.createObjectURL(blob), a = document.createElement('a');
+          a.href = url; a.download = fname; document.body.appendChild(a); a.click(); a.remove();
+          setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+        }, 'image/png');
+      });
+    }).catch(function(){
+      modalBox.innerHTML = '<h4>이미지를 만들지 못했어요</h4><p>화면을 캡처해서 저장해 주세요.</p><div class="actions"><button class="btn btn-primary" id="mClose" style="grid-column:1/-1">닫기</button></div>';
+      document.getElementById('mClose').addEventListener('click', closeModal);
+    });
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
