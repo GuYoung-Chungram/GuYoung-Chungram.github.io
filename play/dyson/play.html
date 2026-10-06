@@ -13,9 +13,10 @@
   padding-top:env(safe-area-inset-top,0px);
   padding-bottom:env(safe-area-inset-bottom,0px);
   --bg:#EEF1FF; --panel:#FFFFFF; --ink:#1B1464; --muted:#5A5690; --line:#1B1464; --shadow:#1B1464; --soft:#DDE3FF;
-  --signal:#00B37E; --signal-bg:#CFF7E8; --signal-ink:#00533A;
-  --noise:#FF4D6D; --noise-bg:#FFDCE3; --noise-ink:#8A1230;
-  --check:#FFB800; --check-bg:#FFF0B8; --check-ink:#5C4200;
+  --signal:#D93A40; --signal-bg:#FBDADC; --signal-ink:#7A1217; --con-signal:#FFFFFF;
+  --noise:#4FB36A; --noise-bg:#D8F2DF; --noise-ink:#14532B; --con-noise:#12103A;
+  --check:#3E72E0; --check-bg:#DAE5FF; --check-ink:#14338A; --con-check:#FFFFFF;
+  --hi:#FFC400; --hi-bg:#FFF0B8; --hi-ink:#5C4200; --warn:#FF8A1F; --warn-bg:#FFE6CC; --warn-ink:#7A3A00;
   --accent:#5B3DF5; --accent-bg:#E4DEFF; --on-accent:#FFFFFF; --on:#1B1464;
   --display:'Jua','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
   --body:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
@@ -23,17 +24,19 @@
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --bg:#12103A; --panel:#1E1B52; --ink:#F2F0FF; --muted:#B3AEE6; --line:#9C8CFF; --shadow:#07061F; --soft:#2B2768;
-    --signal:#2BE0A5; --signal-bg:#0F4A3A; --signal-ink:#C9FFEB;
-    --noise:#FF7A92; --noise-bg:#56213A; --noise-ink:#FFD9E1;
-    --check:#FFD23F; --check-bg:#54430C; --check-ink:#FFF1B8;
+    --signal:#FF7378; --signal-bg:#5A1D22; --signal-ink:#FFD9DB; --con-signal:#12103A;
+    --noise:#5BD97F; --noise-bg:#174A29; --noise-ink:#D3F7DE; --con-noise:#12103A;
+    --check:#7BA3FF; --check-bg:#1E3270; --check-ink:#D9E5FF; --con-check:#12103A;
+    --hi:#FFD23F; --hi-bg:#54430C; --hi-ink:#FFF1B8; --warn:#FF9F4A; --warn-bg:#5A3410; --warn-ink:#FFE2C7;
     --accent:#A594FF; --accent-bg:#332C86; --on-accent:#12103A; --on:#12103A;
   }
 }
 :root[data-theme="dark"]{
   --bg:#12103A; --panel:#1E1B52; --ink:#F2F0FF; --muted:#B3AEE6; --line:#9C8CFF; --shadow:#07061F; --soft:#2B2768;
-  --signal:#2BE0A5; --signal-bg:#0F4A3A; --signal-ink:#C9FFEB;
-  --noise:#FF7A92; --noise-bg:#56213A; --noise-ink:#FFD9E1;
-  --check:#FFD23F; --check-bg:#54430C; --check-ink:#FFF1B8;
+  --signal:#FF7378; --signal-bg:#5A1D22; --signal-ink:#FFD9DB; --con-signal:#12103A;
+    --noise:#5BD97F; --noise-bg:#174A29; --noise-ink:#D3F7DE; --con-noise:#12103A;
+    --check:#7BA3FF; --check-bg:#1E3270; --check-ink:#D9E5FF; --con-check:#12103A;
+    --hi:#FFD23F; --hi-bg:#54430C; --hi-ink:#FFF1B8; --warn:#FF9F4A; --warn-bg:#5A3410; --warn-ink:#FFE2C7;
   --accent:#A594FF; --accent-bg:#332C86; --on-accent:#12103A; --on:#12103A;
 }
 html{scroll-padding-top:env(safe-area-inset-top,0px);background:var(--bg);min-height:100%}
@@ -65,7 +68,7 @@ button{font:inherit;color:inherit}
 
 /* hero */
 .hero{padding:clamp(22px,5vw,46px) 0 18px;text-align:center}
-.sticker{display:inline-block;transform:rotate(-3deg);background:var(--check);color:#1B1464;border:3px solid var(--line);border-radius:12px;padding:4px 14px;font-family:var(--display);font-size:1rem;box-shadow:0 3px 0 var(--shadow);margin-bottom:14px}
+.sticker{display:inline-block;transform:rotate(-3deg);background:var(--hi);color:#1B1464;border:3px solid var(--line);border-radius:12px;padding:4px 14px;font-family:var(--display);font-size:1rem;box-shadow:0 3px 0 var(--shadow);margin-bottom:14px}
 .hero h1{font-family:var(--display);font-weight:400;font-size:clamp(2.2rem,7vw,4.4rem);line-height:1.15;margin:0 0 10px;letter-spacing:-.01em}
 .hl{padding:0 .22em;border-radius:.3em;border:3px solid var(--line);display:inline-block;transform:rotate(-1.5deg)}
 .hl.s{background:var(--signal-bg);color:var(--signal-ink)}
@@ -95,7 +98,7 @@ button{font:inherit;color:inherit}
 
 .two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 .scn p{margin:0 0 8px;word-break:keep-all}
-.crit{display:inline-block;background:var(--check-bg);color:var(--check-ink);border:2px solid var(--line);border-radius:10px;padding:2px 10px;font-weight:900}
+.crit{display:inline-block;background:var(--hi-bg);color:var(--hi-ink);border:2px solid var(--line);border-radius:10px;padding:2px 10px;font-weight:900}
 .steps{list-style:none;margin:0;padding:0;display:grid;gap:10px}
 .steps li{display:flex;gap:12px;align-items:flex-start;word-break:keep-all}
 .steps .n{flex:none;width:30px;height:30px;border-radius:50%;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-family:var(--display);border:2px solid var(--line)}
@@ -117,7 +120,7 @@ button{font:inherit;color:inherit}
 .step-btn[disabled]{opacity:.4;cursor:not-allowed}
 .count{font-family:var(--display);font-size:1.5rem;min-width:2.4em;text-align:center}
 .startbar{display:flex;justify-content:center;margin-top:28px}
-.resume{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:var(--check-bg);color:var(--check-ink);border:3px solid var(--line);border-radius:18px;padding:12px 16px;margin-top:16px;font-weight:700}
+.resume{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:var(--hi-bg);color:var(--hi-ink);border:3px solid var(--line);border-radius:18px;padding:12px 16px;margin-top:16px;font-weight:700}
 
 /* play */
 .score{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
@@ -130,11 +133,11 @@ button{font:inherit;color:inherit}
 .dots{display:flex;gap:6px}
 .dots i{width:14px;height:14px;border-radius:50%;border:2px solid var(--line);background:var(--panel)}
 .dots i.done{background:var(--accent)}
-.dots i.cur{background:var(--check);transform:scale(1.35)}
+.dots i.cur{background:var(--hi);transform:scale(1.35)}
 .prog .no{font-family:var(--display);font-size:1.25rem}
 .timer{position:relative;height:22px;border:3px solid var(--line);border-radius:999px;background:var(--panel);overflow:hidden;margin-bottom:16px}
-.tfill{position:absolute;inset:0 auto 0 0;width:100%;background:var(--signal);transition:width .2s linear}
-.timer.hurry .tfill{background:var(--noise)}
+.tfill{position:absolute;inset:0 auto 0 0;width:100%;background:var(--accent);transition:width .2s linear}
+.timer.hurry .tfill{background:var(--warn)}
 .timer.hurry{animation:shake .4s infinite}
 #tnum{position:absolute;inset:0;display:grid;place-items:center;font-weight:900;font-size:.8rem;color:var(--on)}
 .msg{background:var(--panel);border:3px solid var(--line);border-radius:24px;box-shadow:0 8px 0 var(--shadow);overflow:hidden;animation:deal .55s cubic-bezier(.2,1.4,.4,1)}
@@ -143,6 +146,7 @@ button{font:inherit;color:inherit}
 .msg-top .who{font-size:1.05rem}
 .msg-body{padding:clamp(20px,4vw,40px);font-size:clamp(1.4rem,3.6vw,2.4rem);line-height:1.5;font-weight:700;word-break:keep-all}
 .ask{margin:20px 0 8px;font-family:var(--display);font-size:1.25rem}
+.ask.up{background:var(--warn-bg);color:var(--warn-ink);border:3px solid var(--line);border-radius:16px;padding:10px 16px;font-size:clamp(1.2rem,3vw,1.7rem);animation:pop .4s cubic-bezier(.2,1.4,.4,1)}
 .arow{display:grid;grid-template-columns:180px 1fr;gap:12px;align-items:center;margin-bottom:12px}
 .alabel{display:flex;align-items:center;gap:8px;font-weight:900;border-left:8px solid var(--tc);padding:6px 10px;background:var(--panel);border-radius:10px;border-top:2px solid var(--soft);border-right:2px solid var(--soft);border-bottom:2px solid var(--soft)}
 .alabel .res{margin-left:auto;font-size:1.2rem}
@@ -150,14 +154,14 @@ button{font:inherit;color:inherit}
 .ch{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:72px;padding:10px 8px;border:3px solid var(--line);border-radius:16px;background:var(--cbg);color:var(--cink);font-family:var(--display);font-size:clamp(1.05rem,2.2vw,1.4rem);cursor:pointer;box-shadow:0 5px 0 var(--shadow);transition:transform .12s,box-shadow .12s,background .12s}
 .ch .e{font-size:1.5rem;line-height:1}
 .ch:hover:not([disabled]){transform:translateY(-2px)}
-.ch[aria-pressed="true"]{background:var(--c);color:var(--on);transform:translateY(-3px);box-shadow:0 8px 0 var(--shadow)}
+.ch[aria-pressed="true"]{background:var(--c);color:var(--con);transform:translateY(-3px);box-shadow:0 8px 0 var(--shadow)}
 .ch[disabled]{cursor:default}
-.ch.right{background:var(--c);color:var(--on)}
+.ch.right{background:var(--c);color:var(--con)}
 .ch.right::after{content:"정답";position:absolute;top:-12px;right:-6px;background:var(--panel);color:var(--ink);border:2px solid var(--line);border-radius:999px;font-family:var(--body);font-weight:900;font-size:.75rem;padding:0 8px}
 .ch.wrong{opacity:.55;text-decoration:line-through}
-[data-c="signal"]{--c:var(--signal);--cbg:var(--signal-bg);--cink:var(--signal-ink)}
-[data-c="noise"]{--c:var(--noise);--cbg:var(--noise-bg);--cink:var(--noise-ink)}
-[data-c="check"]{--c:var(--check);--cbg:var(--check-bg);--cink:var(--check-ink)}
+[data-c="signal"]{--c:var(--signal);--cbg:var(--signal-bg);--cink:var(--signal-ink);--con:var(--con-signal)}
+[data-c="noise"]{--c:var(--noise);--cbg:var(--noise-bg);--cink:var(--noise-ink);--con:var(--con-noise)}
+[data-c="check"]{--c:var(--check);--cbg:var(--check-bg);--cink:var(--check-ink);--con:var(--con-check)}
 .ctl{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-top:18px}
 .hint{font-weight:700;color:var(--muted)}
 
@@ -176,17 +180,17 @@ button{font:inherit;color:inherit}
 .gate .gh{display:flex;align-items:center;gap:8px;font-weight:900}
 .gate .gh small{display:block;font-weight:500;color:var(--muted);font-size:.8rem}
 .gate .gv{margin-left:auto;font-family:var(--display);font-size:1.1rem;padding:2px 12px;border-radius:999px;border:2px solid var(--line)}
-.gv.ok{background:var(--signal-bg);color:var(--signal-ink)}
-.gv.no{background:var(--noise-bg);color:var(--noise-ink)}
+.gv.ok{background:var(--accent-bg);color:var(--ink)}
+.gv.no{background:var(--warn-bg);color:var(--warn-ink)}
 .gv.na{background:var(--soft);color:var(--muted)}
 .gate p{margin:6px 0 0;font-size:.95rem;word-break:keep-all}
-.tip{background:var(--check-bg);color:var(--check-ink);border:2px solid var(--line);border-radius:14px;padding:10px 14px;font-weight:700;margin:0 0 14px;word-break:keep-all}
+.tip{background:var(--hi-bg);color:var(--hi-ink);border:2px solid var(--line);border-radius:14px;padding:10px 14px;font-weight:700;margin:0 0 14px;word-break:keep-all}
 .rlist{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .rlist li{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;padding:8px 12px;border-radius:12px;border:2px solid var(--soft);background:var(--bg);font-weight:700}
-.rlist li.ok{border-color:var(--signal)}
-.rlist li.bad{border-color:var(--noise)}
+.rlist li.ok{border-color:var(--accent)}
+.rlist li.bad{border-color:var(--warn)}
 .rlist .pts{margin-left:auto;font-family:var(--display);font-size:1.15rem}
-.combo{background:var(--check);color:#1B1464;border:2px solid var(--line);border-radius:999px;padding:0 10px;font-size:.85rem;font-weight:900}
+.combo{background:var(--hi);color:#1B1464;border:2px solid var(--line);border-radius:999px;padding:0 10px;font-size:.85rem;font-weight:900}
 
 /* result */
 .rhead{text-align:center;margin:30px 0 8px}
@@ -195,7 +199,7 @@ button{font:inherit;color:inherit}
 .rlist2{list-style:none;margin:20px 0 0;padding:0;display:grid;gap:12px}
 .rrow{display:grid;grid-template-columns:64px 52px minmax(90px,200px) 1fr auto;gap:12px;align-items:center;background:var(--panel);border:3px solid var(--line);border-radius:20px;padding:12px 16px;box-shadow:0 5px 0 var(--shadow);opacity:.55;filter:grayscale(.6)}
 .rrow.in{opacity:1;filter:none;animation:pop .5s cubic-bezier(.2,1.4,.4,1)}
-.rrow.first.in{border-color:var(--check);box-shadow:0 0 0 4px var(--check),0 8px 0 var(--shadow);background:var(--check-bg);color:var(--check-ink)}
+.rrow.first.in{border-color:var(--hi);box-shadow:0 0 0 4px var(--hi),0 8px 0 var(--shadow);background:var(--hi-bg);color:var(--hi-ink)}
 .rk{font-family:var(--display);font-size:1.8rem;text-align:center}
 .rav{display:grid;place-items:center;width:48px;height:48px;border-radius:50%;background:var(--tc);font-size:1.6rem}
 .rname{font-family:var(--display);font-size:clamp(1.1rem,2.6vw,1.6rem);overflow-wrap:anywhere}
@@ -312,15 +316,15 @@ var CARDS=[
   g2:{ok:true,note:'직속 팀장이 직접 한 지시이고, 이번 주의 일이에요.'}}
 ];
 var CH={
- signal:{label:'신호',e:'📡',act:'바로 계획에 반영하세요!'},
- noise:{label:'노이즈',e:'🌫️',act:'흘려보내도 괜찮아요.'},
- check:{label:'확인 필요',e:'🔍',act:'확인 전까지 행동은 보류, 출처·시점부터 확인!'}
+ signal:{label:'신호',e:'🔴',act:'바로 계획에 반영하세요!'},
+ noise:{label:'노이즈',e:'🟢',act:'흘려보내도 괜찮아요.'},
+ check:{label:'확인 필요',e:'🔵',act:'확인 전까지 행동은 보류, 출처·시점부터 확인!'}
 };
 var EMOJIS=['🚀','🦄','🔥','🐯','🌈','🍀','⚡','🐬'];
 var COLORS=['#7C5CFF','#FF5FA8','#FF8A1F','#14B88A','#2E8BFF','#8BC34A','#FF5C6C','#13B5C9'];
 var KEY='sn-race-v2';
 
-var S={phase:'ready',teamCount:4,names:[],mode:'all',timer:60,sound:true,whyOpen:false,
+var S={phase:'ready',teamCount:4,names:[],mode:'all',timer:30,sound:true,whyOpen:false,
   teams:[],idx:0,picks:{},revealed:false,lastRes:null,tEnd:0,tInt:null,lastSec:null,saved:null,rt:[],cheered:false};
 for(var i=0;i<8;i++){S.names.push((i+1)+'팀');}
 
@@ -362,6 +366,7 @@ function sfx(k){
     if(k==='click'){tone(520,.08,'triangle',0,.08);}
     else if(k==='correct'){tone(660,.14,'triangle',0,.14);tone(880,.22,'triangle',.12,.14);}
     else if(k==='wrong'){tone(220,.2,'sawtooth',0,.08);tone(170,.3,'sawtooth',.16,.08);}
+    else if(k==='time'){tone(440,.15,'square',0,.08);tone(440,.15,'square',.22,.08);tone(660,.45,'square',.44,.08);}
     else if(k==='tick'){tone(900,.05,'square',0,.04);}
     else if(k==='pop'){tone(400,.1,'triangle',0,.12);tone(600,.12,'triangle',.07,.12);}
     else if(k==='drum'){for(var i=0;i<22;i++){tone(110,.1,'triangle',i*(0.1-i*0.0025),.1);}}
@@ -440,7 +445,7 @@ function whyGridHTML(){
   '<div class="why-item"><span class="em">🧭</span><h3>감에서 사실로</h3><p>바쁠수록 "느낌"이 앞서요. 누가, 언제, 얼마나를 따져 보는 습관이 사실기반사고의 첫걸음입니다.</p></div></div>';
 }
 function whyHTML(compact){
-  var sum='<span class="chip signal">📡 신호는 놓치면 손해</span><span class="chip noise">🌫️ 노이즈는 따라가면 손해</span><span class="chip check">🔍 확인 필요는 확인부터</span>';
+  var sum='<span class="chip signal">🔴 신호는 놓치면 손해</span><span class="chip noise">🟢 노이즈는 따라가면 손해</span><span class="chip check">🔵 확인 필요는 확인부터</span>';
   if(!compact){
     return '<section class="why" aria-label="왜 구분해야 할까요"><h2>💡 왜 신호와 노이즈를 구분해야 할까요?</h2>'+whyGridHTML()+'<div class="why-sum">'+sum+'</div></section>';
   }
@@ -455,14 +460,14 @@ function readyHTML(){
   }
   h+='<div class="two">'+
    '<section class="panel scn"><h2>🎬 오늘의 상황</h2><p>여러분은 <b>신제품 출시를 준비하는 영업·마케팅 담당자</b>예요. 월요일 아침, 메시지 9개가 도착했습니다.</p><p>판단 기준은 딱 하나!</p><p><span class="crit">이번 출시 준비 업무에 쓸 정보인가?</span></p><p style="color:var(--muted);font-size:.9rem">제품명과 수치는 모두 가상입니다.</p>'+
-   '<div class="defs"><div class="def"><span class="chip signal">📡 신호</span><span>내 일의 순서·범위·일정을 바꿀 만한, 믿을 수 있는 정보</span></div>'+
-   '<div class="def"><span class="chip noise">🌫️ 노이즈</span><span>따라가도 얻을 게 없는 정보</span></div>'+
-   '<div class="def"><span class="chip check">🔍 확인 필요</span><span>중요할 수도 있지만, 아직 믿기엔 근거가 부족한 정보</span></div></div></section>'+
+   '<div class="defs"><div class="def"><span class="chip signal">🔴 신호</span><span>내 일의 순서·범위·일정을 바꿀 만한, 믿을 수 있는 정보</span></div>'+
+   '<div class="def"><span class="chip noise">🟢 노이즈</span><span>따라가도 얻을 게 없는 정보</span></div>'+
+   '<div class="def"><span class="chip check">🔵 확인 필요</span><span>중요할 수도 있지만, 아직 믿기엔 근거가 부족한 정보</span></div></div></section>'+
    '<section class="panel"><h2>🎮 이렇게 진행해요</h2><ol class="steps">'+
-   '<li><span class="n">1</span><span>카드를 읽고 <b>팀원과 함께 토의</b>해요.</span></li>'+
-   '<li><span class="n">2</span><span>📡 신호 / 🌫️ 노이즈 / 🔍 확인 필요 중 <b>하나를 선택</b>해요.</span></li>'+
-   '<li><span class="n">3</span><span>정답 공개! 맞히면 <b>+10점</b>, 연속 정답이면 <b>콤보 +5점</b>, 틀리면 정답과 판단 근거를 확인해요.</span></li>'+
-   '<li><span class="n">4</span><span>9장이 끝나면 <b>총점 발표</b>와 함께 축포가 터집니다!</span></li></ol></section></div>';
+   '<li><span class="n">1</span><span>카드가 뜨면 <b>30초 타이머가 자동으로 시작</b>돼요. 팀원과 함께 토의하세요.</span></li>'+
+   '<li><span class="n">2</span><span>팀의 답을 <b>스마트폰 신호등 앱 색</b>으로 정해요. <b>🔴 빨강 = 신호, 🟢 초록 = 노이즈, 🔵 파랑 = 확인 필요</b></span></li>'+
+   '<li><span class="n">3</span><span>타이머가 끝나면 모든 팀이 <b>동시에 스마트폰 화면을 들어 보여줘요.</b> 강사가 색을 확인해 입력하고 정답을 공개합니다. 맞히면 <b>+10점</b>, 연속 정답이면 <b>콤보 +5점</b>!</span></li>'+
+   '<li><span class="n">4</span><span>틀린 팀은 정답과 판단 근거를 확인하고, 9장이 끝나면 <b>총점 발표</b>와 함께 축포가 터집니다!</span></li></ol></section></div>';
   h+='<section class="panel"><h2>👥 팀을 만들어 볼까요?</h2>'+
    '<div class="opt"><b>팀 수</b><button class="step-btn" data-a="tc-" aria-label="팀 수 줄이기"'+(S.teamCount<=2?' disabled':'')+'>−</button><span class="count">'+S.teamCount+'</span><button class="step-btn" data-a="tc+" aria-label="팀 수 늘리기"'+(S.teamCount>=8?' disabled':'')+'>+</button></div>'+
    '<div class="teams">';
@@ -498,9 +503,11 @@ function paintScore(bumpIdx){
 }
 function paintAsk(){
   var el=document.getElementById('ask');if(!el)return;
+  el.className='ask';
   if(S.revealed){el.textContent='';return;}
+  if(S.timeUp){el.className='ask up';el.textContent='⏰ 시간 종료! 모든 팀, 스마트폰 화면을 들어 주세요!';return;}
   var a=activeTeams();
-  el.textContent=S.mode==='relay'?(S.teams[a[0]].emoji+' '+S.teams[a[0]].name+' 차례! 이 메시지, 어떻게 분류할까요?'):'이 메시지, 신호일까요? 노이즈일까요?';
+  el.textContent=S.mode==='relay'?(S.teams[a[0]].emoji+' '+S.teams[a[0]].name+' 차례! 이 메시지는 무슨 색일까요?'):'이 메시지는 무슨 색일까요? 🔴 신호 / 🟢 노이즈 / 🔵 확인 필요';
 }
 function paintAnswers(){
   var el=document.getElementById('answers');if(!el)return;
@@ -545,7 +552,7 @@ function paintControls(){
     el.innerHTML='<span class="hint">'+(last?'마지막 카드였어요!':'다음 카드로 넘어갈까요?')+'</span><button class="btn pri big" data-a="next">'+(last?'🏆 총점 발표!':'다음 카드 넘기기')+'</button>';
   }else{
     var act=activeTeams(),done=act.filter(function(t){return S.picks[t];}).length;
-    el.innerHTML='<span class="hint">'+done+' / '+act.length+'팀 선택 완료'+(done<act.length?' (선택하지 않은 팀은 0점)':'')+'</span><button class="btn pri big" data-a="reveal"'+(done===0?' disabled':'')+'>🎯 정답 공개!</button>';
+    el.innerHTML='<span class="hint">'+(S.timeUp?'팀별 스마트폰 색을 확인해 눌러 주세요. ':'')+done+' / '+act.length+'팀 선택 완료'+(done<act.length?' (선택하지 않은 팀은 0점)':'')+'</span><button class="btn pri big" data-a="reveal"'+(done===0?' disabled':'')+'>🎯 정답 공개!</button>';
   }
 }
 function paintAll(){paintScore();paintAsk();paintAnswers();paintFeedback();paintControls();}
@@ -576,9 +583,9 @@ function resultHTML(){
    '<section class="panel"><h2>🔎 카드별 결과 돌아보기</h2><div class="tscroll">'+rv+'</div></section>'+
    '<section class="panel"><h2>🧭 오늘의 판정 나침반</h2><div class="compass">'+
    '<div class="cq"><b>① 내용 게이트</b><span>구체적인 주장이 있고, 이번 출시 준비 업무의 순서·범위·일정을 바꿀 수 있나요?</span><small>구체성 + 영향</small></div>'+
-   '<div class="cout">아니오 → <span class="chip noise">🌫️ 노이즈</span></div>'+
+   '<div class="cout">아니오 → <span class="chip noise">🟢 노이즈</span></div>'+
    '<div class="cq"><b>② 신뢰 게이트</b><span>출처를 알 수 있고, 지금의 사실인가요?</span><small>출처 + 시점</small></div>'+
-   '<div class="cout">둘 다 예 → <span class="chip signal">📡 신호</span> 하나라도 부족 → <span class="chip check">🔍 확인 필요</span></div></div>'+
+   '<div class="cout">둘 다 예 → <span class="chip signal">🔴 신호</span> 하나라도 부족 → <span class="chip check">🔵 확인 필요</span></div></div>'+
    '<div class="crits"><div><b>출처</b><span>누가 말했나?</span></div><div><b>시점</b><span>언제 일인가?</span></div><div><b>구체성</b><span>숫자·증거가 있나?</span></div><div><b>영향</b><span>내 행동이 바뀌나?</span></div></div>'+
    '<div class="todayq">이 정보로 내일 내가 무엇을 다르게 하겠는가?</div></section>'+
    '<div class="endbtns"><button class="btn big" data-a="again">🔁 같은 팀으로 다시 하기</button><button class="btn pri big" data-a="newgame">🆕 새 게임 만들기</button></div></div></section>';
@@ -651,7 +658,7 @@ function tick(){
   if(n)n.textContent=sec+'초';
   if(tm)tm.classList.toggle('hurry',sec<=5);
   if(sec!==S.lastSec){S.lastSec=sec;if(sec<=5&&sec>0)sfx('tick');}
-  if(left<=0){stopTimer();reveal(true);}
+  if(left<=0){stopTimer();S.timeUp=true;if(n)n.textContent='시간 종료!';paintAsk();paintControls();sfx('time');}
 }
 function startTimer(){
   stopTimer();
@@ -660,7 +667,7 @@ function startTimer(){
   S.tInt=setInterval(tick,200);tick();
 }
 function startCard(){
-  S.picks={};S.revealed=false;S.lastRes=null;
+  S.picks={};S.revealed=false;S.lastRes=null;S.timeUp=false;
   render();startTimer();save();
 }
 function reveal(auto){
