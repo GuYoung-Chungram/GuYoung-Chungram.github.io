@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>신호 vs 노이즈 카드 분류 레이스</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#EEF1FF; --panel:#FFFFFF; --ink:#1B1464; --muted:#5A5690; --line:#1B1464; --shadow:#1B1464; --soft:#DDE3FF;
+  --signal:#00B37E; --signal-bg:#CFF7E8; --signal-ink:#00533A;
+  --noise:#FF4D6D; --noise-bg:#FFDCE3; --noise-ink:#8A1230;
+  --check:#FFB800; --check-bg:#FFF0B8; --check-ink:#5C4200;
+  --accent:#5B3DF5; --accent-bg:#E4DEFF; --on-accent:#FFFFFF; --on:#1B1464;
+  --display:'Jua','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  --body:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12103A; --panel:#1E1B52; --ink:#F2F0FF; --muted:#B3AEE6; --line:#9C8CFF; --shadow:#07061F; --soft:#2B2768;
+    --signal:#2BE0A5; --signal-bg:#0F4A3A; --signal-ink:#C9FFEB;
+    --noise:#FF7A92; --noise-bg:#56213A; --noise-ink:#FFD9E1;
+    --check:#FFD23F; --check-bg:#54430C; --check-ink:#FFF1B8;
+    --accent:#A594FF; --accent-bg:#332C86; --on-accent:#12103A; --on:#12103A;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12103A; --panel:#1E1B52; --ink:#F2F0FF; --muted:#B3AEE6; --line:#9C8CFF; --shadow:#07061F; --soft:#2B2768;
+  --signal:#2BE0A5; --signal-bg:#0F4A3A; --signal-ink:#C9FFEB;
+  --noise:#FF7A92; --noise-bg:#56213A; --noise-ink:#FFD9E1;
+  --check:#FFD23F; --check-bg:#54430C; --check-ink:#FFF1B8;
+  --accent:#A594FF; --accent-bg:#332C86; --on-accent:#12103A; --on:#12103A;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:var(--bg);min-height:100%}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.55;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px dashed var(--accent);outline-offset:3px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 clamp(14px,3vw,28px) 56px}
+
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;background:var(--bg);border-bottom:3px dashed var(--soft)}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-size:clamp(1.15rem,2.6vw,1.6rem);line-height:1.2}
+.logo{display:grid;place-items:center;width:42px;height:42px;border-radius:14px;background:var(--accent);color:var(--on-accent);border:3px solid var(--line);box-shadow:0 3px 0 var(--shadow);font-size:1.3rem;flex:none}
+.brand small{display:block;font-family:var(--body);font-size:.78rem;color:var(--muted);font-weight:500}
+.tools{display:flex;gap:8px;align-items:center}
+.ico{width:42px;height:42px;border-radius:14px;border:3px solid var(--line);background:var(--panel);cursor:pointer;font-size:1.15rem;box-shadow:0 3px 0 var(--shadow);transition:transform .12s}
+.ico:active{transform:translateY(2px)}
+
+/* buttons */
+.btn{font-family:var(--display);font-size:1.1rem;padding:.65em 1.2em;border:3px solid var(--line);border-radius:16px;background:var(--panel);color:var(--ink);cursor:pointer;box-shadow:0 5px 0 var(--shadow);transition:transform .12s,box-shadow .12s,background .12s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 7px 0 var(--shadow)}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 var(--shadow)}
+.btn[disabled]{opacity:.5;cursor:not-allowed;transform:none;box-shadow:0 5px 0 var(--shadow)}
+.btn.pri{background:var(--accent);color:var(--on-accent)}
+.btn.big{font-size:clamp(1.25rem,2.6vw,1.6rem);padding:.7em 1.7em}
+.btn.ghost{background:transparent;box-shadow:none;border-style:dashed}
+.btn.ghost:hover{box-shadow:none}
+.mini{font-family:var(--body);font-weight:700;font-size:.85rem;padding:6px 12px;border-radius:999px;border:2px solid var(--line);background:var(--panel);cursor:pointer}
+
+/* hero */
+.hero{padding:clamp(22px,5vw,46px) 0 18px;text-align:center}
+.sticker{display:inline-block;transform:rotate(-3deg);background:var(--check);color:#1B1464;border:3px solid var(--line);border-radius:12px;padding:4px 14px;font-family:var(--display);font-size:1rem;box-shadow:0 3px 0 var(--shadow);margin-bottom:14px}
+.hero h1{font-family:var(--display);font-weight:400;font-size:clamp(2.2rem,7vw,4.4rem);line-height:1.15;margin:0 0 10px;letter-spacing:-.01em}
+.hl{padding:0 .22em;border-radius:.3em;border:3px solid var(--line);display:inline-block;transform:rotate(-1.5deg)}
+.hl.s{background:var(--signal-bg);color:var(--signal-ink)}
+.hl.n{background:var(--noise-bg);color:var(--noise-ink);transform:rotate(1.5deg)}
+.hero .sub{font-size:clamp(1rem,2.2vw,1.25rem);color:var(--muted);margin:0 auto;max-width:36em;word-break:keep-all}
+
+/* panels */
+.panel{background:var(--panel);border:3px solid var(--line);border-radius:22px;box-shadow:0 6px 0 var(--shadow);padding:clamp(16px,2.6vw,26px);margin-top:22px}
+.panel h2{font-family:var(--display);font-weight:400;font-size:clamp(1.3rem,2.8vw,1.75rem);margin:0 0 12px}
+.why{background:var(--accent-bg);border:3px solid var(--line);border-radius:24px;box-shadow:0 7px 0 var(--shadow);padding:clamp(16px,3vw,28px);margin-top:10px}
+.why h2{font-family:var(--display);font-weight:400;font-size:clamp(1.35rem,3vw,1.9rem);margin:0 0 14px}
+.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.why-item{background:var(--panel);border:3px solid var(--line);border-radius:18px;padding:16px}
+.why-item .em{font-size:1.9rem;display:block;margin-bottom:4px}
+.why-item h3{font-family:var(--display);font-weight:400;font-size:1.2rem;margin:0 0 6px}
+.why-item p{margin:0;font-size:.98rem;word-break:keep-all}
+.why-sum{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;align-items:center}
+.why.compact{padding:10px 16px;box-shadow:0 4px 0 var(--shadow);border-radius:18px;margin-top:14px}
+.why-line{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+.why-line b{font-family:var(--display);font-weight:400;font-size:1.1rem}
+.why.compact .why-grid{margin-top:12px}
+
+.chip{display:inline-flex;align-items:center;gap:6px;border:2px solid var(--line);border-radius:999px;padding:3px 12px;font-weight:700;font-size:.92rem;background:var(--panel)}
+.chip.signal{background:var(--signal-bg);color:var(--signal-ink)}
+.chip.noise{background:var(--noise-bg);color:var(--noise-ink)}
+.chip.check{background:var(--check-bg);color:var(--check-ink)}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.scn p{margin:0 0 8px;word-break:keep-all}
+.crit{display:inline-block;background:var(--check-bg);color:var(--check-ink);border:2px solid var(--line);border-radius:10px;padding:2px 10px;font-weight:900}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.steps li{display:flex;gap:12px;align-items:flex-start;word-break:keep-all}
+.steps .n{flex:none;width:30px;height:30px;border-radius:50%;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-family:var(--display);border:2px solid var(--line)}
+.defs{display:grid;gap:8px;margin-top:14px}
+.def{display:flex;gap:10px;align-items:flex-start;font-size:.95rem;word-break:keep-all}
+.def .chip{flex:none}
+
+/* setup */
+.trow{display:flex;align-items:center;gap:10px;border:3px solid var(--tc);border-radius:16px;padding:6px 10px;background:var(--panel)}
+.tav{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--tc);font-size:1.25rem;flex:none}
+.trow input{flex:1;min-width:0;border:0;background:transparent;font:inherit;font-weight:700;font-size:1.05rem;color:var(--ink);padding:6px 4px}
+.teams{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-top:12px}
+.opt{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin-top:14px}
+.opt>b{min-width:5.5em}
+.seg{display:flex;flex-wrap:wrap;gap:8px}
+.seg button{border:3px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 16px;font-weight:700;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+.step-btn{width:42px;height:42px;border-radius:50%;border:3px solid var(--line);background:var(--panel);font-family:var(--display);font-size:1.3rem;cursor:pointer;box-shadow:0 3px 0 var(--shadow)}
+.step-btn[disabled]{opacity:.4;cursor:not-allowed}
+.count{font-family:var(--display);font-size:1.5rem;min-width:2.4em;text-align:center}
+.startbar{display:flex;justify-content:center;margin-top:28px}
+.resume{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:var(--check-bg);color:var(--check-ink);border:3px solid var(--line);border-radius:18px;padding:12px 16px;margin-top:16px;font-weight:700}
+
+/* play */
+.score{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.schip{display:flex;align-items:center;gap:8px;border:3px solid var(--tc);border-radius:999px;padding:4px 14px 4px 6px;background:var(--panel);font-weight:900}
+.schip .tav{width:30px;height:30px;font-size:1rem}
+.schip.act{box-shadow:0 0 0 4px var(--accent-bg),0 0 0 6px var(--tc)}
+.schip .pt{font-family:var(--display);font-size:1.15rem;font-weight:400}
+.schip .pt.bump{animation:bump .6s}
+.prog{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin:18px 0 12px}
+.dots{display:flex;gap:6px}
+.dots i{width:14px;height:14px;border-radius:50%;border:2px solid var(--line);background:var(--panel)}
+.dots i.done{background:var(--accent)}
+.dots i.cur{background:var(--check);transform:scale(1.35)}
+.prog .no{font-family:var(--display);font-size:1.25rem}
+.timer{position:relative;height:22px;border:3px solid var(--line);border-radius:999px;background:var(--panel);overflow:hidden;margin-bottom:16px}
+.tfill{position:absolute;inset:0 auto 0 0;width:100%;background:var(--signal);transition:width .2s linear}
+.timer.hurry .tfill{background:var(--noise)}
+.timer.hurry{animation:shake .4s infinite}
+#tnum{position:absolute;inset:0;display:grid;place-items:center;font-weight:900;font-size:.8rem;color:var(--on)}
+.msg{background:var(--panel);border:3px solid var(--line);border-radius:24px;box-shadow:0 8px 0 var(--shadow);overflow:hidden;animation:deal .55s cubic-bezier(.2,1.4,.4,1)}
+.msg-top{display:flex;align-items:center;gap:10px;background:var(--accent-bg);padding:10px 20px;border-bottom:3px solid var(--line);font-weight:900}
+.msg-top .ic{font-size:1.5rem}
+.msg-top .who{font-size:1.05rem}
+.msg-body{padding:clamp(20px,4vw,40px);font-size:clamp(1.4rem,3.6vw,2.4rem);line-height:1.5;font-weight:700;word-break:keep-all}
+.ask{margin:20px 0 8px;font-family:var(--display);font-size:1.25rem}
+.arow{display:grid;grid-template-columns:180px 1fr;gap:12px;align-items:center;margin-bottom:12px}
+.alabel{display:flex;align-items:center;gap:8px;font-weight:900;border-left:8px solid var(--tc);padding:6px 10px;background:var(--panel);border-radius:10px;border-top:2px solid var(--soft);border-right:2px solid var(--soft);border-bottom:2px solid var(--soft)}
+.alabel .res{margin-left:auto;font-size:1.2rem}
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.ch{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:72px;padding:10px 8px;border:3px solid var(--line);border-radius:16px;background:var(--cbg);color:var(--cink);font-family:var(--display);font-size:clamp(1.05rem,2.2vw,1.4rem);cursor:pointer;box-shadow:0 5px 0 var(--shadow);transition:transform .12s,box-shadow .12s,background .12s}
+.ch .e{font-size:1.5rem;line-height:1}
+.ch:hover:not([disabled]){transform:translateY(-2px)}
+.ch[aria-pressed="true"]{background:var(--c);color:var(--on);transform:translateY(-3px);box-shadow:0 8px 0 var(--shadow)}
+.ch[disabled]{cursor:default}
+.ch.right{background:var(--c);color:var(--on)}
+.ch.right::after{content:"정답";position:absolute;top:-12px;right:-6px;background:var(--panel);color:var(--ink);border:2px solid var(--line);border-radius:999px;font-family:var(--body);font-weight:900;font-size:.75rem;padding:0 8px}
+.ch.wrong{opacity:.55;text-decoration:line-through}
+[data-c="signal"]{--c:var(--signal);--cbg:var(--signal-bg);--cink:var(--signal-ink)}
+[data-c="noise"]{--c:var(--noise);--cbg:var(--noise-bg);--cink:var(--noise-ink)}
+[data-c="check"]{--c:var(--check);--cbg:var(--check-bg);--cink:var(--check-ink)}
+.ctl{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-top:18px}
+.hint{font-weight:700;color:var(--muted)}
+
+/* feedback */
+.fb{margin-top:22px;border:3px solid var(--c);border-radius:22px;background:var(--panel);box-shadow:0 7px 0 var(--c);overflow:hidden;animation:pop .45s cubic-bezier(.2,1.4,.4,1)}
+.fb-head{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;background:var(--cbg);color:var(--cink);padding:14px 20px;border-bottom:3px solid var(--c)}
+.fb-head .big{font-size:2.6rem;line-height:1}
+.fb-head h3{font-family:var(--display);font-weight:400;font-size:clamp(1.6rem,4vw,2.3rem);margin:0;line-height:1.1}
+.fb-head .kick{font-size:.9rem;font-weight:700}
+.fb-head .act{margin-left:auto;background:var(--panel);color:var(--ink);border:2px solid var(--line);border-radius:14px;padding:6px 12px;font-weight:700;font-size:.95rem;max-width:22em;word-break:keep-all}
+.fb-body{padding:clamp(14px,2.6vw,24px)}
+.mood{font-family:var(--display);font-size:1.25rem;margin:0 0 8px}
+.why-text{margin:0 0 14px;font-size:1.08rem;word-break:keep-all}
+.gates{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.gate{border:3px dashed var(--line);border-radius:16px;padding:12px 14px;background:var(--bg)}
+.gate .gh{display:flex;align-items:center;gap:8px;font-weight:900}
+.gate .gh small{display:block;font-weight:500;color:var(--muted);font-size:.8rem}
+.gate .gv{margin-left:auto;font-family:var(--display);font-size:1.1rem;padding:2px 12px;border-radius:999px;border:2px solid var(--line)}
+.gv.ok{background:var(--signal-bg);color:var(--signal-ink)}
+.gv.no{background:var(--noise-bg);color:var(--noise-ink)}
+.gv.na{background:var(--soft);color:var(--muted)}
+.gate p{margin:6px 0 0;font-size:.95rem;word-break:keep-all}
+.tip{background:var(--check-bg);color:var(--check-ink);border:2px solid var(--line);border-radius:14px;padding:10px 14px;font-weight:700;margin:0 0 14px;word-break:keep-all}
+.rlist{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.rlist li{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;padding:8px 12px;border-radius:12px;border:2px solid var(--soft);background:var(--bg);font-weight:700}
+.rlist li.ok{border-color:var(--signal)}
+.rlist li.bad{border-color:var(--noise)}
+.rlist .pts{margin-left:auto;font-family:var(--display);font-size:1.15rem}
+.combo{background:var(--check);color:#1B1464;border:2px solid var(--line);border-radius:999px;padding:0 10px;font-size:.85rem;font-weight:900}
+
+/* result */
+.rhead{text-align:center;margin:30px 0 8px}
+.rhead h2{font-family:var(--display);font-weight:400;font-size:clamp(2rem,6vw,3.6rem);margin:0;line-height:1.2}
+.rhead p{margin:6px 0 0;color:var(--muted);font-weight:700}
+.rlist2{list-style:none;margin:20px 0 0;padding:0;display:grid;gap:12px}
+.rrow{display:grid;grid-template-columns:64px 52px minmax(90px,200px) 1fr auto;gap:12px;align-items:center;background:var(--panel);border:3px solid var(--line);border-radius:20px;padding:12px 16px;box-shadow:0 5px 0 var(--shadow);opacity:.55;filter:grayscale(.6)}
+.rrow.in{opacity:1;filter:none;animation:pop .5s cubic-bezier(.2,1.4,.4,1)}
+.rrow.first.in{border-color:var(--check);box-shadow:0 0 0 4px var(--check),0 8px 0 var(--shadow);background:var(--check-bg);color:var(--check-ink)}
+.rk{font-family:var(--display);font-size:1.8rem;text-align:center}
+.rav{display:grid;place-items:center;width:48px;height:48px;border-radius:50%;background:var(--tc);font-size:1.6rem}
+.rname{font-family:var(--display);font-size:clamp(1.1rem,2.6vw,1.6rem);overflow-wrap:anywhere}
+.rbar{height:20px;border:3px solid var(--line);border-radius:999px;background:var(--bg);overflow:hidden}
+.rbar i{display:block;height:100%;width:0;background:var(--tc);transition:width 1s cubic-bezier(.2,.8,.2,1)}
+.rrow.in .rbar i{width:var(--w)}
+.rscore{text-align:right;min-width:5.5em}
+.rscore b{font-family:var(--display);font-weight:400;font-size:clamp(1.6rem,4vw,2.4rem)}
+.rscore small{font-weight:700;margin-left:2px}
+.rmeta{display:block;font-size:.8rem;font-weight:700;opacity:.8}
+.skip{display:flex;justify-content:center;margin-top:16px}
+.after{margin-top:34px}
+.after[hidden]{display:none}
+.after.show{animation:pop .6s cubic-bezier(.2,1.4,.4,1)}
+.tscroll{overflow-x:auto;border:3px solid var(--line);border-radius:18px;background:var(--panel)}
+table.rv{border-collapse:collapse;width:100%;min-width:560px;font-size:.95rem}
+.rv th,.rv td{padding:8px 10px;border-bottom:2px solid var(--soft);text-align:left;vertical-align:top}
+.rv th{background:var(--accent-bg);font-weight:900;white-space:nowrap}
+.rv td.c{text-align:center;white-space:nowrap}
+.compass{display:grid;gap:12px;margin-top:6px}
+.cq{border:3px solid var(--line);border-radius:18px;padding:14px 16px;background:var(--panel)}
+.cq b{font-family:var(--display);font-weight:400;font-size:1.15rem}
+.cq span{display:block;word-break:keep-all}
+.cq small{color:var(--muted);font-weight:700}
+.cout{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;padding-left:14px;font-weight:700}
+.crits{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+.crits div{border:3px solid var(--line);border-radius:16px;padding:10px 12px;background:var(--panel);text-align:center}
+.crits b{font-family:var(--display);font-weight:400;font-size:1.2rem;display:block}
+.crits span{font-size:.9rem;color:var(--muted);font-weight:700}
+.todayq{margin-top:18px;text-align:center;font-family:var(--display);font-size:clamp(1.2rem,3vw,1.8rem);background:var(--accent);color:var(--on-accent);border:3px solid var(--line);border-radius:20px;padding:16px;box-shadow:0 6px 0 var(--shadow);word-break:keep-all}
+.endbtns{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:26px}
+
+/* modal + confetti */
+#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:60}
+.ov{position:fixed;inset:0;z-index:70;background:rgba(10,8,40,.6);display:grid;place-items:center;padding:20px}
+.dlg{background:var(--panel);border:3px solid var(--line);border-radius:22px;box-shadow:0 8px 0 var(--shadow);padding:22px;max-width:420px;width:100%}
+.dlg h3{font-family:var(--display);font-weight:400;font-size:1.4rem;margin:0 0 8px}
+.dlg p{margin:0 0 16px;word-break:keep-all}
+.dact{display:flex;gap:12px;justify-content:flex-end}
+
+@keyframes deal{from{opacity:0;transform:translateY(-34px) rotate(-3deg) scale(.96)}to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
+@keyframes bump{0%{transform:scale(1)}35%{transform:scale(1.5)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+
+@media (max-width:820px){
+  .why-grid,.two,.gates{grid-template-columns:1fr}
+  .arow{grid-template-columns:1fr;gap:6px}
+  .crits{grid-template-columns:1fr 1fr}
+  .rrow{grid-template-columns:44px 42px 1fr auto;gap:8px}
+  .rrow .rbar{grid-column:1 / -1;order:5}
+  .fb-head .act{margin-left:0}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<canvas id="confetti" aria-hidden="true"></canvas>
+<div id="modal"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ───────── 데이터 ───────── */
+var CARDS=[
+ {ch:'본사 공식 메일',ic:'✉️',text:'글로벌 제품 사양 확정은 다음 주 수요일로 공지됨. 상세는 사내 포털 참조',ans:'signal',
+  why:'누가 보낸 건지 분명하고(본사 공식 메일), 날짜(다음 주 수요일)까지 적혀 있어요. 우리 일정을 어떻게 짤지에 바로 쓰이는 정보입니다.',
+  tip:'공식 출처 + 날짜 + 내 일정에 직접 영향 = 믿고 계획에 넣을 수 있는 신호!',
+  g1:{ok:true,note:'사양 확정일이 명시돼 있어 준비 일정을 바로 짤 수 있어요.'},
+  g2:{ok:true,note:'본사 공식 메일이고, 가장 최근에 공지된 사실이에요.'}},
+ {ch:'복도 대화',ic:'🚶',text:'출시가 앞당겨진다던데? 누가 그러더라',ans:'check',
+  why:'사실이라면 일정이 크게 바뀌는 중요한 이야기예요. 그런데 "누가 그랬는지"를 몰라서 지금은 믿고 움직일 수 없습니다.',
+  tip:'공식 채널로 확인되면 신호로 승격! 확인 전까지는 행동을 보류해요.',
+  g1:{ok:true,note:'"출시 앞당김"은 확인해 볼 수 있는 주장이고, 맞다면 우리 일정이 바뀌어요.'},
+  g2:{ok:false,note:'출처가 불명이라 믿을 근거가 부족해요. 담당 부서에 먼저 확인!'}},
+ {ch:'리테일 파트너 메일',ic:'🛍️',text:'프로모션 진열 변경 마감이 금요일에서 수요일로 앞당겨짐 (변경 공문 첨부)',ans:'signal',
+  why:'보낸 사람이 분명하고, 날짜가 금요일에서 수요일로 바뀐다는 구체적 내용에 공문 증빙까지 있어요. 오늘부터 할 일의 순서가 바뀝니다.',
+  tip:'증빙이 붙어 있고 당장 행동이 바뀐다면 고민할 필요 없는 신호!',
+  g1:{ok:true,note:'마감일이 이틀 당겨져서 당장 할 일의 순서가 달라져요.'},
+  g2:{ok:true,note:'파트너사 공식 메일에 변경 공문이 첨부돼 있어요.'}},
+ {ch:'팀 단톡방',ic:'💬',text:'요즘 분위기가 영 싱숭생숭하네요 ㅠㅠ',ans:'noise',
+  why:'무엇이, 언제부터, 얼마나 달라졌는지가 하나도 없어요. 확인해 볼 "주장" 자체가 없으니 따라갈 것도 없습니다.',
+  tip:'마음은 공감해 주되, 이 메시지로 일을 바꿀 수는 없어요. 감정 표현은 노이즈!',
+  g1:{ok:false,note:'확인할 주장도, 바꿀 행동도 없는 감정 표현이에요.'},
+  g2:{ok:null,note:'내용이 없으니 출처와 시점을 따질 필요도 없어요.'}},
+ {ch:'주간 판매 리포트',ic:'📊',text:'최근 2주 온라인 전환율 3.1% → 2.4%, 주력 상품 B 상세페이지 이탈 증가',ans:'signal',
+  why:'수치(3.1% → 2.4%), 기간(최근 2주), 위치(상품 B 상세페이지)가 모두 특정돼 있어 검증할 수 있어요. 어디부터 손봐야 할지 우선순위에도 영향을 줍니다.',
+  tip:'숫자 + 기간 + 위치가 있으면 "느낌"이 아니라 "사실"이에요.',
+  g1:{ok:true,note:'수치·기간·위치가 분명해서 대응 우선순위에 바로 쓰여요.'},
+  g2:{ok:true,note:'정기 판매 리포트이고, 최근 2주의 데이터예요.'}},
+ {ch:'타 부서 선배',ic:'🧑‍💼',text:'작년에도 일정 바뀌었다가 결국 원래대로 갔어',ans:'check',
+  why:'일정이 바뀌었다가 원복된 경험은 판단에 참고가 돼요. 하지만 작년 일이라서, 올해도 그럴지는 아직 알 수 없습니다.',
+  tip:'과거 경험은 "가설"이에요. 지금 상황에서 확인되기 전까지는 참고만!',
+  g1:{ok:true,note:'일정 변경 후 원복이라는 패턴은 판단에 참고할 만해요.'},
+  g2:{ok:false,note:'작년 일이라 지금도 같은지는 미확인이에요 (시점 불일치).'}},
+ {ch:'본사 공식 메일',ic:'✉️',text:'[전사 공지] 구내식당 11월 메뉴 개편 및 이벤트 안내',ans:'noise',
+  why:'공식 메일이라 믿을 수는 있어요. 하지만 이번 출시 준비 업무의 순서·범위·일정은 하나도 바뀌지 않습니다.',
+  tip:'출처가 좋아도 내용이 업무와 무관하면 노이즈! "공식 = 신호"는 아니에요.',
+  g1:{ok:false,note:'이번 출시 준비 업무에 영향을 주지 않아요.'},
+  g2:{ok:true,note:'출처는 믿을 만하지만, 내용 게이트를 통과하지 못했어요.'}},
+ {ch:'고객센터 보고',ic:'🎧',text:'평소 주 5건 수준이던 특정 기능 문의가 최근 2주간 40건으로 늘었고, 내용은 모두 "배터리 호환 여부"',ans:'signal',
+  why:'평소(주 5건)와 비교할 기준이 있어서 "많아졌다"를 말할 수 있어요. 문의 40건이 같은 내용이라면 고객이 보내는 직접적인 반응입니다.',
+  tip:'숫자만으로는 부족해요. 비교 기준(평소 대비 약 4배)이 있어야 진짜 신호!',
+  g1:{ok:true,note:'평소 대비 약 4배, 내용이 같은 반복 패턴이라 핵심 메시지에 반영할 수 있어요.'},
+  g2:{ok:true,note:'고객센터 집계이고, 최근 2주의 데이터예요.'}},
+ {ch:'팀장 구두',ic:'🗣️',text:'수요일 오전 리뷰 때 영업 쪽 준비 현황 한 장으로 보고해줘',ans:'signal',
+  why:'구두 지시여도 누가(팀장), 무엇을(준비 현황 한 장), 언제(수요일 오전)가 모두 분명해요. 오늘부터 준비할 내용이 바뀝니다.',
+  tip:'말로 전달됐다고 노이즈가 아니에요. 채널과 판정은 별개!',
+  g1:{ok:true,note:'무엇을 언제까지 해야 하는지 분명하고, 당장 할 일이 바뀌어요.'},
+  g2:{ok:true,note:'직속 팀장이 직접 한 지시이고, 이번 주의 일이에요.'}}
+];
+var CH={
+ signal:{label:'신호',e:'📡',act:'바로 계획에 반영하세요!'},
+ noise:{label:'노이즈',e:'🌫️',act:'흘려보내도 괜찮아요.'},
+ check:{label:'확인 필요',e:'🔍',act:'확인 전까지 행동은 보류, 출처·시점부터 확인!'}
+};
+var EMOJIS=['🚀','🦄','🔥','🐯','🌈','🍀','⚡','🐬'];
+var COLORS=['#7C5CFF','#FF5FA8','#FF8A1F','#14B88A','#2E8BFF','#8BC34A','#FF5C6C','#13B5C9'];
+var KEY='sn-race-v2';
+
+var S={phase:'ready',teamCount:4,names:[],mode:'all',timer:60,sound:true,whyOpen:false,
+  teams:[],idx:0,picks:{},revealed:false,lastRes:null,tEnd:0,tInt:null,lastSec:null,saved:null,rt:[],cheered:false};
+for(var i=0;i<8;i++){S.names.push((i+1)+'팀');}
+
+var root=document.getElementById('root');
+var modal=document.getElementById('modal');
+
+/* ───────── 유틸 ───────── */
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({phase:S.phase,teams:S.teams,mode:S.mode,timer:S.timer,idx:S.idx,picks:S.picks,revealed:S.revealed,lastRes:S.lastRes}));}catch(e){}}
+function load(){try{var r=localStorage.getItem(KEY);return r?JSON.parse(r):null;}catch(e){return null;}}
+function clearSave(){try{localStorage.removeItem(KEY);}catch(e){}}
+function activeTeams(){var n=S.teams.length;if(S.mode==='relay'){return [S.idx%n];}var a=[];for(var i=0;i<n;i++)a.push(i);return a;}
+function teamsFromSetup(){
+  var t=[];
+  for(var i=0;i<S.teamCount;i++){
+    var nm=(S.names[i]||'').trim()||((i+1)+'팀');
+    t.push({name:nm,emoji:EMOJIS[i],color:COLORS[i],score:0,streak:0,hist:new Array(CARDS.length).fill(null)});
+  }
+  return t;
+}
+function maxCardsFor(t){var n=0;for(var i=0;i<CARDS.length;i++){if(t.hist[i])n++;}return n;}
+function correctFor(t){var n=0;for(var i=0;i<CARDS.length;i++){if(t.hist[i]&&t.hist[i].ok)n++;}return n;}
+
+/* ───────── 소리 ───────── */
+var AC=null;
+function ac(){if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}}return AC;}
+function tone(f,d,type,when,vol){
+  var a=ac();if(!a)return;
+  try{
+    var o=a.createOscillator(),g=a.createGain(),t0=a.currentTime+(when||0);
+    o.type=type||'sine';o.frequency.value=f;
+    g.gain.setValueAtTime(0.0001,t0);g.gain.exponentialRampToValueAtTime(vol||0.12,t0+0.02);g.gain.exponentialRampToValueAtTime(0.0001,t0+d);
+    o.connect(g);g.connect(a.destination);o.start(t0);o.stop(t0+d+0.05);
+  }catch(e){}
+}
+function sfx(k){
+  if(!S.sound)return;
+  try{
+    if(k==='click'){tone(520,.08,'triangle',0,.08);}
+    else if(k==='correct'){tone(660,.14,'triangle',0,.14);tone(880,.22,'triangle',.12,.14);}
+    else if(k==='wrong'){tone(220,.2,'sawtooth',0,.08);tone(170,.3,'sawtooth',.16,.08);}
+    else if(k==='tick'){tone(900,.05,'square',0,.04);}
+    else if(k==='pop'){tone(400,.1,'triangle',0,.12);tone(600,.12,'triangle',.07,.12);}
+    else if(k==='drum'){for(var i=0;i<22;i++){tone(110,.1,'triangle',i*(0.1-i*0.0025),.1);}}
+    else if(k==='fanfare'){[523,659,784,1047,784,1047].forEach(function(f,i){tone(f,.28,'square',i*.14,.07);});tone(1047,.6,'triangle',.9,.12);}
+  }catch(e){}
+}
+
+/* ───────── 색종이 ───────── */
+var cv=document.getElementById('confetti'),cx=cv.getContext('2d'),parts=[],raf=0,rainInt=null;
+var CCOL=['#7C5CFF','#FF4D6D','#FFB800','#00B37E','#2E8BFF','#FF8A1F','#FF5FA8'];
+var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function sizeCv(){var d=window.devicePixelRatio||1;cv.width=innerWidth*d;cv.height=innerHeight*d;cx.setTransform(d,0,0,d,0,0);}
+window.addEventListener('resize',sizeCv);sizeCv();
+function burst(x,y,n,o){
+  o=o||{};if(reduce)n=Math.ceil(n/5);
+  var ang=o.angle==null?-90:o.angle,sp=o.spread==null?50:o.spread,v=o.speed||[12,24];
+  for(var i=0;i<n;i++){
+    var a=(ang+(Math.random()-.5)*sp)*Math.PI/180,s=v[0]+Math.random()*(v[1]-v[0]);
+    parts.push({x:x,y:y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,w:6+Math.random()*8,h:8+Math.random()*10,
+      c:CCOL[Math.floor(Math.random()*CCOL.length)],r:Math.random()*6,vr:(Math.random()-.5)*.4,
+      round:Math.random()<.25,life:0,max:110+Math.random()*80});
+  }
+  if(!raf)raf=requestAnimationFrame(loop);
+}
+function loop(){
+  cx.clearRect(0,0,innerWidth,innerHeight);
+  for(var i=parts.length-1;i>=0;i--){
+    var p=parts[i];p.life++;p.vy+=.45;p.vx*=.985;p.vy*=.985;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;
+    var al=Math.max(0,1-Math.max(0,p.life-p.max+30)/30);
+    if(p.life>p.max||p.y>innerHeight+30){parts.splice(i,1);continue;}
+    cx.save();cx.globalAlpha=al;cx.translate(p.x,p.y);cx.rotate(p.r);cx.fillStyle=p.c;
+    if(p.round){cx.beginPath();cx.arc(0,0,p.w/2,0,6.283);cx.fill();}else{cx.fillRect(-p.w/2,-p.h/2,p.w,p.h);}
+    cx.restore();
+  }
+  if(parts.length){raf=requestAnimationFrame(loop);}else{raf=0;cx.clearRect(0,0,innerWidth,innerHeight);}
+}
+function cannons(){
+  var w=innerWidth,h=innerHeight;
+  burst(0,h,110,{angle:-58,spread:38,speed:[16,30]});
+  burst(w,h,110,{angle:-122,spread:38,speed:[16,30]});
+  setTimeout(function(){burst(w*.5,h*.95,120,{angle:-90,spread:70,speed:[18,32]});},450);
+  setTimeout(function(){burst(0,h,80,{angle:-65,spread:35,speed:[14,26]});burst(w,h,80,{angle:-115,spread:35,speed:[14,26]});},1000);
+  if(rainInt)clearInterval(rainInt);
+  var n=0;rainInt=setInterval(function(){
+    burst(Math.random()*innerWidth,-10,10,{angle:90,spread:60,speed:[2,6]});
+    if(++n>16){clearInterval(rainInt);rainInt=null;}
+  },180);
+}
+
+/* ───────── 모달 ───────── */
+function ask(title,msg,okText,fn){
+  modal.innerHTML='<div class="ov"><div class="dlg" role="dialog" aria-modal="true"><h3>'+esc(title)+'</h3><p>'+esc(msg)+'</p><div class="dact"><button class="btn ghost" data-m="no">취소</button><button class="btn pri" data-m="ok">'+esc(okText)+'</button></div></div></div>';
+  modal.onclick=function(e){
+    var b=e.target.closest('[data-m]');if(!b)return;
+    modal.innerHTML='';modal.onclick=null;
+    if(b.dataset.m==='ok'&&fn)fn();
+  };
+}
+
+/* ───────── 화면 조각 ───────── */
+function headerHTML(){
+  return '<header class="top"><div class="brand"><span class="logo" aria-hidden="true">📡</span><span>신호 vs 노이즈 카드 분류 레이스<small>모듈1 변화 해석 워밍업</small></span></div>'+
+  '<div class="tools"><button class="ico" data-a="sound" aria-label="효과음 켜기 또는 끄기">'+(S.sound?'🔊':'🔇')+'</button>'+
+  '<button class="ico" data-a="theme" aria-label="밝은 화면 어두운 화면 전환">🌓</button>'+
+  (S.phase!=='ready'?'<button class="mini" data-a="home">처음으로</button>':'')+'</div></header>';
+}
+function heroHTML(){
+  return '<section class="hero"><div class="sticker">팀 대항전! 카드 9장</div>'+
+  '<h1><span class="hl s">신호</span>와 <span class="hl n">노이즈</span>를<br>구분하라!</h1>'+
+  '<p class="sub">월요일 아침, 메시지 9개가 도착했어요. 우리 팀은 무엇을 따라가고, 무엇을 흘려보낼까요?</p></section>';
+}
+function whyGridHTML(){
+  return '<div class="why-grid">'+
+  '<div class="why-item"><span class="em">⏱️</span><h3>주의력은 한정판!</h3><p>메시지는 매일 쏟아지는데 우리의 시간과 집중력은 그대로예요. 모든 소식에 반응하면 정말 중요한 일을 놓칩니다.</p></div>'+
+  '<div class="why-item"><span class="em">🌊</span><h3>소문에 일정을 흔들지 않기</h3><p>확인 안 된 말에 우선순위를 뒤집으면 팀 전체가 헛고생! 반대로 진짜 신호를 놓치면 한 박자 늦어져요.</p></div>'+
+  '<div class="why-item"><span class="em">🧭</span><h3>감에서 사실로</h3><p>바쁠수록 "느낌"이 앞서요. 누가, 언제, 얼마나를 따져 보는 습관이 사실기반사고의 첫걸음입니다.</p></div></div>';
+}
+function whyHTML(compact){
+  var sum='<span class="chip signal">📡 신호는 놓치면 손해</span><span class="chip noise">🌫️ 노이즈는 따라가면 손해</span><span class="chip check">🔍 확인 필요는 확인부터</span>';
+  if(!compact){
+    return '<section class="why" aria-label="왜 구분해야 할까요"><h2>💡 왜 신호와 노이즈를 구분해야 할까요?</h2>'+whyGridHTML()+'<div class="why-sum">'+sum+'</div></section>';
+  }
+  return '<section class="why compact" aria-label="왜 구분해야 할까요"><div class="why-line"><b>💡 왜 구분할까요?</b>'+sum+
+   '<button class="mini" data-a="why" aria-expanded="'+(S.whyOpen?'true':'false')+'">'+(S.whyOpen?'접기':'자세히 보기')+'</button></div>'+(S.whyOpen?whyGridHTML():'')+'</section>';
+}
+function readyHTML(){
+  var h='';
+  if(S.saved){
+    var sv=S.saved;
+    h+='<div class="resume"><span>이전에 하던 게임이 있어요 ('+(sv.phase==='result'?'결과 화면':'카드 '+(sv.idx+1)+' / '+CARDS.length)+')</span><span><button class="mini" data-a="resume">이어서 하기</button> <button class="mini" data-a="discard">지우기</button></span></div>';
+  }
+  h+='<div class="two">'+
+   '<section class="panel scn"><h2>🎬 오늘의 상황</h2><p>여러분은 <b>신제품 출시를 준비하는 영업·마케팅 담당자</b>예요. 월요일 아침, 메시지 9개가 도착했습니다.</p><p>판단 기준은 딱 하나!</p><p><span class="crit">이번 출시 준비 업무에 쓸 정보인가?</span></p><p style="color:var(--muted);font-size:.9rem">제품명과 수치는 모두 가상입니다.</p>'+
+   '<div class="defs"><div class="def"><span class="chip signal">📡 신호</span><span>내 일의 순서·범위·일정을 바꿀 만한, 믿을 수 있는 정보</span></div>'+
+   '<div class="def"><span class="chip noise">🌫️ 노이즈</span><span>따라가도 얻을 게 없는 정보</span></div>'+
+   '<div class="def"><span class="chip check">🔍 확인 필요</span><span>중요할 수도 있지만, 아직 믿기엔 근거가 부족한 정보</span></div></div></section>'+
+   '<section class="panel"><h2>🎮 이렇게 진행해요</h2><ol class="steps">'+
+   '<li><span class="n">1</span><span>카드를 읽고 <b>팀원과 함께 토의</b>해요.</span></li>'+
+   '<li><span class="n">2</span><span>📡 신호 / 🌫️ 노이즈 / 🔍 확인 필요 중 <b>하나를 선택</b>해요.</span></li>'+
+   '<li><span class="n">3</span><span>정답 공개! 맞히면 <b>+10점</b>, 연속 정답이면 <b>콤보 +5점</b>, 틀리면 정답과 판단 근거를 확인해요.</span></li>'+
+   '<li><span class="n">4</span><span>9장이 끝나면 <b>총점 발표</b>와 함께 축포가 터집니다!</span></li></ol></section></div>';
+  h+='<section class="panel"><h2>👥 팀을 만들어 볼까요?</h2>'+
+   '<div class="opt"><b>팀 수</b><button class="step-btn" data-a="tc-" aria-label="팀 수 줄이기"'+(S.teamCount<=2?' disabled':'')+'>−</button><span class="count">'+S.teamCount+'</span><button class="step-btn" data-a="tc+" aria-label="팀 수 늘리기"'+(S.teamCount>=8?' disabled':'')+'>+</button></div>'+
+   '<div class="teams">';
+  for(var i=0;i<S.teamCount;i++){
+    h+='<label class="trow" style="--tc:'+COLORS[i]+'"><span class="tav" aria-hidden="true">'+EMOJIS[i]+'</span><input type="text" maxlength="12" data-name="'+i+'" value="'+esc(S.names[i])+'" aria-label="'+(i+1)+'번째 팀 이름"></label>';
+  }
+  h+='</div>'+
+   '<div class="opt"><b>진행 방식</b><div class="seg">'+
+   '<button data-a="mode" data-v="all" aria-pressed="'+(S.mode==='all')+'">모든 팀 동시 도전</button>'+
+   '<button data-a="mode" data-v="relay" aria-pressed="'+(S.mode==='relay')+'">릴레이 (카드마다 한 팀씩)</button></div></div>'+
+   '<div class="opt"><b>제한 시간</b><div class="seg">'+
+   [0,30,60,90].map(function(v){return '<button data-a="timer" data-v="'+v+'" aria-pressed="'+(S.timer===v)+'">'+(v?v+'초':'없음')+'</button>';}).join('')+
+   '</div></div></section>'+
+   '<div class="startbar"><button class="btn pri big" data-a="start">🏁 레이스 시작!</button></div>';
+  return h;
+}
+function playHTML(){
+  var dots='';for(var i=0;i<CARDS.length;i++){dots+='<i class="'+(i<S.idx?'done':(i===S.idx?'cur':''))+'"></i>';}
+  var c=CARDS[S.idx];
+  return '<section class="play"><div class="score" id="score" aria-label="팀 점수"></div>'+
+   '<div class="prog"><span class="no">카드 '+(S.idx+1)+' / '+CARDS.length+'</span><div class="dots" aria-hidden="true">'+dots+'</div>'+
+   '<span class="chip">'+(S.mode==='relay'?'릴레이':'모든 팀 동시 도전')+'</span></div>'+
+   (S.timer?'<div class="timer" id="timer" role="timer" aria-label="남은 시간"><div class="tfill" id="tfill"></div><span id="tnum"></span></div>':'')+
+   '<article class="msg" id="msg"><div class="msg-top"><span class="ic" aria-hidden="true">'+c.ic+'</span><span class="who">'+esc(c.ch)+'</span></div><div class="msg-body">'+esc(c.text)+'</div></article>'+
+   '<div class="ask" id="ask"></div><div id="answers"></div><div id="fb" aria-live="polite"></div><div class="ctl" id="ctl"></div></section>';
+}
+function paintScore(bumpIdx){
+  var el=document.getElementById('score');if(!el)return;
+  var act=S.revealed?[]:activeTeams();
+  el.innerHTML=S.teams.map(function(t,i){
+    return '<div class="schip'+(S.mode==='relay'&&act.indexOf(i)>=0?' act':'')+'" style="--tc:'+t.color+'"><span class="tav" aria-hidden="true">'+t.emoji+'</span><span>'+esc(t.name)+'</span><span class="pt'+(bumpIdx&&bumpIdx.indexOf(i)>=0?' bump':'')+'">'+t.score+'</span></div>';
+  }).join('');
+}
+function paintAsk(){
+  var el=document.getElementById('ask');if(!el)return;
+  if(S.revealed){el.textContent='';return;}
+  var a=activeTeams();
+  el.textContent=S.mode==='relay'?(S.teams[a[0]].emoji+' '+S.teams[a[0]].name+' 차례! 이 메시지, 어떻게 분류할까요?'):'이 메시지, 신호일까요? 노이즈일까요?';
+}
+function paintAnswers(){
+  var el=document.getElementById('answers');if(!el)return;
+  var c=CARDS[S.idx],h='';
+  activeTeams().forEach(function(t){
+    var team=S.teams[t],pick=S.picks[t],res=null;
+    if(S.revealed&&S.lastRes){S.lastRes.forEach(function(r){if(r.t===t)res=r;});}
+    h+='<div class="arow" style="--tc:'+team.color+'"><div class="alabel"><span aria-hidden="true">'+team.emoji+'</span><span>'+esc(team.name)+'</span>'+(res?'<span class="res" aria-label="'+(res.ok?'정답':'오답')+'">'+(res.ok?'✅':'❌')+'</span>':'')+'</div><div class="opts" role="group" aria-label="'+esc(team.name)+' 선택">';
+    ['signal','noise','check'].forEach(function(k){
+      var cls='ch';
+      if(S.revealed){if(k===c.ans)cls+=' right';else if(pick===k)cls+=' wrong';}
+      h+='<button class="'+cls+'" data-c="'+k+'" data-a="pick" data-t="'+t+'" aria-pressed="'+(pick===k)+'"'+(S.revealed?' disabled':'')+'><span class="e" aria-hidden="true">'+CH[k].e+'</span><span>'+CH[k].label+'</span></button>';
+    });
+    h+='</div></div>';
+  });
+  el.innerHTML=h;
+}
+function gateHTML(n,title,sub,g){
+  var cls=g.ok===null?'na':(g.ok?'ok':'no'),txt=g.ok===null?'해당 없음':(g.ok?'통과 ✔':'미통과 ✖');
+  return '<div class="gate"><div class="gh"><span>'+n+'</span><span>'+title+'<small>'+sub+'</small></span><span class="gv '+cls+'">'+txt+'</span></div><p>'+esc(g.note)+'</p></div>';
+}
+function paintFeedback(){
+  var el=document.getElementById('fb');if(!el)return;
+  if(!S.revealed||!S.lastRes){el.innerHTML='';return;}
+  var c=CARDS[S.idx],a=CH[c.ans],anyBad=S.lastRes.some(function(r){return !r.ok;}),allOk=S.lastRes.every(function(r){return r.ok;});
+  var mood=allOk?(S.lastRes.length>1?'👏 전원 정답! 판단 근거까지 확인해 볼까요?':'👏 정답이에요! 판단 근거까지 확인해 볼까요?'):'😮 아쉬워요! 정답과 판단 근거를 같이 확인해요.';
+  var list=S.lastRes.map(function(r){
+    var t=S.teams[r.t];
+    var left='<span aria-hidden="true">'+t.emoji+'</span> '+esc(t.name);
+    if(r.ok){return '<li class="ok">'+left+' <span>✅ 정답</span>'+(r.combo?'<span class="combo">🔥 콤보 +5</span>':'')+'<span class="pts">+'+r.pts+'점</span></li>';}
+    return '<li class="bad">'+left+' <span>❌ '+(r.ch?'"'+CH[r.ch].label+'"을 골랐어요':'선택하지 못했어요')+' → 정답은 "'+a.label+'"</span><span class="pts">+0점</span></li>';
+  }).join('');
+  el.innerHTML='<div class="fb" data-c="'+c.ans+'"><div class="fb-head"><span class="big" aria-hidden="true">'+a.e+'</span><div><div class="kick">정답은</div><h3>'+a.label+'!</h3></div><div class="act">'+a.act+'</div></div>'+
+   '<div class="fb-body"><p class="mood">'+mood+'</p><p class="why-text">'+esc(c.why)+'</p>'+
+   '<div class="gates">'+gateHTML('①','내용 게이트','구체적인 주장 + 이번 업무에 미치는 영향',c.g1)+gateHTML('②','신뢰 게이트','출처를 알 수 있나 + 지금의 사실인가',c.g2)+'</div>'+
+   '<p class="tip">💬 '+esc(c.tip)+'</p><ul class="rlist">'+list+'</ul></div></div>';
+}
+function paintControls(){
+  var el=document.getElementById('ctl');if(!el)return;
+  var last=S.idx===CARDS.length-1;
+  if(S.revealed){
+    el.innerHTML='<span class="hint">'+(last?'마지막 카드였어요!':'다음 카드로 넘어갈까요?')+'</span><button class="btn pri big" data-a="next">'+(last?'🏆 총점 발표!':'다음 카드 넘기기')+'</button>';
+  }else{
+    var act=activeTeams(),done=act.filter(function(t){return S.picks[t];}).length;
+    el.innerHTML='<span class="hint">'+done+' / '+act.length+'팀 선택 완료'+(done<act.length?' (선택하지 않은 팀은 0점)':'')+'</span><button class="btn pri big" data-a="reveal"'+(done===0?' disabled':'')+'>🎯 정답 공개!</button>';
+  }
+}
+function paintAll(){paintScore();paintAsk();paintAnswers();paintFeedback();paintControls();}
+
+/* ───────── 결과 ───────── */
+function rankData(){
+  var arr=S.teams.map(function(t,i){return {i:i,t:t};});
+  arr.sort(function(a,b){return b.t.score-a.t.score||a.i-b.i;});
+  arr.forEach(function(r){r.rank=1+S.teams.filter(function(o){return o.score>r.t.score;}).length;});
+  return arr;
+}
+function resultHTML(){
+  var rd=rankData(),max=Math.max(1,rd[0].t.score);
+  var rows=rd.map(function(r){
+    var t=r.t,asked=maxCardsFor(t);
+    return '<li class="rrow'+(r.rank===1?' first':'')+'" data-rank="'+r.rank+'" data-score="'+t.score+'" style="--tc:'+t.color+';--w:'+Math.round(t.score/max*100)+'%"><span class="rk">?</span><span class="rav" aria-hidden="true">'+t.emoji+'</span><span class="rname">'+esc(t.name)+'</span><span class="rbar"><i></i></span><span class="rscore"><b data-count>???</b><small>점</small><span class="rmeta">정답 '+correctFor(t)+' / '+asked+'</span></span></li>';
+  }).join('');
+
+  var rv='<table class="rv"><thead><tr><th>#</th><th>카드</th><th>정답</th>'+S.teams.map(function(t){return '<th>'+t.emoji+' '+esc(t.name)+'</th>';}).join('')+'</tr></thead><tbody>'+
+   CARDS.map(function(c,i){
+     return '<tr><td>'+(i+1)+'</td><td>'+esc(c.text)+'</td><td><span class="chip '+c.ans+'">'+CH[c.ans].e+' '+CH[c.ans].label+'</span></td>'+
+      S.teams.map(function(t){var h=t.hist[i];return '<td class="c">'+(h?(h.ok?'✅':'❌'+(h.choice?'<br><small>'+CH[h.choice].label+'</small>':'<br><small>무응답</small>')):'—')+'</td>';}).join('')+'</tr>';
+   }).join('')+'</tbody></table>';
+  return '<section class="result"><div class="rhead"><h2 id="rhead">🥁 총점 발표!</h2><p id="rsub">두구두구두구…</p></div>'+
+   '<ul class="rlist2" id="ranks">'+rows+'</ul>'+
+   '<div class="skip" id="skipbar"><button class="mini" data-a="skip">연출 건너뛰기</button></div>'+
+   '<div class="after" id="after" hidden>'+
+   '<section class="panel"><h2>🔎 카드별 결과 돌아보기</h2><div class="tscroll">'+rv+'</div></section>'+
+   '<section class="panel"><h2>🧭 오늘의 판정 나침반</h2><div class="compass">'+
+   '<div class="cq"><b>① 내용 게이트</b><span>구체적인 주장이 있고, 이번 출시 준비 업무의 순서·범위·일정을 바꿀 수 있나요?</span><small>구체성 + 영향</small></div>'+
+   '<div class="cout">아니오 → <span class="chip noise">🌫️ 노이즈</span></div>'+
+   '<div class="cq"><b>② 신뢰 게이트</b><span>출처를 알 수 있고, 지금의 사실인가요?</span><small>출처 + 시점</small></div>'+
+   '<div class="cout">둘 다 예 → <span class="chip signal">📡 신호</span> 하나라도 부족 → <span class="chip check">🔍 확인 필요</span></div></div>'+
+   '<div class="crits"><div><b>출처</b><span>누가 말했나?</span></div><div><b>시점</b><span>언제 일인가?</span></div><div><b>구체성</b><span>숫자·증거가 있나?</span></div><div><b>영향</b><span>내 행동이 바뀌나?</span></div></div>'+
+   '<div class="todayq">이 정보로 내일 내가 무엇을 다르게 하겠는가?</div></section>'+
+   '<div class="endbtns"><button class="btn big" data-a="again">🔁 같은 팀으로 다시 하기</button><button class="btn pri big" data-a="newgame">🆕 새 게임 만들기</button></div></div></section>';
+}
+function countUp(el,to,ms){
+  var t0=null;
+  function step(ts){
+    if(t0===null)t0=ts;
+    var p=Math.min(1,(ts-t0)/ms);el.textContent=Math.round(to*(1-Math.pow(1-p,3)));
+    if(p<1)requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+function revealRow(row,instant){
+  if(row.classList.contains('in'))return;
+  row.classList.add('in');
+  var rank=+row.dataset.rank,score=+row.dataset.score;
+  row.querySelector('.rk').textContent=rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank+'위';
+  var b=row.querySelector('[data-count]');
+  if(instant){b.textContent=score;}else{countUp(b,score,900);sfx('pop');}
+}
+function crown(){
+  if(S.cheered)return;S.cheered=true;
+  var w=[];document.querySelectorAll('.rrow').forEach(function(r,i){if(+r.dataset.rank===1)w.push(S.rankNames[i]);});
+  var h=document.getElementById('rhead'),s=document.getElementById('rsub');
+  if(h)h.textContent='🏆 '+w.join(', ')+(w.length>1?' 공동 우승!':' 우승!');
+  if(s)s.textContent=w.length>1?'막상막하! 모두 박수 쳐 주세요 👏':'신호 탐지 레이더가 제일 밝았어요! 모두 박수 👏';
+  sfx('fanfare');cannons();
+}
+function finishShow(){
+  var a=document.getElementById('after'),sk=document.getElementById('skipbar');
+  if(sk)sk.style.display='none';
+  if(a&&a.hidden){a.hidden=false;a.classList.add('show');}
+}
+function clearRT(){S.rt.forEach(function(t){clearTimeout(t);});S.rt=[];}
+function runResultShow(){
+  clearRT();S.cheered=false;
+  var rd=rankData();S.rankNames=rd.map(function(r){return r.t.emoji+' '+r.t.name;});
+  var rows=Array.prototype.slice.call(document.querySelectorAll('.rrow')).reverse();
+  sfx('drum');
+  var t=2300;
+  rows.forEach(function(row){
+    var tt=t;
+    S.rt.push(setTimeout(function(){revealRow(row,false);if(+row.dataset.rank===1)crown();},tt));
+    t+=1000;
+  });
+  S.rt.push(setTimeout(finishShow,t+1200));
+}
+function skipShow(){
+  clearRT();
+  document.querySelectorAll('.rrow').forEach(function(r){revealRow(r,true);});
+  crown();finishShow();
+}
+
+/* ───────── 흐름 ───────── */
+function render(){
+  var body='';
+  if(S.phase==='ready'){body=heroHTML()+whyHTML(false)+readyHTML();}
+  else if(S.phase==='play'){body=whyHTML(true)+playHTML();}
+  else{body=whyHTML(true)+resultHTML();}
+  root.innerHTML='<div class="wrap">'+headerHTML()+body+'</div>';
+  if(S.phase==='play'){paintAll();}
+  if(S.phase==='result'){runResultShow();}
+}
+function stopTimer(){if(S.tInt){clearInterval(S.tInt);S.tInt=null;}}
+function tick(){
+  var left=Math.max(0,(S.tEnd-Date.now())/1000),f=document.getElementById('tfill'),n=document.getElementById('tnum'),tm=document.getElementById('timer');
+  if(f)f.style.width=(left/S.timer*100)+'%';
+  var sec=Math.ceil(left);
+  if(n)n.textContent=sec+'초';
+  if(tm)tm.classList.toggle('hurry',sec<=5);
+  if(sec!==S.lastSec){S.lastSec=sec;if(sec<=5&&sec>0)sfx('tick');}
+  if(left<=0){stopTimer();reveal(true);}
+}
+function startTimer(){
+  stopTimer();
+  if(!S.timer||S.revealed)return;
+  S.tEnd=Date.now()+S.timer*1000;S.lastSec=null;
+  S.tInt=setInterval(tick,200);tick();
+}
+function startCard(){
+  S.picks={};S.revealed=false;S.lastRes=null;
+  render();startTimer();save();
+}
+function reveal(auto){
+  if(S.revealed||S.phase!=='play')return;
+  stopTimer();
+  var c=CARDS[S.idx],res=[],bump=[];
+  activeTeams().forEach(function(t){
+    var team=S.teams[t],ch=S.picks[t]||null,ok=(ch===c.ans),pts=0,combo=false;
+    if(ok){team.streak++;pts=10;if(team.streak>=2){pts+=5;combo=true;}}else{team.streak=0;}
+    team.score+=pts;team.hist[S.idx]={choice:ch,ok:ok,pts:pts,combo:combo};
+    res.push({t:t,ch:ch,ok:ok,pts:pts,combo:combo});
+    if(pts)bump.push(t);
+  });
+  S.revealed=true;S.lastRes=res;
+  paintScore(bump);paintAsk();paintAnswers();paintFeedback();paintControls();
+  var any=res.some(function(r){return r.ok;});
+  sfx(any?'correct':'wrong');
+  if(any){burst(innerWidth/2,innerHeight*.45,45,{angle:-90,spread:140,speed:[8,17]});}
+  var fb=document.getElementById('fb');
+  if(fb&&fb.scrollIntoView){setTimeout(function(){fb.scrollIntoView({behavior:reduce?'auto':'smooth',block:'nearest'});},120);}
+  save();
+}
+function nextCard(){
+  if(S.idx<CARDS.length-1){S.idx++;startCard();window.scrollTo(0,0);}
+  else{S.phase='result';stopTimer();render();save();window.scrollTo(0,0);}
+}
+function startGame(){
+  S.teams=teamsFromSetup();S.idx=0;S.phase='play';S.saved=null;
+  ac();startCard();window.scrollTo(0,0);
+}
+function toReady(){
+  stopTimer();clearRT();parts.length=0;
+  if(rainInt){clearInterval(rainInt);rainInt=null;}
+  clearSave();S.saved=null;S.phase='ready';render();window.scrollTo(0,0);
+}
+function toggleTheme(){
+  var el=document.documentElement,cur=el.getAttribute('data-theme');
+  if(!cur){cur=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}
+  el.setAttribute('data-theme',cur==='dark'?'light':'dark');
+}
+
+/* ───────── 이벤트 ───────── */
+root.addEventListener('click',function(e){
+  var b=e.target.closest('[data-a]');if(!b||b.disabled)return;
+  var a=b.dataset.a;
+  if(a==='sound'){S.sound=!S.sound;b.textContent=S.sound?'🔊':'🔇';if(S.sound)sfx('click');}
+  else if(a==='theme'){toggleTheme();}
+  else if(a==='home'){ask('처음으로 돌아갈까요?','진행 중인 점수가 모두 사라져요.','처음으로',toReady);}
+  else if(a==='why'){S.whyOpen=!S.whyOpen;render();}
+  else if(a==='tc-'){if(S.teamCount>2){S.teamCount--;render();}}
+  else if(a==='tc+'){if(S.teamCount<8){S.teamCount++;render();}}
+  else if(a==='mode'){S.mode=b.dataset.v;render();}
+  else if(a==='timer'){S.timer=+b.dataset.v;render();}
+  else if(a==='start'){startGame();}
+  else if(a==='resume'){
+    var sv=S.saved;if(!sv)return;
+    S.teams=sv.teams;S.mode=sv.mode;S.timer=sv.timer;S.idx=sv.idx;S.picks=sv.picks||{};S.revealed=!!sv.revealed;S.lastRes=sv.lastRes;S.phase=sv.phase;S.saved=null;
+    ac();render();if(S.phase==='play'&&!S.revealed)startTimer();
+  }
+  else if(a==='discard'){clearSave();S.saved=null;render();}
+  else if(a==='pick'){
+    if(S.revealed)return;
+    S.picks[+b.dataset.t]=b.dataset.c;sfx('click');paintAnswers();paintControls();save();
+  }
+  else if(a==='reveal'){reveal(false);}
+  else if(a==='next'){nextCard();}
+  else if(a==='skip'){skipShow();}
+  else if(a==='again'){
+    S.teams.forEach(function(t){t.score=0;t.streak=0;t.hist=new Array(CARDS.length).fill(null);});
+    parts.length=0;S.idx=0;S.phase='play';startCard();window.scrollTo(0,0);
+  }
+  else if(a==='newgame'){toReady();}
+});
+root.addEventListener('input',function(e){
+  var n=e.target&&e.target.dataset?e.target.dataset.name:undefined;
+  if(n!==undefined){S.names[+n]=e.target.value;}
+});
+
+/* ───────── 시작 ───────── */
+(function init(){
+  var sv=load();
+  if(sv&&sv.teams&&sv.teams.length&&(sv.phase==='play'||sv.phase==='result')){S.saved=sv;}
+  render();
+})();
+})();
+</script>
+</body>
+</html>
