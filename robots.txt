@@ -5,10 +5,6 @@
 
 # 일반 검색엔진 — 허용 (SEO 유지)
 
-User-agent: *
-Allow: /
-Sitemap: https://www.crmc.co.kr/sitemap.xml
-
 User-agent: Googlebot
 Allow: /
 
@@ -36,7 +32,7 @@ Disallow: /
 User-agent: anthropic-ai
 Disallow: /
 
-User-agent: Claude-Web
+User-agent: ClaudeBot
 Disallow: /
 
 User-agent: Google-Extended
@@ -55,6 +51,18 @@ User-agent: ImagesiftBot
 Disallow: /
 
 User-agent: FacebookBot
+Disallow: /
+
+User-agent: GrokBot
+Disallow: /
+
+User-agent: xAI-Grok
+Disallow: /
+
+User-agent: Grok-DeepSearch
+Disallow: /
+
+User-agent: xAI-SearchBot
 Disallow: /
 
 # 악성 스크래퍼 차단
