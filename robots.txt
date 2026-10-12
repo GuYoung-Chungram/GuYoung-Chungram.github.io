@@ -4,6 +4,11 @@
 # ============================================================
 
 # 일반 검색엔진 — 허용 (SEO 유지)
+
+User-agent: *
+Allow: /
+Sitemap: https://www.crmc.co.kr/sitemap.xml
+
 User-agent: Googlebot
 Allow: /
 
