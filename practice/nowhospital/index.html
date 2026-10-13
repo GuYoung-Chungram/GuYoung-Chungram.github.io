@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>나우병원 AI 업무활용 데모</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cr-accent:#1652D8; --cr-accent2:#0F3D99;
+    --cr-bg:#FFFFFF; --cr-surface:#F8FAFF; --cr-light:#EEF3FD;
+    --cr-text:#1A1A1A; --cr-gray:#666666; --cr-dark:#0F0F0F;
+    --cr-border:#D0D9F5; --cr-radius:4px;
+    --green:#1B7A4E; --amber:#D97706; --red:#C62828;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:'Noto Sans KR','Inter',sans-serif;
+    background:var(--cr-surface); color:var(--cr-text);
+    line-height:1.6; padding-bottom:60px;
+  }
+  .safety-bar{
+    position:sticky; top:0; z-index:50;
+    background:#FFF4E5; border-bottom:1px solid #F5C179;
+    color:#8A5300; font-size:13px; font-weight:600;
+    text-align:center; padding:9px 12px;
+  }
+  header{
+    background:linear-gradient(135deg,var(--cr-accent),var(--cr-accent2));
+    color:#fff; padding:28px 20px 24px; text-align:center;
+  }
+  header .eyebrow{
+    font-size:12px; letter-spacing:.12em; text-transform:uppercase;
+    opacity:.85; font-weight:600; margin-bottom:8px;
+  }
+  header h1{font-size:22px; font-weight:800; margin-bottom:6px;}
+  header p{font-size:13.5px; opacity:.9; max-width:520px; margin:0 auto;}
+
+  .wrap{max-width:760px; margin:0 auto; padding:24px 16px 0;}
+
+  /* HERO / TRACK SELECT */
+  #hero{text-align:center; padding:36px 0 10px;}
+  #hero h2{font-size:19px; font-weight:800; margin-bottom:6px;}
+  #hero .sub{font-size:13.5px; color:var(--cr-gray); margin-bottom:26px;}
+  .track-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  @media (max-width:520px){.track-grid{grid-template-columns:1fr;}}
+  .track-card{
+    background:#fff; border:2px solid var(--cr-border); border-radius:12px;
+    padding:26px 18px; cursor:pointer; text-align:center;
+    transition:.15s ease; -webkit-tap-highlight-color:transparent;
+  }
+  .track-card:hover{border-color:var(--cr-accent); transform:translateY(-2px); box-shadow:0 8px 20px rgba(22,82,216,.12);}
+  .track-card .icon{font-size:38px; margin-bottom:10px;}
+  .track-card h3{font-size:16.5px; font-weight:800; margin-bottom:6px;}
+  .track-card p{font-size:12.5px; color:var(--cr-gray);}
+
+  /* TRACK VIEW */
+  #trackView{display:none;}
+  .track-topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:18px; flex-wrap:wrap; gap:10px;
+  }
+  .track-label{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--cr-light); border:1px solid var(--cr-border);
+    border-radius:999px; padding:7px 14px; font-weight:700; font-size:14px;
+  }
+  .switch-btn{
+    background:#fff; border:1px solid var(--cr-border); color:var(--cr-accent);
+    border-radius:999px; padding:7px 14px; font-size:12.5px; font-weight:700;
+    cursor:pointer;
+  }
+  .switch-btn:hover{background:var(--cr-light);}
+
+  .card{
+    background:#fff; border:1px solid var(--cr-border); border-radius:12px;
+    padding:20px; margin-bottom:18px;
+  }
+  .card-head{display:flex; align-items:flex-start; gap:12px; margin-bottom:10px;}
+  .card-num{
+    flex:none; width:30px; height:30px; border-radius:50%;
+    background:var(--cr-accent); color:#fff; font-weight:800; font-size:13px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .card-head .icon{font-size:20px;}
+  .card-head h4{font-size:15.5px; font-weight:800;}
+  .card-scenario{
+    font-size:13px; color:var(--cr-gray); margin:0 0 16px 42px;
+  }
+
+  /* BUILDER (buttons + minimal input) */
+  .builder{
+    background:var(--cr-surface); border:1px solid var(--cr-border);
+    border-radius:10px; padding:14px 16px; margin-bottom:14px;
+  }
+  .field-row{margin-bottom:12px;}
+  .field-row:last-child{margin-bottom:0;}
+  .field-label{
+    font-size:12px; font-weight:700; color:var(--cr-accent2);
+    margin-bottom:7px; display:block;
+  }
+  .topic-input, .topic-textarea{
+    width:100%; border:1px solid var(--cr-border); border-radius:7px;
+    padding:9px 11px; font-size:13.5px; font-family:inherit; color:var(--cr-text);
+    background:#fff;
+  }
+  .topic-input:focus, .topic-textarea:focus{outline:2px solid var(--cr-accent); outline-offset:1px;}
+  .topic-textarea{resize:vertical; min-height:56px; line-height:1.5;}
+  .chip-row-label{
+    font-size:12px; font-weight:700; color:var(--cr-gray); margin-bottom:7px; display:block;
+  }
+  .chip-group{display:flex; flex-wrap:wrap; gap:7px;}
+  .chip{
+    border:1.5px solid var(--cr-border); background:#fff; color:var(--cr-text);
+    border-radius:999px; padding:6px 13px; font-size:12.5px; font-weight:600;
+    cursor:pointer; transition:.12s ease; -webkit-tap-highlight-color:transparent;
+  }
+  .chip:hover{border-color:var(--cr-accent);}
+  .chip.active{background:var(--cr-accent); border-color:var(--cr-accent); color:#fff;}
+
+  .ex-prompt-box{
+    background:#14161C; border-radius:8px; overflow:hidden;
+  }
+  .ex-prompt-label{
+    display:flex; align-items:center; justify-content:space-between;
+    background:#1E212B; color:#C9D3EA; font-size:11.5px; font-weight:700;
+    padding:9px 12px;
+  }
+  .copy-btn{
+    background:var(--cr-accent); color:#fff; border:none; border-radius:5px;
+    font-size:11.5px; font-weight:700; padding:5px 11px; cursor:pointer;
+  }
+  .copy-btn:hover{background:var(--cr-accent2);}
+  .copy-btn.copied{background:var(--green);}
+  .ex-prompt-text{
+    font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;
+    font-size:12px; line-height:1.75; color:#E8EAF0;
+    padding:14px 12px; white-space:pre-wrap; word-break:break-word;
+  }
+  .ctx{color:#8FD19E;}
+  .var{color:#7EB3FF; font-weight:600;}
+  .ban{color:#FF8A80;}
+  .cmt{color:rgba(255,255,255,.35);}
+
+  .tip{
+    margin-top:12px; font-size:12.5px; color:#3D3D3D;
+    background:var(--cr-light); border-left:3px solid var(--cr-accent);
+    padding:9px 12px; border-radius:4px;
+  }
+  .tip strong{color:var(--cr-accent2);}
+  .note-line{
+    margin-top:7px; font-size:11px; color:var(--cr-gray);
+    padding-left:2px; line-height:1.5;
+  }
+
+  /* AI SERVICE QUICK LINKS */
+  .ai-links{display:flex; gap:10px; margin-top:10px;}
+  .ai-badge{
+    display:flex; flex-direction:column; align-items:center; gap:3px;
+    text-decoration:none; width:52px; -webkit-tap-highlight-color:transparent;
+    transition:transform .12s ease, opacity .12s ease;
+  }
+  .ai-badge:hover{transform:translateY(-1px); opacity:.85;}
+  .ai-badge .icon-sq{
+    width:34px; height:34px; border-radius:9px;
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; font-weight:800; font-size:10px; letter-spacing:-.02em;
+    box-shadow:0 2px 5px rgba(0,0,0,.15);
+  }
+  .ai-badge .icon-sq.gpt{background:#0F0F10;}
+  .ai-badge .icon-sq.gem{
+    background:linear-gradient(135deg,#4285F4 0%,#9B72CB 55%,#D96570 100%);
+    font-size:16px; font-weight:400;
+  }
+  .ai-badge .cap{font-size:9.5px; color:var(--cr-gray); font-weight:600;}
+
+  /* STAGE TABS (multi-step cards) */
+  .stage-tabs{
+    display:flex; gap:6px; margin-bottom:14px 42px; margin:0 0 14px 42px;
+    flex-wrap:wrap;
+  }
+  .stage-tab-btn{
+    border:1.5px solid var(--cr-border); background:#fff; color:var(--cr-gray);
+    border-radius:999px; padding:6px 13px; font-size:12px; font-weight:700;
+    cursor:pointer; transition:.12s ease;
+  }
+  .stage-tab-btn.active{background:var(--cr-accent2); border-color:var(--cr-accent2); color:#fff;}
+  .stage-tab-btn:hover:not(.active){border-color:var(--cr-accent);}
+  .stage-panel{display:none;}
+  .stage-panel.active{display:block;}
+  .stage-flow-note{
+    font-size:11.5px; color:var(--cr-gray); margin:0 0 14px 42px;
+    display:flex; align-items:center; gap:5px;
+  }
+
+  footer{
+    max-width:760px; margin:30px auto 0; padding:18px 16px 0;
+    text-align:center; font-size:11.5px; color:var(--cr-gray);
+    border-top:1px solid var(--cr-border);
+  }
+  footer a{color:var(--cr-accent); text-decoration:none; font-weight:600;}
+  .foot-badge{
+    display:inline-block; margin-top:10px; background:var(--cr-light);
+    border:1px solid var(--cr-border); border-radius:999px;
+    padding:5px 13px; font-size:11px; font-weight:700; color:var(--cr-accent2);
+  }
+</style>
+</head>
+<body>
+
+<div class="safety-bar">⚠️ 실습에는 예시 데이터만 사용하세요 — 환자정보 · 개인정보는 절대 입력하지 않습니다</div>
+
+<header>
+  <div class="eyebrow">나우병원 · AI 리터러시 특강 · 모듈 4</div>
+  <h1>오늘부터, 이렇게 써보세요</h1>
+  <p>버튼만 눌러도 프롬프트가 완성됩니다. 대표 기능 3가지로 바로 체험해보세요.</p>
+</header>
+
+<div class="wrap">
+
+  <!-- HERO: TRACK SELECT -->
+  <div id="hero">
+    <h2>어느 쪽이세요?</h2>
+    <div class="sub">해당하는 카드를 눌러주세요</div>
+    <div class="track-grid">
+      <div class="track-card" onclick="selectTrack('med')">
+        <div class="icon">🩺</div>
+        <h3>의료진용</h3>
+        <p>자료 리서치 · 문서 초안 · 발표 준비</p>
+      </div>
+      <div class="track-card" onclick="selectTrack('adm')">
+        <div class="icon">📋</div>
+        <h3>행정직용</h3>
+        <p>보고서 · 홍보 이미지 · 커뮤니케이션</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRACK VIEW -->
+  <div id="trackView">
+    <div class="track-topbar">
+      <span class="track-label" id="trackLabel"></span>
+      <button class="switch-btn" onclick="toggleTrack()">↔ 다른 트랙 보기</button>
+    </div>
+    <div id="cardsMed" style="display:none"></div>
+    <div id="cardsAdm" style="display:none"></div>
+  </div>
+
+</div>
+
+<footer>
+  <div>버튼으로 뼈대를 완성했다면, 그 다음은 여러분만의 표현으로 자유롭게 바꿔보세요.</div>
+  <div class="foot-badge">청람M&C · 나우병원 AI 리터러시 · 2026</div>
+  <div style="margin-top:8px;">Produced by <a href="https://crmc.co.kr" target="_blank">crmc.co.kr</a></div>
+</footer>
+
+<script>
+function esc(str){
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+function v(str){ return '<span class="var">' + esc(str) + '</span>'; }
+function vArr(arr){
+  if(!arr || !arr.length) return '(선택 안 함)';
+  return '<span class="var">' + esc(arr.join(', ')) + '</span>';
+}
+
+const AI_LINKS_HTML = `
+  <div class="ai-links">
+    <a class="ai-badge" href="https://chatgpt.com/" target="_blank" rel="noopener" title="챗GPT에서 열기">
+      <span class="icon-sq gpt">GPT</span>
+      <span class="cap">챗GPT</span>
+    </a>
+    <a class="ai-badge" href="https://gemini.google.com/" target="_blank" rel="noopener" title="제미나이에서 열기">
+      <span class="icon-sq gem">✦</span>
+      <span class="cap">제미나이</span>
+    </a>
+  </div>`;
+
+const DATA = {
+  med: {
+    label: "🩺 의료진용",
+    cards: [
+      {
+        icon:"📚", title:"논문·자료 리서치 요약",
+        scenario:"이럴 때: 컨퍼런스 준비, 최신 가이드라인 확인, 환자 설명자료 만들 때",
+        topic:{ label:"무엇에 대해 알고 싶으세요?", def:"무릎 로봇 반치환술의 최신 임상 데이터" },
+        slots:[
+          { key:"purpose", label:"용도", options:["컨퍼런스 준비","환자 설명자료","개인 학습"] },
+          { key:"level", label:"설명 수준", options:["전문의 수준 그대로","비전공자도 이해하게"] },
+          { key:"length", label:"분량", options:["5~8줄 핵심요약","A4 1~2장 상세요약"] },
+          { key:"closing", label:"마무리 형식", multi:true, options:["핵심 한 줄 요약","핵심 키워드 5개","관련 추가 연구자료 추천"] }
+        ],
+        template:(s)=>{
+          const closingLine = (s.closing && s.closing.length)
+            ? `- 마지막에 ${vArr(s.closing)} 추가\n` : '';
+          return `<span class="ctx">## 맥락 정보 (Layer 1)</span>
+[용도]: ${v(s.purpose)}
+[설명 수준]: ${v(s.level)}
+
+<span class="ctx">## 요청 내용 (Layer 2)</span>
+[주제]: ${v(s.topic)}
+[분량]: ${v(s.length)}
+작성 조건:
+- <span class="ban">금지어: 매우, 상당히, 다양한</span> 같은 모호한 표현
+${closingLine}`;
+        },
+        tip:"<strong>Tip:</strong> 결과가 너무 길면 \"더 줄여줘\"라고 이어서 요청하면 됩니다.",
+        note:"실제 환자 데이터·차트는 절대 붙여넣지 마세요."
+      },
+      {
+        icon:"📝", title:"진료 외 행정문서 초안",
+        scenario:"이럴 때: 소견서 초안, 보호자 안내문, 원내 공지문 초안이 필요할 때",
+        topic:{ label:"어떤 상황인가요?", def:"수술 후 주의사항 안내" },
+        slots:[
+          { key:"doc", label:"문서 종류", options:["소견서 초안","보호자 안내문","원내 공지문"] },
+          { key:"recipient", label:"받는 사람", options:["환자·보호자","타 병원","원내 직원"] },
+          { key:"tone", label:"문체", options:["정중하게","친근하게"] }
+        ],
+        template:(s)=>
+`<span class="ctx">## 맥락 정보 (Layer 1)</span>
+[기관]: 나우병원 (정형외과 중심 종합병원)
+[문서 종류]: ${v(s.doc)}
+[받는 사람]: ${v(s.recipient)}
+[상황]: ${v(s.topic)}
+
+<span class="ctx">## 작성 조건 (Layer 2)</span>
+- 분량: A4 1매 이내
+- 문체: ${v(s.tone)}
+- 문서 하단에 병원명(나우병원) 표기
+- <span class="ban">환자 실명·차트번호는 [OOO]로 표기하여 입력</span>`,
+        tip:"<strong>Tip:</strong> 초안은 항상 &#39;시작점&#39;입니다. 최종 발행 전 본인이 다시 한 번 확인하세요.",
+        note:"초안일 뿐입니다. 최종 발행 전 반드시 직접 검토·수정하세요."
+      },
+      {
+        icon:"🎤", title:"학회·발표자료 만들기",
+        scenario:"정석 순서 그대로: ① 개요 → ② 스크립트 → ③ 슬라이드 디자인. 탭을 눌러 순서대로 넘겨보세요.",
+        stages:[
+          {
+            key:"outline", label:"① 발표 개요",
+            topic:{ label:"발표 주제", def:"최소침습 수술의 최신 동향" },
+            slots:[
+              { key:"audience", label:"청중", options:["동료 의료진","일반인","학생"] },
+              { key:"time", label:"발표 시간", options:["10분","20분","40분"] },
+              { key:"slides", label:"슬라이드 개수", options:["6장","8장","12장"] }
+            ],
+            template:(s)=>
+`<span class="ctx">## 맥락 정보 (Layer 1)</span>
+[발표 주제]: ${v(s.topic)}
+[청중]: ${v(s.audience)}
+[발표 시간]: ${v(s.time)}
+
+<span class="ctx">## 요청 내용 (Layer 2)</span>
+- 슬라이드 개수: ${v(s.slides)}
+- 각 슬라이드별 핵심 메시지 1줄 + 넣으면 좋을 데이터·사례 제안
+- 전체 스토리라인이 자연스럽게 이어지도록 구성`,
+            tip:"<strong>Tip:</strong> 개요가 마음에 들면 그대로 복사해서 ② 스크립트 탭에 붙여넣고 이어가세요.",
+            note:"개요만 잡아주는 용도입니다. 세부 데이터는 직접 검증 후 채워넣으세요."
+          },
+          {
+            key:"script", label:"② 마스터 스크립트",
+            textarea:{ label:"① 에서 나온 개요를 붙여넣으세요 (예시 그대로 써도 됩니다)",
+              def:"1. 서론 - 기존 치료법의 한계\n2. 최소침습 수술의 원리\n3. 임상 데이터 비교\n4. 회복 기간 단축 사례\n5. 향후 전망 및 결론" },
+            slots:[
+              { key:"style", label:"발표 스타일", options:["설명형(정보 전달 중심)","스토리텔링형(사례 중심)","토론 유도형(질문 던지기)"] },
+              { key:"emphasis", label:"강조 정도", options:["담백하게","임팩트 있게"] },
+              { key:"timeCue", label:"시간 안내", options:["슬라이드별 소요시간 표기","표기 없음"] }
+            ],
+            template:(s)=>
+`<span class="ctx">## 맥락 정보 (Layer 1)</span>
+[목적]: 위 개요를 실제 발표용 대본(스크립트)으로 확장
+[발표 스타일]: ${v(s.style)}
+[강조 정도]: ${v(s.emphasis)}
+
+<span class="ctx">## 개요 (Layer 2 - 입력)</span>
+${v(s.topic)}
+
+작성 조건:
+- 각 항목을 실제 말하듯 자연스러운 구어체 문장으로 풀어쓰기
+- 슬라이드당 3~5문장 분량
+- ${v(s.timeCue)}
+- 어려운 용어는 한 번은 쉬운 말로 풀어서 설명`,
+            tip:"<strong>Tip:</strong> 너무 딱딱하면 \"구어체로 더 편하게 풀어줘\"라고 이어서 요청하세요.",
+            note:"스크립트는 리허설용 초안입니다. 실제 발표 톤은 직접 다듬어보세요."
+          },
+          {
+            key:"design", label:"③ 슬라이드 디자인",
+            topic:{ label:"표지에 들어갈 발표 제목", def:"최소침습 수술의 최신 동향과 임상 적용" },
+            slots:[
+              { key:"cover", label:"표지 스타일", options:["심플 타이틀형","이미지 풀블리드형","데이터 강조형"] },
+              { key:"font", label:"폰트 무드", options:["전문적인 산세리프","따뜻한 세리프 조합"] },
+              { key:"textbox", label:"텍스트박스 활용", options:["핵심 키워드 중심(짧게)","문장형 설명(자세히)"] },
+              { key:"shape", label:"도형 사용", options:["아이콘·도형 적극 활용","미니멀(도형 최소화)"] },
+              { key:"graph", label:"그래프·차트", options:["막대·꺾은선 그래프 포함","텍스트/표 위주"] },
+              { key:"typo", label:"타이포그래피", options:["제목 크게, 대비 강조","균형 잡힌 크기(안정적)"] }
+            ],
+            template:(s)=>
+`<span class="ctx">## 맥락 정보 (Layer 1)</span>
+[발표 제목]: ${v(s.topic)}
+[표지 스타일]: ${v(s.cover)}
+
+<span class="ctx">## 디자인 조건 (Layer 2)</span>
+- 폰트 무드: ${v(s.font)}
+- 텍스트박스: ${v(s.textbox)}
+- 도형 사용: ${v(s.shape)}
+- 그래프·차트: ${v(s.graph)}
+- 타이포그래피: ${v(s.typo)}
+- 전체 톤앤매너: 학회 발표에 어울리는 신뢰감 있는 톤`,
+            tip:"<strong>Tip:</strong> 결과가 화려하면 \"더 절제된 톤으로\", 밋밋하면 \"포인트 컬러 하나만 강조해줘\"로 조정하세요.",
+            note:"챗GPT·제미나이뿐 아니라 감마(Gamma)·캔바 AI 등 슬라이드 제작 도구에도 그대로 붙여넣어 쓸 수 있습니다."
+          }
+        ]
+      }
+    ]
+  },
+  adm: {
+    label: "📋 행정직용",
+    cards: [
+      {
+        icon:"📄", title:"보고서·공문 초안 작성",
+        scenario:"이럴 때: 결재 올릴 보고서, 원내 공문 초안이 급하게 필요할 때",
+        topic:{ label:"보고 주제", def:"3분기 시설 점검 결과" },
+        slots:[
+          { key:"dept", label:"작성 부서", options:["원무팀","총무팀","시설관리팀","간호행정팀"] },
+          { key:"approver", label:"결재자", options:["팀장","원장","사무국장"] },
+          { key:"purpose", label:"보고 목적", options:["현황 공유","결재 요청","안내"] },
+          { key:"urgency", label:"긴급도", options:["즉시","오늘 중","정기 보고"] }
+        ],
+        template:(s)=>
+`<span class="ctx">## 맥락 정보 (Layer 1)</span>
+[기관]: 나우병원 (민간 종합병원, 관공서 아님)
+[작성 부서]: ${v(s.dept)}
+[결재자]: ${v(s.approver)}
+[보고 목적]: ${v(s.purpose)}
+[긴급도]: ${v(s.urgency)}
+
+<span class="ctx">## 작성 조건 (Layer 2)</span>
+[보고 주제]: ${v(s.topic)}
+- 분량: A4 1매 이내
+- <span class="ban">금지어: 매우, 상당히, 적극적으로, 철저히</span>
+- 문체: 병원 내부 보고서에 맞는 정중하고 간결한 문어체 (<span class="ban">관공서식 공문투·【 】식 제목은 지양</span>)
+- 제목: 간결한 한 줄 제목 + 기준일 포함`,
+        tip:"<strong>Tip:</strong> 결과물이 딱딱하면 \"조금 더 부드러운 안내 톤으로 바꿔줘\"라고 이어서 요청하세요.",
+        note:"기존 병원 내부 보고서 양식이나 지난 사례가 있다면, 챗GPT·제미나이 대화창에 함께 첨부하면 더 좋습니다."
+      },
+      {
+        icon:"🎨", title:"원내 홍보 이미지 생성",
+        scenario:"이럴 때: 포스터, 안내 배너, SNS 게시물용 이미지가 급할 때",
+        topic:{ label:"무엇을 홍보하나요?", def:"독감 예방접종 안내" },
+        slots:[
+          { key:"use", label:"용도", options:["원내 게시 포스터","SNS 카드","안내 배너"] },
+          { key:"mood", label:"분위기", options:["신뢰감 있는","밝고 친근한","전문적인"] },
+          { key:"text", label:"텍스트 포함", options:["제목만 포함","텍스트 없이"] }
+        ],
+        template:(s)=>
+`<span class="ctx">## 맥락 정보 (Layer 1)</span>
+[기관]: 나우병원
+[용도]: ${v(s.use)}
+[홍보 내용]: ${v(s.topic)}
+[분위기]: ${v(s.mood)}
+
+<span class="ctx">## 이미지 조건 (Layer 2)</span>
+- 텍스트 포함 여부: ${v(s.text)} (포함 시 "나우병원" 명칭이 자연스럽게 들어가도록)
+- 주요 색상: 나우병원 브랜드 톤(신뢰감 있는 블루·화이트 계열)
+- 스타일: 과장 없는 깔끔한 일러스트 또는 사진풍`,
+        tip:"<strong>Tip:</strong> 한 번에 안 나오면 \"색을 더 차분하게\", \"글씨 없이\" 등으로 계속 다듬으면 됩니다.",
+        note:"결과물은 초안 시안입니다. 실제 게시 전 디자인 검수를 거치세요."
+      },
+      {
+        icon:"✉️", title:"이메일·공지 톤 다듬기",
+        scenario:"이럴 때: 애매한 어투를 정중하게, 딱딱한 공지를 부드럽게 바꾸고 싶을 때",
+        textarea:{ label:"다듬고 싶은 문장을 붙여넣으세요", def:"다음 주 월요일부터 신관 3층 공사로 인해 엘리베이터 이용이 제한됩니다. 협조 부탁드립니다." },
+        slots:[
+          { key:"recipient", label:"받는 사람", options:["원내 전체 직원","외부 협력업체","특정 부서"] },
+          { key:"tone", label:"원하는 톤", options:["정중하게","친근하게","간결하게"] }
+        ],
+        template:(s)=>
+`<span class="ctx">## 맥락 정보 (Layer 1)</span>
+[받는 사람]: ${v(s.recipient)}
+[원하는 톤]: ${v(s.tone)}
+
+<span class="ctx">## 작성 조건 (Layer 2)</span>
+아래 문장을 위 톤에 맞게 다듬어줘:
+"${v(s.topic)}"
+- 분량: 원문과 비슷하게 유지
+- 존댓말 일관성 유지`,
+        tip:"<strong>Tip:</strong> 이미 쓴 글이 있다면 새로 쓰게 하지 말고, &#39;다듬어줘&#39;라고 요청하는 게 훨씬 빠릅니다."
+      }
+    ]
+  }
+};
+
+let currentTrack = null;
+const STATES = {};   // id -> { topic, ...slotValues }
+const REGISTRY = {}; // id -> stage-like config { topic, textarea, slots, template }
+
+function buildFieldsHtml(id, stage){
+  let inputHtml = '';
+  if(stage.topic){
+    inputHtml = `
+      <div class="field-row">
+        <label class="field-label">${stage.topic.label}</label>
+        <input type="text" class="topic-input" id="topic-${id}" value="${esc(stage.topic.def)}"
+               oninput="onTopicChange('${id}')">
+      </div>`;
+  } else if(stage.textarea){
+    inputHtml = `
+      <div class="field-row">
+        <label class="field-label">${stage.textarea.label}</label>
+        <textarea class="topic-textarea" id="topic-${id}" oninput="onTopicChange('${id}')">${esc(stage.textarea.def)}</textarea>
+      </div>`;
+  }
+
+  const chipRows = stage.slots.map(sl => `
+      <div class="field-row">
+        <span class="chip-row-label">${sl.label}${sl.multi ? ' <span style="font-weight:400;color:var(--cr-gray);">· 복수 선택 가능</span>' : ''}</span>
+        <div class="chip-group" data-slot="${sl.key}">
+          ${sl.options.map((opt, oi) => `<button type="button" class="chip${oi===0?' active':''}" data-value="${esc(opt)}" onclick="onChipClick('${id}','${sl.key}',this)">${opt}</button>`).join('')}
+        </div>
+      </div>`).join('');
+
+  return `
+    <div class="builder">
+      ${inputHtml}
+      ${chipRows}
+    </div>
+    <div class="ex-prompt-box">
+      <div class="ex-prompt-label">
+        <span>완성된 프롬프트 · 복사해서 바로 써보세요</span>
+        <button class="copy-btn" data-id="prompt-${id}" onclick="copyPrompt(this)">복사</button>
+      </div>
+      <div class="ex-prompt-text" id="prompt-${id}"></div>
+    </div>
+    ${AI_LINKS_HTML}
+    <div class="tip">${stage.tip}</div>
+    ${stage.note ? `<div class="note-line">📎 ${esc(stage.note)}</div>` : ''}
+  `;
+}
+
+function registerStage(id, stage){
+  const state = { topic: (stage.topic ? stage.topic.def : (stage.textarea ? stage.textarea.def : '')) };
+  stage.slots.forEach(sl => { state[sl.key] = sl.multi ? [sl.options[0]] : sl.options[0]; });
+  STATES[id] = state;
+  REGISTRY[id] = stage;
+}
+
+function renderTrack(key){
+  const t = DATA[key];
+  const container = document.getElementById(key === 'med' ? 'cardsMed' : 'cardsAdm');
+  if(container.dataset.rendered) return;
+  container.dataset.rendered = "1";
+
+  t.cards.forEach((c, i) => {
+    const cardId = key + '-' + i;
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    if(c.stages){
+      const tabsHtml = c.stages.map((st, si) =>
+        `<button type="button" class="stage-tab-btn${si===0?' active':''}" onclick="selectStage('${cardId}',${si})">${st.label}</button>`
+      ).join('');
+
+      const panelsHtml = c.stages.map((st, si) => {
+        const stageId = cardId + '-s' + si;
+        registerStage(stageId, st);
+        return `<div class="stage-panel${si===0?' active':''}" id="panel-${stageId}">${buildFieldsHtml(stageId, st)}</div>`;
+      }).join('');
+
+      card.innerHTML = `
+        <div class="card-head">
+          <div class="card-num">${i+1}</div>
+          <span class="icon">${c.icon}</span>
+          <h4>${c.title}</h4>
+        </div>
+        <div class="card-scenario">${c.scenario}</div>
+        <div class="stage-tabs">${tabsHtml}</div>
+        ${panelsHtml}
+      `;
+      container.appendChild(card);
+      c.stages.forEach((st, si) => renderPrompt(cardId + '-s' + si));
+    } else {
+      registerStage(cardId, c);
+      card.innerHTML = `
+        <div class="card-head">
+          <div class="card-num">${i+1}</div>
+          <span class="icon">${c.icon}</span>
+          <h4>${c.title}</h4>
+        </div>
+        <div class="card-scenario">${c.scenario}</div>
+        ${buildFieldsHtml(cardId, c)}
+      `;
+      container.appendChild(card);
+      renderPrompt(cardId);
+    }
+  });
+}
+
+function selectStage(cardId, si){
+  const card = document.getElementById('panel-' + cardId + '-s' + si).closest('.card');
+  card.querySelectorAll('.stage-tab-btn').forEach((btn, idx) => btn.classList.toggle('active', idx === si));
+  card.querySelectorAll('.stage-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + cardId + '-s' + si).classList.add('active');
+}
+
+function renderPrompt(id){
+  const el = document.getElementById('prompt-' + id);
+  el.innerHTML = REGISTRY[id].template(STATES[id]);
+}
+
+function onTopicChange(id){
+  const el = document.getElementById('topic-' + id);
+  STATES[id].topic = el.value;
+  renderPrompt(id);
+}
+
+function onChipClick(id, slotKey, btn){
+  const slotDef = REGISTRY[id].slots.find(sl => sl.key === slotKey);
+  if(slotDef && slotDef.multi){
+    const val = btn.getAttribute('data-value');
+    const arr = STATES[id][slotKey];
+    const idx = arr.indexOf(val);
+    if(idx >= 0){ arr.splice(idx, 1); btn.classList.remove('active'); }
+    else { arr.push(val); btn.classList.add('active'); }
+  } else {
+    STATES[id][slotKey] = btn.getAttribute('data-value');
+    const group = btn.parentElement;
+    Array.from(group.children).forEach(ch => ch.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  renderPrompt(id);
+}
+
+function selectTrack(key){
+  currentTrack = key;
+  document.getElementById('hero').style.display = 'none';
+  document.getElementById('trackView').style.display = 'block';
+  document.getElementById('trackLabel').textContent = DATA[key].label;
+  document.getElementById('cardsMed').style.display = key === 'med' ? 'block' : 'none';
+  document.getElementById('cardsAdm').style.display = key === 'adm' ? 'block' : 'none';
+  renderTrack(key);
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function toggleTrack(){
+  const next = currentTrack === 'med' ? 'adm' : 'med';
+  selectTrack(next);
+}
+
+function copyPrompt(btn){
+  const id = btn.getAttribute('data-id');
+  const el = document.getElementById(id);
+  const text = el.innerText;
+  const done = () => {
+    const original = btn.textContent;
+    btn.textContent = '복사됨!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = original; btn.classList.remove('copied'); }, 1500);
+  };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+  } else {
+    fallbackCopy(text, done);
+  }
+}
+
+function fallbackCopy(text, cb){
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try{ document.execCommand('copy'); }catch(e){}
+  document.body.removeChild(ta);
+  cb();
+}
+</script>
+
+</body>
+</html>
