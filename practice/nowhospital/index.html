@@ -213,7 +213,7 @@
 <div class="safety-bar">⚠️ 실습에는 예시 데이터만 사용하세요 — 환자정보 · 개인정보는 절대 입력하지 않습니다</div>
 
 <header>
-  <div class="eyebrow">나우병원 · AI 리터러시 특강 · 모듈 4</div>
+  <div class="eyebrow">평촌서울나우병원 · AI 리터러시 특강 · 모듈 4</div>
   <h1>오늘부터, 이렇게 써보세요</h1>
   <p>버튼만 눌러도 프롬프트가 완성됩니다. 대표 기능 3가지로 바로 체험해보세요.</p>
 </header>
@@ -252,7 +252,7 @@
 
 <footer>
   <div>버튼으로 뼈대를 완성했다면, 그 다음은 여러분만의 표현으로 자유롭게 바꿔보세요.</div>
-  <div class="foot-badge">청람M&C · 나우병원 AI 리터러시 · 2026</div>
+  <div class="foot-badge">청람M&C · 평촌서울나우병원 AI 리터러시 · 2026</div>
   <div style="margin-top:8px;">Produced by <a href="https://crmc.co.kr" target="_blank">crmc.co.kr</a></div>
 </footer>
 
@@ -322,7 +322,7 @@ ${closingLine}`;
         ],
         template:(s)=>
 `<span class="ctx">## 맥락 정보 (Layer 1)</span>
-[기관]: 나우병원 (정형외과 중심 종합병원)
+[기관]: 평촌서울나우병원 (정형외과 중심 종합병원)
 [문서 종류]: ${v(s.doc)}
 [받는 사람]: ${v(s.recipient)}
 [상황]: ${v(s.topic)}
@@ -330,7 +330,7 @@ ${closingLine}`;
 <span class="ctx">## 작성 조건 (Layer 2)</span>
 - 분량: A4 1매 이내
 - 문체: ${v(s.tone)}
-- 문서 하단에 병원명(나우병원) 표기
+- 문서 하단에 병원명(평촌서울나우병원) 표기
 - <span class="ban">환자 실명·차트번호는 [OOO]로 표기하여 입력</span>`,
         tip:"<strong>Tip:</strong> 초안은 항상 &#39;시작점&#39;입니다. 최종 발행 전 본인이 다시 한 번 확인하세요.",
         note:"초안일 뿐입니다. 최종 발행 전 반드시 직접 검토·수정하세요."
@@ -431,7 +431,7 @@ ${v(s.topic)}
         ],
         template:(s)=>
 `<span class="ctx">## 맥락 정보 (Layer 1)</span>
-[기관]: 나우병원 (민간 종합병원, 관공서 아님)
+[기관]: 평촌서울나우병원 (민간 종합병원, 관공서 아님)
 [작성 부서]: ${v(s.dept)}
 [결재자]: ${v(s.approver)}
 [보고 목적]: ${v(s.purpose)}
@@ -457,14 +457,14 @@ ${v(s.topic)}
         ],
         template:(s)=>
 `<span class="ctx">## 맥락 정보 (Layer 1)</span>
-[기관]: 나우병원
+[기관]: 평촌서울나우병원
 [용도]: ${v(s.use)}
 [홍보 내용]: ${v(s.topic)}
 [분위기]: ${v(s.mood)}
 
 <span class="ctx">## 이미지 조건 (Layer 2)</span>
-- 텍스트 포함 여부: ${v(s.text)} (포함 시 "나우병원" 명칭이 자연스럽게 들어가도록)
-- 주요 색상: 나우병원 브랜드 톤(신뢰감 있는 블루·화이트 계열)
+- 텍스트 포함 여부: ${v(s.text)} (포함 시 "평촌서울나우병원" 명칭이 자연스럽게 들어가도록)
+- 주요 색상: 평촌서울나우병원 브랜드 톤(신뢰감 있는 블루·화이트 계열)
 - 스타일: 과장 없는 깔끔한 일러스트 또는 사진풍`,
         tip:"<strong>Tip:</strong> 한 번에 안 나오면 \"색을 더 차분하게\", \"글씨 없이\" 등으로 계속 다듬으면 됩니다.",
         note:"결과물은 초안 시안입니다. 실제 게시 전 디자인 검수를 거치세요."
