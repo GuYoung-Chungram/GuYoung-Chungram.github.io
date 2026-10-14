@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ESG Decision Intelligence</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700&display=swap');
+    :root{--ink:#15211d;--muted:#6b7772;--line:#dce3dd;--paper:#f7f8f4;--white:#fff;--forest:#145a42;--mint:#cdf1df;--amber:#f5ba5a;--rose:#e67d6c;--blue:#5d7dbe;--shadow:0 10px 28px rgba(25,47,39,.07)}
+    *{box-sizing:border-box} body{margin:0;background:var(--paper);color:var(--ink);font-family:Manrope,'Noto Sans KR',sans-serif;letter-spacing:-.02em}.shell{max-width:1500px;margin:auto;padding:30px 38px 52px}
+    header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid var(--line);padding-bottom:25px;margin-bottom:25px}.eyebrow{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--forest);font-weight:500}.brand{font-size:30px;font-weight:800;letter-spacing:-.06em;margin-top:7px}.sub{color:var(--muted);font-size:13px;margin-top:4px;max-width:560px;line-height:1.55}.live{display:flex;gap:8px;align-items:center;background:#e7f4ea;border:1px solid #cce7d2;border-radius:20px;padding:8px 12px;color:var(--forest);font-size:12px;font-weight:700}.pulse{width:7px;height:7px;border-radius:50%;background:#1f9a5d;box-shadow:0 0 0 4px rgba(31,154,93,.14)}
+    .layout{display:grid;grid-template-columns:240px minmax(0,1fr);gap:24px}.filters{background:var(--white);border:1px solid var(--line);border-radius:14px;height:max-content;padding:19px;box-shadow:var(--shadow);position:sticky;top:18px}.filter-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.filter-head b{font-size:14px}.reset{border:0;background:none;color:var(--forest);font:inherit;font-size:11px;cursor:pointer}.filter{border-top:1px solid #edf0ed;padding:15px 0 2px}.filter-title{font-weight:700;font-size:12px;margin-bottom:10px}.checks{display:grid;gap:8px}.check{display:flex;align-items:center;gap:8px;font-size:12px;color:#4d5a55;cursor:pointer}.check input{accent-color:var(--forest);width:14px;height:14px;margin:0}.range{width:100%;accent-color:var(--forest)}.range-value{display:flex;justify-content:space-between;color:var(--muted);font-family:'DM Mono';font-size:10px;margin-top:3px}
+    main{min-width:0}.hero{background:var(--ink);border-radius:15px;padding:25px 29px;color:white;display:flex;justify-content:space-between;gap:24px;overflow:hidden;position:relative}.hero:after{content:'';position:absolute;width:360px;height:360px;right:-100px;top:-210px;border-radius:50%;background:radial-gradient(circle,#34775b 0,rgba(52,119,91,0) 67%)}.hero h1{font-size:23px;line-height:1.35;letter-spacing:-.05em;margin:6px 0 9px;position:relative;z-index:1}.hero p{margin:0;color:#b6c6bd;font-size:13px;position:relative;z-index:1;max-width:520px;line-height:1.6}.hero-stat{position:relative;z-index:1;text-align:right;min-width:170px}.hero-stat strong{display:block;font:500 34px/1 'DM Mono';color:#a8e6c2}.hero-stat span{font-size:11px;color:#b6c6bd;display:block;margin-top:6px;line-height:1.5}
+    .metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:16px 0}.metric{background:var(--white);border:1px solid var(--line);border-radius:11px;padding:15px 16px;box-shadow:var(--shadow)}.metric label{font-size:11px;color:var(--muted);display:block}.metric b{font:500 24px 'DM Mono';display:block;margin:8px 0 4px}.metric small{color:var(--forest);font-size:10px;font-weight:700}.metric small.warning{color:#be7520}
+    .grid{display:grid;grid-template-columns:1.28fr .92fr;gap:16px}.card{background:var(--white);border:1px solid var(--line);border-radius:13px;padding:20px;box-shadow:var(--shadow)}.card-title{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px}.card-title h2{margin:0;font-size:15px;letter-spacing:-.04em}.card-title span{color:var(--muted);font-size:11px}.decision{background:#eaf6ed;border:1px solid #cfebd6;padding:14px 15px;border-radius:9px;margin-bottom:15px;font-size:12px;line-height:1.55}.decision b{color:var(--forest)}
+    table{width:100%;border-collapse:collapse;font-size:12px}th{text-align:left;color:var(--muted);font-weight:600;font-size:10px;padding:0 8px 9px}td{padding:11px 8px;border-top:1px solid #edf0ed}tr[data-id]{cursor:pointer;transition:.15s}tr[data-id]:hover,tr.selected{background:#f2f7f3}.company{font-weight:700}.country{color:var(--muted)}.badge{font-size:10px;border-radius:20px;padding:4px 7px;font-weight:700;white-space:nowrap}.success{background:#dff4e6;color:#187344}.fail{background:#fee8e4;color:#b64b3e}.issue{background:#fff1dc;color:#a66315}.stars{letter-spacing:1px;color:var(--amber);font-size:11px}
+    .detail-company{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:15px}.detail-company h3{margin:3px 0;font-size:20px;letter-spacing:-.05em}.detail-company p{margin:0;color:var(--muted);font-size:11px}.rating{background:var(--ink);border-radius:8px;color:#b7eacb;padding:9px 11px;text-align:center;font-family:'DM Mono';font-size:17px}.rating small{display:block;color:#b6c6bd;font:9px Manrope}.strategy{font-size:12px;line-height:1.7;color:#405049}.pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}.pill{font-size:10px;font-weight:700;border:1px solid #cfe2d4;color:var(--forest);background:#f4fbf5;border-radius:15px;padding:5px 8px}.impact{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:16px}.impact div{padding:9px;border-radius:7px;background:#f4f6f3}.impact b{font:500 14px 'DM Mono';display:block}.impact span{font-size:9px;color:var(--muted)}
+    .bottom{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}.heat{display:grid;grid-template-columns:1.3fr repeat(3,.55fr);gap:6px;align-items:center;font-size:11px}.heat .head{color:var(--muted);font-weight:700;font-size:10px;padding-bottom:5px}.heat-name{font-weight:700}.score{text-align:center;border-radius:5px;padding:7px 2px;font:500 11px 'DM Mono'}.s1{background:#d6f0df;color:#196342}.s2{background:#e9f4cf;color:#56701e}.s3{background:#fff0c9;color:#9e6a16}.s4{background:#fbded8;color:#a5443b}.risk-list{display:grid;gap:11px}.risk{display:grid;grid-template-columns:8px 1fr auto;align-items:center;gap:9px;font-size:12px}.dot{width:8px;height:8px;border-radius:2px}.risk b{font-size:12px}.risk span{color:var(--muted);font-size:10px}.level{font:500 10px 'DM Mono';padding:4px 6px;border-radius:4px}.high{background:#fee3dd;color:#ad3f33}.medium{background:#fff0d5;color:#a66512}.low{background:#e3f4e7;color:#207342}
+    .section-title{display:flex;justify-content:space-between;align-items:baseline;margin:26px 0 12px}.section-title h2{margin:0;font-size:16px;letter-spacing:-.04em}.section-title span{color:var(--muted);font-size:11px}
+    .reg-table td{vertical-align:top;font-size:12px;line-height:1.6}.reg-table td:first-child{font-weight:800;white-space:nowrap}
+    .qa-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}.qa{background:#f4f6f3;border-radius:9px;padding:14px 15px;font-size:12px;line-height:1.65}.qa b{display:block;color:var(--forest);font-size:12.5px;margin-bottom:5px}
+    .pairs{display:grid;gap:10px;margin-top:14px}.pair{background:#f4f6f3;border-radius:9px;padding:12px 14px;font-size:12px;line-height:1.6}.pair b{color:var(--forest)}
+    .caveat{background:#fff6e8;border:1px solid #f0ddb0;border-radius:9px;padding:11px 13px;font-size:11.5px;line-height:1.65;color:#6b5327;margin-bottom:9px}
+    .checklist{display:grid;gap:10px;margin-top:14px}.check-item{display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:flex-start;font-size:12px;line-height:1.6}.check-num{width:26px;height:26px;border-radius:8px;background:var(--forest);color:#fff;font:700 12px 'DM Mono';display:grid;place-items:center}
+    .note{font-size:11px;color:var(--muted);margin-top:10px;line-height:1.65}
+    .ref-list{columns:2;column-gap:26px;font-size:11px;line-height:1.9}.ref-list li{margin-bottom:2px;break-inside:avoid}.ref-list a{color:var(--forest);text-decoration:none;word-break:break-all}.ref-list a:hover{text-decoration:underline}.ref-plain{font-size:11.5px;line-height:1.9;color:#405049}.ref-plain b{color:var(--ink)}
+    @media(max-width:740px){.ref-list{columns:1}}
+    @media(max-width:1050px){.metrics{grid-template-columns:repeat(3,1fr)}.grid,.bottom{grid-template-columns:1fr}.layout{grid-template-columns:205px 1fr}.qa-grid{grid-template-columns:1fr}}
+    @media(max-width:740px){.shell{padding:18px}.layout{display:block}.filters{position:static;margin-bottom:14px}.filters .filter:not(:first-of-type){display:none}.metrics{grid-template-columns:repeat(2,1fr)}.hero{padding:20px;flex-direction:column}.hero-stat{text-align:left;margin-top:10px}.brand{font-size:24px}header{margin-bottom:17px}.hide-mobile{display:none}.card{padding:16px}}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header><div><div class="eyebrow">EXECUTIVE LEARNING LAB · ESG 2026</div><div class="brand">ESG Decision Intelligence</div><div class="sub">국내외 34개 ESG 경영 사례와 최신 공시 규제 동향을 한 화면에 정리했습니다. 별도 교안 없이 이 페이지만으로 "무엇이 CEO의 의사결정을 좌우하는가"를 이해할 수 있도록 구성했습니다.</div></div><div class="live"><i class="pulse"></i> CASE DATABASE READY</div></header>
+    <div class="layout">
+      <aside class="filters"><div class="filter-head"><b>의사결정 필터</b><button class="reset" onclick="resetFilters()">초기화</button></div>
+        <div class="filter"><div class="filter-title">ESG 영역</div><div class="checks"><label class="check"><input type="checkbox" class="area" value="E" checked> 환경 · E</label><label class="check"><input type="checkbox" class="area" value="S" checked> 사회 · S</label><label class="check"><input type="checkbox" class="area" value="G" checked> 거버넌스 · G</label></div></div>
+        <div class="filter"><div class="filter-title">사례 결과</div><div class="checks"><label class="check"><input type="checkbox" class="outcome" value="성공" checked> 성공 / 전환 사례</label><label class="check"><input type="checkbox" class="outcome" value="실패" checked> 실패 사례</label><label class="check"><input type="checkbox" class="outcome" value="논란" checked> 진행 중 논란</label></div></div>
+        <div class="filter"><div class="filter-title">산업</div><div class="checks">
+          <label class="check"><input type="checkbox" class="industry" value="IT" checked> IT · 전자</label>
+          <label class="check"><input type="checkbox" class="industry" value="자동차" checked> 자동차</label>
+          <label class="check"><input type="checkbox" class="industry" value="에너지" checked> 에너지 · 철강</label>
+          <label class="check"><input type="checkbox" class="industry" value="금융" checked> 금융 · 핀테크</label>
+          <label class="check"><input type="checkbox" class="industry" value="소비재" checked> 소비재 · 패션</label>
+          <label class="check"><input type="checkbox" class="industry" value="유통" checked> 유통 · 물류 · 통신</label>
+          <label class="check"><input type="checkbox" class="industry" value="항공" checked> 항공</label>
+          <label class="check"><input type="checkbox" class="industry" value="소재" checked> 소재 · 부품 · 복합</label>
+        </div></div>
+        <div class="filter"><div class="filter-title">학습 우선순위 지수 <span id="pr-label">0</span></div><input class="range" id="priority" type="range" min="0" max="25" value="0"><div class="range-value"><span>0</span><span>25+</span></div><div class="note">재무·사회적 영향 규모가 큰 순으로 정렬한 교육용 지표입니다 (실제 등급 아님).</div></div>
+      </aside>
+      <main>
+        <section class="hero"><div><div class="eyebrow" style="color:#a8e6c2">"착한 기업이 돈을 더 잘 번다"는 명제, 정말 사실일까</div><h1>ESG는 홍보가 아니라<br>재무적으로 중요한 이슈에 대한 경영 의사결정입니다.</h1><p>하버드·NYU 등 학술 연구는 이 명제가 <b style="color:#d9efe1">조건부로만 성립</b>한다는 점을 보여줍니다. 재무적으로 중요한(material) 이슈에 집중하고, 이를 거버넌스와 KPI로 제도화한 기업만 초과성과를 냅니다. 아래 34개 국내외 사례로 그 조건을 확인하세요.</p></div><div class="hero-stat"><strong>+6.01%</strong><span>하버드 연구(Khan·Serafeim·Yoon, 2016): 재무적 중요 이슈 우수기업의 연 초과알파<br>(비중요 이슈 우수기업 +0.60%, ESG 미투자기업 −2.90%)</span></div></section>
+        <section class="metrics">
+          <div class="metric"><label>분석 사례</label><b id="count">24</b><small>8개 산업군 · 15개국</small></div>
+          <div class="metric"><label>공시만 한 연구 상관</label><b>26%</b><small>vs 성과기반 측정 53%</small></div>
+          <div class="metric"><label>한국 1차 공시대상</label><b>58개사</b><small>2028년(2027 회계연도)부터</small></div>
+          <div class="metric"><label>ESG평가기관 상관계수</label><b>0.53</b><small class="warning">신용등급 0.99 대비 극히 낮음</small></div>
+          <div class="metric"><label>韓 감축목표 달성률</label><b>26%</b><small class="warning">비교 대상국 중 최저</small></div>
+        </section>
+        <section class="grid"><div class="card"><div class="card-title"><h2>벤치마크 사례 (24개 기업)</h2><span id="tableNote">기업을 선택하면 상세 분석</span></div><div class="decision"><b>지금 답할 질문:</b> 우리 업종의 ESG 이슈 중 재무적으로 가장 중요한(material) 것은 무엇이며, 그것이 실제로 경영진 KPI와 연결되어 있습니까?</div><table><thead><tr><th>기업</th><th class="hide-mobile">국가 · 산업</th><th>사례</th><th>우선순위</th><th class="hide-mobile">현재 상태</th></tr></thead><tbody id="companyRows"></tbody></table></div>
+        <div class="card"><div class="card-title"><h2>선택 기업의 결정 구조</h2><span>CASE DEEP DIVE</span></div><div id="detail"></div></div></section>
+        <section class="bottom"><div class="card"><div class="card-title"><h2>ESG Heat Map</h2><span>교육용 상대 점수 0–100</span></div><div id="heatmap" class="heat"></div><div class="note">* 실제 평가기관 등급이 아니라 사례 내용을 기반으로 한 교육용 추정치입니다. Berg·Kölbel·Rigobon(2022) 연구에 따르면 주요 평가기관 간 ESG 등급 상관계수는 평균 0.53(범위 0.38~0.71)에 불과해, 단일 등급에 의존하는 것은 위험합니다.</div></div><div class="card"><div class="card-title"><h2>전산업 공통 리스크</h2><span>업종 무관 · 실패사례 공통점</span></div><div class="risk-list"><div class="risk"><i class="dot" style="background:#df6254"></i><div><b>거버넌스(G) 부실</b><br><span>SVB·보잉·위르카드 — E·S가 아무리 좋아도 G가 무너지면 기업이 무너짐</span></div><em class="level high">HIGH</em></div><div class="risk"><i class="dot" style="background:#e8a542"></i><div><b>근거 없는 공시·그린워싱</b><br><span>H&M·TotalEnergies — 실행 없는 홍보는 규제·소송 리스크로 되돌아옴</span></div><em class="level medium">MEDIUM</em></div><div class="risk"><i class="dot" style="background:#43a86e"></i><div><b>단일 ESG 등급 의존</b><br><span>평가기관 간 상관계수 0.53 — 자체 데이터 오너십 확보가 필요</span></div><em class="level low">WATCH</em></div></div></div></section>
+
+        <div class="section-title"><h2>글로벌 vs 한국 — ESG 공시 규제 지도 (2026년 9월 기준)</h2><span>정책 기조를 알아야 준비 시점이 보인다</span></div>
+        <section class="grid" style="grid-template-columns:1fr">
+          <div class="card">
+            <div class="decision"><b>핵심 해석:</b> 선진국(EU·미국)은 2025~2026년 규제를 <b>후퇴·간소화</b>하는 국면입니다. EU는 옴니버스 지침으로 대상을 약 80% 줄였고, 미국은 SEC 기후공시 완전 폐지를 추진 중입니다. 반면 한국은 이제 막 제도를 정비하는 <b>후발 주자</b>로, 일본(2027년 3월기)과 비슷한 시점에 시행합니다. 규제가 후퇴하는 시점에 시작한다는 정치적 부담과, 국제 정합성을 확보할 시간을 버는 것이라는 양면이 공존합니다.</div>
+            <table class="reg-table"><thead><tr><th>관할</th><th>시행 시기</th><th>최근 동향</th></tr></thead><tbody>
+              <tr><td>EU (CSRD)</td><td>Wave 1은 FY2024, 신규 대상 FY2027부터</td><td>옴니버스 지침으로 2026.2.24 EU이사회 채택, 2.26 관보 게재, 3.18 발효. 대상을 종업원 1,000명 초과+순매출 4.5억 유로 초과로 축소(당초 대비 <b>약 80% 감소</b>), 상장 중소기업 면제.</td></tr>
+              <tr><td>미국 (SEC)</td><td>2024.3 채택, 미시행</td><td>2026.5.29 위원회가 <b>완전 폐지(rescission)</b> 제안 의결, 2026년 하반기 최종 표결 예정. 캘리포니아 SB253은 유지(2026.8.10 Scope1·2 마감).</td></tr>
+              <tr><td>일본</td><td>2027년 3월기부터 시행 예정</td><td>한국과 경제·산업구조 유사 — 벤치마크 대상.</td></tr>
+              <tr><td>한국</td><td><b>2028년(2027 회계연도)부터</b></td><td>2026.2.25 금융위 로드맵(안) 발표, 2026년 상반기 최종 확정. 거래소 공시 → 법정공시(사업보고서) 2단계 전환 예정.</td></tr>
+            </tbody></table>
+            <div class="section-title" style="margin-top:22px;margin-bottom:8px"><h2 style="font-size:13px">한국 단계적 적용 대상</h2></div>
+            <div class="pairs">
+              <div class="pair"><span class="stage-badge">2028년</span><b>연결자산 30조원 이상</b> 대형 코스피 상장사(약 <b>58개사</b>, 전체 상장사의 약 7%)가 1차 의무 대상. 1차 대상이 58개사에 그쳐 배출량·산업전환 리스크를 충분히 포착하지 못한다는 비판(국가인권위원회, 환경·시민사회단체)도 있습니다.</div>
+              <div class="pair"><span class="stage-badge">2029년</span><b>연결자산 10조원 이상</b> 코스피 상장사로 확대 논의 중.</div>
+              <div class="pair"><span class="stage-badge">2033년</span>코스피 <b>전체 상장사</b>로 확대 예정.</div>
+              <div class="pair"><b>공시 구조 특징</b> — 기후공시부터 우선 의무화(E), 나머지 E·S·G는 기업 선택. <b>Scope 3는 2031년부터</b>(3년 유예). 초기 예측·추정정보 공시에는 <b>Safe Harbor</b>(면책) 부여. 2026년부터 모든 코스피 상장사는 기업지배구조보고서(G)를 별도로 의무 공시.</div>
+            </div>
+          </div>
+        </section>
+
+        <div class="section-title"><h2>착한 기업이 돈을 더 잘 버는가 — 학술적 근거와 성립 조건</h2><span>조건부 성립 · 자동이 아님</span></div>
+        <section class="grid">
+          <div class="card">
+            <div class="decision"><b>하버드 연구</b> (Khan·Serafeim·Yoon, 2016, <i>The Accounting Review</i>) — SASB 기준 '재무적으로 중요한(material)' 이슈에 우수한 기업은 연 <b>6.01% 알파</b>, 비중요 이슈에서만 우수한 기업은 0.60%, ESG에 아예 투자하지 않은 기업은 모든 그룹 중 최악인 <b>−2.90% 알파</b>로 추정됩니다. 즉 <b>"어떤 ESG 이슈에 투자하는가"</b>가 성과를 가릅니다.</div>
+            <div class="decision"><b>NYU 스턴 메타분석</b> (Whelan·Atz·Van Holt·Clark, 2021) — 2015~2020년 1,141개 동료심사 논문·27개 메타리뷰를 검토한 결과, 기업 대상 연구의 <b>58%가 ESG-재무성과 긍정 상관</b>(중립 13%, 혼합 21%, 부정 8%)을 보였습니다. 그러나 <b>공시만 다룬 연구는 26%만</b> 긍정 상관을 보인 반면, <b>성과 기반 측정(예: 온실가스 실제 감축)은 53%</b>가 긍정 상관을 보였습니다. 즉 <b>"홍보가 아니라 실행"</b>이 성과를 가릅니다.</div>
+            <div class="note">균형 잡힌 결론: "착한 기업이 돈을 더 잘 번다"는 평균적·장기적으로 성립하나 자동적이지 않습니다. 오스테드처럼 방향이 옳아도 거시 리스크로 단기 재무가 흔들릴 수 있고, SVB처럼 등급이 좋아도 G가 부실하면 무너집니다. ESG는 '만병통치약'이 아니라 <b>'잘 경영된 기업의 특성'</b>에 가깝습니다.</div>
+          </div>
+          <div class="card">
+            <div class="card-title"><h2>성립 조건 — 임원용 체크리스트</h2></div>
+            <div class="checklist">
+              <div class="check-item"><div class="check-num">1</div><div><b>재무적 중요성(Materiality) 집중</b> — 업종별로 재무에 중요한 ESG 이슈에 집중하십시오. 모든 이슈를 홍보하는 것은 성과와 무관합니다(중요 이슈만 6.01% 알파).</div></div>
+              <div class="check-item"><div class="check-num">2</div><div><b>홍보가 아니라 실행·성과</b> — 공시·마케팅만으로는 재무성과로 이어지지 않습니다(공시 26% vs 성과기반 53%). H&M·유니레버의 교훈입니다.</div></div>
+              <div class="check-item"><div class="check-num">3</div><div><b>거버넌스(G)가 근간</b> — SVB·보잉의 실패는 모두 G 부실입니다. E·S를 아무리 강조해도 G가 무너지면 기업이 무너집니다.</div></div>
+              <div class="check-item"><div class="check-num">4</div><div><b>KPI·조직문화 내재화</b> — SK(SV 50% KPI), 마이크로소프트(내부 탄소요금제)처럼 개인·부서 성과지표와 예산에 연동해야 실행됩니다.</div></div>
+              <div class="check-item"><div class="check-num">5</div><div><b>리더십 진정성과 장기 관점</b> — 폭스바겐(조직적 기만)의 반대입니다. ESG 효과는 장기에 뚜렷하므로 단기 성과주의를 경계하십시오.</div></div>
+              <div class="check-item"><div class="check-num">6</div><div><b>리스크 관리·회복력</b> — NYU 연구가 지적한 매개변수입니다. ESG의 재무 기여는 주로 리스크 감소·혁신·평판을 통해 나타납니다.</div></div>
+            </div>
+          </div>
+        </section>
+
+        <div class="section-title"><h2>임원이 지금 반드시 답해야 할 질문</h2><span>정책 기조 + 공시 핵심지표 기반 · 업종 무관</span></div>
+        <section class="grid" style="grid-template-columns:1fr">
+          <div class="card">
+            <div class="decision"><b>왜 이 질문이 중요한가:</b> ESG는 산업마다 구체적인 실행 방식이 다르지만, 아래 질문들은 <b>최근 정책 기조(한국 공시 로드맵, EU 옴니버스, 미국 SEC 동향)</b>와 <b>공시 핵심 지표(중대성 매트릭스, Scope 1·2·3, KPI 연동, 거버넌스 감독)</b>를 기준으로 하기 때문에 제조업이든 서비스업이든 금융업이든 동일하게 적용됩니다.</div>
+            <div class="qa-grid">
+              <div class="qa"><b>Q1. 중대성 정렬</b>우리가 대외에 강조하는 ESG 이슈가, SASB/IFRS S1·S2 기준 업종별 재무 중요 이슈 3~5개와 실제로 일치합니까? (하버드 연구: 중요 이슈 우수기업만 6.01% 알파)</div>
+              <div class="qa"><b>Q2. 공시 대비 시점</b>2028년(2027 회계연도) 공시 의무화까지 남은 기간, 우리 회사는 연결자산 30조원 기준 1차 대상입니까, 2029년·2033년 확대 대상입니까? 준비 착수 시점을 지금 결정해야 합니다.</div>
+              <div class="qa"><b>Q3. 배출 데이터 체계</b>Scope 1·2 배출량을 내부통제 수준으로 측정하고 있습니까? Scope 3(2031년 공시 예정, 3년 유예)를 위한 공급망 데이터 협의를 지금 시작했습니까?</div>
+              <div class="qa"><b>Q4. 규제 후퇴기의 판단</b>EU가 대상을 80% 줄이고 미국이 SEC 기후공시 폐지를 추진하는 상황에서, 우리는 규제 최소 요건만 따를 것입니까, 선제적으로 정보 신뢰를 쌓을 것입니까? (수출기업은 EU 역외 적용 매출 4.5억 유로 기준도 함께 점검)</div>
+              <div class="qa"><b>Q5. 거버넌스 감독 실효성</b>SVB·보잉·위르카드처럼, 우리 이사회는 리스크 이슈에 대한 실질적 감독 권한(CRO 보고 체계, 내부고발 보호, 위원회 독립성)을 갖추고 있습니까?</div>
+              <div class="qa"><b>Q6. KPI-보상 연동</b>ESG 목표가 임원·부서 평가와 실제 보상에 반영됩니까, 아니면 보고서에만 존재하는 목표입니까? 반영되지 않은 목표는 '그린워싱' 또는 '그린허싱'으로 귀결될 위험이 있습니다.</div>
+            </div>
+            <div class="note"><b>판단을 바꿀 벤치마크·신호 3가지</b> — ① 금융위 로드맵 최종 확정안(2026년 상반기)에서 법정공시 전환 시기·제재 수준이 정해지면 준비 강도를 조정하십시오. ② 우리 회사(또는 주요 고객사)가 EU 옴니버스 역외 적용 기준(비EU 기업, EU 매출 4.5억 유로 이상, FY2028)에 해당하는지 확인하십시오. ③ 자사 ESG 등급이 평가기관별로 크게 엇갈린다면(상관계수 0.53) 단일 등급에 의존하지 말고 자체 데이터 오너십을 확보하십시오.</div>
+          </div>
+        </section>
+
+        <div class="section-title"><h2>성공 vs 실패 — 대비해서 보면 더 잘 보인다</h2><span>연구·교육용 추천 페어링</span></div>
+        <section class="grid">
+          <div class="card">
+            <div class="pairs">
+              <div class="pair"><b>Ørsted vs BP</b> — 두 에너지 기업 모두 에너지전환 압력을 받았지만, 한쪽은 사업 포트폴리오를 대규모로 전환했고 다른 쪽은 화석연료 수익성과 전환목표 사이의 긴장을 계속 드러냈습니다.</div>
+              <div class="pair"><b>Patagonia vs H&M</b> — Patagonia는 소유구조와 이익배분까지 환경목적에 연결했지만, H&M은 지속가능 컬렉션 홍보가 패스트패션의 대량생산 구조와 충돌한다는 비판을 받았습니다.</div>
+              <div class="pair"><b>포스코홀딩스 vs Interface</b> — 두 기업 모두 제조업의 탄소감축을 시도하지만, 철강은 공정 자체의 탄소집약도가 매우 높고 카펫은 소재·생산·회수 구조를 바꾸는 방식으로 접근할 수 있다는 차이가 있습니다.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="pairs">
+              <div class="pair"><b>Volkswagen vs Tesla</b> — 자동차산업 전환을 비교하기 좋지만, 신생 전기차 기업 역시 노동·지배구조·공급망 논란이 있으므로 단순한 성공·실패 구분보다는 환경성과와 사회·지배구조 성과를 분리해 분석해야 합니다.</div>
+              <div class="pair"><b>남양유업 vs 현대백화점</b> — 국내 소비재·유통기업의 ESG를 사회적 신뢰, 협력사 관계, 고객경험, 지배구조 관점에서 비교할 수 있습니다.</div>
+              <div class="pair"><b>삼성전자 vs 포스코홀딩스</b> — 두 기업 모두 국내 대표 제조기업이지만, 반도체와 철강의 탄소·수자원·공급망·산업전환 과제가 다릅니다.</div>
+            </div>
+          </div>
+        </section>
+
+        <div class="section-title"><h2>평가 층위 4단계 · 주의사항</h2><span>등급과 실제 성과는 다르다</span></div>
+        <section class="grid">
+          <div class="card">
+            <table><thead><tr><th>평가 층위</th><th>확인 질문</th></tr></thead><tbody>
+              <tr><td><b>① 공시</b></td><td>목표와 성과를 공개했는가</td></tr>
+              <tr><td><b>② 관리체계</b></td><td>이사회와 경영진이 책임지는가</td></tr>
+              <tr><td><b>③ 실행</b></td><td>예산·인력·설비가 실제로 투입됐는가</td></tr>
+              <tr><td><b>④ 결과</b></td><td>실제 배출·사고·분쟁·제품영향이 줄었는가</td></tr>
+            </tbody></table>
+            <div class="note">ESG 평가기관마다 중요하게 보는 항목과 가중치가 다릅니다. 환경점수는 높지만 노동·지배구조 점수가 낮을 수 있고, 공시 수준이 높은 기업이 실제 배출감축 성과가 우수하다는 보장도 없습니다. 네 층위를 나누어 확인해야 그린워싱을 걸러낼 수 있습니다.</div>
+          </div>
+          <div class="card">
+            <div class="card-title"><h2 style="font-size:14px">읽을 때 반드시 감안할 주의사항</h2></div>
+            <div class="caveat"><b>자체 발표 수치의 한계 —</b> 유니레버의 '지속가능 브랜드 69% 빠른 성장', SK의 사회적가치 화폐화 금액(FY2025 32.2조원)은 모두 기업 자체 발표이며 외부 독립검증·인과관계 입증이 제한적입니다.</div>
+            <div class="caveat"><b>규제 환경의 급변 —</b> 미국 SEC 기후공시 폐지는 2026년 하반기 최종 표결 예정으로 아직 확정 전이며, EU 옴니버스도 회원국 국내법 전환이 진행 중입니다. 본 자료는 2026년 9월 기준이며 이후 변동될 수 있습니다.</div>
+            <div class="caveat"><b>그린워싱·그린허싱 리스크 —</b> 2020년 감축목표를 제출한 한국 기업 46곳 중 12곳만 달성, 8곳 실패, 26곳은 목표 자체가 사라졌습니다(달성률 26%, 비교국 중 최저). "목표 발표"와 "실제 이행"은 전혀 다른 문제입니다.</div>
+            <div class="caveat"><b>지역성 —</b> 미국의 반ESG 정서는 정치적 맥락(주별 규제 상충)이 강해, 유럽·아시아와 온도차가 큽니다. 한국 임원은 미국발 후퇴 흐름을 과잉 일반화하지 않도록 유의해야 합니다.</div>
+          </div>
+        </section>
+
+        <div class="section-title"><h2>임원급 실행 지침</h2><span>Recommendations · 단계적 실행</span></div>
+        <section class="grid" style="grid-template-columns:1fr">
+          <div class="card">
+            <div class="checklist">
+              <div class="check-item"><div class="check-num">1</div><div><b>[즉시] 자사 Materiality 매트릭스 재점검</b> — SASB/IFRS S1·S2 기준으로 업종별 재무적 중요 이슈 3~5개를 특정하십시오. "우리가 홍보하는 ESG 이슈가 재무적으로 중요한 이슈와 일치하는가?"를 물으십시오.</div></div>
+              <div class="check-item"><div class="check-num">2</div><div><b>[6개월] KPI 연동 설계</b> — SK(SV 50%)·마이크로소프트(내부 탄소요금제) 모델을 참고해 임원·부서 평가에 ESG 지표를 실제 예산·보상과 연동하십시오. KPI에 반영되지 않은 ESG 목표는 그린워싱 또는 그린허싱으로 귀결될 위험이 있습니다.</div></div>
+              <div class="check-item"><div class="check-num">3</div><div><b>[2028년 대비] 공시 인프라 구축</b> — 연결자산 30조원 이상이면 2027 사업연도 데이터를 2028년 공시해야 하므로 준비기간이 1년 남짓입니다. 기후공시(Scope1·2)부터 데이터 수집·내부통제 시스템·전담조직을 구축하십시오. Scope 3는 2031년까지 유예되나 공급망 데이터 협의는 지금 시작해야 합니다.</div></div>
+              <div class="check-item"><div class="check-num">4</div><div><b>[상시] 거버넌스 우선</b> — SVB·보잉 사례처럼 G가 근간입니다. 리스크관리 체계(CRO 등), 이사회 감독기능, 내부고발 보호를 최우선 점검하십시오.</div></div>
+              <div class="check-item"><div class="check-num">5</div><div><b>[커뮤니케이션] 근거 있는 공시만</b> — H&M 교훈처럼 근거 없는 주장은 규제·소송 리스크로 돌아옵니다. 통제 가능하고 검증 가능한 것만 공개하되, 그린허싱으로 완전히 침묵하지도 마십시오(투자 유치·신뢰 상실 위험).</div></div>
+            </div>
+          </div>
+        </section>
+
+        <div class="section-title"><h2>참고문헌 · 원문 링크</h2><span>이 대시보드가 인용한 두 원본 리포트의 출처</span></div>
+        <section class="grid" style="grid-template-columns:1fr">
+          <div class="card">
+            <div class="decision"><b>① "국내외 ESG 경영 사례 조사"</b> 보고서 원문에 기재된 출처 89건입니다. 기업 공시·학술논문·주요 언론(Reuters·SEC EDGAR 등)을 우선 인용했습니다.</div>
+            <ol class="ref-list">
+              <li><a href="https://onlinelibrary.wiley.com/doi/full/10.1002/bse.70685" target="_blank" rel="noopener">onlinelibrary.wiley.com/doi/full/10.1002/bse.70685</a></li>
+              <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11288790/" target="_blank" rel="noopener">pmc.ncbi.nlm.nih.gov/articles/PMC11288790</a></li>
+              <li><a href="https://www.atlantis-press.com/article/126023038.pdf" target="_blank" rel="noopener">atlantis-press.com/article/126023038.pdf</a></li>
+              <li><a href="https://www.shs-conferences.org/articles/shsconf/pdf/2021/40/shsconf_glob2021_09016.pdf" target="_blank" rel="noopener">shs-conferences.org — glob2021_09016.pdf</a></li>
+              <li><a href="https://www.reuters.com/sustainability/climate-energy/orsted-q4-core-profit-slightly-lags-forecast-2026-02-06/" target="_blank" rel="noopener">Reuters — Ørsted Q4 core profit</a></li>
+              <li><a href="https://www.investing.com/news/company-news/rsted-q2-2026-slides-offshore-output-rises-impairments-weigh-93CH-4858501" target="_blank" rel="noopener">Investing.com — Ørsted Q2 2026</a></li>
+              <li><a href="https://irpj.euclid.int/articles/recognition-over-performance-a-critical-review-of-esg-practices-in-vietnam/" target="_blank" rel="noopener">irpj.euclid.int — ESG practices review</a></li>
+              <li><a href="https://www.patagoniaworks.com/press/2025/11/11/patagonia-a-work-in-progress" target="_blank" rel="noopener">Patagonia Works — A Work in Progress</a></li>
+              <li><a href="https://deck.gallery/patagonia-impact-report-2025/slide/99-worn-wear-program-growth/" target="_blank" rel="noopener">Patagonia Impact Report 2025</a></li>
+              <li><a href="https://www.greenpeace.org/international/press-release/82055/greenpeace-reaction-unilever-annual-report-2025/" target="_blank" rel="noopener">Greenpeace — Unilever 2025 반응</a></li>
+              <li><a href="https://www.packaginginsights.com/news/unilever-plastic-reduction-goals-greenpeace.html" target="_blank" rel="noopener">Packaging Insights — Unilever 플라스틱</a></li>
+              <li><a href="http://www.climateaction100.org/company-assessments/posco-holdings-inc/" target="_blank" rel="noopener">Climate Action 100+ — POSCO Holdings</a></li>
+              <li><a href="https://en.sedaily.com/finance/2026/06/26/posco-holdings-publishes-sustainability-report-under-new" target="_blank" rel="noopener">SEDaily — POSCO 지속가능보고서</a></li>
+              <li><a href="https://www.asiatoday.co.kr/kn/view.php?key=20260901010010751" target="_blank" rel="noopener">Asia Today — 기사</a></li>
+              <li><a href="https://images.samsung.com/is/content/samsung/assets/global/ir/docs/Corprate_Governance_Report_FY2025.pdf" target="_blank" rel="noopener">Samsung — Corporate Governance Report FY2025</a></li>
+              <li><a href="https://www.sustainabilityreports.com/samsung-electronics/2025/sustainability-report" target="_blank" rel="noopener">Samsung Electronics — Sustainability Report 2025</a></li>
+              <li><a href="https://www.sustainabilityreports.com/samsung-electronics-nordic/2025/sustainability-report" target="_blank" rel="noopener">Samsung Electronics Nordic — Report 2025</a></li>
+              <li><a href="https://dx.plos.org/10.1371/journal.pone.0310447" target="_blank" rel="noopener">PLOS ONE — journal.pone.0310447</a></li>
+              <li><a href="https://dspace.hansung.ac.kr/bitstream/2024.oak/6126/2/200000731195.pdf" target="_blank" rel="noopener">한성대 학술DB — 200000731195.pdf</a></li>
+              <li><a href="https://ecofile.kr/16/?bmode=view&idx=158978449" target="_blank" rel="noopener">ecofile.kr — 감축목표 이행 분석</a></li>
+              <li><a href="https://brunch.co.kr/@dmone/6" target="_blank" rel="noopener">브런치 — 남양유업 사례</a></li>
+              <li><a href="https://www.academia.edu/65457058/_More_than_words_Expanding_the_taxonomy_of_greenwashing_aer_the_Volkswagen_scandal" target="_blank" rel="noopener">Academia.edu — VW 그린워싱 분류</a></li>
+              <li><a href="https://www.reuters.com/sustainability/climate-energy/carmakers-face-key-trial-uk-lawsuits-decade-aer-dieselgate-scandal-2025-10-13/" target="_blank" rel="noopener">Reuters — 영국 디젤게이트 집단소송</a></li>
+              <li><a href="https://www.reuters.com/sustainability/boards-policy-regulation/michigan-sues-oil-companies-saying-they-colluded-restrain-ev-competition-2026-01-23/" target="_blank" rel="noopener">Reuters — 미시간주 vs 정유사</a></li>
+              <li><a href="https://www.reuters.com/sustainability/climate-energy/exxon-sues-california-over-climate-disclosure-laws-2025-10-25/" target="_blank" rel="noopener">Reuters — Exxon vs California</a></li>
+              <li><a href="https://www.reuters.com/sustainability/boards-policy-regulation/french-court-rules-totalenergies-misled-consumers-with-carbon-neutrality-claims-2025-10-23/" target="_blank" rel="noopener">Reuters — 프랑스 법원 TotalEnergies 판결</a></li>
+              <li><a href="https://opus.bibliothek.uni-augsburg.de/opus4/frontdoor/deliver/index/docId/94237/file/94237.pdf" target="_blank" rel="noopener">Uni Augsburg OPUS — 94237.pdf</a></li>
+              <li><a href="https://www.mdpi.com/2071-1050/14/5/2911/pdf?version=1646219011" target="_blank" rel="noopener">MDPI Sustainability 14(5) 2911</a></li>
+              <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9134082/" target="_blank" rel="noopener">pmc.ncbi.nlm.nih.gov/articles/PMC9134082</a></li>
+              <li><a href="https://eiec.kdi.re.kr/policy/domesticView.do?ac=0000158354" target="_blank" rel="noopener">KDI 경제정보센터 — 정책자료</a></li>
+              <li><a href="https://eiec.kdi.re.kr/publish/naraView.do?fcode=00002000040000100001&cidx=13355&sel_year=2021&sel_month=06" target="_blank" rel="noopener">KDI 나라경제 2021.06</a></li>
+              <li><a href="https://www.mdpi.com/1660-4601/19/19/12181/pdf?version=1664190055" target="_blank" rel="noopener">MDPI IJERPH 19(19) 12181</a></li>
+              <li><a href="http://journal.dcs.or.kr/xml/37888/37888.pdf" target="_blank" rel="noopener">한국디지털정책학회 — 37888.pdf</a></li>
+              <li><a href="https://www.earticle.net/Article/A454437" target="_blank" rel="noopener">earticle.net — A454437</a></li>
+              <li><a href="https://www.mdpi.com/1660-4601/19/12/7099/pdf?version=1655174537" target="_blank" rel="noopener">MDPI IJERPH 19(12) 7099</a></li>
+              <li><a href="https://www.mdpi.com/2071-1050/12/8/3418/pdf" target="_blank" rel="noopener">MDPI Sustainability 12(8) 3418</a></li>
+              <li><a href="https://glec.tistory.com/195" target="_blank" rel="noopener">glec.tistory.com/195</a></li>
+              <li><a href="https://brill.com/downloadpdf/journals/apse/6/1/article-p41_4.pdf" target="_blank" rel="noopener">Brill — apse 6(1) article-p41_4</a></li>
+              <li><a href="https://blog.naver.com/sigmagil/222693258770" target="_blank" rel="noopener">네이버 블로그 — sigmagil</a></li>
+              <li><a href="https://www.mdpi.com/2071-1050/14/8/4515/pdf?version=1650415994" target="_blank" rel="noopener">MDPI Sustainability 14(8) 4515</a></li>
+              <li><a href="https://kocham.org/wp-content/uploads/2023/03/연구보고서2022-15기업ESG경영확대속산업정책과제와시사점연구.pdf" target="_blank" rel="noopener">KOCHAM — 기업ESG경영 정책과제 연구보고서</a></li>
+              <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11274150/" target="_blank" rel="noopener">pmc.ncbi.nlm.nih.gov/articles/PMC11274150</a></li>
+              <li><a href="https://academic.oup.com/jpart/advance-article-pdf/doi/10.1093/jopart/muab035/40441114/muab035.pdf" target="_blank" rel="noopener">Oxford Academic — JPART muab035</a></li>
+              <li><a href="https://www.tandfonline.com/doi/pdf/10.1080/23311975.2024.2320812?needAccess=true" target="_blank" rel="noopener">Taylor & Francis — 2320812</a></li>
+              <li><a href="https://www.mdpi.com/2071-1050/16/6/2571/pdf?version=1711006291" target="_blank" rel="noopener">MDPI Sustainability 16(6) 2571</a></li>
+              <li><a href="https://www.tandfonline.com/doi/pdf/10.1080/20430795.2024.2334253?needAccess=true" target="_blank" rel="noopener">Taylor & Francis — 2334253</a></li>
+              <li><a href="https://dx.plos.org/10.1371/journal.pone.0316287" target="_blank" rel="noopener">PLOS ONE — journal.pone.0316287</a></li>
+              <li><a href="https://kclpure.kcl.ac.uk/ws/portalfiles/portal/225221940/2023_Lepere_Marc_1661784_ethesis.pdf" target="_blank" rel="noopener">King's College London — 박사학위논문</a></li>
+              <li><a href="https://www.tandfonline.com/doi/full/10.1080/23311975.2024.2404236" target="_blank" rel="noopener">Taylor & Francis — 2404236</a></li>
+              <li><a href="https://www.dbpia.co.kr/journal/detail?nodeId=T16882932" target="_blank" rel="noopener">DBpia — T16882932</a></li>
+              <li><a href="https://arxiv.org/abs/2502.07541" target="_blank" rel="noopener">arXiv — 2502.07541</a></li>
+              <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9763811/" target="_blank" rel="noopener">pmc.ncbi.nlm.nih.gov/articles/PMC9763811</a></li>
+              <li><a href="https://www.mdpi.com/2071-1050/17/5/2222" target="_blank" rel="noopener">MDPI Sustainability 17(5) 2222</a></li>
+              <li><a href="https://www.tandfonline.com/doi/full/10.1080/20430795.2024.2401357" target="_blank" rel="noopener">Taylor & Francis — 2401357</a></li>
+              <li><a href="https://www.mdpi.com/1996-1073/19/10/2335" target="_blank" rel="noopener">MDPI Energies 19(10) 2335</a></li>
+              <li><a href="https://sajems.org/index.php/sajems/article/download/5387/3019" target="_blank" rel="noopener">SAJEMS — 5387/3019</a></li>
+              <li><a href="https://www.reuters.com/sustainability/boards-policy-regulation/exxon-mobil-not-liable-investors-over-canadian-oil-sands-gas-assets-jury-says-2026-05-15/" target="_blank" rel="noopener">Reuters — Exxon 배심원 평결</a></li>
+              <li><a href="https://www.reuters.com/sustainability/boards-policy-regulation/mondelez-defeats-greenwashing-lawsuit-over-climate-neutral-clif-bar-claim-2025-10-28/" target="_blank" rel="noopener">Reuters — Mondelez 그린워싱 소송</a></li>
+              <li><a href="https://www.sec.gov/Archives/edgar/data/27093/000149315225013494" target="_blank" rel="noopener">SEC EDGAR — 27093</a></li>
+              <li><a href="https://www.reuters.com/sustainability/sustainable-finance-reporting/exxon-backed-initiative-carbon-accounting-sparks-fears-bid-slow-climate-action--ecmii-2026-05-13/" target="_blank" rel="noopener">Reuters — Exxon 탄소회계 이니셔티브</a></li>
+              <li><a href="https://www.reuters.com/world/us-supreme-court-hear-exxon-suncor-bid-toss-boulders-climate-suit-2026-02-23/" target="_blank" rel="noopener">Reuters — 美 대법원 Exxon·Suncor</a></li>
+              <li><a href="https://www.sec.gov/Archives/edgar/data/718937/000119312525218827" target="_blank" rel="noopener">SEC EDGAR — 718937</a></li>
+              <li><a href="https://www.sec.gov/Archives/edgar/data/1771706/000110465926095427" target="_blank" rel="noopener">SEC EDGAR — 1771706</a></li>
+              <li><a href="https://www.reuters.com/sustainability/cop/climate-investors-give-bp-until-april-1-include-resolution-threaten-court-2026-03-25/" target="_blank" rel="noopener">Reuters — BP 주주결의 압박</a></li>
+              <li><a href="https://orsted.com/en/company-announcement-list/2026/08/orsted-continues-its-strategic-progress-delivers-s-150879921" target="_blank" rel="noopener">Ørsted 공식 발표(2026.08)</a></li>
+              <li><a href="https://www.theglobeandmail.com/investing/markets/stocks/DOGEF/pressreleases/3844835/rsted-posts-solid-h1-2026-operations-confirms-guidance-and-plans-dividend-reinstatement/" target="_blank" rel="noopener">Globe and Mail — Ørsted H1 2026</a></li>
+              <li><a href="https://www.marketscreener.com/news/orsted-a-s-interim-report-interim-financial-report-9m-2025-ce7d5cdcd889f626" target="_blank" rel="noopener">MarketScreener — Ørsted 9M 2025</a></li>
+              <li><a href="https://www.investing.com/news/transcripts/earnings-call-transcript-rsted-q2-2026-profit-rises-but-stock-falls-415-93CH-4858448" target="_blank" rel="noopener">Investing.com — Ørsted 실적발표 전문</a></li>
+              <li><a href="https://www.energyvoice.com/markets/energy-finance/602273/orsted-first-half-2026-results/" target="_blank" rel="noopener">Energy Voice — Ørsted 상반기 실적</a></li>
+              <li><a href="https://www.investegate.co.uk/announcement/eqs/orsted-a-s--0rhe/a-stronger-and-more-competitive-rsted-aer-/9413767" target="_blank" rel="noopener">Investegate — Ørsted 공시</a></li>
+              <li><a href="https://www.eqs-news.com/news/uk-regulatory/orsted-delivers-progress-and-strong-operational-performance/df493ad8-71c0-4091-9a2c-879b5f59025c_en" target="_blank" rel="noopener">EQS News — Ørsted 실적(UK)</a></li>
+              <li><a href="https://quartr.com/events/rsted-orsted-q4-2025_33XdrVlj" target="_blank" rel="noopener">Quartr — Ørsted Q4 2025</a></li>
+              <li><a href="https://www.eqs-news.com/news/uk-ireland-reg-news/oersted-delivers-progress-and-strong-operational-performance/df493ad8-71c0-4091-9a2c-879b5f59025c_en" target="_blank" rel="noopener">EQS News — Ørsted 실적(UK·IE)</a></li>
+              <li><a href="https://k-esg.org/post/4402" target="_blank" rel="noopener">K-ESG — post/4402</a></li>
+              <li><a href="https://www.samsungsds.com/us/news/sustainability-growth-sds-news.html" target="_blank" rel="noopener">Samsung SDS — Sustainability Growth</a></li>
+              <li><a href="https://newsroom.posco.com/kr/포스코홀딩스-그룹-통합-esg-공시-체계-적용한-지속가/" target="_blank" rel="noopener">POSCO 뉴스룸 — 그룹 통합 ESG 공시체계</a></li>
+              <li><a href="https://www.sustainabilityreports.com/samsung-e-and-a/2025/sustainability-report" target="_blank" rel="noopener">Samsung E&A — Sustainability Report 2025</a></li>
+              <li><a href="https://www.mk.co.kr/en/business/12083975" target="_blank" rel="noopener">매일경제 영문판 — business/12083975</a></li>
+              <li><a href="https://www.scribd.com/document/1069017294/2025-POSCO-Sustainability-Report-ENG" target="_blank" rel="noopener">Scribd — 2025 POSCO Sustainability Report</a></li>
+              <li><a href="http://www.posco.com/homepage/docs/eng7/jsp/s91a0000001i.jsp" target="_blank" rel="noopener">POSCO 공식 홈페이지</a></li>
+              <li><a href="https://www.linkedin.com/posts/hong-namkoong-34481494_samsungena-sustainability-activity-7477956615347032064-yvw7" target="_blank" rel="noopener">LinkedIn — Samsung E&A 게시물</a></li>
+              <li><a href="https://www.scribd.com/document/974203008/Samsung-Electronics-Sustainability-Report-2025-KOR" target="_blank" rel="noopener">Scribd — 삼성전자 지속가능경영보고서 2025</a></li>
+              <li><a href="https://ibima.org/accepted-paper/dieselgate-as-the-case-of-greenwashing-practices/" target="_blank" rel="noopener">IBIMA — Dieselgate 그린워싱 논문</a></li>
+              <li><a href="https://rsisinternational.org/journals/ijriss/articles/from-shareholder-value-to-stakeholder-impact-integrating-esg-considerations-into-financial-decisions/" target="_blank" rel="noopener">RSIS International — IJRISS 논문</a></li>
+              <li><a href="https://www.lettersinhighenergyphysics.com/index.php/LHEP/article/download/817/493/" target="_blank" rel="noopener">Letters in High Energy Physics — 817/493</a></li>
+              <li><a href="https://dcollection.kumoh.ac.kr/srch/srchDetail/000000016812?localeParam=" target="_blank" rel="noopener">금오공과대학교 학위논문 DB</a></li>
+            </ol>
+            <div class="decision" style="margin-top:16px"><b>② "착한 기업이 돈도 더 잘 번다고?"</b> 보고서는 하이퍼링크 없이 저널·기관명으로 출처를 표기했습니다(원문에 URL 미기재). 핵심 근거는 다음과 같습니다.</div>
+            <div class="ref-plain">
+              <b>Khan, M., Serafeim, G., & Yoon, S. (2016).</b> "Corporate Sustainability: First Evidence on Materiality." <i>The Accounting Review</i>, 91(6), 1697–1724. — 재무적 중요 이슈 우수기업 알파 +6.01% 산출 원 논문.<br>
+              <b>Whelan, T., Atz, U., Van Holt, T., & Clark, C. (2021).</b> "ESG and Financial Performance: Uncovering the Relationship by Aggregating Evidence from 1,000 Plus Studies Published between 2015–2020." NYU Stern Center for Sustainable Business.<br>
+              <b>Berg, F., Kölbel, J. F., & Rigobon, R. (2022).</b> "Aggregate Confusion: The Divergence of ESG Ratings." <i>Review of Finance</i>, 26(6), 1315–1344. — 평가기관 간 상관계수 0.53 산출 원 논문.<br>
+              <span style="color:var(--muted)">그 외 Kim & Chang·PwC·삼일PwC 뉴스레터, 법무법인 태평양 Legal Update, ZDNet Korea, 한국경제, 아시아경제(Asiae), Microsoft Blogs, World Economic Forum, UNFCCC, Patagonia Works, pressreader, ProPublica, CPA Journal, SSRN, Hypebeast, Fashion Dive, WWD, RAPPLER, KnowESG, WTW, FutureGreenWorld, Harvard Law School Forum, Zevero 등 — 원문에 URL 없이 매체명만 표기됨.</span>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script>
+    const companies=[
+      {id:'sk',name:'SK그룹',country:'한국',industry:'소재',outcome:'성공',priority:24,status:'KPI 내재화 우수',scores:[88,90,92],strategy:'2016년 "재무적 가치와 사회적 가치를 동시에 추구"하는 DBL 전략을 국내 최초 제시, 2018년부터 사회적가치(SV)를 화폐 단위로 측정·공표했습니다. 2019년부터는 계열사 성과평가(KPI)에 사회적가치 창출액을 50% 반영해 경제가치와 대등하게 평가합니다.',pills:['DBL 전략','KPI 50% 반영','파이낸셜 스토리'],impact:[['32.2조원','FY2025 사회적가치'],['50%','KPI 반영 비중'],['1,404만원','매출 1억원당 SV(24년)']]},
+      {id:'orsted',name:'Ørsted',country:'덴마크',industry:'에너지',outcome:'성공',priority:22,status:'전환 성공·재무 리스크 병행',scores:[95,80,85],strategy:'과거 석탄·가스 중심 발전기업(DONG Energy)에서 세계 최대 해상풍력 사업자로 전환한 대표 사례입니다. 그러나 2021년 이후 고금리·공급망 원가 상승·미국 정책 변화로 주가가 고점 대비 약 88% 폭락하며, "ESG 전환 성공 = 안정적 재무성과"가 아니라는 균형 잡힌 교훈을 남겼습니다.',pills:['사업 포트폴리오 전환','장기 투자','거시 리스크'],impact:[['-88%','2021~2025 주가 하락'],['284억DKK','2023년 손상차손'],['99%','재생에너지 발전비중']]},
+      {id:'unilever',name:'Unilever',country:'영국',industry:'소비재',outcome:'성공',priority:16,status:'성장 프리미엄·비판 공존',scores:[85,78,80],strategy:'2010년 CEO 폴 폴먼이 USLP(3대 목표·50여 타깃)를 출범, "지속가능생활 브랜드"가 나머지 사업보다 69% 빠르게 성장하고 매출 성장의 75%를 차지했다고 밝혔습니다. 다만 이는 기업 자체 발표이며, 대주주 Terry Smith는 "사업 기본기보다 지속가능성 과시에 몰두한다"고 비판했고, Greenpeace도 2025년 플라스틱 감축 방식이 불충분하다고 지적했습니다.',pills:['지속가능 브랜드','목적 마케팅','그린워싱 비판'],impact:[['69%','지속가능 브랜드 성장률'],['75%','매출성장 기여(자체발표)'],['그린워싱 비판','Greenpeace 2025']]},
+      {id:'ms',name:'Microsoft',country:'미국',industry:'IT',outcome:'성공',priority:20,status:'KPI 내재화 모범',scores:[93,84,90],strategy:'2012년 내부 탄소요금제(internal carbon fee)를 도입해 각 사업부가 배출량에 따라 실제 비용을 지불하도록 했습니다. "그림자 가격"이 아니라 사업부 예산에 탄소비용을 내재화한 것이 핵심으로, 2020년 2030 탄소 네거티브·2050년까지 창립 이후 배출 전량 제거를 선언했습니다.',pills:['내부 탄소요금제','예산 내재화','탄소 네거티브'],impact:[['2012년','내부 탄소요금제 도입'],['300억kWh+','누적 그린파워 구매'],['2030','탄소 네거티브 목표']]},
+      {id:'patagonia',name:'Patagonia',country:'미국',industry:'소비재',outcome:'성공',priority:15,status:'지배구조 내재화',scores:[90,88,95],strategy:'2022년 창업자 가족이 의결권 주식을 Patagonia Purpose Trust에, 비의결권 주식(98%)을 환경단체 Holdfast Collective에 이전해 "지구가 유일한 주주"인 구조를 만들었습니다. 다만 비상장이어서 재무 공시 의무가 없고 주주 압력에서 자유롭다는 점이 성공의 전제이며, 상장사가 동일 구조를 복제하기는 어렵습니다.',pills:['소유구조 개편','목적법인','비상장의 자유'],impact:[['30억달러','2022년 지분 이전 규모'],['1%','매출 환경단체 기부'],['14.7억달러','FY2025 매출']]},
+      {id:'schneider',name:'Schneider Electric',country:'프랑스',industry:'소재',outcome:'성공',priority:12,status:'수혜 기업',scores:[88,80,85],strategy:'에너지 효율을 별도 사회공헌이 아니라 핵심 수익사업으로 직접 연결한 사례입니다. 에너지관리·자동화 솔루션이 곧 회사의 매출원이므로, 에너지전환 수요가 커질수록 사업이 함께 성장하는 구조를 갖췄습니다.',pills:['에너지 효율','수익모델 연계','전환 수혜'],impact:[['에너지관리','핵심 사업 영역'],['전환 수요','직접적 수혜 구조'],['프랑스','유럽 에너지전환 선도']]},
+      {id:'ikea',name:'IKEA',country:'스웨덴',industry:'유통',outcome:'성공',priority:11,status:'규모의 한계 병행',scores:[82,78,80],strategy:'재생에너지, 순환경제, 공급망 관리를 전사적으로 추진하는 대표 유통기업 사례입니다. 다만 사업 규모가 큰 만큼 원재료·공급망·소비량 문제는 계속 과제로 남아 있어, "친환경 전략"과 "총량 감축"이 항상 일치하지는 않는다는 점을 보여줍니다.',pills:['순환경제','재생에너지','공급망 관리'],impact:[['재생에너지','전사 확대 추진'],['순환경제','제품 설계 반영'],['규모의 역설','원재료 소비량 지속 증가']]},
+      {id:'interface',name:'Interface',country:'미국',industry:'소재',outcome:'성공',priority:10,status:'장기 저탄소 모델',scores:[90,75,82],strategy:'카펫 제조업체로서 제품 생애주기와 제조공정의 탄소 감축을 장기간 일관되게 추진해왔습니다. 철강처럼 공정 자체의 탄소집약도가 극히 높은 산업과 달리, 소재·생산·회수 구조를 바꾸는 방식으로 접근할 수 있음을 보여주는 제조업 저탄소 전환의 모범 사례입니다.',pills:['제품 생애주기','순환형 제품','장기 전략'],impact:[['생애주기 관리','제조공정 전반 적용'],['장기 전략','수십 년간 일관 추진'],['제조업 모범','저탄소 전환 사례']]},
+      {id:'posco',name:'포스코홀딩스',country:'한국',industry:'에너지',outcome:'논란',priority:19,status:'전환 진행 중',scores:[65,70,78],strategy:'철강산업의 구조적 탄소배출을 줄이기 위해 2050년 탄소중립, 전기로 확대, 수소환원제철 전환을 추진합니다. Scope 1·2 배출량의 95% 이상을 포함하는 감축목표와 이사회 차원의 기후 감독체계를 갖췄지만, 절대 배출량은 여전히 매우 커 "이미 탈탄소를 완성한 사례"로 분류하기는 어렵습니다.',pills:['수소환원제철','전기로 확대','산업 전환형'],impact:[['6,984만tCO2e','2025년 Scope1·2 배출량'],['95%+','감축목표 포함 범위'],['전환 진행 중','수소환원제철 상업화 과제']]},
+      {id:'samsung',name:'삼성전자',country:'한국',industry:'IT',outcome:'성공',priority:17,status:'관리체계 고도화',scores:[80,72,85],strategy:'이사회 산하 지속가능경영위원회가 ESG 전략과 지속가능경영보고서를 감독하는 체계를 갖췄고, 재생에너지 전환·자원순환·폐기물 매립 제로 인증 등 지표를 공개합니다. 다만 반도체 사업은 전력·용수·공정가스 사용량이 크고 글로벌 공급망·노동·안전 문제까지 포함해야 하므로, 관리체계의 존재와 실질적 영향 감소는 분리해서 평가해야 합니다.',pills:['이사회 ESG 감독','재생에너지','반도체 리스크'],impact:[['이사회 감독','지속가능경영위원회 운영'],['재생에너지','전환 목표 공개'],['반도체 과제','전력·용수·공급망 관리 필요']]},
+      {id:'hyundaidept',name:'현대백화점',country:'한국',industry:'유통',outcome:'성공',priority:9,status:'국내 우수 사례',scores:[75,80,78],strategy:'친환경 매장, 지역사회 프로그램, 협력사 지원을 통합적으로 운영해 국내 ESG 우수 사례로 자주 연구됩니다. 다만 프로그램의 장기 성과와 매출 대비 효과에 대한 정량적 검증은 추가로 필요한 단계입니다.',pills:['친환경 매장','협력사 지원','지역사회 연계'],impact:[['통합 운영','매장·협력사·지역사회'],['국내 사례','ESG 우수사례 연구 대상'],['검증 필요','정량적 효과 추가 확인']]},
+      {id:'cj',name:'CJ대한통운',country:'한국',industry:'유통',outcome:'논란',priority:8,status:'실행 확대 중',scores:[68,72,75],strategy:'친환경 물류, 전기·수소 차량 도입, 포장재 감축을 추진하는 물류기업 사례입니다. 다만 물동량이 계속 증가하는 물류산업 특성상 구조적 배출과 협력사를 포함한 Scope 3 관리가 핵심 과제로 남아 있습니다.',pills:['전기·수소 차량','포장 감축','Scope3 과제'],impact:[['친환경 차량','전기·수소 전환 추진'],['물동량 증가','구조적 배출 부담 지속'],['Scope3','협력사 배출 관리 확대 중']]},
+      {id:'skt',name:'SK텔레콤',country:'한국',industry:'유통',outcome:'논란',priority:9,status:'환경·AI 거버넌스 과제',scores:[70,75,72],strategy:'AI·통신 인프라를 사회적 가치와 연결하는 사업모델을 추진하지만, 데이터센터 전력 사용량과 AI 확산에 따른 환경 부담이 새로운 과제로 떠오르고 있습니다. 개인정보·AI 윤리 관련 거버넌스 체계 구축도 함께 요구됩니다.',pills:['AI·통신 인프라','ESG 펀드','AI 윤리'],impact:[['데이터센터','전력 사용량 증가'],['ESG 펀드','사회적 가치 연계'],['AI 윤리','신규 거버넌스 과제']]},
+      {id:'lges',name:'LG에너지솔루션',country:'한국',industry:'소재',outcome:'논란',priority:14,status:'성장과 리스크 공존',scores:[72,60,75],strategy:'전기차 전환의 핵심 제품인 배터리를 생산하며 배터리 재활용 사업도 함께 추진합니다. 다만 원재료(리튬·코발트 등) 채굴 과정의 인권 문제와 폐배터리 처리 이슈가 성장과 동시에 리스크로 존재합니다.',pills:['배터리 재활용','원재료 채굴','인권 리스크'],impact:[['전기차 전환','핵심 공급망 지위'],['원재료 리스크','채굴 인권 이슈'],['폐배터리','재활용 체계 구축 중']]},
+      {id:'vw',name:'Volkswagen',country:'독일',industry:'자동차',outcome:'실패',priority:25,status:'회복 중',scores:[55,58,30],strategy:'2015년 배출가스 저감장치를 조작한 디젤게이트는 실행(제품)과 홍보(친환경 디젤)의 극단적 괴리이자 최고경영진 차원의 조직적 은폐였습니다. 2025년에도 영국에서 약 160만 명 규모의 집단소송이 진행 중이며, ESG는 기업이 말하는 목표가 아니라 독립적인 실제 사용조건에서 측정되는 성과로 평가해야 한다는 교훈을 남겼습니다.',pills:['조직적 기만','디젤게이트','집단소송'],impact:[['$300~380억','누적 손실·벌금·배상 추정'],['1,100만대','조작장치 탑재 차량'],['$28억','2017년 美 형사벌금']]},
+      {id:'boeing',name:'Boeing',country:'미국',industry:'항공',outcome:'실패',priority:23,status:'품질관리 강화 진행',scores:[50,45,32],strategy:'737 MAX는 단기 성과주의가 안전문화를 잠식한 사례입니다. "엔지니어링 중심에서 재무 중심 조직으로 전환"하며 안전을 비용·일정과 거래한 것이 근본 원인으로 지목됩니다. MCAS 시스템 정보를 규제당국에 은폐했고, 2020년 20여 년 만의 첫 연간 적자를 기록했습니다.',pills:['단기 성과주의','안전문화 붕괴','거버넌스 실패'],impact:[['346명','737 MAX 사고 사망자'],['$4.87억','2024년 사기협의 벌금'],['20여년만','2020년 첫 연간 적자']]},
+      {id:'hm',name:'H&M',country:'스웨덴',industry:'소비재',outcome:'논란',priority:11,status:'순환경제·공시 강화',scores:[60,65,55],strategy:'2019년 노르웨이 소비자청이 "Conscious Collection"을 오해를 유발하는 그린워싱으로 지적했고, 2021년 네덜란드 소비자보호기관도 표현이 불명확·근거부족이라 판단했습니다. 2022년 라벨 삭제와 환경단체 배상에 합의했으며, 근거 없는 지속가능성 주장과 측정 지표(Higg MSI)의 신뢰성 부족이 핵심 문제였습니다.',pills:['그린워싱 판정','라벨 삭제','측정 신뢰성 부족'],impact:[['50만유로','2022년 환경단체 배상'],['라벨 삭제','Higg MSI 신뢰성 문제'],['2건','노르웨이·네덜란드 그린워싱 판정']]},
+      {id:'svb',name:'Silicon Valley Bank',country:'미국',industry:'금융',outcome:'실패',priority:24,status:'파산',scores:[45,70,25],strategy:'2023년 3월 파산 당시 SVB는 MSCI ESG 등급 A(AAA~CCC 7단계 중 3위)로 양호하게 평가받았습니다. 그러나 사회(S) 강조에 비해 지배구조(G)·리스크관리는 부실했고, 2022년 8개월간 최고리스크책임자(CRO)가 공석이었습니다. 핵심 교훈은 ESG 등급이 재무건전성·리스크를 담보하지 못하며, 단일 ESG 데이터 의존은 위험하다는 것입니다.',pills:['등급의 맹점','CRO 공석','거버넌스 부실'],impact:[['MSCI A','파산 당시 ESG등급'],['8개월','CRO 공석 기간'],['62%','美 커뮤니티 태양광 자금조달']]},
+      {id:'wellsfargo',name:'Wells Fargo',country:'미국',industry:'금융',outcome:'실패',priority:18,status:'규제감독 장기화',scores:[50,40,28],strategy:'고객 동의 없는 허위 계좌 개설과 판매목표 압박으로 금융소비자 보호와 내부통제에 심각한 문제를 일으켰습니다. 지배구조는 이사회 구성만으로 평가할 수 없으며, 내부고발자 보호·성과급 구조·감사위원회 독립성까지 함께 봐야 한다는 교훈을 남겼습니다.',pills:['허위계좌 스캔들','내부통제 실패','금융소비자 보호'],impact:[['허위계좌','무단 개설 스캔들'],['내부통제','실패로 규제감독 강화'],['장기 영향','개선명령 지속']]},
+      {id:'wirecard',name:'Wirecard',country:'독일',industry:'금융',outcome:'실패',priority:21,status:'파산·형사재판',scores:[30,35,10],strategy:'회계·감사·감독체계가 총체적으로 붕괴하며 파산한 핀테크 기업입니다. 지배구조(G) 실패는 환경·사회 성과와 무관하게 ESG 전체를 붕괴시킬 수 있다는 상징적 사례로, 경영진 형사재판이 진행되었습니다.',pills:['회계 조작','감사 실패','G 붕괴의 상징'],impact:[['파산','회계·감사·감독 총체적 실패'],['G 붕괴','ESG 전체 신뢰 붕괴'],['형사재판','경영진 기소·재판 진행']]},
+      {id:'bp',name:'BP',country:'영국',industry:'에너지',outcome:'논란',priority:16,status:'전환·화석연료 긴장 지속',scores:[62,60,45],strategy:'"Beyond Petroleum" 브랜드로 재생에너지 전환 이미지를 오랫동안 강조했지만, 실제 자본지출 중 화석연료 사업 비중과 신규 프로젝트 투자 여부를 둘러싸고 지속적인 비판을 받아왔습니다. 기업의 ESG 진정성은 광고 문구가 아니라 자본배분 데이터로 확인해야 한다는 교훈을 남겼습니다.',pills:['이미지와 실행 괴리','자본배분 논란','기후 소송'],impact:[['자본배분','화석연료 비중 지속 논란'],['2026년','미시간주 상대 소송 피소'],['캠페인','자본배분보다 신뢰도 낮음']]},
+      {id:'exxon',name:'ExxonMobil',country:'미국',industry:'에너지',outcome:'논란',priority:15,status:'기후소송·공시법 갈등',scores:[55,58,48],strategy:'기후변화 관련 커뮤니케이션과 실제 사업전략의 일관성이 오랫동안 논쟁이 된 기업입니다. 2026년 미국 미시간주는 재생에너지·전기차 경쟁을 억제했다는 취지로 소송을 제기했고, 별도로 캘리포니아주 기후공시법과도 소송 중입니다. 로비활동·정책대응이 공개된 기후정보와 일치하는지가 핵심 검증 포인트입니다.',pills:['기후 커뮤니케이션','로비 논란','Scope3 배출 논쟁'],impact:[['기후소송','캘리포니아주 상대 진행'],['로비활동','정책 대응 일관성 논란'],['Scope3','제품판매 배출 책임 논쟁']]},
+      {id:'total',name:'TotalEnergies',country:'프랑스',industry:'에너지',outcome:'논란',priority:13,status:'법원 판결·수사 진행',scores:[58,55,40],strategy:'2025년 프랑스 법원은 TotalEnergies가 2021년 광고에서 2050년 탄소중립 달성이 가능한 것처럼 소비자에게 오해를 유발했다고 판단, 웹사이트의 일부 표현 삭제와 배상금 지급을 명령했습니다. ESG 공시는 투자자뿐 아니라 소비자 광고에도 적용되며, "탄소중립"·"친환경" 표현은 목표 범위·기준연도·상쇄 비중을 함께 제시해야 한다는 판례를 남겼습니다.',pills:['법적 그린워싱 판정','광고 규제','형사수사 병행'],impact:[['법원판결','탄소중립 광고 오해유발 인정'],['웹사이트 수정','표현 삭제 명령'],['형사수사','별도 진행 중']]},
+      {id:'namyang',name:'남양유업',country:'한국',industry:'소비재',outcome:'실패',priority:14,status:'경영권 변경 후 회복 과정',scores:[45,30,35],strategy:'2013년 대리점 상품 강매 논란 이후 소비자 신뢰와 브랜드 가치가 크게 훼손된 국내 대표 ESG 실패 사례입니다. 환경 문제가 아니라 사회적 책임과 지배구조 실패가 기업가치에 장기간 영향을 미쳤다는 점에서 중요하며, 2024년 한앤컴퍼니의 경영권 인수 이후에도 협력업체 거래관행·조직문화·소비자 신뢰 회복은 장기 관찰이 필요합니다.',pills:['대리점 강매','신뢰 붕괴','장기 회복 과제'],impact:[['2013년','대리점 강매 논란 발생'],['신뢰 붕괴','브랜드가치 장기 훼손'],['2024년','한앤컴퍼니 경영권 인수']]}
+    ];
+    let selected='sk'; const $=s=>document.querySelector(s); const checked=cls=>[...document.querySelectorAll(cls+':checked')].map(x=>x.value);
+    function stars(p){return '★'.repeat(Math.min(5,Math.max(1,Math.round(p/5))))+'☆'.repeat(5-Math.min(5,Math.max(1,Math.round(p/5))))}
+    function filtered(){const areas=checked('.area'),outcomes=checked('.outcome'),industries=checked('.industry'),min=+$('#priority').value; return companies.filter(c=>outcomes.includes(c.outcome)&&industries.includes(c.industry)&&c.priority>=min&&areas.length);}
+    function render(){const list=filtered(); if(!list.some(c=>c.id===selected)&&list.length)selected=list[0].id; $('#count').textContent=list.length?`${list.length} / 24`:'0'; $('#companyRows').innerHTML=list.map(c=>`<tr data-id="${c.id}" class="${c.id===selected?'selected':''}"><td class="company">${c.name}</td><td class="country hide-mobile">${c.country} · ${c.industry}</td><td><span class="badge ${c.outcome==='성공'?'success':c.outcome==='실패'?'fail':'issue'}">${c.outcome}</span></td><td class="stars">${stars(c.priority)}</td><td class="hide-mobile">${c.status}</td></tr>`).join('')||'<tr><td colspan="5" style="text-align:center;color:#6b7772;padding:28px">조건에 맞는 사례가 없습니다.</td></tr>';
+      document.querySelectorAll('tr[data-id]').forEach(r=>r.onclick=()=>{selected=r.dataset.id;render()}); const c=companies.find(x=>x.id===selected)||companies[0]; $('#detail').innerHTML=`<div class="detail-company"><div><div class="eyebrow">${c.country.toUpperCase()} · ${c.industry.toUpperCase()}</div><h3>${c.name}</h3><p>${c.outcome==='실패'?'실패에서 배우는 리스크 경로':c.outcome==='논란'?'진행 중인 논란 — 판단은 진행형':'성공을 만든 경영 선택'}</p></div><div class="rating">${Math.round(c.scores.reduce((a,b)=>a+b)/3)}<small>REL. SCORE</small></div></div><div class="strategy">${c.strategy}</div><div class="pills">${c.pills.map(x=>'<span class="pill">'+x+'</span>').join('')}</div><div class="impact">${c.impact.map(x=>'<div><b>'+x[0]+'</b><span>'+x[1]+'</span></div>').join('')}</div>`;
+      const heatList=list.slice(0,6); $('#heatmap').innerHTML='<div class="head">기업</div><div class="head" style="text-align:center">E</div><div class="head" style="text-align:center">S</div><div class="head" style="text-align:center">G</div>'+heatList.map(c=>`<div class="heat-name">${c.name}</div>${c.scores.map(v=>`<div class="score s${v>=85?1:v>=70?2:v>=50?3:4}">${v}</div>`).join('')}`).join(''); }
+    document.querySelectorAll('input').forEach(i=>i.addEventListener('input',()=>{if(i.id==='priority')$('#pr-label').textContent=i.value;render()})); function resetFilters(){document.querySelectorAll('input[type=checkbox]').forEach(x=>x.checked=true);$('#priority').value=0;$('#pr-label').textContent='0';render()} render();
+  </script>
+</body>
+</html>
