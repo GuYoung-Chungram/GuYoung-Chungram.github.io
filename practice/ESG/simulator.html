@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="ko" class="theme-light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESG 손익 시뮬레이터 — 청람M&C</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { interpolate-size: allow-keywords; }
+
+    html.theme-light {
+      --bg: #FFFFFF; --surface: #F8FAFF; --surface-hover: #EEF3FD;
+      --border: rgba(22,82,216,0.10);
+      --text: #1A1A1A; --text-secondary: #666666;
+      --accent: #1652D8; --accent-secondary: #0F3D99;
+      --positive: #059669; --negative: #e11d48; --warning: #d97706;
+      --cr-header-bar: #1652D8; --cr-light-bg: #EEF3FD; --cr-card-border: #D0D9F5; --cr-dark-section: #0F0F0F;
+      --tag-e: #059669; --tag-s: #d97706; --tag-g: #1652D8;
+      --menu-bg: rgba(255,255,255,0.9); --menu-bg-hover: rgba(255,255,255,0.98);
+      --menu-border: rgba(22,82,216,0.12); --menu-text: #1A1A1A; --menu-item-hover: rgba(22,82,216,0.06);
+    }
+    html.theme-dark {
+      --bg: #0F0F0F; --surface: #1A1A2E; --surface-hover: #252540;
+      --border: rgba(255,255,255,0.08);
+      --text: #EDEDED; --text-secondary: #9A9A9A;
+      --accent: #4B7BF5; --accent-secondary: #6B8FFF;
+      --positive: #10b981; --negative: #f43f5e; --warning: #f59e0b;
+      --cr-header-bar: #4B7BF5; --cr-light-bg: #1A1A2E; --cr-card-border: rgba(75,123,245,0.2); --cr-dark-section: #0A0A0A;
+      --tag-e: #10b981; --tag-s: #f59e0b; --tag-g: #6B8FFF;
+      --menu-bg: rgba(15,15,15,0.9); --menu-bg-hover: rgba(15,15,15,0.98);
+      --menu-border: rgba(75,123,245,0.15); --menu-text: #EDEDED; --menu-item-hover: rgba(75,123,245,0.1);
+    }
+
+    body {
+      font-family: 'Noto Sans KR', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg); color: var(--text);
+      line-height: 1.7; -webkit-font-smoothing: antialiased; letter-spacing: -0.01em;
+      transition: background 0.3s, color 0.3s; scrollbar-gutter: stable;
+    }
+    h1, h2, h3, h4 { color: var(--text); letter-spacing: -0.03em; line-height: 1.25; text-wrap: balance; }
+    h1 { font-weight: 700; font-size: clamp(2.2rem, 5vw, 3.3rem); }
+    h2 { font-weight: 600; font-size: clamp(1.6rem, 3.4vw, 2.1rem); letter-spacing: -0.02em; }
+    h3 { font-weight: 600; font-size: 1.2rem; letter-spacing: -0.02em; }
+    p, li, td, th, span, label { color: var(--text); }
+    .text-secondary { color: var(--text-secondary); }
+    a { color: var(--accent); }
+
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 24px; transition: box-shadow 0.2s ease; }
+    .card:hover { box-shadow: 0 0 0 1px var(--border), 0 8px 16px rgba(0,0,0,0.06); }
+
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    .animate { animation: fadeInUp 0.6s ease-out both; }
+    .animate.delay-1 { animation-delay: 0.1s; } .animate.delay-2 { animation-delay: 0.2s; } .animate.delay-3 { animation-delay: 0.3s; }
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .reveal { opacity: 1; transform: none; }
+    }
+
+    /* MENU */
+    .viz-menu { position: fixed; top: 16px; right: 16px; z-index: 9999; }
+    .viz-menu-toggle { width: 44px; height: 44px; border-radius: 12px; background: var(--menu-bg); border: 1px solid var(--menu-border); color: var(--menu-text); cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(12px); }
+    .viz-menu-dropdown { position: absolute; top: 52px; right: 0; min-width: 200px; background: var(--menu-bg); border: 1px solid var(--menu-border); border-radius: 12px; padding: 8px; opacity: 0; visibility: hidden; transform: translateY(-8px); transition: all 0.2s; backdrop-filter: blur(16px); box-shadow: 0 8px 32px rgba(0,0,0,0.12); }
+    .viz-menu-dropdown.open { opacity: 1; visibility: visible; transform: translateY(0); }
+    .viz-menu-dropdown button { width: 100%; padding: 10px 14px; border: none; border-radius: 8px; background: transparent; color: var(--menu-text); font-size: 14px; font-family: inherit; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 10px; }
+    .viz-menu-dropdown button:hover { background: var(--menu-item-hover); }
+    .skip-link { position: absolute; left: -9999px; }
+    .skip-link:focus { position: fixed; left: 16px; top: 16px; z-index: 10000; padding: 8px 16px; background: var(--accent); color: #fff; border-radius: 4px; }
+
+    /* LAYOUT */
+    .wrap { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+    .hero { position: relative; background: var(--cr-dark-section); color: #fff; padding: 72px 0 56px; overflow: hidden; }
+    .hero .dots { position: absolute; inset: 0; background-image: radial-gradient(circle, #ffffff 0.6px, transparent 0.6px); background-size: 24px 24px; opacity: 0.06; pointer-events: none; }
+    .hero * { color: #fff; }
+    .eyebrow { font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.75; }
+    .hero h1 { margin: 14px 0 18px; }
+    .hero h1 em { font-style: normal; color: #7FA4FF; }
+    .hero p.lead { max-width: 780px; font-size: 1.08rem; opacity: 0.88; }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+    .hero-meta a, .hero-meta span { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border: 1px solid rgba(255,255,255,0.22); border-radius: 999px; font-size: 0.88rem; text-decoration: none; }
+    .hero-meta a:hover { background: rgba(255,255,255,0.08); }
+
+    .flow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--cr-card-border); border: 1px solid var(--cr-card-border); border-radius: 10px; overflow: hidden; margin: -28px 0 0; position: relative; z-index: 2; }
+    .flow div { background: var(--bg); padding: 18px 22px; }
+    .flow b { display: block; color: var(--accent); font-family: 'Inter', sans-serif; font-size: 0.78rem; letter-spacing: 0.1em; }
+    .flow span { font-weight: 600; }
+
+    section.block { padding: 48px 0 8px; }
+    .sec-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; border-bottom: 2px solid var(--accent); padding-bottom: 10px; margin-bottom: 22px; }
+    .sec-head .num { font-family: 'Inter', sans-serif; font-weight: 800; color: var(--accent); font-size: 1rem; letter-spacing: 0.06em; }
+    .sec-head p { color: var(--text-secondary); font-size: 0.95rem; }
+
+    .main-grid { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 28px; align-items: start; }
+    .sticky { position: sticky; top: 16px; }
+    .main-grid > *, .res-grid > *, .field, .inbox { min-width: 0; }
+    .field input[type=number] { min-width: 0; }
+
+    /* INPUTS */
+    .input-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .field label { display: block; font-size: 0.86rem; font-weight: 500; color: var(--text-secondary); margin-bottom: 6px; }
+    .field .inbox { display: flex; align-items: center; border: 1px solid var(--cr-card-border); border-radius: 8px; background: var(--bg); overflow: hidden; }
+    .field input[type=number], .field select { width: 100%; border: none; background: transparent; color: var(--text); font: inherit; font-size: 1.15rem; font-weight: 600; padding: 10px 12px; font-family: 'Inter', 'Noto Sans KR', sans-serif; }
+    .field select { font-size: 1rem; cursor: pointer; }
+    .field select option { color: #1A1A1A; }
+    .field .unit { padding: 0 12px; color: var(--text-secondary); font-size: 0.9rem; white-space: nowrap; }
+    .field input:focus, .field select:focus { outline: none; }
+    .field .inbox:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(22,82,216,0.12); }
+    .op-strip { display: flex; flex-wrap: wrap; gap: 10px 28px; margin-top: 18px; padding: 14px 18px; border-radius: 8px; background: var(--cr-light-bg); border-left: 4px solid var(--accent); }
+    .op-strip div { font-size: 0.92rem; }
+    .op-strip b { font-family: 'Inter', sans-serif; font-size: 1.25rem; margin-left: 6px; }
+    .seg { display: inline-flex; border: 1px solid var(--cr-card-border); border-radius: 8px; overflow: hidden; background: var(--bg); width: 100%; }
+    .seg button { flex: 1; border: none; background: transparent; color: var(--text); font: inherit; font-size: 0.9rem; padding: 10px 6px; cursor: pointer; border-right: 1px solid var(--cr-card-border); }
+    .seg button:last-child { border-right: none; }
+    .seg button.on { background: var(--accent); color: #fff; font-weight: 600; }
+    .hint { font-size: 0.8rem; color: var(--text-secondary); margin-top: 6px; line-height: 1.5; }
+
+    /* JOB TABS */
+    .tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 18px; scrollbar-width: thin; }
+    .tab { flex: none; border: 1px solid var(--cr-card-border); background: var(--bg); color: var(--text); border-radius: 999px; padding: 9px 16px; font: inherit; font-size: 0.92rem; cursor: pointer; display: inline-flex; gap: 8px; align-items: center; }
+    .tab:hover { background: var(--surface-hover); }
+    .tab.on { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+    .tab .cnt { min-width: 20px; height: 20px; border-radius: 10px; font-size: 0.75rem; display: inline-flex; align-items: center; justify-content: center; background: var(--cr-light-bg); color: var(--accent); font-weight: 700; padding: 0 6px; }
+    .tab.on .cnt { background: rgba(255,255,255,0.22); color: #fff; }
+
+    .acts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .act { position: relative; border: 1px solid var(--cr-card-border); border-radius: 10px; padding: 16px 16px 14px; background: var(--bg); transition: border-color 0.15s, background 0.15s; }
+    .act.sel { border-color: var(--accent); background: var(--surface); box-shadow: inset 4px 0 0 var(--accent); }
+    .act-top { display: flex; gap: 12px; align-items: flex-start; cursor: pointer; }
+    .act-top input { width: 20px; height: 20px; margin-top: 3px; accent-color: var(--accent); flex: none; cursor: pointer; }
+    .act-name { font-weight: 600; line-height: 1.45; }
+    .act-desc { font-size: 0.85rem; color: var(--text-secondary); margin: 4px 0 8px; line-height: 1.55; }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip { font-size: 0.72rem; padding: 2px 8px; border-radius: 4px; border: 1px solid var(--cr-card-border); color: var(--text-secondary); white-space: nowrap; }
+    .tag { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 0.72rem; padding: 2px 7px; border-radius: 4px; color: #fff; }
+    .tag.E { background: var(--tag-e); } .tag.S { background: var(--tag-s); } .tag.G { background: var(--tag-g); }
+    .mat { font-size: 0.72rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
+    .mat.y { background: rgba(5,150,105,0.12); color: var(--positive); }
+    .mat.n { background: rgba(102,102,102,0.12); color: var(--text-secondary); }
+    .intensity { margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--cr-card-border); display: none; }
+    .act.sel .intensity { display: block; }
+    .int-row { display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 4px; }
+    .int-row b { color: var(--accent); }
+    input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; }
+    .act-out { font-size: 0.8rem; margin-top: 6px; color: var(--text-secondary); }
+    .act-out b.pos { color: var(--positive); } .act-out b.neg { color: var(--negative); }
+
+    /* SUMMARY PANEL */
+    .panel h3 { margin-bottom: 4px; }
+    .panel .sub { font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 16px; }
+    .big { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 2.3rem; letter-spacing: -0.03em; line-height: 1.1; }
+    .big.pos { color: var(--positive); } .big.neg { color: var(--negative); } .big.neu { color: var(--text); }
+    .mini { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+    .mini div { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; }
+    .mini small { display: block; font-size: 0.74rem; color: var(--text-secondary); }
+    .mini b { font-family: 'Inter', sans-serif; font-size: 1.05rem; }
+    .spark { height: 64px; margin-top: 14px; display: flex; align-items: center; gap: 6px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); position: relative; }
+    .spark .bar { flex: 1; position: relative; height: 100%; }
+    .spark .bar i { position: absolute; left: 15%; right: 15%; border-radius: 2px; }
+    .spark .zero { position: absolute; left: 0; right: 0; top: 50%; border-top: 1px dashed var(--text-secondary); opacity: 0.4; }
+    .spark-lbl { display: flex; gap: 6px; font-size: 0.7rem; color: var(--text-secondary); margin-top: 4px; }
+    .spark-lbl span { flex: 1; text-align: center; color: var(--text-secondary); }
+    .esg-bal { display: flex; height: 10px; border-radius: 5px; overflow: hidden; background: var(--border); margin-top: 6px; }
+    .esg-bal i { display: block; height: 100%; }
+    .panel-btns { display: flex; gap: 8px; margin-top: 16px; }
+    .btn { flex: 1; border: 1px solid var(--cr-card-border); background: var(--bg); color: var(--text); border-radius: 8px; padding: 10px; font: inherit; font-size: 0.86rem; cursor: pointer; }
+    .btn:hover { background: var(--surface-hover); }
+    .btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; }
+
+    /* RESULTS */
+    .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-bottom: 18px; }
+    .kpi small { display: block; font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 4px; }
+    .kpi .v { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 1.7rem; letter-spacing: -0.02em; line-height: 1.2; }
+    .kpi .d { font-size: 0.82rem; margin-top: 4px; color: var(--text-secondary); }
+    .pos { color: var(--positive) !important; } .neg { color: var(--negative) !important; } .acc { color: var(--accent) !important; }
+    .res-grid { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 18px; }
+    .chart-box { position: relative; height: 380px; }
+    .view-toggle { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+    .view-toggle .seg { width: auto; }
+    .view-toggle .seg button { padding: 8px 14px; flex: none; white-space: nowrap; }
+    @media (max-width: 520px) { .view-toggle .seg { width: 100%; } .view-toggle .seg button { flex: 1; white-space: normal; } }
+    .tbl-wrap { overflow-x: auto; margin-top: 16px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    th, td { padding: 9px 10px; text-align: right; border-bottom: 1px solid var(--border); white-space: nowrap; }
+    th:first-child, td:first-child { text-align: left; }
+    th { font-weight: 600; color: var(--text-secondary); font-size: 0.8rem; background: var(--cr-light-bg); }
+    td.n { font-family: 'Inter', sans-serif; }
+    .comp-row { margin-bottom: 12px; }
+    .comp-row .lbl { display: flex; justify-content: space-between; font-size: 0.86rem; margin-bottom: 4px; }
+    .comp-row .lbl b { font-family: 'Inter', sans-serif; }
+    .comp-track { height: 10px; border-radius: 5px; background: var(--border); overflow: hidden; }
+    .comp-track i { display: block; height: 100%; border-radius: 5px; }
+
+    .insights { display: grid; gap: 12px; }
+    .ins { border-left: 4px solid var(--accent); background: var(--bg); border-radius: 0 8px 8px 0; padding: 14px 16px; border-top: 1px solid var(--border); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .ins.warn { border-left-color: var(--warning); } .ins.bad { border-left-color: var(--negative); } .ins.good { border-left-color: var(--positive); }
+    .ins b { display: block; margin-bottom: 4px; }
+    .ins p { font-size: 0.9rem; line-height: 1.6; }
+    .ins .q { margin-top: 6px; font-weight: 600; color: var(--accent); font-size: 0.9rem; }
+
+    .sel-table td:nth-child(2) { text-align: center; }
+    .empty { text-align: center; padding: 28px; color: var(--text-secondary); font-size: 0.95rem; }
+
+    .assume { margin: 48px 0 64px; }
+    .assume details { border: 1px solid var(--cr-card-border); border-radius: 10px; padding: 16px 20px; background: var(--surface); }
+    .assume summary { font-weight: 600; }
+    .assume ul { list-style: none; margin-top: 12px; }
+    .assume li { position: relative; padding-left: 18px; font-size: 0.9rem; margin-bottom: 8px; line-height: 1.6; }
+    .assume li::before { content: ''; position: absolute; left: 0; top: 0.65em; width: 6px; height: 6px; background: var(--accent); }
+    footer { border-top: 1px solid var(--border); padding: 24px 0 40px; font-size: 0.82rem; color: var(--text-secondary); }
+    footer * { color: var(--text-secondary); }
+
+    @media (max-width: 1080px) {
+      .main-grid { grid-template-columns: 1fr; }
+      .sticky { position: static; }
+      .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .res-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 720px) {
+      .input-grid { grid-template-columns: 1fr; }
+      .acts { grid-template-columns: 1fr; }
+      .flow { grid-template-columns: 1fr; }
+      .hero { padding: 56px 0 48px; }
+      .chart-box { height: 300px; }
+    }
+    @media (max-width: 375px) { body { overflow-x: hidden; } .kpis { grid-template-columns: 1fr; } }
+    @media print {
+      body { background: #fff !important; }
+      .viz-menu, .panel-btns { display: none !important; }
+      .reveal { opacity: 1 !important; transform: none !important; }
+      .card, .act, .ins { break-inside: avoid; }
+      .sticky { position: static; }
+      * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    }
+  
+    .route { margin-top: 16px; padding: 14px 18px; border-radius: 8px; border: 1px dashed var(--cr-card-border); background: var(--bg); }
+    .route b { color: var(--accent); }
+    .route p { font-size: 0.9rem; line-height: 1.65; margin-top: 4px; }
+    .tab .ico { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 0.72rem; opacity: 0.7; }
+    #segInd button { font-weight: 500; }
+    @media (max-width: 720px) { #segInd { flex-wrap: wrap; } #segInd button { flex: 1 1 33%; border-bottom: 1px solid var(--cr-card-border); } }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">본문으로 건너뛰기</a>
+
+  <div class="viz-menu">
+    <button class="viz-menu-toggle" onclick="toggleMenu()" aria-label="메뉴">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="5" x2="17" y2="5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="15" x2="17" y2="15"/></svg>
+    </button>
+    <div class="viz-menu-dropdown" id="vizMenuDropdown">
+      <button onclick="cycleTheme()"><span id="themeIcon">☀️</span><span id="themeLabel">라이트</span></button>
+      <button onclick="downloadImage()"><span>📥</span><span>PNG 다운로드</span></button>
+      <button onclick="window.print()"><span>🖨️</span><span>인쇄 / PDF</span></button>
+    </div>
+  </div>
+
+  <header class="hero">
+    <div class="dots"></div>
+    <div class="wrap">
+      <div class="eyebrow animate">Executive Learning Lab · ESG 2026 · 실습 2</div>
+      <h1 class="animate delay-1">ESG 손익 시뮬레이터<br><em>착한 결정은 얼마짜리인가</em></h1>
+      <p class="lead animate delay-2">철학과 윤리는 ESG의 <b>방향</b>을 정하지만, 손익은 그 방향을 <b>얼마나 오래 유지할 수 있는지</b>를 정합니다. 우리 회사·기관의 숫자를 넣고, 대표자로서 손댈 수 있는 경영 영역별 ESG 활동을 고른 뒤, 실행 강도를 움직여 보십시오. 1년차의 부담과 5년차의 회수를 함께 보는 것이 이 실습의 목적입니다.</p>
+      <div class="hero-meta animate delay-3">
+        <a href="ESG_dashboard.html">← ESG Decision Intelligence (사례 대시보드)</a>
+        <span>교육용 가정치 기반 · 실제 투자 판단용 아님</span>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content" role="main">
+    <div class="wrap">
+      <div class="flow">
+        <div><b>STEP 1</b><span>업종 선택 · 우리 손익 입력</span></div>
+        <div><b>STEP 2</b><span>경영 영역별 ESG 활동 · 강도 조절</span></div>
+        <div><b>STEP 3</b><span>1·3·5년 손익 궤적과 성찰 질문</span></div>
+      </div>
+
+      <div class="main-grid">
+        <div>
+          <!-- STEP 1 -->
+          <section class="block" aria-labelledby="s1">
+            <div class="sec-head"><span class="num">STEP 1</span><h2 id="s1">우리 손익</h2><p>연간 기준 · 단위 억원 (소수점 입력 가능, 예: 12.5)</p></div>
+            <div class="card">
+              <div class="field" style="margin-bottom:16px"><label>업종</label><div class="seg" id="segInd"></div></div>
+              <div class="input-grid">
+                <div class="field"><label for="inRev" id="lbRev">매출액</label><div class="inbox"><input type="number" id="inRev" min="0" step="0.1"><span class="unit">억원</span></div></div>
+                <div class="field"><label for="inCogs" id="lbCogs">매출원가</label><div class="inbox"><input type="number" id="inCogs" min="0" step="0.1"><span class="unit">억원</span></div></div>
+                <div class="field"><label for="inSga" id="lbSga">판매비와 관리비</label><div class="inbox"><input type="number" id="inSga" min="0" step="0.1"><span class="unit">억원</span></div></div>
+                <div class="field"><label id="lbCust">고객의 ESG 요구 수준</label><div class="seg" id="segCust"><button data-v="0.5">낮음</button><button data-v="1" class="on">보통</button><button data-v="1.5">높음</button></div><div class="hint" id="hintCust"></div></div>
+                <div class="field"><label>효과 시나리오</label><div class="seg" id="segScen"><button data-v="0.6">보수</button><button data-v="1" class="on">기본</button><button data-v="1.4">낙관</button></div><div class="hint">비용은 그대로, 효과만 ±40% 조정합니다.</div></div>
+                <div class="field"><label>기본값 불러오기</label><div class="seg"><button onclick="loadDefaults()">업종 예시 숫자로</button></div><div class="hint">실제 숫자를 밝히기 어려우면 예시로 시작하세요.</div></div>
+              </div>
+              <div class="op-strip">
+                <div>현재 <span class="pl">영업이익</span><b id="opNow">—</b></div>
+                <div><span class="pl">영업이익</span>률<b id="opmNow">—</b></div>
+                <div>추가 수입의 이익 기여율<b id="cmNow">—</b></div>
+              </div>
+              <div class="route"><b id="routeT">이 업종에 ESG가 다가오는 경로</b><p id="routeP"></p></div>
+            </div>
+          </section>
+
+          <!-- STEP 2 -->
+          <section class="block" aria-labelledby="s2">
+            <div class="sec-head"><span class="num">STEP 2</span><h2 id="s2">대표자가 손댈 수 있는 ESG</h2><p>영역을 바꿔가며 여러 활동을 담을 수 있습니다</p></div>
+            <div class="tabs" id="tabs" role="tablist"></div>
+            <div class="acts" id="acts"></div>
+          </section>
+        </div>
+
+        <!-- SUMMARY -->
+        <aside class="sticky" style="padding-top:48px">
+          <div class="card panel" id="panel">
+            <h3>실시간 요약</h3>
+            <div class="sub" id="pSub">활동을 선택하면 계산됩니다</div>
+            <small class="text-secondary">5년차 <span class="pl">영업이익</span> 변화</small>
+            <div class="big neu" id="pBig">±0.0%</div>
+            <div class="text-secondary" style="font-size:0.85rem" id="pBigSub">&nbsp;</div>
+            <div class="spark" id="spark"></div>
+            <div class="spark-lbl"><span>1년</span><span>2년</span><span>3년</span><span>4년</span><span>5년</span></div>
+            <div class="mini">
+              <div><small>1년차 변화</small><b id="pY1">—</b></div>
+              <div><small>투자 회수기간</small><b id="pPay">—</b></div>
+              <div><small>초기 투자비</small><b id="pInit">—</b></div>
+              <div><small>중요성 적합도</small><b id="pMat">—</b></div>
+            </div>
+            <div style="margin-top:14px;font-size:0.8rem" class="text-secondary">E · S · G 구성 <span id="pEsgTxt"></span></div>
+            <div class="esg-bal" id="pEsg"></div>
+            <div class="panel-btns">
+              <button class="btn" onclick="resetAll()">선택 초기화</button>
+              <button class="btn primary" onclick="document.getElementById('s3').scrollIntoView({behavior:'smooth'})">결과 보기 ↓</button>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <!-- STEP 3 -->
+      <section class="block" aria-labelledby="s3" data-reveal>
+        <div class="sec-head"><span class="num">STEP 3</span><h2 id="s3">5년 손익 궤적</h2><p>J커브: 먼저 쓰고, 나중에 회수한다</p></div>
+        <div class="view-toggle">
+          <div class="seg" id="segView"><button data-v="op" class="on">회계상 이익</button><button data-v="econ">경제적 가치 (리스크 회피 포함)</button></div>
+          <span class="text-secondary" style="font-size:0.85rem" id="viewNote">장부에 실제로 찍히는 숫자만 봅니다.</span>
+        </div>
+        <div class="kpis">
+          <div class="card kpi"><small>1년차 변화</small><div class="v" id="kY1">—</div><div class="d" id="kY1d">초기 비용이 먼저 반영됩니다</div></div>
+          <div class="card kpi"><small>3년차 변화</small><div class="v" id="kY3">—</div><div class="d" id="kY3d">&nbsp;</div></div>
+          <div class="card kpi"><small>5년차 변화</small><div class="v acc" id="kY5">—</div><div class="d" id="kY5d">&nbsp;</div></div>
+          <div class="card kpi"><small>5년 누적 순효과 (현금 기준)</small><div class="v" id="kCum">—</div><div class="d" id="kCumd">&nbsp;</div></div>
+        </div>
+        <div class="res-grid">
+          <div class="card">
+            <h3 style="margin-bottom:10px">연도별 효과와 누적 회수 곡선</h3>
+            <div class="chart-box"><canvas id="chMain" aria-label="연도별 이익 증감 막대와 누적 순현금효과 선 그래프"></canvas></div>
+            <div class="tbl-wrap"><table id="yrTable"></table></div>
+          </div>
+          <div class="card">
+            <h3 style="margin-bottom:4px">5년차 효과 구성</h3>
+            <p class="text-secondary" style="font-size:0.85rem;margin-bottom:16px">어디서 벌고, 어디서 쓰는가</p>
+            <div id="comp"></div>
+            <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
+              <div class="comp-row"><div class="lbl"><span>재무적 중요 이슈에서 나온 효과</span><b id="matShare">—</b></div><div class="comp-track"><i id="matBar" style="width:0;background:var(--positive)"></i></div></div>
+              <p class="text-secondary" style="font-size:0.82rem;line-height:1.55" id="matLost">&nbsp;</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="block" aria-labelledby="s4" data-reveal>
+        <div class="sec-head"><span class="num">REFLECT</span><h2 id="s4">이 숫자가 묻는 질문</h2><p>선택 결과에 따라 질문이 바뀝니다</p></div>
+        <div class="insights" id="insights"></div>
+      </section>
+
+      <section class="block" aria-labelledby="s5" data-reveal>
+        <div class="sec-head"><span class="num">LIST</span><h2 id="s5">선택한 활동 상세</h2><p>활동별 5년차 기여 (회계 기준)</p></div>
+        <div class="card" style="padding:0"><div class="tbl-wrap" style="margin:0"><table class="sel-table" id="selTable"></table></div></div>
+      </section>
+
+      <div class="assume">
+        <details>
+          <summary>계산 방식과 가정 (반드시 함께 읽어주십시오)</summary>
+          <ul>
+            <li>모든 비용·효과 계수는 <b>연간 수입(매출) 대비 %</b>로 설정한 <b>교육용 가정치</b>입니다. 실제 투자 판단에 그대로 쓰지 말고 토론의 출발점으로만 사용하십시오.</li>
+            <li><b>초기 투자비</b>는 현금 기준으로는 1년차에 전액 지출, 이익 기준으로는 5년 균등 상각합니다. <b>운영비</b>는 매년 발생합니다.</li>
+            <li>효과는 활동별 <b>정착 기간(1~3년)</b>에 걸쳐 점진적으로 커집니다. 그래서 1년차에는 부담이 먼저 보이는 J커브가 나타납니다.</li>
+            <li><b>수입 기여</b>(원아 충원, 환자 신뢰, 수주, 재계약 등)는 늘어난 수입에 업종별 <b>이익 기여율</b>을 곱해 반영합니다. 제조·컨설팅은 입력한 숫자의 매출총이익률을, 유치원(50%)·의료기관(35%)·건축(15%)은 고정비 비중을 고려한 가정치를 씁니다.</li>
+            <li><b>재무적 중요성</b>: 선택한 업종에서 중요 이슈가 아닌 활동은 효과가 35%만 발생합니다(비용은 동일). Khan·Serafeim·Yoon(2016)의 '중요 이슈 우수기업 +6.01% vs 비중요 이슈 +0.60%'를 교육적으로 단순화한 것입니다.</li>
+            <li><b>실행 강도</b>: 비용은 강도에 비례하지만 효과는 체감(강도^0.7)합니다. 무조건 100%가 최선은 아닙니다.</li>
+            <li><b>리스크 회피 가치</b>(사고·분쟁·제재·평판 손실의 기대값, 금융비용 절감)는 장부에 직접 나타나지 않으므로 '경제적 가치' 보기에서만 합산합니다.</li>
+            <li><b>ESG 목표의 평가·보상 연동</b>을 선택하면 다른 모든 활동의 효과가 최대 15% 커집니다(실행 내재화 효과).</li>
+            <li>기존 사업의 성장·물가·세금·할인율은 반영하지 않았습니다. 현재 손익이 5년간 유지된다는 가정에서 ESG 활동의 <b>증분 효과</b>만 봅니다.</li>
+          </ul>
+        </details>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">청람M&C Executive Learning Lab · ESG 손익 시뮬레이터 · 교육용 가정치 기반 시뮬레이션 · <a href="ESG_dashboard.html">사례 대시보드로 돌아가기</a></div>
+  </footer>
+
+  <script>
+    function toggleMenu() { var d = document.getElementById('vizMenuDropdown'); if (d) d.classList.toggle('open'); }
+    document.addEventListener('click', function(e) { if (!e.target.closest('.viz-menu')) { var d = document.getElementById('vizMenuDropdown'); if (d) d.classList.remove('open'); } });
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { var d = document.getElementById('vizMenuDropdown'); if (d) d.classList.remove('open'); } });
+
+    var savedTheme = null;
+    try { savedTheme = localStorage.getItem('cr-viz-theme'); } catch (e) {}
+    var currentTheme = savedTheme || 'light';
+    function applyTheme(t) {
+      document.documentElement.className = 'theme-' + t;
+      document.getElementById('themeIcon').textContent = t === 'dark' ? '🌙' : '☀️';
+      document.getElementById('themeLabel').textContent = t === 'dark' ? '다크' : '라이트';
+      try { localStorage.setItem('cr-viz-theme', t); } catch (e) {}
+      currentTheme = t;
+      if (typeof onThemeChange === 'function') onThemeChange();
+    }
+    function cycleTheme() { applyTheme(currentTheme === 'dark' ? 'light' : 'dark'); }
+
+    document.querySelectorAll('[data-reveal]').forEach(function(el) { el.classList.add('reveal'); });
+    var revealObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('visible'); revealObserver.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(function(el) { revealObserver.observe(el); });
+    setTimeout(function() { document.querySelectorAll('.reveal').forEach(function(el) { el.classList.add('visible'); }); }, 800);
+
+    async function downloadImage() {
+      var menu = document.querySelector('.viz-menu');
+      menu.style.display = 'none';
+      try {
+        var url = await htmlToImage.toPng(document.body, { pixelRatio: 2, backgroundColor: getComputedStyle(document.body).backgroundColor, filter: function(n) { return !n.classList || !n.classList.contains('viz-menu'); } });
+        var a = document.createElement('a'); a.href = url; a.download = 'esg-simulator-' + state.ind + '.png'; a.click();
+      } catch (e) { console.error('Download failed:', e); }
+      menu.style.display = '';
+    }
+
+    /* ================= 업종 ================= */
+    var IND = {
+      mfg: { name: '제조업', rev: '매출액', cogs: '매출원가', sga: '판매비와 관리비', pl: '영업이익', def: [300, 240, 40], cm: null,
+        cust: '원청·해외 고객사의 ESG 요구', custHint: '대기업 협력사·수출 비중이 클수록 높음',
+        route: '공시 의무보다 <b>원청의 공급망 ESG 평가</b>가 먼저 옵니다. 협력사 평가에서 탈락하면 ESG는 비용이 아니라 매출 문제가 됩니다. 여기에 50인 미만 사업장까지 확대된 중대재해처벌법, 에너지 비용 상승이 함께 압박합니다.' },
+      kinder: { name: '유치원·보육', rev: '연간 수입 (원비·지원금 등)', cogs: '인건비', sga: '기타 운영비 (급식·시설·교재 등)', pl: '운영수지', def: [12, 7.5, 3.5], cm: 0.5,
+        cust: '학부모의 관심 수준', custHint: '학부모가 안전·급식·환경을 보고 원을 고르는 정도',
+        route: '유치원의 ESG는 <b>학부모의 선택(원아 충원)</b>과 <b>신뢰</b>로 돌아옵니다. 원아 감소 시대에는 아동 안전, 급식, 교사의 안정성, 회계 투명성이 곧 경쟁력입니다. 교사 한 명의 이직이 학급 운영과 학부모 신뢰에 미치는 비용이 가장 큰 숨은 비용입니다.' },
+      med: { name: '의료기관', rev: '의료수익', cogs: '의료비용 (인건비·재료비)', sga: '관리비', pl: '의료이익', def: [80, 62, 12], cm: 0.35,
+        cust: '환자·지역사회의 관심 수준', custHint: '환자가 안전·평판을 보고 기관을 고르는 정도',
+        route: '의료기관의 ESG 핵심은 <b>환자안전과 감염관리</b>입니다. 사고 한 번이 평판과 수익을 동시에 무너뜨립니다. 24시간 가동되는 에너지 비용, 의료폐기물 처리비, 의료진 소진으로 인한 이직도 바로 손익에 찍히는 ESG 이슈입니다.' },
+      build: { name: '건축·건설', rev: '매출 (공사수익)', cogs: '공사원가', sga: '판매비와 관리비', pl: '영업이익', def: [200, 180, 12], cm: 0.15,
+        cust: '발주처(공공·민간)의 ESG 요구', custHint: '공공발주·대기업 발주 비중이 클수록 높음',
+        route: '건축의 ESG는 <b>현장 안전</b>에서 시작해 <b>녹색건축·에너지 성능</b>으로 확장됩니다. 중대재해 한 건이 영업정지와 수주 제한으로 이어지고, 발주처는 점점 더 에너지 효율과 저탄소 자재를 요구합니다. 하도급 공정성도 법적 리스크입니다.' },
+      consult: { name: '컨설팅·교육·코칭', rev: '매출액', cogs: '직접비 (외주·강사료 등)', sga: '운영비', pl: '영업이익', def: [10, 4, 4], cm: null,
+        cust: '고객사의 ESG 요구 수준', custHint: '고객사가 협력사 ESG 점검을 하거나 ESG 교육 수요가 큰 정도',
+        route: '전문서비스의 ESG는 두 얼굴입니다. 우리 자체의 ESG는 규모가 작지만, <b>고객사의 ESG 수요는 곧 새로운 시장</b>입니다. 동시에 고객 정보 보안, 이해충돌, 협력 강사와의 공정한 계약이 신뢰와 재계약을 좌우합니다.' }
+    };
+    var AREAS = [
+      ['place', '시설 · 에너지'], ['people', '구성원'], ['customer', '고객 · 서비스'],
+      ['supply', '협력 · 공급망'], ['money', '돈과 투명성'], ['community', '지역사회 · 평판']
+    ];
+    var CUST_TAB = { mfg: '고객 · 제품', kinder: '원아 · 학부모', med: '환자 · 진료', build: '발주처 · 품질', consult: '고객사 · 서비스' };
+
+    // [id, 영역, ESG, 이름, 설명, 초기투자%, 운영비%, 비용절감%, 수입기여%, 리스크회피%, 정착(년), 중요업종, 표시업종]
+    var ALL = 'all';
+    var A = [
+      // 시설·에너지
+      ['e1','place','E','냉난방·조명 고효율 교체 (LED·인버터)','건물 에너지 비용을 바로 줄이는 가장 빠른 E 활동',0.6,0.02,0.35,0,0,1,['kinder','med','mfg'],ALL],
+      ['e2','place','E','공정 설비 에너지 진단·고효율 교체','에너지 다소비 설비(모터·보일러·압축기)를 진단해 교체',1.0,0.03,0.60,0,0.05,2,['mfg'],['mfg']],
+      ['e3','place','E','지붕·주차장 태양광 자가발전','전기요금 상승 헤지, 장기 회수형 투자',1.2,0.02,0.25,0.05,0.03,1,['mfg','med'],['mfg','kinder','med','build']],
+      ['e4','place','E','폐기물·불량 감축과 자원순환','공정 불량과 스크랩을 줄여 원가와 처리비를 동시 절감',0.3,0.03,0.35,0,0.03,2,['mfg'],['mfg']],
+      ['e5','place','E','의료폐기물 분리·감량 체계','일반폐기물 혼입을 줄여 고가의 의료폐기물 처리비 절감',0.1,0.03,0.15,0,0.15,1,['med'],['med']],
+      ['e6','place','E','실내공기질·친환경 마감재 관리','공기청정·환기·무독성 자재 — 학부모가 가장 먼저 묻는 환경',0.5,0.10,0,0.40,0.20,1,['kinder'],['kinder']],
+      ['e7','place','E','저탄소·재활용 자재 적용','원가는 오르지만 발주처의 저탄소 요구와 입찰 가점에 대응',0.1,0.25,0,0.60,0.05,2,['build'],['build']],
+      ['e8','place','E','현장 폐기물·건설기계 공회전 관리','현장 단위 연료비·처리비 절감과 민원 감소',0.1,0.02,0.20,0,0.05,1,['build'],['build']],
+      ['e9','place','E','온라인·하이브리드 교육 전환','이동·대관 비용과 탄소를 줄이고 수강 접근성 확대',0.5,0.05,0.50,0.30,0,1,['consult'],['consult']],
+      ['e10','place','E','업무·통학 차량 친환경 전환','유류비 절감과 배출 감소 — 효과는 작고 투자는 큼',0.4,0,0.06,0.02,0,2,[],ALL],
+
+      // 구성원
+      ['p1','people','S','처우·근무환경 개선으로 이직률 낮추기','채용·교육·공백 비용과 서비스 품질 저하를 막는 투자',0.05,0.80,0.90,0.20,0.05,2,['kinder','med','consult'],ALL],
+      ['p2','people','S','유연근무·일가정 양립 제도','핵심 인력이 떠나지 않게 하는 저비용 장치',0.05,0.15,0.20,0,0,2,['consult','med','kinder'],ALL],
+      ['p3','people','S','중대재해 예방 안전관리 체계','위험성 평가·안전보건관리체계 구축 — 법적 의무이자 생존 조건',0.4,0.20,0.05,0,0.60,1,['mfg','build'],['mfg','build']],
+      ['p4','people','S','의료진 소진 예방·근무체계 개선','과로로 인한 이직·의료사고 위험을 함께 낮춤',0.1,0.30,0.30,0,0.20,2,['med'],['med']],
+      ['p5','people','S','구성원 역량개발·리스킬링','교사·직원·전문인력의 전문성 향상이 곧 서비스 품질',0.05,0.15,0.10,0.10,0,3,['consult','kinder','mfg'],ALL],
+      ['p6','people','S','외국인·하도급 근로자 다국어 안전교육','언어 장벽으로 인한 현장 사고를 사전에 차단',0.05,0.05,0,0,0.20,1,['build','mfg'],['build','mfg']],
+      ['p7','people','S','직장 내 괴롭힘 예방·고충처리 채널','작은 조직일수록 갈등 하나가 조직 전체를 흔듦',0.02,0.02,0,0,0.15,1,ALL,ALL],
+
+      // 고객·서비스
+      ['c1','customer','S','아동 안전·학대예방 체계','안전점검·교사 교육·CCTV 운영 원칙 — 신뢰의 바닥선',0.3,0.15,0,0.30,0.50,1,['kinder'],['kinder']],
+      ['c2','customer','S','친환경·지역 농산물 급식','비용은 오르지만 학부모 선택에 직접 영향',0,0.60,0,0.50,0,2,['kinder'],['kinder']],
+      ['c3','customer','G','학부모 소통·운영위원회 활성화','운영 과정을 열어 신뢰를 쌓고 민원을 줄임',0.02,0.03,0,0.20,0.05,2,['kinder'],['kinder']],
+      ['c4','customer','S','감염관리·환자안전 체계 강화','사고 한 번이 평판과 수익을 동시에 무너뜨리는 영역',0.4,0.20,0,0.20,0.60,1,['med'],['med']],
+      ['c5','customer','G','환자 개인정보·의료정보 보안','유출 사고의 법적·평판 손실 차단',0.3,0.08,0,0,0.30,1,['med'],['med']],
+      ['c6','customer','S','취약계층 의료 접근성 (통역·편의시설)','고령·장애·외국인 환자 등 미충족 수요 흡수',0.1,0.05,0,0.15,0,3,['med'],['med']],
+      ['c7','customer','G','원청·해외 고객사 ESG 평가 대응','협력사 평가 대응으로 거래 유지·확대',0.1,0.05,0,0.50,0.10,1,['mfg'],['mfg']],
+      ['c8','customer','E','제품 탄소발자국·친환경 인증','제품 단위 탄소정보로 입찰·조달 가점 확보',0.3,0.05,0,0.40,0,3,['mfg'],['mfg']],
+      ['c9','customer','S','제품 안전·품질 리콜 예방','설계·출하 단계 검증으로 리콜·배상 비용 차단',0.15,0.05,0.05,0,0.30,1,['mfg'],['mfg']],
+      ['c10','customer','E','녹색건축·에너지 성능 설계·시공 역량','인증 실적이 공공·민간 수주 경쟁력이 됨',0.3,0.05,0,1.00,0,3,['build'],['build']],
+      ['c11','customer','S','입주자 안전·하자 예방 품질관리','하자보수 비용과 분쟁을 사전에 줄임',0.1,0.08,0.10,0,0.40,1,['build'],['build']],
+      ['c12','customer','S','ESG 교육·컨설팅 신규 상품 개발','고객사의 ESG 수요를 우리의 시장으로',0.3,0.05,0,0.80,0,2,['consult'],['consult']],
+      ['c13','customer','G','고객 정보·자료 보안과 저작권 관리','고객사 내부자료·진단 데이터 유출 방지',0.1,0.03,0,0,0.20,1,['consult'],['consult']],
+      ['c14','customer','S','ESG 홍보·브랜드 캠페인','캠페인·광고 중심의 ESG 이미지 커뮤니케이션',0.2,0.20,0,0.05,0,2,[],ALL],
+
+      // 협력·공급망
+      ['s1','supply','S','협력사 ESG 자가진단·지원','우리 공급망의 리스크가 원청 평가에서 우리 점수가 됨',0.1,0.05,0,0.20,0.20,2,['mfg','build'],['mfg','build']],
+      ['s2','supply','S','하도급 대금 적정 지급·공정거래','하도급 분쟁·제재 리스크를 줄이고 품질 안정',0.02,0.05,0.05,0,0.30,1,['build'],['build']],
+      ['s3','supply','S','급식·교재 납품업체 위생·안전 관리','식중독·유해물질 사고를 납품 단계에서 차단',0.02,0.05,0,0,0.20,1,['kinder'],['kinder']],
+      ['s4','supply','E','의약품·소모품 재고 최적화','유효기간 경과 폐기를 줄여 재료비 절감',0.2,0.02,0.30,0,0,1,['med'],['med']],
+      ['s5','supply','E','물류·포장재 감축','적재율·포장 최적화로 운송비와 자재비 절감',0.15,0.02,0.20,0.05,0,1,['mfg'],['mfg']],
+      ['s6','supply','S','협력 강사·파트너 공정 계약','표준계약·적정 단가로 우수 파트너를 지키는 장치',0.02,0.10,0.05,0.10,0.10,2,['consult'],['consult']],
+      ['s7','supply','E','친환경·사회적기업 제품 우선구매','의미는 있으나 손익 효과는 제한적',0,0.10,0,0.03,0,1,[],ALL],
+
+      // 돈과 투명성
+      ['g1','money','G','회계 투명성 강화 (결산·예결산 공개)','회계 관리를 공개 수준으로 끌어올려 신뢰와 감사 리스크 관리',0.05,0.03,0,0.20,0.40,1,['kinder'],['kinder']],
+      ['g2','money','G','윤리·컴플라이언스 규정과 정기 점검','리베이트·부정청탁·담합 등 법적 리스크 사전 차단',0.03,0.03,0,0,0.25,1,ALL,ALL],
+      ['g3','money','G','대표자 의존 리스크 관리 (위임·승계)','대표 1인에게 모든 결정이 몰린 구조를 분산',0.03,0.02,0.03,0,0.20,2,ALL,ALL],
+      ['g4','money','G','정책자금·녹색금융·ESG 지원사업 활용','저금리 자금·보조금으로 투자 부담 완화 (영업외 효과)',0.03,0.01,0,0,0.12,1,['mfg','build','med'],ALL],
+      ['kpi','money','G','ESG 목표를 구성원 평가·보상에 연동','다른 모든 활동의 실행력을 끌어올리는 장치',0.03,0.02,0.05,0,0.05,2,ALL,ALL],
+      ['g5','money','E','에너지·탄소 배출량 측정·관리 체계','측정하지 않으면 줄일 수도, 원청에 증명할 수도 없음',0.1,0.03,0.03,0.15,0.05,1,['mfg','build'],['mfg','build','med']],
+      ['g6','money','G','의료분쟁 예방·설명의무 프로세스','동의·설명 절차 표준화로 분쟁 비용 감소',0.05,0.05,0,0,0.35,1,['med'],['med']],
+      ['g7','money','G','이해충돌·전문가 윤리강령','진단과 판매가 얽히는 구조의 신뢰 리스크 관리',0.01,0.01,0,0.05,0.15,1,['consult'],['consult']],
+
+      // 지역사회·평판
+      ['k1','community','S','지역사회 봉사·기부','지역 관계에 의미 있지만 손익 효과는 제한적',0.02,0.20,0,0.03,0.02,2,[],ALL],
+      ['k2','community','S','지역 연계 생태·환경교육 프로그램','차별화된 교육과정으로 원아 모집에 기여',0.05,0.10,0,0.30,0,2,['kinder'],['kinder']],
+      ['k3','community','S','지역 건강증진·예방 프로그램','지역 주민의 신뢰와 재방문으로 연결',0.05,0.10,0,0.20,0,3,['med'],['med']],
+      ['k4','community','S','공사현장 소음·분진 민원 관리','민원으로 인한 공기 지연과 분쟁 차단',0.1,0.05,0,0,0.30,1,['build'],['build']],
+      ['k5','community','S','지역 소상공인·비영리 프로보노','평판과 레퍼런스를 쌓아 신규 고객으로 연결',0,0.15,0,0.15,0,3,['consult'],['consult']],
+      ['k6','community','S','지역 주민 소통·환경정보 공개','공장 인근 민원과 인허가 리스크 관리',0.02,0.02,0,0,0.10,1,['mfg'],['mfg']],
+      ['k7','community','G','ESG 보고서·홍보물 발간','실행 없이 발간만 하면 그린워싱 리스크',0.1,0.05,0,0.03,0,1,[],ALL]
+    ];
+    var ACT = {};
+    A.forEach(function(r) {
+      ACT[r[0]] = { id: r[0], area: r[1], esg: r[2], name: r[3], desc: r[4], init: r[5], opex: r[6], save: r[7], rev: r[8], risk: r[9], ramp: r[10], mat: r[11], show: r[12] };
+    });
+
+    /* ================= STATE ================= */
+    var state = { ind: 'mfg', area: 'place', sel: {}, cust: 1, scen: 1, view: 'op' };
+    var NONMAT = 0.35, KPI_BOOST = 0.15, YEARS = 5;
+
+    function $(id) { return document.getElementById(id); }
+    function num(id) { var v = parseFloat($(id).value); return isNaN(v) || v < 0 ? 0 : v; }
+    function isMat(a) { return a.mat === ALL || a.mat.indexOf(state.ind) >= 0; }
+    function visible(a) { return a.show === ALL || a.show.indexOf(state.ind) >= 0; }
+    function PL() { return IND[state.ind].pl; }
+    // 금액 표시: 1억 이상은 억, 미만은 만원
+    function money(v, signed) {
+      var s = signed && v > 0.00049 ? '+' : '';
+      var a = Math.abs(v);
+      if (a < 0.0005) return '0';
+      if (a >= 1) return s + v.toLocaleString('ko-KR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + '억';
+      return s + Math.round(v * 10000).toLocaleString('ko-KR') + '만';
+    }
+    function pctf(v, signed) { var s = signed && v > 0.049 ? '+' : ''; return s + (Math.abs(v) < 0.05 ? 0 : v).toLocaleString('ko-KR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + '%'; }
+    function cls(v) { var t = Math.max(0.0005, Math.abs(lastR) * 0.0001); return v > t ? 'pos' : (v < -t ? 'neg' : ''); }
+    var lastR = 1;
+    function stageOf(i) { return i <= 30 ? '시범 적용' : (i <= 70 ? '부분 확산' : '전면 실행'); }
+
+    /* ================= RENDER ================= */
+    function buildIndustry() {
+      var s = $('segInd'); s.innerHTML = '';
+      Object.keys(IND).forEach(function(k) {
+        var b = document.createElement('button');
+        b.textContent = IND[k].name; b.dataset.v = k;
+        if (k === state.ind) b.className = 'on';
+        b.onclick = function() { setIndustry(k); };
+        s.appendChild(b);
+      });
+    }
+    function setIndustry(k) {
+      var had = Object.keys(state.sel).length;
+      if (had && k !== state.ind && !confirm('업종을 바꾸면 선택한 활동이 초기화됩니다. 계속할까요?')) return;
+      state.ind = k; state.sel = {};
+      buildIndustry();
+      var c = IND[k];
+      $('lbRev').textContent = c.rev; $('lbCogs').textContent = c.cogs; $('lbSga').textContent = c.sga;
+      $('lbCust').textContent = c.cust; $('hintCust').textContent = c.custHint + '. 수입 기여 효과에 반영됩니다.';
+      $('routeT').textContent = c.name + '에 ESG가 다가오는 경로';
+      $('routeP').innerHTML = c.route;
+      document.querySelectorAll('.pl').forEach(function(e) { e.textContent = c.pl; });
+      loadDefaults(true);
+      buildTabs(); buildActs();
+    }
+    function loadDefaults(silent) {
+      var d = IND[state.ind].def;
+      $('inRev').value = d[0]; $('inCogs').value = d[1]; $('inSga').value = d[2];
+      var st = d[0] < 50 ? 0.1 : 1;
+      ['inRev', 'inCogs', 'inSga'].forEach(function(id) { $(id).step = st; });
+      if (!silent) update();
+    }
+    function buildTabs() {
+      var t = $('tabs'); t.innerHTML = '';
+      AREAS.forEach(function(ar) {
+        var label = ar[0] === 'customer' ? CUST_TAB[state.ind] : ar[1];
+        var c = Object.keys(state.sel).filter(function(k) { return ACT[k].area === ar[0]; }).length;
+        var b = document.createElement('button');
+        b.className = 'tab' + (state.area === ar[0] ? ' on' : '');
+        b.setAttribute('role', 'tab');
+        b.innerHTML = label + (c ? ' <span class="cnt">' + c + '</span>' : '');
+        b.onclick = function() { state.area = ar[0]; buildTabs(); buildActs(); };
+        t.appendChild(b);
+      });
+    }
+    function chipsOf(a) {
+      var h = '';
+      if (a.save > 0) h += '<span class="chip">비용절감</span>';
+      if (a.rev > 0) h += '<span class="chip">수입기여</span>';
+      if (a.risk > 0) h += '<span class="chip">리스크회피</span>';
+      h += '<span class="chip">정착 ' + a.ramp + '년</span>';
+      if (a.id === 'kpi') h += '<span class="chip">다른 활동 효과 증폭</span>';
+      return h;
+    }
+    function buildActs() {
+      var box = $('acts'); box.innerHTML = '';
+      var list = A.map(function(r) { return ACT[r[0]]; }).filter(function(a) { return a.area === state.area && visible(a); });
+      // 핵심 이슈를 앞으로
+      list.sort(function(x, y) { return (isMat(y) ? 1 : 0) - (isMat(x) ? 1 : 0); });
+      list.forEach(function(a) {
+        var on = state.sel.hasOwnProperty(a.id), m = isMat(a);
+        var d = document.createElement('div');
+        d.className = 'act' + (on ? ' sel' : '');
+        d.id = 'act-' + a.id;
+        var iv = on ? state.sel[a.id] : 50;
+        d.innerHTML =
+          '<label class="act-top"><input type="checkbox" ' + (on ? 'checked' : '') + ' aria-label="' + a.name + '">' +
+          '<div><div class="chips" style="margin-bottom:6px"><span class="tag ' + a.esg + '">' + a.esg + '</span>' +
+          '<span class="mat ' + (m ? 'y' : 'n') + '">' + (m ? '우리 업종 핵심 이슈' : '비핵심 이슈') + '</span></div>' +
+          '<div class="act-name">' + a.name + '</div><div class="act-desc">' + a.desc + '</div>' +
+          '<div class="chips">' + chipsOf(a) + '</div></div></label>' +
+          '<div class="intensity"><div class="int-row"><span>실행 강도</span><span><b class="iv">' + iv + '%</b> · <span class="st">' + stageOf(iv) + '</span></span></div>' +
+          '<input type="range" min="10" max="100" step="5" value="' + iv + '" aria-label="' + a.name + ' 실행 강도">' +
+          '<div class="act-out"></div></div>';
+        var cb = d.querySelector('input[type=checkbox]');
+        cb.onchange = function() {
+          if (cb.checked) state.sel[a.id] = parseInt(d.querySelector('input[type=range]').value, 10);
+          else delete state.sel[a.id];
+          d.classList.toggle('sel', cb.checked);
+          buildTabs(); update();
+        };
+        var rg = d.querySelector('input[type=range]');
+        rg.oninput = function() {
+          var v = parseInt(rg.value, 10);
+          state.sel[a.id] = v;
+          d.querySelector('.iv').textContent = v + '%';
+          d.querySelector('.st').textContent = stageOf(v);
+          update();
+        };
+        box.appendChild(d);
+      });
+      update();
+    }
+
+    /* ================= MODEL ================= */
+    function simulate() {
+      var R = num('inRev'), C = num('inCogs'), S = num('inSga');
+      var op0 = R - C - S, gm = R > 0 ? Math.max(0, Math.min(1, (R - C) / R)) : 0;
+      var cm = IND[state.ind].cm === null ? gm : IND[state.ind].cm;
+      var z = function() { return [0, 0, 0, 0, 0, 0]; };
+      var out = { R: R, op0: op0, cm: cm, save: z(), rev: z(), revSales: z(), risk: z(), opex: z(), dep: z(), init: 0, per: [], matBen: 0, allBen: 0, lost: 0, esg: { E: 0, S: 0, G: 0 } };
+      var kpiI = state.sel.hasOwnProperty('kpi') ? state.sel.kpi / 100 : 0;
+      Object.keys(state.sel).forEach(function(id) {
+        var a = ACT[id], i = state.sel[id] / 100, m = isMat(a);
+        var boost = (id !== 'kpi') ? (1 + KPI_BOOST * kpiI) : 1;
+        var bm = (m ? 1 : NONMAT) * state.scen * Math.pow(i, 0.7) * boost;
+        var initC = a.init / 100 * R * i, opexC = a.opex / 100 * R * i;
+        out.init += initC; out.esg[a.esg]++;
+        var p = { a: a, i: i, m: m, init: initC, opex: opexC, y5op: 0, y5econ: 0 };
+        for (var t = 1; t <= YEARS; t++) {
+          var f = Math.min(1, t / a.ramp);
+          var sv = a.save / 100 * R * bm * f;
+          var rs = a.rev / 100 * R * bm * state.cust * f;
+          var rv = rs * cm;
+          var rk = a.risk / 100 * R * bm * f;
+          out.save[t] += sv; out.revSales[t] += rs; out.rev[t] += rv; out.risk[t] += rk;
+          out.opex[t] += opexC; out.dep[t] += initC / YEARS;
+          if (t === YEARS) {
+            p.y5op = sv + rv - opexC - initC / YEARS;
+            p.y5econ = p.y5op + rk;
+            var ben = sv + rv + rk;
+            out.allBen += ben;
+            if (m) out.matBen += ben; else out.lost += ben / NONMAT - ben;
+          }
+        }
+        out.per.push(p);
+      });
+      var econ = state.view === 'econ';
+      out.delta = [0]; out.cash = [0]; out.cum = [0];
+      for (var t = 1; t <= YEARS; t++) {
+        var d = out.save[t] + out.rev[t] - out.opex[t] - out.dep[t] + (econ ? out.risk[t] : 0);
+        var c = out.save[t] + out.rev[t] - out.opex[t] - (t === 1 ? out.init : 0) + (econ ? out.risk[t] : 0);
+        out.delta.push(d); out.cash.push(c); out.cum.push(out.cum[t - 1] + c);
+      }
+      out.payback = null;
+      if (out.per.length) {
+        for (var k = 1; k <= YEARS; k++) {
+          if (out.cum[k] >= 0) {
+            if (k === 1) { var flow = out.cash[1] + out.init; out.payback = flow > 0 ? Math.max(0.1, out.init / flow) : 1; }
+            else out.payback = (k - 1) + (-out.cum[k - 1]) / out.cash[k];
+            break;
+          }
+        }
+      }
+      return out;
+    }
+
+    /* ================= UPDATE ================= */
+    var lastSim = null;
+    function update() {
+      var s = simulate(); lastSim = s; lastR = s.R;
+      var n = s.per.length, econ = state.view === 'econ';
+      $('opNow').textContent = money(s.op0);
+      $('opNow').className = s.op0 < 0 ? 'neg' : '';
+      $('opmNow').textContent = s.R > 0 ? pctf(s.op0 / s.R * 100) : '—';
+      $('cmNow').textContent = pctf(s.cm * 100);
+
+      s.per.forEach(function(p) {
+        var el = document.querySelector('#act-' + p.a.id + ' .act-out');
+        if (el) {
+          var v = econ ? p.y5econ : p.y5op;
+          el.innerHTML = '초기 ' + money(p.init) + '원 · 연 운영비 ' + money(p.opex) + '원 → 5년차 기여 <b class="' + cls(v) + '">' + money(v, true) + '원</b>' + (p.m ? '' : ' <span style="color:var(--warning)">(비핵심: 효과 35%)</span>');
+        }
+      });
+
+      var y5 = s.op0 + s.delta[5];
+      var pct = s.op0 > 0 ? s.delta[5] / s.op0 * 100 : null;
+      $('pSub').textContent = n ? (IND[state.ind].name + ' · ' + n + '개 활동 · ' + (econ ? '경제적 가치 기준' : '회계 기준')) : IND[state.ind].name + ' · 활동을 선택하면 계산됩니다';
+      $('pBig').textContent = pct === null ? money(s.delta[5], true) : pctf(pct, true);
+      $('pBig').className = 'big ' + (cls(s.delta[5]) || 'neu');
+      $('pBigSub').textContent = '현재 ' + money(s.op0) + ' → 5년차 ' + money(y5) + (s.R > 0 ? ' (이익률 ' + pctf(s.op0 / s.R * 100) + ' → ' + pctf(y5 / (s.R + s.revSales[5]) * 100) + ')' : '');
+      $('pY1').textContent = n ? money(s.delta[1], true) : '—'; $('pY1').className = cls(s.delta[1]);
+      $('pInit').textContent = n ? money(s.init) : '—';
+      $('pPay').textContent = !n ? '—' : (s.payback === null ? '5년 초과' : pctf(s.payback).replace('%', '') + '년');
+      $('pPay').className = !n ? '' : (s.payback === null ? 'neg' : (s.payback <= 3 ? 'pos' : ''));
+      var mc = s.per.filter(function(p) { return p.m; }).length;
+      $('pMat').textContent = n ? Math.round(mc / n * 100) + '%' : '—';
+      $('pMat').className = !n ? '' : (mc / n >= 0.7 ? 'pos' : (mc / n < 0.5 ? 'neg' : ''));
+
+      var mx = Math.max.apply(null, s.delta.slice(1).map(Math.abs).concat([1e-9]));
+      var sp = '<div class="zero"></div>';
+      for (var t = 1; t <= YEARS; t++) {
+        var h = n ? Math.abs(s.delta[t]) / mx * 46 : 0;
+        sp += '<div class="bar"><i style="height:' + h + '%;' + (s.delta[t] >= 0 ? 'bottom:50%;background:var(--positive)' : 'top:50%;background:var(--negative)') + '"></i></div>';
+      }
+      $('spark').innerHTML = sp;
+      var tot = s.esg.E + s.esg.S + s.esg.G;
+      $('pEsg').innerHTML = tot ? '<i style="width:' + s.esg.E / tot * 100 + '%;background:var(--tag-e)"></i><i style="width:' + s.esg.S / tot * 100 + '%;background:var(--tag-s)"></i><i style="width:' + s.esg.G / tot * 100 + '%;background:var(--tag-g)"></i>' : '';
+      $('pEsgTxt').textContent = tot ? '— E ' + s.esg.E + ' · S ' + s.esg.S + ' · G ' + s.esg.G : '';
+
+      [1, 3, 5].forEach(function(y) {
+        $('kY' + y).textContent = n ? money(s.delta[y], true) : '—';
+        $('kY' + y).className = 'v ' + (y === 5 ? 'acc ' : '') + cls(s.delta[y]);
+        if (n) $('kY' + y + 'd').textContent = PL() + '률 ' + pctf((s.op0 + s.delta[y]) / Math.max(1e-9, s.R + s.revSales[y]) * 100) + ' (현재 ' + (s.R > 0 ? pctf(s.op0 / s.R * 100) : '—') + ')';
+        else $('kY' + y + 'd').textContent = y === 1 ? '초기 비용이 먼저 반영됩니다' : '\u00a0';
+      });
+      $('kCum').textContent = n ? money(s.cum[5], true) : '—';
+      $('kCum').className = 'v ' + cls(s.cum[5]);
+      $('kCumd').textContent = n ? ('초기 투자 ' + money(s.init) + ' 포함 · 회수 ' + (s.payback === null ? '5년 초과' : pctf(s.payback).replace('%', '') + '년')) : '\u00a0';
+
+      var th = '<tr><th>구분</th><th>현재</th>', r1 = '<tr><td>' + PL() + '</td><td class="n">' + money(s.op0) + '</td>', r2 = '<tr><td>증감</td><td class="n">—</td>', r3 = '<tr><td>누적 순현금효과</td><td class="n">—</td>';
+      for (var y = 1; y <= YEARS; y++) {
+        th += '<th>' + y + '년차</th>';
+        r1 += '<td class="n">' + money(s.op0 + s.delta[y]) + '</td>';
+        r2 += '<td class="n ' + cls(s.delta[y]) + '">' + money(s.delta[y], true) + '</td>';
+        r3 += '<td class="n ' + cls(s.cum[y]) + '">' + money(s.cum[y], true) + '</td>';
+      }
+      $('yrTable').innerHTML = th + '</tr>' + r1 + '</tr>' + r2 + '</tr>' + r3 + '</tr>';
+
+      var items = [
+        ['비용 절감', s.save[5], 'var(--positive)'],
+        ['수입 기여 (수입 ' + money(s.revSales[5], true) + ' × 기여율)', s.rev[5], 'var(--accent)'],
+        ['리스크 회피 · 금융비용 (장부 밖)', s.risk[5], econ ? 'var(--tag-s)' : 'var(--text-secondary)'],
+        ['연간 운영비', -s.opex[5], 'var(--negative)'],
+        ['초기 투자 상각', -s.dep[5], 'var(--negative)']
+      ];
+      var cmx = Math.max.apply(null, items.map(function(x) { return Math.abs(x[1]); }).concat([1e-9]));
+      $('comp').innerHTML = items.map(function(x, idx) {
+        var note = (idx === 2 && !econ) ? ' <span class="text-secondary" style="font-size:0.75rem">(현재 보기에서 제외)</span>' : '';
+        return '<div class="comp-row"><div class="lbl"><span>' + x[0] + note + '</span><b class="' + cls(x[1]) + '">' + money(x[1], true) + '</b></div><div class="comp-track"><i style="width:' + (Math.abs(x[1]) / cmx * 100) + '%;background:' + x[2] + '"></i></div></div>';
+      }).join('');
+      var ms = s.allBen > 0 ? s.matBen / s.allBen * 100 : 0;
+      $('matShare').textContent = n ? Math.floor(ms) + '%' : '—';
+      $('matBar').style.width = ms + '%';
+      $('matLost').innerHTML = !n ? '&nbsp;' : (s.lost > s.R * 0.0002 ? '비핵심 이슈를 선택해 <b class="neg">연 ' + money(s.lost) + '원</b>의 효과가 발생하지 않았습니다. 같은 비용을 우리 업종 핵심 이슈에 썼다면 회수할 수 있었던 금액입니다.' : '선택한 활동이 모두 우리 업종의 재무적 중요 이슈입니다.');
+
+      if (!n) { $('selTable').innerHTML = '<tr><td class="empty" colspan="6">아직 선택한 활동이 없습니다. STEP 2에서 영역을 고르고 활동을 체크해 보세요.</td></tr>'; }
+      else {
+        var an = {}; AREAS.forEach(function(r) { an[r[0]] = r[0] === 'customer' ? CUST_TAB[state.ind] : r[1]; });
+        var rows = s.per.slice().sort(function(a, b) { return b.y5op - a.y5op; });
+        $('selTable').innerHTML = '<tr><th>활동</th><th>ESG</th><th>영역</th><th>강도</th><th>초기투자</th><th>5년차 기여</th></tr>' + rows.map(function(p) {
+          return '<tr><td>' + p.a.name + (p.m ? '' : ' <span class="mat n">비핵심</span>') + '</td><td><span class="tag ' + p.a.esg + '">' + p.a.esg + '</span></td><td>' + an[p.a.area] + '</td><td class="n">' + Math.round(p.i * 100) + '%</td><td class="n">' + money(p.init) + '</td><td class="n ' + cls(p.y5op) + '">' + money(p.y5op, true) + '</td></tr>';
+        }).join('');
+      }
+      buildInsights(s);
+      drawChart(s);
+    }
+
+    /* ================= INSIGHTS ================= */
+    var IND_Q = {
+      mfg: '원청이 내년에 협력사 ESG 평가를 요구한다면, 우리는 지금 어떤 데이터로 증명할 수 있습니까?',
+      kinder: '학부모가 우리 원을 고르는 진짜 이유 세 가지 중, ESG와 겹치는 것은 무엇입니까?',
+      med: '환자안전 사고가 한 번 났을 때 잃는 것을 1년 매출로 환산하면 얼마입니까?',
+      build: '현장 사고 한 건이 수주 제한으로 이어진다면, 그 손실은 이 시뮬레이션의 몇 배입니까?',
+      consult: '고객사의 ESG 수요를 우리의 상품으로 만들 때, 우리 자신의 ESG는 그 말을 뒷받침합니까?'
+    };
+    function buildInsights(s) {
+      var n = s.per.length, L = [];
+      if (!n) {
+        $('insights').innerHTML = '<div class="ins"><b>먼저 활동을 담아보십시오</b><p>대표자로서 "내일 바로 지시할 수 있는 것" 3~5개를 고르는 것으로 시작합니다. 그다음 다른 영역 탭도 둘러보며 우리 조직의 패키지를 만들어 보십시오.</p><div class="q">Q. ' + IND_Q[state.ind] + '</div></div>';
+        return;
+      }
+      var mc = s.per.filter(function(p) { return p.m; }).length;
+      if (s.op0 <= 0) L.push(['bad', '현재 ' + PL() + '가 적자입니다', '적자 상황에서 초기 투자가 큰 ESG 활동은 생존 리스크가 될 수 있습니다. 비용절감형·리스크회피형부터 순서를 정하는 것이 현실적입니다.', '지금 우리에게 ESG는 성장 전략입니까, 생존 전략입니까?']);
+      if (s.delta[1] < 0 && cls(s.delta[1]) === 'neg') L.push(['bad', '1년차에는 ' + PL() + '가 ' + money(-s.delta[1]) + '원 줄어듭니다', '초기 투자 상각과 운영비가 효과보다 먼저 들어오기 때문입니다. ESG가 중단되는 지점은 대개 여기, 첫해 결산입니다.', '이 1년차 부담을 누가, 어떤 근거로 버틸 것입니까? 대표 혼자의 의지로 충분합니까?']);
+      if (mc / n < 0.5) L.push(['bad', '선택 활동의 ' + Math.round((n - mc) / n * 100) + '%가 우리 업종의 비핵심 이슈입니다', '비용은 똑같이 들지만 효과는 1/3 수준입니다. 하버드 연구에서 비중요 이슈 우수기업의 초과성과가 0.60%에 그친 이유와 같습니다.', '우리가 하고 싶은 ESG와, 우리 업종에서 돈이 되는 ESG는 같습니까?']);
+      else if (s.lost > s.R * 0.0002) L.push(['warn', '비핵심 이슈에서 연 ' + money(s.lost) + '원의 효과가 새고 있습니다', '전부 틀린 선택은 아니지만 일부 활동은 "보여주기"에 가깝습니다.', '이 활동을 계속한다면, 그 이유는 재무가 아니라 무엇입니까? 그 이유를 구성원에게 말할 수 있습니까?']);
+      if (s.payback === null) L.push(['warn', '5년 안에 투자금이 회수되지 않습니다', '법적 의무나 거래 유지를 위한 "필수 비용"인지, 미래를 위한 "전략 투자"인지 구분해야 합니다. 둘은 평가 기준이 다릅니다.', '이 활동을 하지 않았을 때 잃는 것(고객, 인허가, 사람)은 얼마입니까?']);
+      else if (s.payback <= 3 && s.delta[5] > 0) L.push(['good', '약 ' + pctf(s.payback).replace('%', '') + '년이면 회수되는 패키지입니다', '경제적으로 설명 가능한 ESG입니다. 이제 질문은 "할까 말까"가 아니라 "왜 아직 안 했는가"입니다.', '이 정도 회수기간인데도 실행되지 않았다면, 막고 있는 것은 돈입니까, 습관입니까?']);
+      if (s.esg.G === 0) L.push(['bad', 'G(거버넌스) 활동이 하나도 없습니다', '규모가 작을수록 모든 것이 대표 한 사람에게 걸려 있습니다. 회계·윤리·위임 체계가 무너지면 E와 S의 성과도 함께 무너집니다.', '내가 한 달 자리를 비우면, 이 조직의 ESG는 누가 지킵니까?']);
+      var gap = 0; for (var t = 1; t <= YEARS; t++) gap += s.risk[t];
+      if (state.view === 'op' && gap > s.R * 0.002) L.push(['warn', '장부에 보이지 않는 가치가 5년간 ' + money(gap) + '원 있습니다', '사고·분쟁·제재를 "피한 것"은 장부에 찍히지 않습니다. 위의 \'경제적 가치\' 보기로 바꿔 차이를 확인해 보십시오.', '보이지 않는 가치를 구성원과 이해관계자에게 어떻게 설명할 것입니까?']);
+      if (!state.sel.hasOwnProperty('kpi') && n >= 4) L.push(['warn', '활동은 많은데 평가·보상 연동이 없습니다', '평가와 보상에 들어가지 않은 목표는 계획서에만 남기 쉽습니다. 한국 기업 감축목표 달성률이 26%에 그친 배경이기도 합니다.', '이 활동들의 성과는 누구의 평가표에 들어갑니까?']);
+      var avg = s.per.reduce(function(x, p) { return x + p.i; }, 0) / n;
+      if (avg > 0.85) L.push(['warn', '대부분을 전면 실행(강도 85%+)으로 설정했습니다', '이 모델에서 효과는 강도에 따라 체감합니다. 작게 시범 적용해 검증한 뒤 확산하면 같은 예산으로 더 많은 활동을 시도할 수 있습니다.', '어떤 활동을 다음 달에 작게 실험해 볼 수 있습니까?']);
+      if (state.cust < 1 && s.per.some(function(p) { return p.a.rev >= 0.2; })) L.push(['warn', '고객 관심이 낮은데 수입 기여형 활동을 골랐습니다', '고객이 ESG를 기준으로 선택하지 않는다면 수입 효과는 기대보다 작습니다.', '우리 고객 중 이런 이유로 우리를 선택하거나 떠난 사례가 실제로 있습니까?']);
+      L.push(['', IND[state.ind].name + ' 대표에게 남기는 질문', '숫자는 가정이지만, 질문은 실제입니다.', IND_Q[state.ind]]);
+      $('insights').innerHTML = L.slice(0, 6).map(function(x) {
+        return '<div class="ins ' + x[0] + '"><b>' + x[1] + '</b><p>' + x[2] + '</p><div class="q">Q. ' + x[3] + '</div></div>';
+      }).join('');
+    }
+
+    /* ================= CHART ================= */
+    if (typeof Chart !== 'undefined') Chart.defaults.animation = false;
+    var ChartManager = {
+      charts: new Map(),
+      safeInit: function(id, config) {
+        if (typeof Chart === 'undefined') return null;
+        try {
+          if (this.charts.has(id)) { this.charts.get(id).destroy(); this.charts.delete(id); }
+          var ctx = document.getElementById(id); if (!ctx) return null;
+          ctx.setAttribute('role', 'img');
+          var c = new Chart(ctx, config); this.charts.set(id, c); return c;
+        } catch (e) { console.error('Chart init failed:', e); return null; }
+      }
+    };
+    function cssv(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+    function drawChart(s) {
+      if (typeof Chart === 'undefined') {
+        var cb = document.querySelector('.chart-box');
+        if (cb && !cb.dataset.fb) { cb.dataset.fb = 1; cb.style.height = 'auto'; cb.innerHTML = '<p class="text-secondary" style="padding:24px 0">차트 라이브러리를 불러오지 못했습니다. 인터넷 연결을 확인해 주세요. 아래 표에서 같은 수치를 볼 수 있습니다.</p>'; }
+        return;
+      }
+      var d = s.delta.slice(1), cum = s.cum.slice(1);
+      var pos = cssv('--positive'), neg = cssv('--negative'), acc = cssv('--accent'), txt = cssv('--text'), sub = cssv('--text-secondary');
+      var grid = currentTheme === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(22,82,216,0.07)';
+      var lbl = (state.view === 'econ' ? '연도별 경제적 가치 증감' : '연도별 ' + PL() + ' 증감');
+      var ch = ChartManager.charts.get('chMain');
+      if (ch) {
+        ch.data.datasets[0].data = d;
+        ch.data.datasets[0].label = lbl;
+        ch.data.datasets[0].backgroundColor = d.map(function(v) { return v >= 0 ? pos : neg; });
+        ch.data.datasets[1].data = cum;
+        ch.update();
+        return;
+      }
+      ChartManager.safeInit('chMain', {
+        type: 'bar',
+        data: {
+          labels: ['1년차', '2년차', '3년차', '4년차', '5년차'],
+          datasets: [
+            { type: 'bar', label: lbl, data: d, backgroundColor: d.map(function(v) { return v >= 0 ? pos : neg; }), borderRadius: 4, maxBarThickness: 48, order: 2 },
+            { type: 'line', label: '누적 순현금효과 (회수 곡선)', data: cum, borderColor: acc, backgroundColor: acc, borderWidth: 3, pointRadius: 5, tension: 0.3, order: 1 }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: { labels: { color: txt, font: { family: 'Noto Sans KR' } } },
+            tooltip: { enabled: true, callbacks: { label: function(c) { return c.dataset.label + ': ' + money(c.parsed.y, true) + '원'; } } }
+          },
+          scales: {
+            x: { ticks: { color: sub }, grid: { display: false } },
+            y: { ticks: { color: sub, callback: function(v) { return money(v); } }, grid: { color: function(c) { return c.tick && c.tick.value === 0 ? sub : grid; } } }
+          }
+        }
+      });
+    }
+    function onThemeChange() { if (ChartManager.charts.has('chMain')) { ChartManager.charts.get('chMain').destroy(); ChartManager.charts.delete('chMain'); } if (lastSim) drawChart(lastSim); }
+
+    /* ================= EVENTS ================= */
+    function bindSeg(id, key, parse) {
+      $(id).querySelectorAll('button').forEach(function(b) {
+        b.onclick = function() {
+          $(id).querySelectorAll('button').forEach(function(x) { x.classList.remove('on'); });
+          b.classList.add('on');
+          state[key] = parse(b.dataset.v);
+          if (key === 'view') $('viewNote').textContent = state.view === 'econ' ? '사고·분쟁·제재 회피의 기대값과 금융비용 절감까지 더한 경제적 효과입니다.' : '장부에 실제로 찍히는 숫자만 봅니다.';
+          update();
+        };
+      });
+    }
+    function resetAll() { state.sel = {}; buildTabs(); buildActs(); }
+
+    applyTheme(currentTheme);
+    ['inRev', 'inCogs', 'inSga'].forEach(function(id) { $(id).addEventListener('input', update); });
+    bindSeg('segCust', 'cust', parseFloat);
+    bindSeg('segScen', 'scen', parseFloat);
+    bindSeg('segView', 'view', String);
+    setIndustry('mfg');
+  </script>
+</body>
+</html>
