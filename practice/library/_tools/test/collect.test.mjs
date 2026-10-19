@@ -153,6 +153,11 @@ test('buildGeminiRequest sends candidates as data with a JSON response schema', 
   assert.equal(body.generationConfig.responseMimeType, 'application/json');
 });
 
+test('Gemini instructions exclude cooperation, investment and event-only announcements', () => {
+  const text = buildGeminiRequest([], []).contents[0].parts[0].text;
+  ['국제협력', '투자', '행사'].forEach((word) => assert.ok(text.includes(word), word));
+});
+
 test('parseGeminiResult keeps only well-formed entries for known ids', () => {
   const payload = {
     candidates: [{ content: { parts: [{ text: JSON.stringify({ items: [

@@ -268,6 +268,7 @@ a { color: var(--accent); text-underline-offset: 3px; }
 .panel-kicker { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; color: var(--text-secondary); margin-bottom: 10px; }
 .summary-list { list-style: decimal; padding-left: 1.4em; display: grid; gap: 6px; }
 .frameworks { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 6px; }
+.frameworks .label { white-space: normal; border-radius: 10px; max-width: 100%; word-break: keep-all; }
 .source-link { margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 .stage-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
 .stage-chips a { font-size: 0.8125rem; }
@@ -275,6 +276,11 @@ a { color: var(--accent); text-underline-offset: 3px; }
 .panel-view .role-block { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border-strong); }
 .panel-view > p:not(.panel-kicker) { margin-top: 6px; }
 .role-block h4 { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.role-guide { margin: -4px 0 14px; font-size: 0.9rem; line-height: 1.6; color: var(--text-secondary); word-break: keep-all; }
+.panel-view > p.answer-guide {
+  margin-top: 20px; padding: 12px 14px; border-left: 3px solid var(--accent); background: var(--bg);
+  font-size: 0.9375rem; line-height: 1.65; word-break: keep-all;
+}
 .q { margin-top: 14px; }
 .q label { display: block; font-weight: 500; margin-bottom: 6px; }
 .q .unique-tag { font-size: 0.6875rem; font-weight: 700; color: var(--step-reflect); margin-left: 6px; white-space: nowrap; }

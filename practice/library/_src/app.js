@@ -8,6 +8,8 @@
   var ROLE_ORDER = ['staff', 'leader', 'planner'];
   var CIRCLED = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩'];
   var SAVE_DELAY_MS = 400;
+  var ANSWER_GUIDE = '내 역할 질문부터 답하고, 다른 역할 질문은 상대 입장을 미리 생각해 보는 데 쓰세요. 적은 답은 \'내 학습일지\'에 모이며, 평소 쓰는 AI에 붙여넣어 실행 계획을 함께 다듬을 수 있습니다. 이때 개인정보·대외비는 빼 주세요.';
+  var JOURNAL_GUIDE = '역할별 답의 쓰임: 실무자 → 이번 주 과제, 관리자 → 팀 회의·1:1 대화, 기획·인사 → 제도 개선 메모';
   var KEYS = {
     answers: META.storagePrefix + 'answers',
     read: META.storagePrefix + 'read',
@@ -296,9 +298,11 @@
       el('p', { className: 'panel-kicker', text: '청람의 해석 · 성찰 질문', attrs: { id: 'view-' + item.id } }),
       el('h4', { text: '공공에 주는 시사점' }),
       el('p', { text: item.publicImplication }),
+      el('p', { className: 'answer-guide', text: ANSWER_GUIDE }),
     ].concat(roles.map(function (role) {
       return el('div', { className: 'role-block' }, [
         el('h4', {}, [el('span', { className: 'label', text: META.roleLabels[role] }), document.createTextNode(' 관점에서 답하기')]),
+        el('p', { className: 'role-guide', text: META.roleGuides[role] }),
       ].concat((item.questions[role] || []).map(questionField)));
     })));
   }
@@ -354,6 +358,7 @@
     }).filter(function (entry) { return entry.pairs.length; });
     var total = written.reduce(function (sum, entry) { return sum + entry.pairs.length; }, 0);
     root.appendChild(el('p', { className: 'item-meta', text: '작성한 답 ' + total + '개 · 자료 ' + written.length + '건' }));
+    root.appendChild(el('p', { className: 'role-guide', text: JOURNAL_GUIDE }));
     if (!written.length) {
       root.appendChild(emptyState('아직 남긴 답이 없습니다. 자료를 열고 질문에 답을 적어 보세요.'));
       return;

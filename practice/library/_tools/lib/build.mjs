@@ -1,7 +1,7 @@
 // 빌드용 순수 함수. 파일 입출력은 _tools/build.mjs가 맡는다.
 import { isReviewed } from './validate.mjs';
 import {
-  FEED_RECENT_DAYS, NEW_BADGE_DAYS, SOURCE_TYPE_LABELS, ROLE_LABELS, STORAGE_PREFIX,
+  FEED_RECENT_DAYS, NEW_BADGE_DAYS, SOURCE_TYPE_LABELS, ROLE_LABELS, ROLE_GUIDES, STORAGE_PREFIX,
 } from './schema.mjs';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -40,6 +40,7 @@ export function buildPayload(data, { now, preview }) {
       storagePrefix: STORAGE_PREFIX,
       sourceTypeLabels: SOURCE_TYPE_LABELS,
       roleLabels: ROLE_LABELS,
+      roleGuides: ROLE_GUIDES,
     },
     stages: data.stages.items,
     library,
