@@ -1,0 +1,103 @@
+{
+  "meta": {
+    "note": "수집 대상 등록 목록. url은 실제 수집 주소(RSS 또는 목록 페이지)이고 2026-10-19에 응답을 확인했다. rank가 작을수록 같은 발표가 겹칠 때 대표로 남는다. 컨설팅사는 목록 파서를 만든 뒤(로드맵 5~6주차) 켠다."
+  },
+  "items": [
+    {
+      "id": "korea-kr",
+      "name": "대한민국 정책브리핑",
+      "sourceType": "gov",
+      "method": "rss",
+      "url": "https://www.korea.kr",
+      "enabled": false,
+      "rank": 3,
+      "note": "정책브리핑 RSS 서비스 제공 중단(사이트 공지 확인, 2026-10-19). 대체 수단을 찾기 전까지 끈다."
+    },
+    {
+      "id": "mois",
+      "name": "행정안전부",
+      "sourceType": "gov",
+      "method": "rss",
+      "url": "https://www.mois.go.kr/gpms/view/jsp/rss/rss.jsp?ctxCd=1012",
+      "enabled": true,
+      "rank": 1,
+      "homepage": "https://www.mois.go.kr/frt/bbs/type010/commonSelectBoardList.do?bbsId=BBSMSTR_000000000008"
+    },
+    {
+      "id": "mpm",
+      "name": "인사혁신처",
+      "sourceType": "gov",
+      "method": "rss",
+      "url": "https://www.mpm.go.kr/board/rss.do?boardId=bbs_0000000000000029&mode=fed&proc=rss",
+      "enabled": true,
+      "rank": 1,
+      "homepage": "https://www.mpm.go.kr/mpm/comm/newsPress/newsPressRelease/"
+    },
+    {
+      "id": "msit",
+      "name": "과학기술정보통신부",
+      "sourceType": "gov",
+      "method": "rss",
+      "url": "https://www.msit.go.kr/user/rss/rss.do?bbsSeqNo=94",
+      "enabled": true,
+      "rank": 1,
+      "homepage": "https://www.msit.go.kr/bbs/list.do?sCode=user&mPid=208&mId=307"
+    },
+    {
+      "id": "nia",
+      "name": "한국지능정보사회진흥원(NIA)",
+      "sourceType": "gov",
+      "method": "list",
+      "url": "https://www.nia.or.kr/site/nia_kor/ex/bbs/List.do?cbIdx=90549",
+      "enabled": true,
+      "parser": "nia-bbs",
+      "rank": 2
+    },
+    {
+      "id": "ai-committee",
+      "name": "국가인공지능전략위원회",
+      "sourceType": "gov",
+      "method": "list",
+      "url": "https://www.korea.kr",
+      "enabled": false,
+      "note": "전용 사이트 주소 확인 전까지 정책브리핑으로 대체",
+      "rank": 1
+    },
+    {
+      "id": "deloitte-gov",
+      "name": "Deloitte Center for Government Insights",
+      "sourceType": "consulting",
+      "method": "list",
+      "url": "https://www2.deloitte.com/us/en/insights/industry/public-sector.html",
+      "enabled": false,
+      "rank": 2
+    },
+    {
+      "id": "mckinsey-public",
+      "name": "McKinsey Public Sector",
+      "sourceType": "consulting",
+      "method": "list",
+      "url": "https://www.mckinsey.com/industries/public-sector/our-insights",
+      "enabled": false,
+      "rank": 2
+    },
+    {
+      "id": "bcg-public",
+      "name": "BCG Public Sector",
+      "sourceType": "consulting",
+      "method": "list",
+      "url": "https://www.bcg.com/industries/public-sector",
+      "enabled": false,
+      "rank": 2
+    },
+    {
+      "id": "accenture-public",
+      "name": "Accenture Public Service",
+      "sourceType": "consulting",
+      "method": "list",
+      "url": "https://www.accenture.com/us-en/industries/public-service-index",
+      "enabled": false,
+      "rank": 2
+    }
+  ]
+}
