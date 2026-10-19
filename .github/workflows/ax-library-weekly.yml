@@ -1,6 +1,6 @@
 # 청람 AX 공공 러닝 라이브러리 — 주간 자동 수집
-# 매주 월요일 06:00(KST)에 등록 기관의 새 발표를 모아 ax_library/_src/data/feed.json을 갱신하고,
-# 단일 HTML(ax_library/index.html)을 다시 빌드해 main에 커밋한다. GitHub Pages가 자동 배포한다.
+# 매주 월요일 06:00(KST)에 등록 기관의 새 발표를 모아 practice/library/_src/data/feed.json을 갱신하고,
+# 단일 HTML(practice/library/index.html)을 다시 빌드해 main에 커밋한다. GitHub Pages가 자동 배포한다.
 # 필요한 설정: Settings → Secrets and variables → Actions
 #   - Secret  GEMINI_API_KEY : 요약·판별용 키 (없으면 제목·링크만 올리고 요약은 다음 실행으로 미룸)
 #   - Variable GEMINI_MODEL  : 선택. 비우면 수집기 기본 모델을 쓴다
@@ -29,7 +29,7 @@ jobs:
     timeout-minutes: 15
     defaults:
       run:
-        working-directory: ax_library
+        working-directory: practice/library
     steps:
       - uses: actions/checkout@v4
 

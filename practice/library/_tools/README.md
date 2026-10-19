@@ -1,4 +1,4 @@
-# ax_library 운영 메모
+# practice/library 운영 메모 (로컬 작업 폴더: ax_library)
 
 청람 AX 공공 러닝 라이브러리의 데이터 검증·빌드 도구. 기준 문서는 `청람 AX 공무원 학습 레퍼런스 라이브러리 PRD.md`(v1.1).
 

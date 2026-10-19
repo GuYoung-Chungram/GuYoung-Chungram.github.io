@@ -1,6 +1,6 @@
 // 주간 수집기 설정. 운영하며 조정할 값은 여기만 고친다.
 
-export const USER_AGENT = 'Mozilla/5.0 (compatible; CheongramAXLibraryBot/1.0; +https://www.crmc.co.kr/ax_library/)';
+export const USER_AGENT = 'Mozilla/5.0 (compatible; CheongramAXLibraryBot/1.0; +https://www.crmc.co.kr/practice/library/)';
 export const FETCH_TIMEOUT_MS = 20_000;
 export const POLITE_DELAY_MS = 1_500;
 
