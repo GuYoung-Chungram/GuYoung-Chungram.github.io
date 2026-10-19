@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<!-- 빌드 결과물의 원본 템플릿. 직접 고친 index.html은 다음 빌드에서 덮어써진다. 수정은 _src/에서 한다. -->
+<html lang="ko" class="theme-light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AX 공공 러닝 라이브러리 | 청람M&amp;C</title>
+  <meta name="description" content="공무원이 AX(AI 전환) 핵심 자료를 읽고, 우리 기관에 맞춰 답하고, 이번 주에 해보도록 돕는 청람M&C 학습형 라이브러리">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <style>*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ===== 청람 테마 — 클래스 기반. 값은 single-html 스킬 design-tokens.md 동결 스냅샷과 같다 ===== */
+html.theme-light {
+  --bg: #FFFFFF; --surface: #F8FAFF; --surface-hover: #EEF3FD;
+  --border: rgba(22,82,216,0.08); --border-strong: rgba(22,82,216,0.22);
+  --text: #1A1A1A; --text-secondary: #666666;
+  --accent: #1652D8; --accent-secondary: #0F3D99; --on-accent: #FFFFFF;
+  --positive: #059669; --negative: #e11d48; --warning: #d97706;
+  --cr-light-bg: #EEF3FD; --cr-dark-section: #0F0F0F;
+  --menu-bg: rgba(255,255,255,0.9); --menu-bg-hover: rgba(255,255,255,0.98);
+  --menu-border: rgba(22,82,216,0.12); --menu-text: #1A1A1A; --menu-item-hover: rgba(22,82,216,0.06);
+  /* 출처 4구분 — 색만으로 구분하지 않고 항상 텍스트 라벨과 함께 쓴다 */
+  --src-gov: #1652D8; --src-consulting: #6D28D9; --src-intl: #0F766E; --src-chungram: #B45309;
+  /* 학습 3단계 태그 */
+  --step-read: #1652D8; --step-reflect: #6D28D9; --step-act: #047857;
+  --label-auto-bg: #F1F1F4; --label-auto-text: #4A4A55;
+  --field-bg: #FFFFFF;
+}
+html.theme-dark {
+  --bg: #0F0F0F; --surface: #1A1A2E; --surface-hover: #252540;
+  --border: rgba(255,255,255,0.06); --border-strong: rgba(255,255,255,0.16);
+  --text: #EDEDED; --text-secondary: #888888;
+  --accent: #4B7BF5; --accent-secondary: #6B8FFF; --on-accent: #0F0F0F;
+  --positive: #10b981; --negative: #f43f5e; --warning: #f59e0b;
+  --cr-light-bg: #1A1A2E; --cr-dark-section: #0A0A0A;
+  --menu-bg: rgba(15,15,15,0.9); --menu-bg-hover: rgba(15,15,15,0.98);
+  --menu-border: rgba(75,123,245,0.15); --menu-text: #EDEDED; --menu-item-hover: rgba(75,123,245,0.1);
+  --src-gov: #6B8FFF; --src-consulting: #A78BFA; --src-intl: #2DD4BF; --src-chungram: #F59E0B;
+  --step-read: #6B8FFF; --step-reflect: #A78BFA; --step-act: #34D399;
+  --label-auto-bg: #26262E; --label-auto-text: #B4B4C0;
+  --field-bg: #121220;
+}
+
+:root {
+  --space-section: clamp(56px, 4vw + 32px, 96px);
+  --space-gutter: clamp(16px, 4vw, 48px);
+  --wrap: 1120px;
+  --radius: 8px;
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --site-nav-h: 0px;
+  --tabs-h: 52px;
+  --cr-hero-text: #FFFFFF; --cr-hero-eyebrow: #8FB0FF;
+  --cr-hero-highlight: #FFD84D; --cr-hero-highlight-text: #0F0F0F;
+}
+body.has-site-nav { --site-nav-h: 60px; padding-top: var(--site-nav-h); }
+
+/* ===== 기본 ===== */
+body {
+  font-family: 'Noto Sans KR', 'Inter', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif;
+  background: var(--bg); color: var(--text);
+  line-height: 1.7; -webkit-font-smoothing: antialiased; letter-spacing: -0.01em;
+  transition: background var(--duration-normal), color var(--duration-normal);
+  overflow-x: hidden;
+}
+h1, h2, h3, h4 { color: var(--text); letter-spacing: -0.03em; line-height: 1.25; text-wrap: balance; }
+h1 { font-weight: 700; font-size: clamp(2.25rem, 5vw, 3.5rem); }
+h2 { font-weight: 700; font-size: clamp(1.75rem, 3.4vw, 2.25rem); letter-spacing: -0.02em; }
+h3 { font-weight: 600; font-size: clamp(1.25rem, 2.2vw, 1.5rem); letter-spacing: -0.02em; }
+h4 { font-weight: 600; font-size: 1.0625rem; }
+p, li, span, label, summary { color: inherit; }
+.text-secondary { color: var(--text-secondary); }
+a { color: var(--accent); text-underline-offset: 3px; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+[hidden] { display: none !important; }
+
+.wrap { max-width: var(--wrap); margin: 0 auto; padding-inline: var(--space-gutter); }
+.eyebrow { font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.14em; color: var(--accent); }
+.cr-accent-underline { border-bottom: 2px solid var(--accent); padding-bottom: 6px; display: inline-block; }
+.cr-square-bullet { list-style: none; padding-left: 0; }
+.cr-square-bullet li { padding-left: 20px; position: relative; margin-bottom: 6px; }
+.cr-square-bullet li::before { content: ''; position: absolute; left: 0; top: 0.72em; width: 6px; height: 6px; background: var(--accent); }
+.cr-dot-grid {
+  background-image: radial-gradient(circle, var(--cr-hero-text) 0.6px, transparent 0.6px);
+  background-size: 26px 26px; opacity: 0.09; position: absolute; inset: 0; pointer-events: none;
+}
+
+/* ===== 미리보기 배너 ===== */
+.preview-banner {
+  background: var(--warning); color: #1A1A1A; font-weight: 600; font-size: 0.9375rem;
+  padding: 10px var(--space-gutter); text-align: center;
+}
+
+/* ===== 히어로 ===== */
+.hero {
+  position: relative; overflow: hidden; background: var(--cr-dark-section); color: var(--cr-hero-text);
+  padding-block: clamp(48px, 6vw, 88px);
+}
+.hero::after {
+  content: ''; position: absolute; right: -140px; top: -140px; width: 460px; height: 460px;
+  border: 1px solid rgba(255,255,255,0.07); border-radius: 50%; pointer-events: none;
+}
+.hero-grid { position: relative; display: grid; grid-template-columns: 1.15fr 1fr; gap: clamp(28px, 5vw, 64px); align-items: end; }
+.hero h1 { color: var(--cr-hero-text); }
+.hero h1 em { font-style: normal; color: var(--cr-hero-highlight); box-shadow: inset 0 -0.14em 0 rgba(255,216,77,0.24); }
+.hero-eyebrow { color: var(--cr-hero-eyebrow); margin-bottom: 14px; }
+.hero-sub { margin-top: 18px; max-width: 46ch; font-size: clamp(1rem, 1.4vw, 1.0625rem); color: rgba(255,255,255,0.74); }
+
+.step-ribbon { list-style: none; display: grid; gap: 10px; counter-reset: step; }
+.step {
+  display: grid; grid-template-columns: auto 1fr; column-gap: 14px; row-gap: 2px; align-items: baseline;
+  padding: 14px 18px; border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius);
+  background: rgba(255,255,255,0.04);
+}
+.step:nth-child(2) { margin-left: clamp(0px, 3vw, 28px); }
+.step:nth-child(3) { margin-left: clamp(0px, 6vw, 56px); }
+.step strong { color: var(--cr-hero-text); font-size: 1.0625rem; }
+.step span:last-child { grid-column: 2; color: rgba(255,255,255,0.68); font-size: 0.875rem; }
+.step-tag {
+  grid-row: span 2; align-self: center; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.04em;
+  padding: 4px 9px; border-radius: 999px; color: #0F0F0F;
+}
+.step-read .step-tag { background: #8FB0FF; }
+.step-reflect .step-tag { background: #C4B5FD; }
+.step-act .step-tag { background: #6EE7B7; }
+
+/* ===== 탭 ===== */
+.tabs {
+  position: sticky; top: var(--site-nav-h); z-index: 50;
+  background: var(--menu-bg); border-bottom: 1px solid var(--border-strong);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+}
+.tabs-inner { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; height: var(--tabs-h); align-items: stretch; }
+.tabs-inner::-webkit-scrollbar { display: none; }
+.tabs a {
+  display: inline-flex; align-items: center; gap: 6px; padding: 0 14px; white-space: nowrap;
+  color: var(--text-secondary); font-weight: 500; font-size: 0.9375rem; text-decoration: none;
+  border-bottom: 2px solid transparent; transition: color var(--duration-fast), border-color var(--duration-fast);
+}
+.tabs a:hover { color: var(--text); }
+.tabs a[aria-current="page"] { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+.tab-count {
+  font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 700; min-width: 20px; text-align: center;
+  padding: 1px 6px; border-radius: 999px; background: var(--accent); color: var(--on-accent);
+}
+.tab-count:empty { display: none; }
+
+/* ===== 뷰·블록 ===== */
+.view { padding-block: clamp(36px, 4vw, 64px) var(--space-section); scroll-margin-top: calc(var(--site-nav-h) + var(--tabs-h)); }
+.block + .block { margin-top: clamp(44px, 5vw, 72px); }
+.block-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; margin-bottom: 22px; }
+.block-head p { font-size: 0.9375rem; }
+
+/* ===== 라벨·배지 (자료 1건당 최대 3개: 우선순위·출처·난이도) ===== */
+.badges { display: flex; flex-wrap: wrap; gap: 6px; }
+.label {
+  display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: 600; line-height: 1.4;
+  padding: 3px 9px; border-radius: 999px; border: 1px solid var(--border-strong); color: var(--text-secondary); white-space: nowrap;
+}
+.label-must { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.label-rec { border-color: var(--accent); color: var(--accent); }
+.label-src::before { content: ''; width: 7px; height: 7px; border-radius: 2px; background: var(--src-color); }
+.label-src { color: var(--src-color); border-color: color-mix(in srgb, var(--src-color) 40%, transparent); }
+.src-gov { --src-color: var(--src-gov); }
+.src-consulting { --src-color: var(--src-consulting); }
+.src-intl { --src-color: var(--src-intl); }
+.src-chungram { --src-color: var(--src-chungram); }
+.label-auto { background: var(--label-auto-bg); color: var(--label-auto-text); border-color: transparent; }
+.label-new { border-color: var(--positive); color: var(--positive); }
+.label-preview { background: var(--warning); border-color: var(--warning); color: #1A1A1A; }
+.label-status { border-style: dashed; }
+
+/* ===== 카드 ===== */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 16px; }
+.card-grid.is-must { grid-template-columns: repeat(6, 1fr); }
+.card-grid.is-must .item-card { grid-column: span 2; }
+.card-grid.is-must .item-card:first-child { grid-column: span 4; grid-row: span 2; }
+.card-grid.is-must .item-card:first-child h4 { font-size: clamp(1.25rem, 2vw, 1.5rem); }
+.item-card {
+  position: relative; display: flex; flex-direction: column; gap: 10px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px;
+  transition: transform var(--duration-fast) var(--ease-out-expo), box-shadow var(--duration-fast) ease;
+}
+.item-card.is-must-card { border-top: 3px solid var(--accent); }
+.item-card:hover { transform: translateY(-2px); box-shadow: 0 0 0 1px var(--border-strong), 0 10px 24px rgba(0,0,0,0.08); }
+.item-card:focus-within { box-shadow: 0 0 0 2px var(--accent); }
+.item-card h4 a { color: var(--text); text-decoration: none; }
+.item-card h4 a::after { content: ''; position: absolute; inset: 0; border-radius: var(--radius); }
+.item-card h4 a:focus-visible { outline: none; }
+.item-meta { font-size: 0.8125rem; color: var(--text-secondary); font-family: 'Inter', 'Noto Sans KR', sans-serif; }
+.item-lead { font-size: 0.9375rem; color: var(--text-secondary); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.read-mark { font-size: 0.75rem; font-weight: 600; color: var(--positive); }
+
+.empty {
+  border: 1px dashed var(--border-strong); border-radius: var(--radius); padding: 22px;
+  color: var(--text-secondary); font-size: 0.9375rem; background: transparent;
+}
+
+/* ===== 역할 탭 ===== */
+.role-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+.role-tabs button {
+  font: inherit; font-size: 0.9375rem; font-weight: 500; cursor: pointer; padding: 8px 16px; border-radius: 999px;
+  border: 1px solid var(--border-strong); background: transparent; color: var(--text);
+  transition: background var(--duration-fast), color var(--duration-fast), border-color var(--duration-fast);
+}
+.role-tabs button:hover { background: var(--surface-hover); }
+.role-tabs button[aria-selected="true"] { background: var(--text); color: var(--bg); border-color: var(--text); font-weight: 600; }
+
+/* ===== 외부 참고 링크 ===== */
+.ref-link { padding: 18px 22px; border-radius: var(--radius); background: var(--cr-light-bg); border-left: 4px solid var(--accent); }
+.ref-title { font-size: 1.0625rem; }
+.ref-link p { font-size: 0.9375rem; margin-top: 2px; }
+.ref-link a { display: inline-block; margin-top: 6px; font-family: 'Inter', sans-serif; font-weight: 600; word-break: break-all; }
+
+/* ===== 접이식 목록 ===== */
+.all-details { margin-top: 8px; border-top: 1px solid var(--border-strong); }
+.all-details > summary {
+  cursor: pointer; padding: 16px 0; font-weight: 600; list-style: none; display: flex; align-items: center; gap: 10px;
+}
+.all-details > summary::-webkit-details-marker { display: none; }
+.all-details > summary::before { content: '+'; font-family: 'Inter', sans-serif; font-size: 1.25rem; color: var(--accent); width: 18px; transition: transform var(--duration-fast); }
+.all-details[open] > summary::before { transform: rotate(45deg); }
+
+/* ===== 행 목록 (자료실·전체) ===== */
+.src-group { margin-top: 28px; }
+.src-group-head { display: flex; align-items: baseline; gap: 10px; padding-bottom: 10px; border-bottom: 2px solid var(--src-color); }
+.src-group-head h3 { color: var(--src-color); }
+.src-group-head .count { font-family: 'Inter', sans-serif; font-size: 0.875rem; color: var(--text-secondary); }
+.rows { list-style: none; }
+.row {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 20px; align-items: center;
+  padding: 14px 4px; border-bottom: 1px solid var(--border-strong);
+}
+.row-title { font-weight: 600; color: var(--text); text-decoration: none; }
+.row-title:hover { color: var(--accent); text-decoration: underline; }
+.row .item-meta { grid-column: 1; }
+.row .badges { grid-row: 1 / span 2; grid-column: 2; justify-content: flex-end; }
+
+/* ===== 새 자료 피드 ===== */
+.auto-notice { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 16px; }
+.feed-list { list-style: none; }
+.feed-item { padding: 18px 4px; border-bottom: 1px solid var(--border-strong); display: grid; gap: 6px; }
+.feed-item a { font-weight: 600; color: var(--text); }
+.feed-item a:hover { color: var(--accent); }
+.feed-summary { font-size: 0.9375rem; color: var(--text-secondary); }
+.feed-summary .label { margin-right: 6px; }
+
+/* ===== 논리 지도 ===== */
+.stage-grid { list-style: none; display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+.stage-tile {
+  display: flex; flex-direction: column; gap: 6px; height: 100%; text-align: left; font: inherit; cursor: pointer;
+  padding: 18px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); color: var(--text);
+  transition: transform var(--duration-fast) var(--ease-out-expo), border-color var(--duration-fast);
+}
+.stage-tile:hover { transform: translateY(-2px); border-color: var(--accent); }
+.stage-tile:disabled { cursor: not-allowed; opacity: 0.6; transform: none; border-style: dashed; }
+.stage-num { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 1.75rem; color: var(--accent); line-height: 1; }
+.stage-name { font-weight: 700; }
+.stage-en { font-family: 'Inter', sans-serif; font-size: 0.75rem; color: var(--text-secondary); }
+.stage-q { font-size: 0.875rem; color: var(--text-secondary); flex: 1; }
+.stage-count { font-size: 0.8125rem; font-weight: 600; color: var(--accent); }
+
+.filter-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 8px; padding: 12px 16px; border-radius: var(--radius); background: var(--cr-light-bg); }
+.filter-bar a { font-size: 0.875rem; }
+
+/* ===== 상세 ===== */
+.item-wrap { max-width: 860px; }
+.back-link { display: inline-flex; gap: 6px; font-size: 0.9375rem; margin-bottom: 20px; }
+.item-head h2 { margin-top: 12px; }
+.item-head .orig-title { margin-top: 6px; font-family: 'Inter', 'Noto Sans KR', sans-serif; color: var(--text-secondary); font-size: 0.9375rem; }
+.item-head .item-meta { margin-top: 10px; font-size: 0.875rem; }
+.panel { margin-top: 28px; border-radius: var(--radius); padding: clamp(20px, 3vw, 28px); }
+.panel-fact { background: var(--surface); border: 1px solid var(--border); }
+.panel-view { background: transparent; border: 1px solid var(--border-strong); border-left: 4px solid var(--step-reflect); }
+.panel-act { background: var(--cr-light-bg); border-left: 4px solid var(--step-act); }
+.panel-kicker { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; color: var(--text-secondary); margin-bottom: 10px; }
+.summary-list { list-style: decimal; padding-left: 1.4em; display: grid; gap: 6px; }
+.frameworks { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 6px; }
+.source-link { margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.stage-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+.stage-chips a { font-size: 0.8125rem; }
+
+.panel-view .role-block { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border-strong); }
+.panel-view > p:not(.panel-kicker) { margin-top: 6px; }
+.role-block h4 { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.q { margin-top: 14px; }
+.q label { display: block; font-weight: 500; margin-bottom: 6px; }
+.q .unique-tag { font-size: 0.6875rem; font-weight: 700; color: var(--step-reflect); margin-left: 6px; white-space: nowrap; }
+.q textarea {
+  width: 100%; min-height: 84px; resize: vertical; font: inherit; font-size: 0.9375rem; line-height: 1.6;
+  padding: 10px 12px; border-radius: 6px; border: 1px solid var(--border-strong); background: var(--field-bg); color: var(--text);
+}
+.q textarea:focus-visible { outline-offset: 1px; }
+.save-status { font-size: 0.8125rem; color: var(--text-secondary); min-height: 1.4em; margin-top: 4px; }
+.save-status.is-error { color: var(--negative); }
+.prompt-box {
+  margin-top: 10px; padding: 12px 14px; border-radius: 6px; background: var(--bg); border: 1px solid var(--border-strong);
+  font-size: 0.9375rem; white-space: pre-wrap; word-break: keep-all;
+}
+.warn-line { margin-top: 10px; font-size: 0.875rem; font-weight: 600; color: var(--negative); }
+.read-toggle { margin-top: 28px; display: flex; align-items: center; gap: 10px; font-weight: 600; cursor: pointer; }
+.read-toggle input { width: 20px; height: 20px; accent-color: var(--accent); }
+
+/* ===== 학습일지 ===== */
+.notice {
+  background: var(--cr-light-bg); border-left: 4px solid var(--warning);
+  border-radius: 0 var(--radius) var(--radius) 0; padding: 18px 22px;
+}
+.notice li { font-size: 0.9375rem; color: var(--text-secondary); }
+.notice .cr-square-bullet li::before { background: var(--warning); }
+.journal-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 22px 0 8px; }
+.journal-item { margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--border-strong); }
+.journal-qa { margin-top: 14px; }
+.journal-qa dt { font-weight: 600; font-size: 0.9375rem; }
+.journal-qa dt .label { margin-right: 6px; }
+.journal-qa dd { margin-top: 4px; padding-left: 12px; border-left: 2px solid var(--step-reflect); white-space: pre-wrap; }
+
+/* ===== 버튼 ===== */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; font: inherit; font-size: 0.9375rem; font-weight: 600;
+  padding: 11px 20px; border-radius: 6px; border: 1px solid transparent; cursor: pointer; text-decoration: none;
+  transition: transform var(--duration-fast) ease, background var(--duration-fast) ease, border-color var(--duration-fast) ease;
+}
+.btn:active { transform: translateY(1px); }
+.btn-solid { background: var(--accent); color: var(--on-accent); }
+.btn-solid:hover { background: var(--accent-secondary); }
+.btn-outline-danger { background: transparent; color: var(--negative); border-color: var(--negative); }
+.btn-outline-danger:hover { background: color-mix(in srgb, var(--negative) 8%, transparent); }
+
+/* ===== 푸터 ===== */
+.footer { border-top: 1px solid var(--border-strong); padding-block: 36px; }
+.footer-inner { display: flex; flex-wrap: wrap; gap: 12px 16px; align-items: center; justify-content: space-between; }
+.footer-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: -0.02em; }
+.footer-mark { width: 10px; height: 10px; background: var(--accent); flex: none; }
+.footer p, .footer a { font-size: 0.875rem; color: var(--text-secondary); }
+
+/* ===== 메뉴 ===== */
+.viz-menu { position: fixed; top: calc(var(--site-nav-h) + 12px); right: 16px; z-index: 60; }
+.viz-menu-toggle {
+  width: 42px; height: 42px; border-radius: 12px; background: var(--menu-bg); border: 1px solid var(--menu-border);
+  color: var(--menu-text); cursor: pointer; display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transition: background var(--duration-fast);
+}
+.viz-menu-toggle:hover { background: var(--menu-bg-hover); }
+.viz-menu-dropdown {
+  position: absolute; top: 52px; right: 0; min-width: 200px; background: var(--menu-bg); border: 1px solid var(--menu-border);
+  border-radius: 12px; padding: 8px; opacity: 0; visibility: hidden; transform: translateY(-8px);
+  transition: opacity var(--duration-fast), visibility var(--duration-fast), transform var(--duration-fast);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+}
+.viz-menu-dropdown.open { opacity: 1; visibility: visible; transform: translateY(0); }
+.viz-menu-dropdown button {
+  width: 100%; padding: 10px 14px; border: none; border-radius: 8px; background: transparent; color: var(--menu-text);
+  font-size: 14px; font-family: inherit; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 10px;
+}
+.viz-menu-dropdown button:hover { background: var(--menu-item-hover); }
+
+.skip-link {
+  position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; overflow: hidden; z-index: 10000;
+  padding: 8px 16px; background: var(--accent); color: var(--on-accent); text-decoration: none; border-radius: 4px;
+}
+.skip-link:focus { position: fixed; left: 16px; top: 16px; width: auto; height: auto; overflow: visible; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+#main-content:focus { outline: none; }
+
+/* ===== 애니메이션 — transform·opacity만 ===== */
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.animate { animation: fadeInUp 0.6s var(--ease-out-expo) both; }
+.animate.delay-1 { animation-delay: 0.08s; }
+.animate.delay-2 { animation-delay: 0.16s; }
+.animate.delay-3 { animation-delay: 0.24s; }
+.view.is-entering { animation: fadeInUp 0.4s var(--ease-out-expo) both; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+/* ===== 반응형 ===== */
+@media (max-width: 960px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .step:nth-child(2), .step:nth-child(3) { margin-left: 0; }
+  .stage-grid { grid-template-columns: repeat(2, 1fr); }
+  .card-grid.is-must { grid-template-columns: 1fr 1fr; }
+  .card-grid.is-must .item-card, .card-grid.is-must .item-card:first-child { grid-column: span 1; grid-row: auto; }
+  .card-grid.is-must .item-card:first-child { grid-column: 1 / -1; }
+}
+@media (max-width: 640px) {
+  .card-grid.is-must { grid-template-columns: 1fr; }
+  .stage-grid { grid-template-columns: 1fr; }
+  .row { grid-template-columns: 1fr; }
+  .row .badges { grid-row: auto; grid-column: 1; justify-content: flex-start; }
+  .journal-actions .btn { width: 100%; }
+  .viz-menu { top: auto; bottom: 16px; }
+  .viz-menu-dropdown { top: auto; bottom: 52px; }
+}
+
+/* ===== 인쇄 — 현재 보는 화면만, 입력칸 대신 텍스트로 ===== */
+@media print {
+  body { background: white !important; color: black !important; padding-top: 0 !important; }
+  .viz-menu, .tabs, .hero, .footer, .skip-link, .journal-actions, .preview-banner,
+  #chungram-nav, .back-link, .read-toggle, .role-tabs { display: none !important; }
+  .view { padding-block: 0; }
+  .item-card, .panel, .journal-item { break-inside: avoid; box-shadow: none; }
+  .all-details > summary::before { content: ''; }
+  * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+}
+@page { margin: 16mm; }
+</style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">본문으로 건너뛰기</a>
+
+  <div class="viz-menu">
+    <button class="viz-menu-toggle" type="button" aria-label="보기 설정 메뉴" aria-haspopup="true" aria-expanded="false" id="vizMenuToggle">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <line x1="3" y1="5" x2="17" y2="5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="15" x2="17" y2="15"/>
+      </svg>
+    </button>
+    <div class="viz-menu-dropdown" id="vizMenuDropdown">
+      <button type="button" data-action="theme"><span id="themeIcon" aria-hidden="true">☀️</span><span id="themeLabel">라이트</span></button>
+      <button type="button" data-action="print"><span aria-hidden="true">🖨️</span><span>인쇄 / PDF</span></button>
+    </div>
+  </div>
+
+  <div class="preview-banner" id="previewBanner" hidden role="status">
+    검수 전 미리보기입니다. 청람 검수(reviewedBy)를 마치지 않은 자료가 함께 보입니다. 이 화면은 공개하지 마세요.
+  </div>
+
+  <header class="hero">
+    <div class="cr-dot-grid" aria-hidden="true"></div>
+    <div class="wrap hero-grid">
+      <div>
+        <p class="eyebrow hero-eyebrow animate">청람M&amp;C · 공무원 AX 러닝 라이브러리</p>
+        <h1 class="animate delay-1">읽고, 답하고,<br><em>이번 주에 해보기</em>.</h1>
+        <p class="hero-sub animate delay-2">AI 전환(AX)에 관한 정부 발표와 해외 인사이트 가운데 먼저 볼 것만 골랐습니다. 자료마다 우리 기관에 적용해 볼 질문이 붙어 있습니다.</p>
+      </div>
+      <ol class="step-ribbon animate delay-3" aria-label="이 라이브러리를 쓰는 법">
+        <li class="step step-read"><span class="step-tag">경험</span><strong>읽기</strong><span>필독 자료부터 3줄 요약과 원문을 봅니다.</span></li>
+        <li class="step step-reflect"><span class="step-tag">성찰</span><strong>답하기</strong><span>내 역할의 질문에 답을 남깁니다.</span></li>
+        <li class="step step-act"><span class="step-tag">실천</span><strong>해보기</strong><span>이번 주 과제 하나를 해 봅니다.</span></li>
+      </ol>
+    </div>
+  </header>
+
+  <nav class="tabs" aria-label="라이브러리 메뉴">
+    <div class="wrap tabs-inner">
+      <a href="#home" data-route="home">홈</a>
+      <a href="#feed" data-route="feed">이번 주 새 자료 <span class="tab-count" id="feedCount"></span></a>
+      <a href="#map" data-route="map">AX 논리 지도</a>
+      <a href="#library" data-route="library">자료실</a>
+      <a href="#journal" data-route="journal">내 학습일지</a>
+    </div>
+  </nav>
+
+  <main id="main-content" tabindex="-1">
+    <section class="view" id="view-home" data-view="home" aria-labelledby="home-heading" hidden>
+      <div class="wrap">
+        <h2 id="home-heading" class="sr-only">홈</h2>
+
+        <section class="block" aria-labelledby="must-heading">
+          <div class="block-head">
+            <h3 id="must-heading"><span class="cr-accent-underline">필독</span></h3>
+            <p class="text-secondary">직급과 상관없이 먼저 읽을 자료입니다. 최대 5건만 고릅니다.</p>
+          </div>
+          <div class="card-grid" id="mustList"></div>
+        </section>
+
+        <section class="block" aria-labelledby="rec-heading">
+          <div class="block-head">
+            <h3 id="rec-heading"><span class="cr-accent-underline">내 역할 추천</span></h3>
+            <p class="text-secondary">역할을 고르면 그 역할에 특히 쓸모 있는 자료를 보여 줍니다.</p>
+          </div>
+          <div class="role-tabs" role="tablist" aria-label="역할 선택" id="roleTabs"></div>
+          <div class="card-grid" id="recList" role="tabpanel" aria-labelledby="rec-heading"></div>
+        </section>
+
+        <section class="block ref-link" aria-labelledby="ref-heading">
+          <h3 id="ref-heading" class="ref-title">AI 정부 실험실 프로젝트 현황</h3>
+          <p class="text-secondary">공무원이 직접 만든 AI 과제를 모아 볼 수 있습니다.</p>
+          <a href="https://axboard.aigov.go.kr/" target="_blank" rel="noopener noreferrer">https://axboard.aigov.go.kr/<span class="sr-only"> (새 창)</span></a>
+        </section>
+
+        <section class="block" aria-labelledby="all-heading">
+          <h3 id="all-heading" class="sr-only">전체 자료</h3>
+          <details class="all-details" id="allDetails">
+            <summary id="allSummary">전체 자료 펼치기</summary>
+            <div id="allList"></div>
+          </details>
+        </section>
+      </div>
+    </section>
+
+    <section class="view" id="view-feed" data-view="feed" aria-labelledby="feed-heading" hidden>
+      <div class="wrap">
+        <div class="block-head">
+          <h2 id="feed-heading"><span class="cr-accent-underline">이번 주 새 자료</span></h2>
+          <p class="text-secondary">등록된 기관의 새 발표를 매주 자동으로 모읍니다. 최근 4주 분량만 보여 줍니다.</p>
+        </div>
+        <p class="auto-notice"><span class="label label-auto">자동 수집 · 청람 검수 전</span> 요약은 AI가 썼습니다. 판단은 반드시 원문으로 하세요.</p>
+        <ol class="feed-list" id="feedList"></ol>
+        <details class="all-details" id="feedArchiveDetails">
+          <summary id="feedArchiveSummary">지난 자료</summary>
+          <ol class="feed-list" id="feedArchive"></ol>
+        </details>
+      </div>
+    </section>
+
+    <section class="view" id="view-map" data-view="map" aria-labelledby="map-heading" hidden>
+      <div class="wrap">
+        <div class="block-head">
+          <h2 id="map-heading"><span class="cr-accent-underline">AX 논리 지도</span></h2>
+          <p class="text-secondary">AI 전환을 10개의 질문으로 나눴습니다. 단계를 누르면 그 단계의 자료만 모아 봅니다.</p>
+        </div>
+        <ol class="stage-grid" id="stageGrid"></ol>
+      </div>
+    </section>
+
+    <section class="view" id="view-library" data-view="library" aria-labelledby="library-heading" hidden>
+      <div class="wrap">
+        <div class="block-head">
+          <h2 id="library-heading"><span class="cr-accent-underline">자료실</span></h2>
+          <p class="text-secondary">청람이 검수한 자료를 출처별로 나눴습니다.</p>
+        </div>
+        <div class="filter-bar" id="filterBar" hidden></div>
+        <div id="libraryGroups"></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-item" data-view="item" aria-labelledby="item-heading" hidden>
+      <div class="wrap item-wrap" id="itemDetail"></div>
+    </section>
+
+    <section class="view" id="view-journal" data-view="journal" aria-labelledby="journal-heading" hidden>
+      <div class="wrap">
+        <div class="block-head">
+          <h2 id="journal-heading"><span class="cr-accent-underline">내 학습일지</span></h2>
+          <p class="text-secondary">내가 남긴 답을 모았습니다. 교육 과제로 낼 때는 인쇄하거나 PDF로 저장하세요.</p>
+        </div>
+        <div class="notice">
+          <ul class="cr-square-bullet">
+            <li>답은 이 브라우저에만 저장되고 서버로 보내지 않습니다.</li>
+            <li>여러 사람이 쓰는 기관 PC라면 다 쓴 뒤 PDF로 저장하고 "답 모두 지우기"를 눌러 주세요.</li>
+            <li>브라우저 기록을 지우면 답도 함께 사라집니다.</li>
+          </ul>
+        </div>
+        <div class="journal-actions">
+          <button type="button" class="btn btn-solid" data-action="print">인쇄 / PDF로 저장</button>
+          <button type="button" class="btn btn-outline-danger" data-action="clear-answers">답 모두 지우기</button>
+        </div>
+        <div id="journalList"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <p class="footer-brand"><span class="footer-mark" aria-hidden="true"></span>청람M&amp;C</p>
+      <p><a href="https://www.crmc.co.kr">crmc.co.kr</a> · <a href="https://www.crmc.co.kr/cheongram_proposal_v2.html">교육 문의</a> · <span id="builtAt"></span></p>
+    </div>
+  </footer>
+
+  <p class="sr-only" id="liveRegion" aria-live="polite"></p>
+
+  <script id="ax-data" type="application/json">{"meta":{"builtAt":"2026-10-19T03:56:14.323Z","preview":false,"storagePrefix":"chungram_axlib_v1_","sourceTypeLabels":{"gov":"정부 정책","consulting":"해외 인사이트","intl":"국제기구","chungram":"청람 현장"},"roleLabels":{"staff":"실무자","leader":"관리자","planner":"기획·인사"}},"stages":[{"n":1,"name":"AI Adoption","nameKo":"AI 도입","question":"우리 기관은 AI를 어디서부터 쓰기 시작하는가?"},{"n":2,"name":"Agent","nameKo":"AI 에이전트","question":"일을 이어서 처리하는 AI에게 무엇을 맡길 수 있는가?"},{"n":3,"name":"Collaboration","nameKo":"사람-AI 협업","question":"담당자와 AI는 일을 어떻게 나눠 맡는가?"},{"n":4,"name":"Work Redesign","nameKo":"업무 재설계","question":"어떤 업무 절차를 AI 기준으로 다시 짜야 하는가?"},{"n":5,"name":"Role Redesign","nameKo":"역할 재설계","question":"직무기술서·사무분장은 어떻게 바뀌는가?"},{"n":6,"name":"Organization","nameKo":"조직","question":"부서 구조와 협업 체계는 어떻게 바뀌어야 하는가?"},{"n":7,"name":"Leadership","nameKo":"리더십","question":"관리자는 팀의 AI 활용을 어떻게 이끄는가?"},{"n":8,"name":"","nameKo":"","question":"","draft":true},{"n":9,"name":"Governance","nameKo":"거버넌스","question":"AI 활용의 기준·책임·보안은 누가 어떻게 정하는가?"},{"n":10,"name":"Value","nameKo":"가치","question":"AI 도입의 성과를 국민과 기관에 어떻게 증명하는가?"}],"library":[],"feed":{"recent":[{"id":"f-sample-001","sourceId":"ai-committee","sourceType":"gov","issuer":"국가AI전략위원회(공공 AX 분과)","date":"2026-10-06","title":"공공 AX 규칙 재설계 발표","url":"https://zdnet.co.kr/view/?no=20261006143618","summaryAi":"도입 장벽은 기술보다 제도라며 정부혁신평가에 AI 지표를 반영하고 AI 서비스 조달 방식을 검토한다.","stageGuess":[9,10],"collectedAt":"2026-10-13T06:00:00+09:00","promoted":false},{"id":"f-sample-002","sourceId":"mois","sourceType":"gov","issuer":"행정안전부·NIA","date":"2026-05-07","title":"AI 챔피언 고급과정 운영","url":"https://www.newspim.com/news/view/20260507000299","summaryAi":"공무원이 바이브 코딩·에이전트로 직접 AI 프로그램을 개발하고, 우수 과제는 기관 도입을 지원한다.","stageGuess":[2,4],"collectedAt":"2026-10-06T06:00:00+09:00","promoted":false}],"archive":[{"id":"f-sample-003","sourceId":"nia","sourceType":"gov","issuer":"NIA","date":"2026-01-09","title":"2026년 12대 AI·디지털 트렌드","url":"https://eiec.kdi.re.kr/policy/domesticView.do?ac=0000201830","summaryAi":"스스로 일하는 AI 에이전트와 버티컬 AI 확산 등 정책 기초 전망을 정리했다.","stageGuess":[2],"collectedAt":"2026-09-08T06:00:00+09:00","promoted":false}]}}</script>
+  <script>(function () {
+  'use strict';
+
+  // === 데이터 — 빌드 때 #ax-data에 넣은 JSON. 화면에 넣는 값은 전부 textContent로만 쓴다 ===
+  var DATA = JSON.parse(document.getElementById('ax-data').textContent);
+  var META = DATA.meta;
+  var SOURCE_ORDER = ['gov', 'consulting', 'intl', 'chungram'];
+  var ROLE_ORDER = ['staff', 'leader', 'planner'];
+  var CIRCLED = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩'];
+  var SAVE_DELAY_MS = 400;
+  var KEYS = {
+    answers: META.storagePrefix + 'answers',
+    read: META.storagePrefix + 'read',
+    role: META.storagePrefix + 'role',
+    theme: 'cr-viz-theme',
+  };
+  var itemsById = {};
+  DATA.library.forEach(function (item) { itemsById[item.id] = item; });
+
+  // === 저장소 헬퍼 — 사파리 프라이빗 모드 등에서 예외로 페이지가 죽는 것을 막는다 ===
+  function safeGet(key) {
+    try { return localStorage.getItem(key); }
+    catch (e) { console.warn('저장소를 읽을 수 없습니다.', e); return null; }
+  }
+  function safeSet(key, value) {
+    try { localStorage.setItem(key, value); return true; }
+    catch (e) { console.warn('저장소에 쓸 수 없습니다.', e); return false; }
+  }
+  function safeRemove(key) {
+    try { localStorage.removeItem(key); }
+    catch (e) { console.warn('저장소에서 삭제할 수 없습니다.', e); }
+  }
+  function loadJson(key, fallback) {
+    var raw = safeGet(key);
+    if (!raw) return fallback;
+    try { return JSON.parse(raw); }
+    catch (e) { console.warn('저장된 값을 읽지 못해 초기화합니다.', key, e); return fallback; }
+  }
+
+  // 저장값이 진실의 출처다. 화면은 이 값에 맞춘다.
+  var state = {
+    answers: loadJson(KEYS.answers, {}),
+    read: loadJson(KEYS.read, {}),
+    role: ROLE_ORDER.indexOf(safeGet(KEYS.role)) !== -1 ? safeGet(KEYS.role) : 'staff',
+  };
+  function withAnswer(answers, qid, text) {
+    var next = Object.assign({}, answers);
+    if (text.trim()) next[qid] = text; else delete next[qid];
+    return next;
+  }
+  function withRead(read, id, isRead) {
+    var next = Object.assign({}, read);
+    if (isRead) next[id] = true; else delete next[id];
+    return next;
+  }
+
+  // === DOM 헬퍼 ===
+  function el(tag, props, children) {
+    var node = document.createElement(tag);
+    var p = props || {};
+    if (p.className) node.className = p.className;
+    if (p.text !== undefined) node.textContent = p.text;
+    Object.keys(p.attrs || {}).forEach(function (name) { node.setAttribute(name, p.attrs[name]); });
+    Object.keys(p.on || {}).forEach(function (type) { node.addEventListener(type, p.on[type]); });
+    (children || []).forEach(function (child) { if (child) node.appendChild(child); });
+    return node;
+  }
+  function byId(id) { return document.getElementById(id); }
+  function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); return node; }
+  function announce(message) { byId('liveRegion').textContent = message; }
+  function isHttp(url) { return /^https?:\/\//i.test(url || ''); }
+  function externalLink(url, text, className) {
+    if (!isHttp(url)) return el('span', { text: text, className: className });
+    return el('a', { text: text, className: className, attrs: { href: url, target: '_blank', rel: 'noopener noreferrer' } });
+  }
+  function formatDate(text) { return String(text || '').replace(/-/g, '.'); }
+
+  // === 라벨 — 자료 1건당 최대 3개(우선순위·출처·난이도) ===
+  function roleNames(roles) { return roles.map(function (r) { return META.roleLabels[r]; }).join('·'); }
+  function priorityLabel(item) {
+    if (item.priority === 'must') return el('span', { className: 'label label-must', text: '필독' });
+    if (item.priority === 'recommended') {
+      return el('span', { className: 'label label-rec', text: '추천 · ' + roleNames(item.recommendedFor || []) });
+    }
+    return null;
+  }
+  function sourceLabel(type) {
+    return el('span', { className: 'label label-src src-' + type, text: META.sourceTypeLabels[type] });
+  }
+  function itemBadges(item) {
+    return el('div', { className: 'badges' }, [
+      item.isPreview ? el('span', { className: 'label label-preview', text: '검수 전' }) : null,
+      priorityLabel(item),
+      sourceLabel(item.sourceType),
+      el('span', { className: 'label', text: item.level }),
+      item.isNew ? el('span', { className: 'label label-new', text: '새 자료' }) : null,
+    ]);
+  }
+  function itemMeta(item) {
+    return el('p', { className: 'item-meta', text: [item.issuer, formatDate(item.date), item.minutes + '분'].join(' · ') });
+  }
+  function emptyState(text) { return el('p', { className: 'empty', text: text }); }
+
+  // === 카드·행 ===
+  function itemCard(item) {
+    var card = el('article', { className: 'item-card' + (item.priority === 'must' ? ' is-must-card' : '') }, [
+      itemBadges(item),
+      el('h4', {}, [el('a', { text: item.titleKo, attrs: { href: '#item/' + item.id } })]),
+      itemMeta(item),
+      el('p', { className: 'item-lead', text: (item.summaryKo || [])[0] || '' }),
+      state.read[item.id] ? el('span', { className: 'read-mark', text: '✓ 읽음' }) : null,
+    ]);
+    return card;
+  }
+  function itemRow(item) {
+    return el('li', { className: 'row' }, [
+      el('a', { className: 'row-title', text: item.titleKo + (state.read[item.id] ? '  ✓' : ''), attrs: { href: '#item/' + item.id } }),
+      itemMeta(item),
+      itemBadges(item),
+    ]);
+  }
+  function fillCards(container, items, emptyText) {
+    clear(container);
+    if (!items.length) { container.appendChild(emptyState(emptyText)); return; }
+    items.forEach(function (item) { container.appendChild(itemCard(item)); });
+  }
+  function sourceGroups(items, emptyText) {
+    var wrap = el('div');
+    SOURCE_ORDER.forEach(function (type) {
+      var list = items.filter(function (item) { return item.sourceType === type; });
+      var group = el('section', { className: 'src-group src-' + type }, [
+        el('div', { className: 'src-group-head' }, [
+          el('h3', { text: META.sourceTypeLabels[type] }),
+          el('span', { className: 'count', text: list.length + '건' }),
+        ]),
+        list.length ? el('ul', { className: 'rows' }, list.map(itemRow)) : emptyState(emptyText),
+      ]);
+      wrap.appendChild(group);
+    });
+    return wrap;
+  }
+
+  // === 홈 ===
+  function renderRoleTabs() {
+    var tabs = clear(byId('roleTabs'));
+    ROLE_ORDER.forEach(function (role) {
+      var selected = role === state.role;
+      tabs.appendChild(el('button', {
+        text: META.roleLabels[role],
+        attrs: { type: 'button', role: 'tab', 'aria-selected': String(selected), tabindex: selected ? '0' : '-1', 'data-role': role },
+        on: { click: function () { selectRole(role); } },
+      }));
+    });
+  }
+  function selectRole(role) {
+    state.role = role;
+    safeSet(KEYS.role, role);
+    renderRoleTabs();
+    renderRecommended();
+    var active = byId('roleTabs').querySelector('[data-role="' + role + '"]');
+    if (active) active.focus();
+  }
+  function renderRecommended() {
+    var list = DATA.library.filter(function (item) {
+      return item.priority === 'recommended' && (item.recommendedFor || []).indexOf(state.role) !== -1;
+    });
+    fillCards(byId('recList'), list, META.roleLabels[state.role] + ' 추천 자료는 청람 검수 후 공개됩니다.');
+  }
+  function renderHome() {
+    var must = DATA.library.filter(function (item) { return item.priority === 'must'; });
+    var mustList = byId('mustList');
+    mustList.classList.toggle('is-must', must.length > 1);
+    fillCards(mustList, must, '필독 자료는 청람 검수를 마치면 이곳에 올라옵니다.');
+    renderRoleTabs();
+    renderRecommended();
+    byId('allSummary').textContent = '전체 자료 ' + DATA.library.length + '건 펼치기';
+    clear(byId('allList')).appendChild(sourceGroups(DATA.library, '아직 검수된 자료가 없습니다.'));
+  }
+  byId('roleTabs').addEventListener('keydown', function (e) {
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    var step = e.key === 'ArrowRight' ? 1 : -1;
+    var index = (ROLE_ORDER.indexOf(state.role) + step + ROLE_ORDER.length) % ROLE_ORDER.length;
+    selectRole(ROLE_ORDER[index]);
+  });
+
+  // === 새 자료 피드 ===
+  function feedItem(item) {
+    return el('li', { className: 'feed-item' }, [
+      el('div', { className: 'badges' }, [
+        sourceLabel(item.sourceType),
+        el('span', { className: 'label label-auto', text: '자동 수집' }),
+        item.promoted ? el('span', { className: 'label label-rec', text: '라이브러리 수록' }) : null,
+      ]),
+      externalLink(item.url, item.title + ' ↗'),
+      el('p', { className: 'item-meta', text: item.issuer + ' · 발표 ' + formatDate(item.date) }),
+      el('p', { className: 'feed-summary' }, [
+        el('span', { className: 'label label-auto', text: 'AI 요약' }),
+        document.createTextNode(item.summaryPending ? '요약을 준비하고 있습니다. 원문을 먼저 확인해 주세요.' : item.summaryAi),
+      ]),
+    ]);
+  }
+  function renderFeed() {
+    var recent = DATA.feed.recent;
+    var archive = DATA.feed.archive;
+    var list = clear(byId('feedList'));
+    if (!recent.length) list.appendChild(el('li', {}, [emptyState('최근 4주 동안 새로 모은 자료가 없습니다.')]));
+    recent.forEach(function (item) { list.appendChild(feedItem(item)); });
+    byId('feedArchiveDetails').hidden = !archive.length;
+    byId('feedArchiveSummary').textContent = '지난 자료 ' + archive.length + '건';
+    var archiveList = clear(byId('feedArchive'));
+    archive.forEach(function (item) { archiveList.appendChild(feedItem(item)); });
+    byId('feedCount').textContent = recent.length ? String(recent.length) : '';
+  }
+
+  // === AX 논리 지도 ===
+  function countByStage(n) {
+    return DATA.library.filter(function (item) { return (item.stage || []).indexOf(n) !== -1; }).length;
+  }
+  function renderMap() {
+    var grid = clear(byId('stageGrid'));
+    DATA.stages.forEach(function (stage) {
+      var isDraft = stage.draft === true;
+      var count = countByStage(stage.n);
+      var tile = el('button', {
+        className: 'stage-tile',
+        attrs: { type: 'button' },
+        on: { click: function () { location.hash = 'library/stage-' + stage.n; } },
+      }, [
+        el('span', { className: 'stage-num', text: CIRCLED[stage.n - 1], attrs: { 'aria-hidden': 'true' } }),
+        el('span', { className: 'stage-name', text: isDraft ? stage.n + '단계 · 확정 전' : stage.n + '단계 · ' + stage.nameKo }),
+        isDraft ? null : el('span', { className: 'stage-en', text: stage.name }),
+        el('span', { className: 'stage-q', text: isDraft ? '이 단계의 질문은 정리 중입니다.' : stage.question }),
+        el('span', { className: 'stage-count', text: '자료 ' + count + '건' }),
+      ]);
+      if (isDraft) tile.disabled = true;
+      grid.appendChild(el('li', {}, [tile]));
+    });
+  }
+
+  // === 자료실 ===
+  function renderLibrary(stageN) {
+    var stage = DATA.stages[stageN - 1];
+    var items = stage
+      ? DATA.library.filter(function (item) { return (item.stage || []).indexOf(stageN) !== -1; })
+      : DATA.library;
+    var bar = clear(byId('filterBar'));
+    bar.hidden = !stage;
+    if (stage) {
+      bar.appendChild(el('span', { text: CIRCLED[stageN - 1] + ' ' + (stage.nameKo || '확정 전 단계') + ' 단계 자료만 보는 중' }));
+      bar.appendChild(el('a', { text: '필터 해제', attrs: { href: '#library' } }));
+    }
+    clear(byId('libraryGroups')).appendChild(sourceGroups(items, '이 구분에 검수된 자료가 아직 없습니다.'));
+  }
+
+  // === 상세 ===
+  function factPanel(item) {
+    var statusText = { 원문확인: '원문 확인', 원문확인중: '원문 확인 중 · 언론 보도 링크', 개정됨: '개정됨 · 새 자료 확인 필요' }[item.status];
+    return el('section', { className: 'panel panel-fact', attrs: { 'aria-labelledby': 'fact-' + item.id } }, [
+      el('p', { className: 'panel-kicker', text: item.sourceType === 'gov' ? '발표 내용 (사실)' : '자료 요약', attrs: { id: 'fact-' + item.id } }),
+      el('ol', { className: 'summary-list' }, (item.summaryKo || []).map(function (line) { return el('li', { text: line }); })),
+      el('div', { className: 'frameworks' }, (item.frameworks || []).map(function (f) { return el('span', { className: 'label', text: f }); })),
+      el('div', { className: 'source-link' }, [
+        externalLink(item.url, '원문 보기 ↗', 'btn btn-solid'),
+        statusText ? el('span', { className: 'label label-status', text: statusText }) : null,
+        item.docType ? el('span', { className: 'label', text: item.docType + ' · ' + item.issuerLevel }) : null,
+      ]),
+      el('div', { className: 'stage-chips' }, (item.stage || []).map(function (n) {
+        var stage = DATA.stages[n - 1];
+        return el('a', { text: CIRCLED[n - 1] + ' ' + (stage && stage.nameKo ? stage.nameKo : '확정 전'), attrs: { href: '#library/stage-' + n } });
+      })),
+    ]);
+  }
+  function questionField(q) {
+    var fieldId = 'answer-' + q.id.replace(/[^a-zA-Z0-9_-]/g, '_');
+    var status = el('p', { className: 'save-status', attrs: { 'aria-live': 'polite' } });
+    var area = el('textarea', { attrs: { id: fieldId, rows: '3', placeholder: '우리 기관·내 업무에 비춰 짧게 적어 보세요.' } });
+    area.value = state.answers[q.id] || '';
+    var timer = null;
+    area.addEventListener('input', function () {
+      status.textContent = '입력 중…';
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        state.answers = withAnswer(state.answers, q.id, area.value);
+        var ok = safeSet(KEYS.answers, JSON.stringify(state.answers));
+        status.classList.toggle('is-error', !ok);
+        status.textContent = ok ? '저장됨' : '저장하지 못했습니다. 사생활 보호 모드라면 일반 창에서 열어 주세요.';
+      }, SAVE_DELAY_MS);
+    });
+    var label = el('label', { text: q.text, attrs: { for: fieldId } });
+    if (q.unique) label.appendChild(el('span', { className: 'unique-tag', text: '이 자료 고유 질문' }));
+    return el('div', { className: 'q' }, [label, area, status]);
+  }
+  function viewPanel(item) {
+    var roles = ROLE_ORDER.slice().sort(function (a, b) { return (a === state.role ? -1 : 0) - (b === state.role ? -1 : 0); });
+    return el('section', { className: 'panel panel-view', attrs: { 'aria-labelledby': 'view-' + item.id } }, [
+      el('p', { className: 'panel-kicker', text: '청람의 해석 · 성찰 질문', attrs: { id: 'view-' + item.id } }),
+      el('h4', { text: '공공에 주는 시사점' }),
+      el('p', { text: item.publicImplication }),
+    ].concat(roles.map(function (role) {
+      return el('div', { className: 'role-block' }, [
+        el('h4', {}, [el('span', { className: 'label', text: META.roleLabels[role] }), document.createTextNode(' 관점에서 답하기')]),
+      ].concat((item.questions[role] || []).map(questionField)));
+    })));
+  }
+  function actionPanel(item) {
+    if (!item.actionTask) return null;
+    return el('section', { className: 'panel panel-act', attrs: { 'aria-label': '이번 주 해보기' } }, [
+      el('p', { className: 'panel-kicker', text: '실천 · 이번 주 1가지 해보기' }),
+      el('p', { text: item.actionTask }),
+      item.samplePrompt ? el('p', { className: 'prompt-box', text: item.samplePrompt }) : null,
+      el('p', { className: 'warn-line', text: '⚠ 개인정보·대외비 자료는 AI에 넣지 마세요. 기관이 허용한 AI 도구만 쓰세요.' }),
+    ]);
+  }
+  function renderItem(id) {
+    var item = itemsById[id];
+    var root = clear(byId('itemDetail'));
+    root.appendChild(el('a', { className: 'back-link', text: '← 자료실로', attrs: { href: '#library' } }));
+    if (!item) {
+      root.appendChild(el('h2', { text: '자료를 찾을 수 없습니다', attrs: { id: 'item-heading' } }));
+      root.appendChild(emptyState('검수 전이거나 삭제된 자료입니다. 자료실에서 다른 자료를 골라 주세요.'));
+      return;
+    }
+    var readBox = el('input', { attrs: { type: 'checkbox' } });
+    readBox.checked = !!state.read[item.id];
+    readBox.addEventListener('change', function () {
+      state.read = withRead(state.read, item.id, readBox.checked);
+      safeSet(KEYS.read, JSON.stringify(state.read));
+      announce(readBox.checked ? '읽음으로 표시했습니다.' : '읽음 표시를 지웠습니다.');
+    });
+    root.appendChild(el('div', { className: 'item-head' }, [
+      itemBadges(item),
+      el('h2', { text: item.titleKo, attrs: { id: 'item-heading' } }),
+      item.title !== item.titleKo ? el('p', { className: 'orig-title', text: item.title }) : null,
+      itemMeta(item),
+    ]));
+    root.appendChild(factPanel(item));
+    root.appendChild(viewPanel(item));
+    var act = actionPanel(item);
+    if (act) root.appendChild(act);
+    root.appendChild(el('label', { className: 'read-toggle' }, [readBox, document.createTextNode('다 읽었어요')]));
+  }
+
+  // === 학습일지 ===
+  function renderJournal() {
+    var root = clear(byId('journalList'));
+    var written = DATA.library.map(function (item) {
+      var pairs = [];
+      ROLE_ORDER.forEach(function (role) {
+        (item.questions[role] || []).forEach(function (q) {
+          if (state.answers[q.id]) pairs.push({ role: role, q: q, answer: state.answers[q.id] });
+        });
+      });
+      return { item: item, pairs: pairs };
+    }).filter(function (entry) { return entry.pairs.length; });
+    var total = written.reduce(function (sum, entry) { return sum + entry.pairs.length; }, 0);
+    root.appendChild(el('p', { className: 'item-meta', text: '작성한 답 ' + total + '개 · 자료 ' + written.length + '건' }));
+    if (!written.length) {
+      root.appendChild(emptyState('아직 남긴 답이 없습니다. 자료를 열고 질문에 답을 적어 보세요.'));
+      return;
+    }
+    written.forEach(function (entry) {
+      root.appendChild(el('article', { className: 'journal-item' }, [
+        el('h3', {}, [el('a', { text: entry.item.titleKo, attrs: { href: '#item/' + entry.item.id } })]),
+        itemMeta(entry.item),
+        el('dl', {}, entry.pairs.map(function (pair) {
+          return el('div', { className: 'journal-qa' }, [
+            el('dt', {}, [el('span', { className: 'label', text: META.roleLabels[pair.role] }), document.createTextNode(pair.q.text)]),
+            el('dd', { text: pair.answer }),
+          ]);
+        })),
+      ]));
+    });
+  }
+  function clearAnswers() {
+    if (!window.confirm('이 브라우저에 저장된 답을 모두 지울까요? 되돌릴 수 없습니다.')) return;
+    safeRemove(KEYS.answers);
+    state.answers = {};
+    renderJournal();
+    announce('저장된 답을 모두 지웠습니다.');
+  }
+
+  // === 라우터 — #home, #feed, #map, #library, #library/stage-3, #item/gov-001, #journal ===
+  var ROUTES = ['home', 'feed', 'map', 'library', 'item', 'journal'];
+  function parseHash() {
+    var parts = location.hash.replace(/^#/, '').split('/');
+    var route = ROUTES.indexOf(parts[0]) !== -1 ? parts[0] : 'home';
+    return { route: route, param: decodeURIComponent(parts[1] || '') };
+  }
+  var isFirstRoute = true;
+  function showRoute() {
+    var target = parseHash();
+    if (target.route === 'item') renderItem(target.param);
+    if (target.route === 'library') renderLibrary(parseInt(target.param.replace('stage-', ''), 10) || 0);
+    if (target.route === 'journal') renderJournal();
+    if (target.route === 'home') renderHome();
+    document.querySelectorAll('.view').forEach(function (view) {
+      var active = view.getAttribute('data-view') === target.route;
+      view.hidden = !active;
+      view.classList.toggle('is-entering', active && !isFirstRoute);
+    });
+    var tabRoute = target.route === 'item' ? 'library' : target.route;
+    document.querySelectorAll('[data-route]').forEach(function (link) {
+      if (link.getAttribute('data-route') === tabRoute) link.setAttribute('aria-current', 'page');
+      else link.removeAttribute('aria-current');
+    });
+    if (!isFirstRoute) {
+      var view = document.querySelector('.view:not([hidden])');
+      window.scrollTo({ top: document.querySelector('.tabs').offsetTop - 1 });
+      var heading = view && view.querySelector('h2');
+      if (heading) { heading.setAttribute('tabindex', '-1'); heading.focus({ preventScroll: true }); }
+    }
+    isFirstRoute = false;
+  }
+  window.addEventListener('hashchange', showRoute);
+  // 뒤로 가기로 캐시에서 복원될 때도 저장값 기준으로 다시 그린다
+  window.addEventListener('pageshow', function (e) {
+    if (!e.persisted) return;
+    state.answers = loadJson(KEYS.answers, {});
+    state.read = loadJson(KEYS.read, {});
+    showRoute();
+  });
+
+  // === 메뉴·테마 ===
+  var menu = byId('vizMenuDropdown');
+  var menuToggle = byId('vizMenuToggle');
+  function closeMenu() { menu.classList.remove('open'); menuToggle.setAttribute('aria-expanded', 'false'); }
+  menuToggle.addEventListener('click', function () {
+    var isOpen = menu.classList.toggle('open');
+    menuToggle.setAttribute('aria-expanded', String(isOpen));
+  });
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest('.viz-menu')) closeMenu();
+    var action = e.target.closest('[data-action]');
+    if (!action) return;
+    var name = action.getAttribute('data-action');
+    if (name === 'theme') applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+    if (name === 'print') { closeMenu(); window.print(); }
+    if (name === 'clear-answers') clearAnswers();
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeMenu(); });
+
+  var currentTheme = safeGet(KEYS.theme) || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  function applyTheme(theme) {
+    document.documentElement.className = 'theme-' + theme;
+    byId('themeIcon').textContent = theme === 'dark' ? '🌙' : '☀️';
+    byId('themeLabel').textContent = theme === 'dark' ? '다크' : '라이트';
+    safeSet(KEYS.theme, theme);
+    currentTheme = theme;
+  }
+
+  // === crmc.co.kr 공통 네비 — 실제 사이트에서 열 때만 불러온다. 파일·로컬 미리보기에서는 건너뛴다 ===
+  var SITE_HOSTS = /(^|\.)crmc\.co\.kr$|^guyoung-chungram\.github\.io$/i;
+  function loadSiteNav() {
+    if (!SITE_HOSTS.test(location.hostname)) return;
+    var script = document.createElement('script');
+    script.src = '/chungram-shared.js';
+    script.onload = function () { document.body.classList.add('has-site-nav'); };
+    script.onerror = function () { console.warn('공통 네비게이션을 불러오지 못했습니다. 라이브러리만 표시합니다.'); };
+    document.body.appendChild(script);
+  }
+
+  // === 시작 ===
+  applyTheme(currentTheme);
+  byId('previewBanner').hidden = !META.preview;
+  byId('builtAt').textContent = '업데이트 ' + formatDate(META.builtAt.slice(0, 10));
+  renderFeed();
+  renderMap();
+  showRoute();
+  loadSiteNav();
+})();
+</script>
+</body>
+</html>
