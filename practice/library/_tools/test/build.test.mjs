@@ -71,3 +71,10 @@ test('buildPayload marks new items and carries build metadata', () => {
   assert.equal(payload.meta.builtAt, NOW.toISOString());
   assert.equal(payload.stages.length, 10);
 });
+
+test('buildPayload carries a usage guide for every role', () => {
+  const payload = buildPayload(makeData(), { now: NOW, preview: false });
+  ['staff', 'leader', 'planner'].forEach((role) => {
+    assert.ok(payload.meta.roleGuides[role]?.length > 10, role);
+  });
+});

@@ -12,6 +12,12 @@ export const FEED_SOURCE_TYPES = ['gov', 'consulting'];
 
 export const ROLES = ['staff', 'leader', 'planner'];
 export const ROLE_LABELS = { staff: '실무자', leader: '관리자', planner: '기획·인사' };
+// 상세 화면의 역할별 질문 묶음 위에 붙는 "이 질문을 어디에 쓰는가" 안내
+export const ROLE_GUIDES = {
+  staff: '내 업무에 바로 적용할 거리를 찾는 질문입니다. 답은 \'이번 주 해보기\' 과제의 재료가 됩니다.',
+  leader: '팀을 어떻게 이끌지 정리하는 질문입니다. 답은 팀 회의 안건이나 팀원 1:1 대화의 재료로 쓰세요.',
+  planner: '기관의 제도·교육·지침을 손볼 지점을 찾는 질문입니다. 답은 개선 제안이나 보고서의 근거 메모로 쓰세요.',
+};
 
 export const PRIORITIES = ['must', 'recommended', 'none'];
 export const MUST_LIMIT = 5;
