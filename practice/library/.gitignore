@@ -1,0 +1,4 @@
+# 검수 전 자료가 담긴 미리보기는 공개 저장소에 올리지 않는다
+_preview/
+node_modules/
+.DS_Store

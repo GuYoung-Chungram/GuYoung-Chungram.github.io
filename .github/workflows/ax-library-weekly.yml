@@ -1,0 +1,64 @@
+# 청람 AX 공공 러닝 라이브러리 — 주간 자동 수집
+# 매주 월요일 06:00(KST)에 등록 기관의 새 발표를 모아 practice/library/_src/data/feed.json을 갱신하고,
+# 단일 HTML(practice/library/index.html)을 다시 빌드해 main에 커밋한다. GitHub Pages가 자동 배포한다.
+# 필요한 설정: Settings → Secrets and variables → Actions
+#   - Secret  GEMINI_API_KEY : 요약·판별용 키 (없으면 제목·링크만 올리고 요약은 다음 실행으로 미룸)
+#   - Variable GEMINI_MODEL  : 선택. 비우면 수집기 기본 모델을 쓴다
+name: AX 라이브러리 주간 수집
+
+on:
+  schedule:
+    - cron: '0 21 * * 0'   # 일요일 21:00 UTC = 월요일 06:00 KST
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: '드라이런(파일을 바꾸지 않고 결과만 확인)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ax-library-collect
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: practice/library
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 검증·빌드 로직 테스트
+        run: npm test
+
+      - name: 수집·중복 제거·요약
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+        run: node _tools/collect.mjs ${{ inputs.dry_run && '--dry-run' || '' }}
+
+      - name: 단일 HTML 빌드
+        if: ${{ !inputs.dry_run }}
+        run: npm run build
+
+      - name: 변경 사항 커밋
+        if: ${{ !inputs.dry_run }}
+        run: |
+          git config user.name "cheongram-ax-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add _src/data/feed.json index.html
+          if git diff --cached --quiet; then
+            echo "변경 사항이 없습니다."
+            exit 0
+          fi
+          git commit -m "chore: AX 라이브러리 주간 수집 $(TZ=Asia/Seoul date +%Y-%m-%d)"
+          git push
