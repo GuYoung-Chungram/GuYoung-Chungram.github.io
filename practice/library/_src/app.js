@@ -8,13 +8,12 @@
   var ROLE_ORDER = ['staff', 'leader', 'planner'];
   var CIRCLED = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩'];
   var SAVE_DELAY_MS = 400;
-  var ANSWER_GUIDE = '내 역할 질문부터 답하고, 다른 역할 질문은 상대 입장을 미리 생각해 보는 데 쓰세요. 적은 답은 \'내 학습일지\'에 모이며, 평소 쓰는 AI에 붙여넣어 실행 계획을 함께 다듬을 수 있습니다. 이때 개인정보·대외비는 빼 주세요.';
+  var ANSWER_GUIDE = '내 역할 질문부터 답하고, 다른 역할 질문은 상대 입장을 미리 생각해 보는 데 쓰세요. 적은 답은 \'내 학습일지\'에 모이고, 평소 쓰는 AI에 붙여넣어 실행 계획을 함께 다듬을 수 있어요. 이때 개인정보·대외비는 빼 주세요.';
   var JOURNAL_GUIDE = '역할별 답의 쓰임: 실무자 → 이번 주 과제, 관리자 → 팀 회의·1:1 대화, 기획·인사 → 제도 개선 메모';
   var KEYS = {
     answers: META.storagePrefix + 'answers',
     read: META.storagePrefix + 'read',
     role: META.storagePrefix + 'role',
-    theme: 'cr-viz-theme',
   };
   var itemsById = {};
   DATA.library.forEach(function (item) { itemsById[item.id] = item; });
@@ -166,17 +165,17 @@
     var list = DATA.library.filter(function (item) {
       return item.priority === 'recommended' && (item.recommendedFor || []).indexOf(state.role) !== -1;
     });
-    fillCards(byId('recList'), list, META.roleLabels[state.role] + ' 추천 자료는 청람 검수 후 공개됩니다.');
+    fillCards(byId('recList'), list, META.roleLabels[state.role] + ' 추천 자료는 청람 검수 후 공개돼요.');
   }
   function renderHome() {
     var must = DATA.library.filter(function (item) { return item.priority === 'must'; });
     var mustList = byId('mustList');
     mustList.classList.toggle('is-must', must.length > 1);
-    fillCards(mustList, must, '필독 자료는 청람 검수를 마치면 이곳에 올라옵니다.');
+    fillCards(mustList, must, '필독 자료는 청람 검수를 마치면 이곳에 올라와요.');
     renderRoleTabs();
     renderRecommended();
     byId('allSummary').textContent = '전체 자료 ' + DATA.library.length + '건 펼치기';
-    clear(byId('allList')).appendChild(sourceGroups(DATA.library, '아직 검수된 자료가 없습니다.'));
+    clear(byId('allList')).appendChild(sourceGroups(DATA.library, '아직 검수된 자료가 없어요.'));
   }
   byId('roleTabs').addEventListener('keydown', function (e) {
     if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
@@ -197,7 +196,7 @@
       el('p', { className: 'item-meta', text: item.issuer + ' · 발표 ' + formatDate(item.date) }),
       el('p', { className: 'feed-summary' }, [
         el('span', { className: 'label label-auto', text: 'AI 요약' }),
-        document.createTextNode(item.summaryPending ? '요약을 준비하고 있습니다. 원문을 먼저 확인해 주세요.' : item.summaryAi),
+        document.createTextNode(item.summaryPending ? '요약을 준비하고 있어요. 원문을 먼저 확인해 주세요.' : item.summaryAi),
       ]),
     ]);
   }
@@ -205,7 +204,7 @@
     var recent = DATA.feed.recent;
     var archive = DATA.feed.archive;
     var list = clear(byId('feedList'));
-    if (!recent.length) list.appendChild(el('li', {}, [emptyState('최근 4주 동안 새로 모은 자료가 없습니다.')]));
+    if (!recent.length) list.appendChild(el('li', {}, [emptyState('최근 4주 동안 새로 모은 자료가 없어요.')]));
     recent.forEach(function (item) { list.appendChild(feedItem(item)); });
     byId('feedArchiveDetails').hidden = !archive.length;
     byId('feedArchiveSummary').textContent = '지난 자료 ' + archive.length + '건';
@@ -231,7 +230,7 @@
         el('span', { className: 'stage-num', text: CIRCLED[stage.n - 1], attrs: { 'aria-hidden': 'true' } }),
         el('span', { className: 'stage-name', text: isDraft ? stage.n + '단계 · 확정 전' : stage.n + '단계 · ' + stage.nameKo }),
         isDraft ? null : el('span', { className: 'stage-en', text: stage.name }),
-        el('span', { className: 'stage-q', text: isDraft ? '이 단계의 질문은 정리 중입니다.' : stage.question }),
+        el('span', { className: 'stage-q', text: isDraft ? '이 단계의 질문은 정리 중이에요.' : stage.question }),
         el('span', { className: 'stage-count', text: '자료 ' + count + '건' }),
       ]);
       if (isDraft) tile.disabled = true;
@@ -251,7 +250,7 @@
       bar.appendChild(el('span', { text: CIRCLED[stageN - 1] + ' ' + (stage.nameKo || '확정 전 단계') + ' 단계 자료만 보는 중' }));
       bar.appendChild(el('a', { text: '필터 해제', attrs: { href: '#library' } }));
     }
-    clear(byId('libraryGroups')).appendChild(sourceGroups(items, '이 구분에 검수된 자료가 아직 없습니다.'));
+    clear(byId('libraryGroups')).appendChild(sourceGroups(items, '이 구분에 검수된 자료가 아직 없어요.'));
   }
 
   // === 상세 ===
@@ -285,7 +284,7 @@
         state.answers = withAnswer(state.answers, q.id, area.value);
         var ok = safeSet(KEYS.answers, JSON.stringify(state.answers));
         status.classList.toggle('is-error', !ok);
-        status.textContent = ok ? '저장됨' : '저장하지 못했습니다. 사생활 보호 모드라면 일반 창에서 열어 주세요.';
+        status.textContent = ok ? '저장됨' : '저장하지 못했어요. 사생활 보호 모드라면 일반 창에서 열어 주세요.';
       }, SAVE_DELAY_MS);
     });
     var label = el('label', { text: q.text, attrs: { for: fieldId } });
@@ -320,8 +319,8 @@
     var root = clear(byId('itemDetail'));
     root.appendChild(el('a', { className: 'back-link', text: '← 자료실로', attrs: { href: '#library' } }));
     if (!item) {
-      root.appendChild(el('h2', { text: '자료를 찾을 수 없습니다', attrs: { id: 'item-heading' } }));
-      root.appendChild(emptyState('검수 전이거나 삭제된 자료입니다. 자료실에서 다른 자료를 골라 주세요.'));
+      root.appendChild(el('h2', { text: '자료를 찾을 수 없어요', attrs: { id: 'item-heading' } }));
+      root.appendChild(emptyState('검수 전이거나 삭제된 자료예요. 자료실에서 다른 자료를 골라 주세요.'));
       return;
     }
     var readBox = el('input', { attrs: { type: 'checkbox' } });
@@ -329,7 +328,7 @@
     readBox.addEventListener('change', function () {
       state.read = withRead(state.read, item.id, readBox.checked);
       safeSet(KEYS.read, JSON.stringify(state.read));
-      announce(readBox.checked ? '읽음으로 표시했습니다.' : '읽음 표시를 지웠습니다.');
+      announce(readBox.checked ? '읽음으로 표시했어요.' : '읽음 표시를 지웠어요.');
     });
     root.appendChild(el('div', { className: 'item-head' }, [
       itemBadges(item),
@@ -360,7 +359,7 @@
     root.appendChild(el('p', { className: 'item-meta', text: '작성한 답 ' + total + '개 · 자료 ' + written.length + '건' }));
     root.appendChild(el('p', { className: 'role-guide', text: JOURNAL_GUIDE }));
     if (!written.length) {
-      root.appendChild(emptyState('아직 남긴 답이 없습니다. 자료를 열고 질문에 답을 적어 보세요.'));
+      root.appendChild(emptyState('아직 남긴 답이 없어요. 자료를 열고 질문에 답을 적어 보세요.'));
       return;
     }
     written.forEach(function (entry) {
@@ -377,11 +376,11 @@
     });
   }
   function clearAnswers() {
-    if (!window.confirm('이 브라우저에 저장된 답을 모두 지울까요? 되돌릴 수 없습니다.')) return;
+    if (!window.confirm('이 브라우저에 저장된 답을 모두 지울까요? 되돌릴 수 없어요.')) return;
     safeRemove(KEYS.answers);
     state.answers = {};
     renderJournal();
-    announce('저장된 답을 모두 지웠습니다.');
+    announce('저장된 답을 모두 지웠어요.');
   }
 
   // === 라우터 — #home, #feed, #map, #library, #library/stage-3, #item/gov-001, #journal ===
@@ -438,19 +437,29 @@
     var action = e.target.closest('[data-action]');
     if (!action) return;
     var name = action.getAttribute('data-action');
-    if (name === 'theme') applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
     if (name === 'print') { closeMenu(); window.print(); }
     if (name === 'clear-answers') clearAnswers();
   });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeMenu(); });
 
-  var currentTheme = safeGet(KEYS.theme) || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  function applyTheme(theme) {
-    document.documentElement.className = 'theme-' + theme;
-    byId('themeIcon').textContent = theme === 'dark' ? '🌙' : '☀️';
-    byId('themeLabel').textContent = theme === 'dark' ? '다크' : '라이트';
-    safeSet(KEYS.theme, theme);
-    currentTheme = theme;
+  // === 스크롤 진행바 — 프레임당 한 번만 transform을 바꾼다 ===
+  var progressBar = byId('prog');
+  var progressQueued = false;
+  function updateProgress() {
+    progressQueued = false;
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    progressBar.style.transform = 'scaleX(' + (max > 0 ? Math.min(window.scrollY / max, 1) : 0) + ')';
+  }
+  window.addEventListener('scroll', function () {
+    if (progressQueued) return;
+    progressQueued = true;
+    window.requestAnimationFrame(updateProgress);
+  }, { passive: true });
+
+  function renderKpis() {
+    byId('kpiItems').textContent = DATA.library.length + '건';
+    byId('kpiStages').textContent = DATA.stages.length + '단계';
+    byId('kpiFeed').textContent = DATA.feed.recent.length + '건';
   }
 
   // === crmc.co.kr 공통 네비 — 실제 사이트에서 열 때만 불러온다. 파일·로컬 미리보기에서는 건너뛴다 ===
@@ -465,7 +474,7 @@
   }
 
   // === 시작 ===
-  applyTheme(currentTheme);
+  renderKpis();
   byId('previewBanner').hidden = !META.preview;
   byId('builtAt').textContent = '업데이트 ' + formatDate(META.builtAt.slice(0, 10));
   renderFeed();

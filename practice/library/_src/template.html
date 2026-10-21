@@ -1,20 +1,25 @@
 <!DOCTYPE html>
 <!-- 빌드 결과물의 원본 템플릿. 직접 고친 index.html은 다음 빌드에서 덮어써진다. 수정은 _src/에서 한다. -->
-<html lang="ko" class="theme-light">
+<!-- 스타일: 제이스타일(J-STYLE) — 다크 + 라임. 라이트 테마는 두지 않는다(인쇄만 밝게). -->
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AX 공공 러닝 라이브러리 | 청람M&amp;C</title>
   <meta name="description" content="공무원이 AX(AI 전환) 핵심 자료를 읽고, 우리 기관에 맞춰 답하고, 이번 주에 해보도록 돕는 청람M&C 학습형 라이브러리">
+  <meta name="theme-color" content="#06080b">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 
   <style>/*@STYLES*/</style>
 </head>
 <body>
   <a href="#main-content" class="skip-link">본문으로 건너뛰기</a>
+
+  <!-- 배경 레이어: 오로라 2 · 필름 그레인 · 그리드 · 스크롤 진행바 -->
+  <div class="aur a" aria-hidden="true"></div><div class="aur b" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div><div class="grid-bg" aria-hidden="true"></div>
+  <div class="progress" id="prog" aria-hidden="true"></div>
 
   <div class="viz-menu">
     <button class="viz-menu-toggle" type="button" aria-label="보기 설정 메뉴" aria-haspopup="true" aria-expanded="false" id="vizMenuToggle">
@@ -23,28 +28,41 @@
       </svg>
     </button>
     <div class="viz-menu-dropdown" id="vizMenuDropdown">
-      <button type="button" data-action="theme"><span id="themeIcon" aria-hidden="true">☀️</span><span id="themeLabel">라이트</span></button>
-      <button type="button" data-action="print"><span aria-hidden="true">🖨️</span><span>인쇄 / PDF</span></button>
+      <button type="button" data-action="print"><span class="mono acc" aria-hidden="true">PDF</span><span>인쇄 / PDF</span></button>
     </div>
   </div>
 
   <div class="preview-banner" id="previewBanner" hidden role="status">
-    검수 전 미리보기입니다. 청람 검수(reviewedBy)를 마치지 않은 자료가 함께 보입니다. 이 화면은 공개하지 마세요.
+    검수 전 미리보기예요. 청람 검수(reviewedBy)를 마치지 않은 자료가 함께 보여요. 이 화면은 공개하지 마세요.
   </div>
 
-  <header class="hero">
-    <div class="cr-dot-grid" aria-hidden="true"></div>
-    <div class="wrap hero-grid">
-      <div>
-        <p class="eyebrow hero-eyebrow animate">청람M&amp;C · 공무원 AX 러닝 라이브러리</p>
-        <h1 class="animate delay-1">읽고, 답하고,<br><em>이번 주에 해보기</em>.</h1>
-        <p class="hero-sub animate delay-2">AI 전환(AX)에 관한 정부 발표와 해외 인사이트 가운데 먼저 볼 것만 골랐습니다. 자료마다 우리 기관에 적용해 볼 질문이 붙어 있습니다.</p>
+  <header class="hero-shell">
+    <div class="wrap">
+      <div class="top"><a href="https://www.crmc.co.kr" class="mark"><i></i>CHEONGRAM</a><span class="dim">AX LEARNING LIBRARY</span></div>
+
+      <div class="hero">
+        <div>
+          <p class="presents">CHEONGRAM M&amp;C PRESENTS</p>
+          <p class="kicker">공무원 AX 러닝 라이브러리</p>
+          <h1>읽고, 답하고,<br><span class="g">이번 주에 해보기.</span></h1>
+          <p class="lead"><b>먼저 볼 것만 골랐어요.</b> AI 전환(AX)에 관한 정부 발표와 해외 인사이트마다 우리 기관에 적용해 볼 질문이 붙어 있어요.</p>
+          <div class="ctas">
+            <a class="btn" href="#home">▶ 필독부터 읽기</a>
+            <a class="btn ghost" href="#map">AX 논리 지도</a>
+          </div>
+        </div>
+        <ol class="step-ribbon" aria-label="이 라이브러리를 쓰는 법">
+          <li class="step step-read"><span class="step-tag">01 READ</span><strong>읽기</strong><span>필독 자료부터 3줄 요약과 원문을 봐요.</span></li>
+          <li class="step step-reflect"><span class="step-tag">02 REFLECT</span><strong>답하기</strong><span>내 역할의 질문에 답을 남겨요.</span></li>
+          <li class="step step-act"><span class="step-tag">03 ACT</span><strong>해보기</strong><span>이번 주 과제 하나를 해 봐요.</span></li>
+        </ol>
       </div>
-      <ol class="step-ribbon animate delay-3" aria-label="이 라이브러리를 쓰는 법">
-        <li class="step step-read"><span class="step-tag">경험</span><strong>읽기</strong><span>필독 자료부터 3줄 요약과 원문을 봅니다.</span></li>
-        <li class="step step-reflect"><span class="step-tag">성찰</span><strong>답하기</strong><span>내 역할의 질문에 답을 남깁니다.</span></li>
-        <li class="step step-act"><span class="step-tag">실천</span><strong>해보기</strong><span>이번 주 과제 하나를 해 봅니다.</span></li>
-      </ol>
+
+      <div class="kpis" aria-label="라이브러리 현황">
+        <div class="kpi"><b class="acc" id="kpiItems">–</b><span>검수한 자료</span></div>
+        <div class="kpi"><b id="kpiStages">–</b><span>AX 질문 단계</span></div>
+        <div class="kpi"><b id="kpiFeed">–</b><span>최근 4주 새 자료</span></div>
+      </div>
     </div>
   </header>
 
@@ -63,27 +81,34 @@
       <div class="wrap">
         <h2 id="home-heading" class="sr-only">홈</h2>
 
-        <section class="block" aria-labelledby="must-heading">
+        <section class="block" id="must" aria-labelledby="must-heading">
           <div class="block-head">
-            <h3 id="must-heading"><span class="cr-accent-underline">필독</span></h3>
-            <p class="text-secondary">직급과 상관없이 먼저 읽을 자료입니다. 최대 5건만 고릅니다.</p>
+            <div>
+              <p class="cell"><i>01</i>MUST READ</p>
+              <h3 id="must-heading" class="block-title">필독</h3>
+            </div>
+            <p class="text-secondary">직급과 상관없이 먼저 읽을 자료예요. 최대 5건만 골라요.</p>
           </div>
           <div class="card-grid" id="mustList"></div>
         </section>
 
         <section class="block" aria-labelledby="rec-heading">
           <div class="block-head">
-            <h3 id="rec-heading"><span class="cr-accent-underline">내 역할 추천</span></h3>
-            <p class="text-secondary">역할을 고르면 그 역할에 특히 쓸모 있는 자료를 보여 줍니다.</p>
+            <div>
+              <p class="cell"><i>02</i>FOR YOUR ROLE</p>
+              <h3 id="rec-heading" class="block-title">내 역할 추천</h3>
+            </div>
+            <p class="text-secondary">역할을 고르면 그 역할에 특히 쓸모 있는 자료를 보여 줘요.</p>
           </div>
           <div class="role-tabs" role="tablist" aria-label="역할 선택" id="roleTabs"></div>
           <div class="card-grid" id="recList" role="tabpanel" aria-labelledby="rec-heading"></div>
         </section>
 
         <section class="block ref-link" aria-labelledby="ref-heading">
+          <p class="cell"><i>LINK</i>AI GOV LAB</p>
           <h3 id="ref-heading" class="ref-title">AI 정부 실험실 프로젝트 현황</h3>
-          <p class="text-secondary">공무원이 직접 만든 AI 과제를 모아 볼 수 있습니다.</p>
-          <a href="https://axboard.aigov.go.kr/" target="_blank" rel="noopener noreferrer">https://axboard.aigov.go.kr/<span class="sr-only"> (새 창)</span></a>
+          <p class="text-secondary">공무원이 직접 만든 AI 과제를 모아 볼 수 있어요.</p>
+          <a href="https://axboard.aigov.go.kr/" target="_blank" rel="noopener noreferrer">axboard.aigov.go.kr ↗<span class="sr-only"> (새 창)</span></a>
         </section>
 
         <section class="block" aria-labelledby="all-heading">
@@ -99,10 +124,13 @@
     <section class="view" id="view-feed" data-view="feed" aria-labelledby="feed-heading" hidden>
       <div class="wrap">
         <div class="block-head">
-          <h2 id="feed-heading"><span class="cr-accent-underline">이번 주 새 자료</span></h2>
-          <p class="text-secondary">등록된 기관의 새 발표를 매주 자동으로 모읍니다. 최근 4주 분량만 보여 줍니다.</p>
+          <div>
+            <p class="cell"><i>FEED</i>THIS WEEK</p>
+            <h2 id="feed-heading">이번 주 새 자료</h2>
+          </div>
+          <p class="text-secondary">등록된 기관의 새 발표를 매주 자동으로 모아요. 최근 4주 분량만 보여 줘요.</p>
         </div>
-        <p class="auto-notice"><span class="label label-auto">자동 수집 · 청람 검수 전</span> 요약은 AI가 썼습니다. 판단은 반드시 원문으로 하세요.</p>
+        <p class="auto-notice"><span class="label label-auto">자동 수집 · 청람 검수 전</span> 요약은 AI가 썼어요. 판단은 꼭 원문으로 하세요.</p>
         <ol class="feed-list" id="feedList"></ol>
         <details class="all-details" id="feedArchiveDetails">
           <summary id="feedArchiveSummary">지난 자료</summary>
@@ -114,8 +142,11 @@
     <section class="view" id="view-map" data-view="map" aria-labelledby="map-heading" hidden>
       <div class="wrap">
         <div class="block-head">
-          <h2 id="map-heading"><span class="cr-accent-underline">AX 논리 지도</span></h2>
-          <p class="text-secondary">AI 전환을 10개의 질문으로 나눴습니다. 단계를 누르면 그 단계의 자료만 모아 봅니다.</p>
+          <div>
+            <p class="cell"><i>MAP</i>10 QUESTIONS</p>
+            <h2 id="map-heading">AX 논리 지도</h2>
+          </div>
+          <p class="text-secondary">AI 전환을 10개의 질문으로 나눴어요. 단계를 누르면 그 단계 자료만 모아 봐요.</p>
         </div>
         <ol class="stage-grid" id="stageGrid"></ol>
       </div>
@@ -124,8 +155,11 @@
     <section class="view" id="view-library" data-view="library" aria-labelledby="library-heading" hidden>
       <div class="wrap">
         <div class="block-head">
-          <h2 id="library-heading"><span class="cr-accent-underline">자료실</span></h2>
-          <p class="text-secondary">청람이 검수한 자료를 출처별로 나눴습니다.</p>
+          <div>
+            <p class="cell"><i>LIB</i>REVIEWED</p>
+            <h2 id="library-heading">자료실</h2>
+          </div>
+          <p class="text-secondary">청람이 검수한 자료를 출처별로 나눴어요.</p>
         </div>
         <div class="filter-bar" id="filterBar" hidden></div>
         <div id="libraryGroups"></div>
@@ -139,14 +173,17 @@
     <section class="view" id="view-journal" data-view="journal" aria-labelledby="journal-heading" hidden>
       <div class="wrap">
         <div class="block-head">
-          <h2 id="journal-heading"><span class="cr-accent-underline">내 학습일지</span></h2>
-          <p class="text-secondary">내가 남긴 답을 모았습니다. 교육 과제로 낼 때는 인쇄하거나 PDF로 저장하세요.</p>
+          <div>
+            <p class="cell"><i>LOG</i>MY JOURNAL</p>
+            <h2 id="journal-heading">내 학습일지</h2>
+          </div>
+          <p class="text-secondary">내가 남긴 답을 모았어요. 교육 과제로 낼 때는 인쇄하거나 PDF로 저장하세요.</p>
         </div>
         <div class="notice">
           <ul class="cr-square-bullet">
-            <li>답은 이 브라우저에만 저장되고 서버로 보내지 않습니다.</li>
+            <li>답은 이 브라우저에만 저장되고 서버로 보내지 않아요.</li>
             <li>여러 사람이 쓰는 기관 PC라면 다 쓴 뒤 PDF로 저장하고 "답 모두 지우기"를 눌러 주세요.</li>
-            <li>브라우저 기록을 지우면 답도 함께 사라집니다.</li>
+            <li>브라우저 기록을 지우면 답도 함께 사라져요.</li>
           </ul>
         </div>
         <div class="journal-actions">
@@ -159,9 +196,10 @@
   </main>
 
   <footer class="footer">
-    <div class="wrap footer-inner">
-      <p class="footer-brand"><span class="footer-mark" aria-hidden="true"></span>청람M&amp;C</p>
+    <div class="wrap foot">
+      <h2>읽은 만큼, 이번 주에 하나.</h2>
       <p><a href="https://www.crmc.co.kr">crmc.co.kr</a> · <a href="https://www.crmc.co.kr/cheongram_proposal_v2.html">교육 문의</a> · <span id="builtAt"></span></p>
+      <div class="endmark">CHEONGRAM M&amp;C</div>
     </div>
   </footer>
 
