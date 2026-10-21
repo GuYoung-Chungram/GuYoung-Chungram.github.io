@@ -1,424 +1,498 @@
 <!DOCTYPE html>
 <!-- 빌드 결과물의 원본 템플릿. 직접 고친 index.html은 다음 빌드에서 덮어써진다. 수정은 _src/에서 한다. -->
-<html lang="ko" class="theme-light">
+<!-- 스타일: 제이스타일(J-STYLE) — 다크 + 라임. 라이트 테마는 두지 않는다(인쇄만 밝게). -->
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AX 공공 러닝 라이브러리 | 청람M&amp;C</title>
   <meta name="description" content="공무원이 AX(AI 전환) 핵심 자료를 읽고, 우리 기관에 맞춰 답하고, 이번 주에 해보도록 돕는 청람M&C 학습형 라이브러리">
+  <meta name="theme-color" content="#06080b">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 
-  <style>*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  <style>/* ==========================================================================
+   AX 공공 러닝 라이브러리 — 제이스타일(J-STYLE) 적용
+   토큰·배경·입체감은 j-style 원본 값을 따른다. 기존 앱 클래스 이름은 그대로 두고 겉모습만 바꾼다.
+   색 의미: 라임=주인공·실천, 보라=비교·성찰, 금=수치·주의, 빨강=부정, 하늘=입력·읽기
+   ========================================================================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ===== 청람 테마 — 클래스 기반. 값은 single-html 스킬 design-tokens.md 동결 스냅샷과 같다 ===== */
-html.theme-light {
-  --bg: #FFFFFF; --surface: #F8FAFF; --surface-hover: #EEF3FD;
-  --border: rgba(22,82,216,0.08); --border-strong: rgba(22,82,216,0.22);
-  --text: #1A1A1A; --text-secondary: #666666;
-  --accent: #1652D8; --accent-secondary: #0F3D99; --on-accent: #FFFFFF;
-  --positive: #059669; --negative: #e11d48; --warning: #d97706;
-  --cr-light-bg: #EEF3FD; --cr-dark-section: #0F0F0F;
-  --menu-bg: rgba(255,255,255,0.9); --menu-bg-hover: rgba(255,255,255,0.98);
-  --menu-border: rgba(22,82,216,0.12); --menu-text: #1A1A1A; --menu-item-hover: rgba(22,82,216,0.06);
-  /* 출처 4구분 — 색만으로 구분하지 않고 항상 텍스트 라벨과 함께 쓴다 */
-  --src-gov: #1652D8; --src-consulting: #6D28D9; --src-intl: #0F766E; --src-chungram: #B45309;
-  /* 학습 3단계 태그 */
-  --step-read: #1652D8; --step-reflect: #6D28D9; --step-act: #047857;
-  --label-auto-bg: #F1F1F4; --label-auto-text: #4A4A55;
-  --field-bg: #FFFFFF;
-}
-html.theme-dark {
-  --bg: #0F0F0F; --surface: #1A1A2E; --surface-hover: #252540;
-  --border: rgba(255,255,255,0.06); --border-strong: rgba(255,255,255,0.16);
-  --text: #EDEDED; --text-secondary: #888888;
-  --accent: #4B7BF5; --accent-secondary: #6B8FFF; --on-accent: #0F0F0F;
-  --positive: #10b981; --negative: #f43f5e; --warning: #f59e0b;
-  --cr-light-bg: #1A1A2E; --cr-dark-section: #0A0A0A;
-  --menu-bg: rgba(15,15,15,0.9); --menu-bg-hover: rgba(15,15,15,0.98);
-  --menu-border: rgba(75,123,245,0.15); --menu-text: #EDEDED; --menu-item-hover: rgba(75,123,245,0.1);
-  --src-gov: #6B8FFF; --src-consulting: #A78BFA; --src-intl: #2DD4BF; --src-chungram: #F59E0B;
-  --step-read: #6B8FFF; --step-reflect: #A78BFA; --step-act: #34D399;
-  --label-auto-bg: #26262E; --label-auto-text: #B4B4C0;
-  --field-bg: #121220;
-}
-
+/* ===== 1. 토큰 ===== */
 :root {
-  --space-section: clamp(56px, 4vw + 32px, 96px);
-  --space-gutter: clamp(16px, 4vw, 48px);
-  --wrap: 1120px;
-  --radius: 8px;
+  --bg: #06080b; --bg2: #0d1117; --line: #1f2630; --fg: #fff; --dim: #97a3b0;
+  --acc: #b8ff5c; --vio: #b79dff; --gold: #ffd447; --red: #ff5d5d; --sky: #8fd3ff;
+  --body2: #d7dde4; --code: #d5dde6; --bead: #3a434f; --on-acc: #06080b;
+  --glass: linear-gradient(160deg, rgba(255,255,255,.05), rgba(255,255,255,.01));
+  --glass-line: rgba(255,255,255,.08);
+  --glass-shadow: 0 40px 100px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.06);
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  /* 출처 4구분 — 색만으로 구분하지 않고 항상 텍스트 라벨과 함께 쓴다 */
+  --src-gov: var(--sky); --src-consulting: var(--vio); --src-intl: var(--acc); --src-chungram: var(--gold);
+  --wrap: 1160px;
+  --ease-out-expo: cubic-bezier(.16, 1, .3, 1);
   --duration-fast: 150ms;
-  --duration-normal: 300ms;
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --site-nav-h: 0px;
-  --tabs-h: 52px;
-  --cr-hero-text: #FFFFFF; --cr-hero-eyebrow: #8FB0FF;
-  --cr-hero-highlight: #FFD84D; --cr-hero-highlight-text: #0F0F0F;
+  --tabs-h: 56px;
 }
 body.has-site-nav { --site-nav-h: 60px; padding-top: var(--site-nav-h); }
 
-/* ===== 기본 ===== */
+/* ===== 2. 기본 ===== */
+html { scroll-behavior: smooth; }
 body {
-  font-family: 'Noto Sans KR', 'Inter', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif;
-  background: var(--bg); color: var(--text);
-  line-height: 1.7; -webkit-font-smoothing: antialiased; letter-spacing: -0.01em;
-  transition: background var(--duration-normal), color var(--duration-normal);
-  overflow-x: hidden;
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif;
+  background: radial-gradient(1400px 900px at 80% -10%, #0f1a14 0%, var(--bg) 55%) var(--bg);
+  background-attachment: fixed;
+  color: var(--fg); line-height: 1.7; -webkit-font-smoothing: antialiased; overflow-x: hidden; word-break: keep-all;
 }
-h1, h2, h3, h4 { color: var(--text); letter-spacing: -0.03em; line-height: 1.25; text-wrap: balance; }
-h1 { font-weight: 700; font-size: clamp(2.25rem, 5vw, 3.5rem); }
-h2 { font-weight: 700; font-size: clamp(1.75rem, 3.4vw, 2.25rem); letter-spacing: -0.02em; }
-h3 { font-weight: 600; font-size: clamp(1.25rem, 2.2vw, 1.5rem); letter-spacing: -0.02em; }
-h4 { font-weight: 600; font-size: 1.0625rem; }
-p, li, span, label, summary { color: inherit; }
-.text-secondary { color: var(--text-secondary); }
-a { color: var(--accent); text-underline-offset: 3px; }
-:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+h1, h2, h3, h4 { color: var(--fg); line-height: 1.2; text-wrap: balance; }
+h1 { font-size: clamp(46px, 8vw, 104px); line-height: .95; margin: 14px 0 18px; letter-spacing: -.05em; font-weight: 900; }
+h1 .g {
+  background: linear-gradient(100deg, var(--acc), var(--sky) 55%, var(--vio));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 0 40px rgba(184,255,92,.35));
+}
+h2 {
+  font-size: clamp(32px, 4.6vw, 56px); line-height: 1.05; letter-spacing: -.04em; font-weight: 900;
+  background: linear-gradient(100deg, #fff 40%, var(--acc) 130%); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+h3 { font-size: clamp(20px, 2.4vw, 26px); font-weight: 800; letter-spacing: -.03em; }
+h4 { font-size: 17px; font-weight: 800; letter-spacing: -.02em; }
+.text-secondary { color: var(--dim); }
+a { color: var(--acc); text-underline-offset: 3px; }
+button { font: inherit; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; border-radius: 4px; }
 [hidden] { display: none !important; }
+.wrap { max-width: var(--wrap); margin: 0 auto; padding-inline: 20px; }
+.mono { font-family: var(--mono); }
+.acc { color: var(--acc); } .dim { color: var(--dim); }
 
-.wrap { max-width: var(--wrap); margin: 0 auto; padding-inline: var(--space-gutter); }
-.eyebrow { font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.14em; color: var(--accent); }
-.cr-accent-underline { border-bottom: 2px solid var(--accent); padding-bottom: 6px; display: inline-block; }
-.cr-square-bullet { list-style: none; padding-left: 0; }
+.cr-square-bullet { list-style: none; }
 .cr-square-bullet li { padding-left: 20px; position: relative; margin-bottom: 6px; }
-.cr-square-bullet li::before { content: ''; position: absolute; left: 0; top: 0.72em; width: 6px; height: 6px; background: var(--accent); }
-.cr-dot-grid {
-  background-image: radial-gradient(circle, var(--cr-hero-text) 0.6px, transparent 0.6px);
-  background-size: 26px 26px; opacity: 0.09; position: absolute; inset: 0; pointer-events: none;
-}
+.cr-square-bullet li::before { content: ''; position: absolute; left: 0; top: .7em; width: 7px; height: 7px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 10px var(--gold); }
 
-/* ===== 미리보기 배너 ===== */
-.preview-banner {
-  background: var(--warning); color: #1A1A1A; font-weight: 600; font-size: 0.9375rem;
-  padding: 10px var(--space-gutter); text-align: center;
+/* ===== 3. 배경 레이어 ===== */
+.aur { position: fixed; border-radius: 50%; pointer-events: none; z-index: -1; opacity: .2; background: radial-gradient(closest-side, var(--c), transparent); }
+.aur.a { width: 1000px; height: 800px; right: -300px; top: -360px; --c: #b8ff5c; animation: dr1 20s ease-in-out infinite alternate; }
+.aur.b { width: 900px; height: 800px; left: -300px; top: 60vh; --c: #b79dff; opacity: .13; animation: dr2 24s ease-in-out infinite alternate; }
+@keyframes dr1 { to { transform: translate(-240px, 200px) scale(1.15); } }
+@keyframes dr2 { to { transform: translate(300px, -200px) scale(.9); } }
+.grid-bg {
+  position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: .35;
+  background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 56px 56px; mask-image: radial-gradient(ellipse at 50% 0%, #000 30%, transparent 75%);
 }
+.grain {
+  position: fixed; inset: 0; pointer-events: none; z-index: 70; opacity: .05; animation: gr .8s steps(5) infinite;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+@keyframes gr { 0% { background-position: 0 0; } 25% { background-position: -60px 40px; } 50% { background-position: 50px -70px; } 75% { background-position: -40px 60px; } 100% { background-position: 0 0; } }
+.progress { position: fixed; left: 0; top: 0; height: 3px; width: 100%; transform-origin: 0 50%; transform: scaleX(0); background: linear-gradient(90deg, var(--acc), var(--vio)); z-index: 80; }
 
-/* ===== 히어로 ===== */
-.hero {
-  position: relative; overflow: hidden; background: var(--cr-dark-section); color: var(--cr-hero-text);
-  padding-block: clamp(48px, 6vw, 88px);
-}
-.hero::after {
-  content: ''; position: absolute; right: -140px; top: -140px; width: 460px; height: 460px;
-  border: 1px solid rgba(255,255,255,0.07); border-radius: 50%; pointer-events: none;
-}
-.hero-grid { position: relative; display: grid; grid-template-columns: 1.15fr 1fr; gap: clamp(28px, 5vw, 64px); align-items: end; }
-.hero h1 { color: var(--cr-hero-text); }
-.hero h1 em { font-style: normal; color: var(--cr-hero-highlight); box-shadow: inset 0 -0.14em 0 rgba(255,216,77,0.24); }
-.hero-eyebrow { color: var(--cr-hero-eyebrow); margin-bottom: 14px; }
-.hero-sub { margin-top: 18px; max-width: 46ch; font-size: clamp(1rem, 1.4vw, 1.0625rem); color: rgba(255,255,255,0.74); }
+/* ===== 4. 미리보기 배너 ===== */
+.preview-banner { background: var(--gold); color: var(--on-acc); font-weight: 800; font-size: 15px; padding: 10px 20px; text-align: center; }
 
-.step-ribbon { list-style: none; display: grid; gap: 10px; counter-reset: step; }
+/* ===== 5. 탑바 · 히어로 ===== */
+.top { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 18px 64px 18px 0; font-family: var(--mono); font-size: 13px; letter-spacing: .06em; }
+.top a { text-decoration: none; }
+.top .mark { display: flex; align-items: center; gap: 12px; color: #fff; letter-spacing: .42em; font-weight: 300; font-family: Pretendard, sans-serif; }
+.top .mark i { width: 11px; height: 11px; border-radius: 50%; background: var(--acc); box-shadow: 0 0 16px var(--acc); animation: pl 2.4s ease-in-out infinite; }
+@keyframes pl { 50% { transform: scale(.7); opacity: .7; } }
+
+.hero { display: grid; grid-template-columns: 1.05fr .95fr; gap: 30px; align-items: center; padding: 24px 0 40px; }
+.presents { font-weight: 300; letter-spacing: .9em; font-size: 12px; color: var(--dim); margin-bottom: 6px; }
+.kicker { font-family: var(--mono); font-size: 13px; letter-spacing: .16em; color: var(--acc); }
+.lead { font-size: clamp(17px, 2vw, 20px); color: var(--body2); max-width: 30em; margin: 0 0 26px; }
+.lead b { color: #fff; }
+.ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* 3단계 리본 — 유리판 위 칩 */
+.step-ribbon { list-style: none; display: grid; gap: 14px; }
 .step {
-  display: grid; grid-template-columns: auto 1fr; column-gap: 14px; row-gap: 2px; align-items: baseline;
-  padding: 14px 18px; border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius);
-  background: rgba(255,255,255,0.04);
+  display: grid; grid-template-columns: auto 1fr; column-gap: 16px; row-gap: 2px; align-items: baseline;
+  padding: 18px 22px; border: 1px solid var(--glass-line); border-radius: 22px;
+  background: var(--glass); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: var(--glass-shadow);
+  transition: transform .25s var(--ease-out-expo), border-color .25s, box-shadow .25s;
 }
-.step:nth-child(2) { margin-left: clamp(0px, 3vw, 28px); }
-.step:nth-child(3) { margin-left: clamp(0px, 6vw, 56px); }
-.step strong { color: var(--cr-hero-text); font-size: 1.0625rem; }
-.step span:last-child { grid-column: 2; color: rgba(255,255,255,0.68); font-size: 0.875rem; }
+.step:nth-child(2) { margin-left: clamp(0px, 3vw, 32px); }
+.step:nth-child(3) { margin-left: clamp(0px, 6vw, 64px); }
+.step:hover { transform: translateX(-4px); border-color: color-mix(in srgb, var(--step) 50%, transparent); box-shadow: var(--glass-shadow), 0 0 40px -14px var(--step); }
+.step strong { font-size: 22px; font-weight: 900; letter-spacing: -.03em; }
+.step span:last-child { grid-column: 2; color: var(--dim); font-size: 14px; }
 .step-tag {
-  grid-row: span 2; align-self: center; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.04em;
-  padding: 4px 9px; border-radius: 999px; color: #0F0F0F;
+  grid-row: span 2; align-self: center; font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: .1em;
+  padding: 3px 9px; border-radius: 4px; color: var(--on-acc); background: var(--step); box-shadow: 0 0 18px color-mix(in srgb, var(--step) 50%, transparent);
 }
-.step-read .step-tag { background: #8FB0FF; }
-.step-reflect .step-tag { background: #C4B5FD; }
-.step-act .step-tag { background: #6EE7B7; }
+.step-read { --step: var(--sky); }
+.step-reflect { --step: var(--vio); }
+.step-act { --step: var(--acc); }
 
-/* ===== 탭 ===== */
-.tabs {
-  position: sticky; top: var(--site-nav-h); z-index: 50;
-  background: var(--menu-bg); border-bottom: 1px solid var(--border-strong);
-  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+/* KPI 3분할 */
+.kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: rgba(255,255,255,.06); border: 1px solid var(--line); border-radius: 22px; overflow: hidden; margin: 10px 0 0; }
+.kpi { background: rgba(6,8,11,.82); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 22px 24px; }
+.kpi b { display: block; font-size: clamp(34px, 5vw, 56px); font-weight: 900; letter-spacing: -.04em; line-height: 1; font-variant-numeric: tabular-nums; }
+.kpi b.acc { text-shadow: 0 0 40px rgba(184,255,92,.5); }
+.kpi span { color: var(--dim); font-size: 14px; }
+
+/* ===== 6. 버튼 ===== */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; font-weight: 800; font-size: 16px;
+  border-radius: 999px; padding: 13px 24px; border: 1px solid transparent; background: var(--acc); color: var(--on-acc);
+  box-shadow: 0 0 50px rgba(184,255,92,.35), inset 0 1px 0 rgba(255,255,255,.4);
+  transition: transform var(--duration-fast) ease, box-shadow var(--duration-fast) ease, background var(--duration-fast) ease;
 }
-.tabs-inner { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; height: var(--tabs-h); align-items: stretch; }
+.btn:hover { transform: translateY(-1px); box-shadow: 0 0 70px rgba(184,255,92,.5), inset 0 1px 0 rgba(255,255,255,.4); }
+.btn:active { transform: translateY(1px); }
+.btn.ghost { background: transparent; color: var(--fg); border-color: var(--line); box-shadow: none; }
+.btn.ghost:hover { border-color: var(--acc); color: var(--acc); }
+.btn-solid { font-size: 15px; padding: 11px 22px; }
+.btn-outline-danger { background: transparent; color: var(--red); border-color: rgba(255,93,93,.5); box-shadow: none; font-size: 15px; padding: 11px 22px; }
+.btn-outline-danger:hover { background: rgba(255,93,93,.08); box-shadow: 0 0 30px -10px var(--red); }
+
+/* ===== 7. 탭 — 스티키 레일 ===== */
+.tabs {
+  position: sticky; top: var(--site-nav-h); z-index: 50; margin-top: 56px;
+  background: rgba(6,8,11,.86); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+}
+.tabs-inner { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; height: var(--tabs-h); align-items: center; }
 .tabs-inner::-webkit-scrollbar { display: none; }
 .tabs a {
-  display: inline-flex; align-items: center; gap: 6px; padding: 0 14px; white-space: nowrap;
-  color: var(--text-secondary); font-weight: 500; font-size: 0.9375rem; text-decoration: none;
-  border-bottom: 2px solid transparent; transition: color var(--duration-fast), border-color var(--duration-fast);
+  flex: none; display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; text-decoration: none;
+  font-size: 14px; font-weight: 700; color: var(--dim); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px;
+  transition: color var(--duration-fast), border-color var(--duration-fast), box-shadow var(--duration-fast);
 }
-.tabs a:hover { color: var(--text); }
-.tabs a[aria-current="page"] { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+.tabs a:hover { color: var(--fg); border-color: rgba(184,255,92,.5); }
+.tabs a[aria-current="page"] { color: var(--on-acc); background: var(--acc); border-color: var(--acc); box-shadow: 0 0 24px rgba(184,255,92,.35); }
 .tab-count {
-  font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 700; min-width: 20px; text-align: center;
-  padding: 1px 6px; border-radius: 999px; background: var(--accent); color: var(--on-accent);
+  font-family: var(--mono); font-size: 11px; font-weight: 700; min-width: 20px; text-align: center;
+  padding: 0 6px; border-radius: 999px; background: var(--gold); color: var(--on-acc);
 }
+.tabs a[aria-current="page"] .tab-count { background: var(--on-acc); color: var(--acc); }
 .tab-count:empty { display: none; }
 
-/* ===== 뷰·블록 ===== */
-.view { padding-block: clamp(36px, 4vw, 64px) var(--space-section); scroll-margin-top: calc(var(--site-nav-h) + var(--tabs-h)); }
-.block + .block { margin-top: clamp(44px, 5vw, 72px); }
-.block-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; margin-bottom: 22px; }
-.block-head p { font-size: 0.9375rem; }
+/* ===== 8. 뷰 · 블록 · 셀 라벨 ===== */
+.view { padding: 64px 0 84px; scroll-margin-top: calc(var(--site-nav-h) + var(--tabs-h)); }
+.block + .block { margin-top: 72px; }
+.block-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 10px 32px; margin-bottom: 26px; }
+.block-head > p { font-size: 15px; max-width: 30em; }
+.cell { font-family: var(--mono); font-size: 13px; color: var(--acc); letter-spacing: .12em; margin-bottom: 12px; }
+.cell i { font-style: normal; color: var(--on-acc); background: var(--acc); padding: 2px 8px; margin-right: 10px; border-radius: 4px; box-shadow: 0 0 18px rgba(184,255,92,.5); }
+.block-title {
+  font-size: clamp(30px, 4vw, 46px); font-weight: 900; letter-spacing: -.04em; line-height: 1.05;
+  background: linear-gradient(100deg, #fff 40%, var(--acc) 130%); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
 
-/* ===== 라벨·배지 (자료 1건당 최대 3개: 우선순위·출처·난이도) ===== */
+/* ===== 9. 라벨 · 배지 (자료 1건당 최대 3개: 우선순위·출처·난이도) ===== */
 .badges { display: flex; flex-wrap: wrap; gap: 6px; }
 .label {
-  display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: 600; line-height: 1.4;
-  padding: 3px 9px; border-radius: 999px; border: 1px solid var(--border-strong); color: var(--text-secondary); white-space: nowrap;
+  display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 12px; font-weight: 600; line-height: 1.5;
+  padding: 2px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--dim); white-space: nowrap;
 }
-.label-must { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
-.label-rec { border-color: var(--accent); color: var(--accent); }
-.label-src::before { content: ''; width: 7px; height: 7px; border-radius: 2px; background: var(--src-color); }
+.label-must { background: var(--acc); border-color: var(--acc); color: var(--on-acc); font-weight: 800; box-shadow: 0 0 18px rgba(184,255,92,.4); }
+.label-rec { border-color: rgba(184,255,92,.5); color: var(--acc); }
 .label-src { color: var(--src-color); border-color: color-mix(in srgb, var(--src-color) 40%, transparent); }
+.label-src::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--src-color); box-shadow: 0 0 8px var(--src-color); }
 .src-gov { --src-color: var(--src-gov); }
 .src-consulting { --src-color: var(--src-consulting); }
 .src-intl { --src-color: var(--src-intl); }
 .src-chungram { --src-color: var(--src-chungram); }
-.label-auto { background: var(--label-auto-bg); color: var(--label-auto-text); border-color: transparent; }
-.label-new { border-color: var(--positive); color: var(--positive); }
-.label-preview { background: var(--warning); border-color: var(--warning); color: #1A1A1A; }
+.label-auto { background: rgba(255,255,255,.05); color: var(--dim); border-color: rgba(255,255,255,.1); }
+.label-new { border-color: rgba(255,212,71,.55); color: var(--gold); }
+.label-preview { background: var(--gold); border-color: var(--gold); color: var(--on-acc); }
 .label-status { border-style: dashed; }
 
-/* ===== 카드 ===== */
-.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 16px; }
+/* ===== 10. 카드 — 유리판 ===== */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 18px; }
 .card-grid.is-must { grid-template-columns: repeat(6, 1fr); }
 .card-grid.is-must .item-card { grid-column: span 2; }
-.card-grid.is-must .item-card:first-child { grid-column: span 4; grid-row: span 2; }
-.card-grid.is-must .item-card:first-child h4 { font-size: clamp(1.25rem, 2vw, 1.5rem); }
+.card-grid.is-must .item-card:first-child { grid-column: span 4; grid-row: span 2; padding: 32px; }
+.card-grid.is-must .item-card:first-child h4 { font-size: clamp(24px, 2.8vw, 34px); font-weight: 900; letter-spacing: -.04em; line-height: 1.15; }
+.card-grid.is-must .item-card:first-child .item-lead { -webkit-line-clamp: 5; font-size: 16px; }
 .item-card {
-  position: relative; display: flex; flex-direction: column; gap: 10px;
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px;
-  transition: transform var(--duration-fast) var(--ease-out-expo), box-shadow var(--duration-fast) ease;
+  position: relative; display: flex; flex-direction: column; gap: 12px; padding: 24px; overflow: hidden;
+  background: var(--glass); border: 1px solid var(--glass-line); border-radius: 22px;
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: var(--glass-shadow);
+  transition: transform .25s var(--ease-out-expo), border-color .25s, box-shadow .25s;
 }
-.item-card.is-must-card { border-top: 3px solid var(--accent); }
-.item-card:hover { transform: translateY(-2px); box-shadow: 0 0 0 1px var(--border-strong), 0 10px 24px rgba(0,0,0,0.08); }
-.item-card:focus-within { box-shadow: 0 0 0 2px var(--accent); }
-.item-card h4 a { color: var(--text); text-decoration: none; }
-.item-card h4 a::after { content: ''; position: absolute; inset: 0; border-radius: var(--radius); }
+.item-card.is-must-card { border-color: rgba(184,255,92,.28); }
+.item-card.is-must-card::before {
+  content: ''; position: absolute; right: -80px; top: -80px; width: 220px; height: 220px; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(closest-side, rgba(184,255,92,.18), transparent);
+}
+.item-card:hover { transform: translateY(-3px); border-color: rgba(184,255,92,.5); box-shadow: var(--glass-shadow), 0 0 40px -12px var(--acc); }
+.item-card:focus-within { border-color: var(--acc); box-shadow: var(--glass-shadow), 0 0 0 2px var(--acc); }
+.item-card h4 a { color: var(--fg); text-decoration: none; }
+.item-card h4 a::after { content: ''; position: absolute; inset: 0; border-radius: 22px; }
 .item-card h4 a:focus-visible { outline: none; }
-.item-meta { font-size: 0.8125rem; color: var(--text-secondary); font-family: 'Inter', 'Noto Sans KR', sans-serif; }
-.item-lead { font-size: 0.9375rem; color: var(--text-secondary); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-.read-mark { font-size: 0.75rem; font-weight: 600; color: var(--positive); }
+.item-meta { font-family: var(--mono); font-size: 12.5px; color: var(--dim); letter-spacing: .02em; }
+.item-lead { font-size: 15px; color: var(--body2); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.read-mark { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--acc); }
 
-.empty {
-  border: 1px dashed var(--border-strong); border-radius: var(--radius); padding: 22px;
-  color: var(--text-secondary); font-size: 0.9375rem; background: transparent;
-}
+.empty { border: 1px dashed var(--line); border-radius: 14px; padding: 22px; color: var(--dim); font-size: 15px; }
 
-/* ===== 역할 탭 ===== */
-.role-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+/* ===== 11. 역할 탭 ===== */
+.role-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
 .role-tabs button {
-  font: inherit; font-size: 0.9375rem; font-weight: 500; cursor: pointer; padding: 8px 16px; border-radius: 999px;
-  border: 1px solid var(--border-strong); background: transparent; color: var(--text);
-  transition: background var(--duration-fast), color var(--duration-fast), border-color var(--duration-fast);
+  font-size: 15px; font-weight: 800; padding: 8px 18px; border-radius: 999px;
+  border: 1px solid var(--line); background: rgba(13,17,23,.85); color: var(--fg);
+  transition: border-color var(--duration-fast), box-shadow var(--duration-fast), background var(--duration-fast);
 }
-.role-tabs button:hover { background: var(--surface-hover); }
-.role-tabs button[aria-selected="true"] { background: var(--text); color: var(--bg); border-color: var(--text); font-weight: 600; }
+.role-tabs button:hover { border-color: var(--acc); box-shadow: 0 0 22px rgba(184,255,92,.25); }
+.role-tabs button[aria-selected="true"] { background: var(--acc); color: var(--on-acc); border-color: var(--acc); box-shadow: 0 0 30px rgba(184,255,92,.35); }
 
-/* ===== 외부 참고 링크 ===== */
-.ref-link { padding: 18px 22px; border-radius: var(--radius); background: var(--cr-light-bg); border-left: 4px solid var(--accent); }
-.ref-title { font-size: 1.0625rem; }
-.ref-link p { font-size: 0.9375rem; margin-top: 2px; }
-.ref-link a { display: inline-block; margin-top: 6px; font-family: 'Inter', sans-serif; font-weight: 600; word-break: break-all; }
-
-/* ===== 접이식 목록 ===== */
-.all-details { margin-top: 8px; border-top: 1px solid var(--border-strong); }
-.all-details > summary {
-  cursor: pointer; padding: 16px 0; font-weight: 600; list-style: none; display: flex; align-items: center; gap: 10px;
+/* ===== 12. 외부 참고 링크 ===== */
+.ref-link {
+  padding: 24px 26px; border-radius: 22px; border: 1px solid rgba(143,211,255,.22);
+  background: linear-gradient(120deg, rgba(143,211,255,.08), rgba(255,255,255,.01)); box-shadow: var(--glass-shadow);
 }
+.ref-link .cell { color: var(--sky); }
+.ref-link .cell i { background: var(--sky); box-shadow: 0 0 18px rgba(143,211,255,.5); }
+.ref-title { font-size: 22px; }
+.ref-link p { font-size: 15px; margin-top: 2px; }
+.ref-link a { display: inline-block; margin-top: 10px; font-family: var(--mono); font-weight: 700; color: var(--sky); word-break: break-all; }
+
+/* ===== 13. 접이식 목록 ===== */
+.all-details { margin-top: 8px; border-top: 1px solid var(--line); }
+.all-details > summary { cursor: pointer; padding: 18px 0; font-family: var(--mono); font-size: 14px; color: var(--dim); list-style: none; display: flex; align-items: center; gap: 10px; }
+.all-details > summary:hover { color: var(--fg); }
 .all-details > summary::-webkit-details-marker { display: none; }
-.all-details > summary::before { content: '+'; font-family: 'Inter', sans-serif; font-size: 1.25rem; color: var(--accent); width: 18px; transition: transform var(--duration-fast); }
-.all-details[open] > summary::before { transform: rotate(45deg); }
+.all-details > summary::before { content: '▸'; color: var(--acc); width: 14px; }
+.all-details[open] > summary::before { content: '▾'; }
 
-/* ===== 행 목록 (자료실·전체) ===== */
-.src-group { margin-top: 28px; }
-.src-group-head { display: flex; align-items: baseline; gap: 10px; padding-bottom: 10px; border-bottom: 2px solid var(--src-color); }
+/* ===== 14. 행 목록 (자료실·전체) ===== */
+.src-group { margin-top: 36px; }
+.src-group-head { display: flex; align-items: baseline; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid color-mix(in srgb, var(--src-color) 55%, transparent); }
 .src-group-head h3 { color: var(--src-color); }
-.src-group-head .count { font-family: 'Inter', sans-serif; font-size: 0.875rem; color: var(--text-secondary); }
+.src-group-head h3::before { content: ''; display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 10px; vertical-align: .15em; background: var(--src-color); box-shadow: 0 0 12px var(--src-color); }
+.src-group-head .count { font-family: var(--mono); font-size: 13px; color: var(--dim); }
 .rows { list-style: none; }
 .row {
   display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 20px; align-items: center;
-  padding: 14px 4px; border-bottom: 1px solid var(--border-strong);
+  padding: 16px 10px; border-bottom: 1px solid var(--line); border-radius: 10px;
+  transition: background var(--duration-fast);
 }
-.row-title { font-weight: 600; color: var(--text); text-decoration: none; }
-.row-title:hover { color: var(--accent); text-decoration: underline; }
+.row:hover { background: rgba(255,255,255,.03); }
+.row-title { font-weight: 700; color: var(--fg); text-decoration: none; }
+.row-title:hover { color: var(--acc); }
 .row .item-meta { grid-column: 1; }
 .row .badges { grid-row: 1 / span 2; grid-column: 2; justify-content: flex-end; }
 
-/* ===== 새 자료 피드 ===== */
-.auto-notice { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 16px; }
+/* ===== 15. 새 자료 피드 ===== */
+.auto-notice { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font-size: 14px; color: var(--dim); margin-bottom: 18px; }
 .feed-list { list-style: none; }
-.feed-item { padding: 18px 4px; border-bottom: 1px solid var(--border-strong); display: grid; gap: 6px; }
-.feed-item a { font-weight: 600; color: var(--text); }
-.feed-item a:hover { color: var(--accent); }
-.feed-summary { font-size: 0.9375rem; color: var(--text-secondary); }
-.feed-summary .label { margin-right: 6px; }
+.feed-item { padding: 20px 4px; border-bottom: 1px solid var(--line); display: grid; gap: 8px; }
+.feed-item > a { font-size: 17px; font-weight: 800; color: var(--fg); text-decoration: none; }
+.feed-item > a:hover { color: var(--acc); }
+.feed-summary { font-size: 15px; color: var(--body2); }
+.feed-summary .label { margin-right: 8px; }
 
-/* ===== 논리 지도 ===== */
-.stage-grid { list-style: none; display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+/* ===== 16. 논리 지도 ===== */
+.stage-grid { list-style: none; display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
 .stage-tile {
-  display: flex; flex-direction: column; gap: 6px; height: 100%; text-align: left; font: inherit; cursor: pointer;
-  padding: 18px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); color: var(--text);
-  transition: transform var(--duration-fast) var(--ease-out-expo), border-color var(--duration-fast);
+  display: flex; flex-direction: column; gap: 6px; width: 100%; height: 100%; text-align: left; color: var(--fg);
+  padding: 20px; border-radius: 22px; border: 1px solid var(--glass-line); background: var(--glass);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: var(--glass-shadow);
+  transition: transform .25s var(--ease-out-expo), border-color .25s, box-shadow .25s;
 }
-.stage-tile:hover { transform: translateY(-2px); border-color: var(--accent); }
-.stage-tile:disabled { cursor: not-allowed; opacity: 0.6; transform: none; border-style: dashed; }
-.stage-num { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 1.75rem; color: var(--accent); line-height: 1; }
-.stage-name { font-weight: 700; }
-.stage-en { font-family: 'Inter', sans-serif; font-size: 0.75rem; color: var(--text-secondary); }
-.stage-q { font-size: 0.875rem; color: var(--text-secondary); flex: 1; }
-.stage-count { font-size: 0.8125rem; font-weight: 600; color: var(--accent); }
+.stage-tile:hover { transform: translateY(-3px); border-color: var(--acc); box-shadow: var(--glass-shadow), 0 0 40px -12px var(--acc); }
+.stage-tile:disabled { cursor: not-allowed; opacity: .5; transform: none; border-style: dashed; box-shadow: none; }
+.stage-num { font-weight: 900; font-size: 34px; color: var(--acc); line-height: 1; text-shadow: 0 0 30px rgba(184,255,92,.45); }
+.stage-name { font-weight: 800; }
+.stage-en { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; color: var(--dim); text-transform: uppercase; }
+.stage-q { font-size: 14px; color: var(--body2); flex: 1; }
+.stage-count { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--gold); }
 
-.filter-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 8px; padding: 12px 16px; border-radius: var(--radius); background: var(--cr-light-bg); }
-.filter-bar a { font-size: 0.875rem; }
+.filter-bar {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin-bottom: 8px; padding: 12px 18px;
+  border-radius: 999px; border: 1px solid rgba(184,255,92,.35); background: rgba(184,255,92,.06); font-weight: 700;
+}
+.filter-bar a { font-family: var(--mono); font-size: 13px; }
 
-/* ===== 상세 ===== */
-.item-wrap { max-width: 860px; }
-.back-link { display: inline-flex; gap: 6px; font-size: 0.9375rem; margin-bottom: 20px; }
-.item-head h2 { margin-top: 12px; }
-.item-head .orig-title { margin-top: 6px; font-family: 'Inter', 'Noto Sans KR', sans-serif; color: var(--text-secondary); font-size: 0.9375rem; }
-.item-head .item-meta { margin-top: 10px; font-size: 0.875rem; }
-.panel { margin-top: 28px; border-radius: var(--radius); padding: clamp(20px, 3vw, 28px); }
-.panel-fact { background: var(--surface); border: 1px solid var(--border); }
-.panel-view { background: transparent; border: 1px solid var(--border-strong); border-left: 4px solid var(--step-reflect); }
-.panel-act { background: var(--cr-light-bg); border-left: 4px solid var(--step-act); }
-.panel-kicker { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; color: var(--text-secondary); margin-bottom: 10px; }
-.summary-list { list-style: decimal; padding-left: 1.4em; display: grid; gap: 6px; }
-.frameworks { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 6px; }
-.frameworks .label { white-space: normal; border-radius: 10px; max-width: 100%; word-break: keep-all; }
-.source-link { margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
-.stage-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
-.stage-chips a { font-size: 0.8125rem; }
+/* ===== 17. 상세 ===== */
+.item-wrap { max-width: 880px; }
+.back-link { display: inline-flex; gap: 6px; font-family: var(--mono); font-size: 13px; color: var(--dim); text-decoration: none; margin-bottom: 24px; border: 1px solid var(--line); border-radius: 999px; padding: 5px 14px; }
+.back-link:hover { color: var(--acc); border-color: var(--acc); }
+.item-head h2 { margin-top: 16px; font-size: clamp(30px, 4.2vw, 50px); }
+.item-head .orig-title { margin-top: 8px; color: var(--dim); font-size: 15px; }
+.item-head .item-meta { margin-top: 12px; }
+.panel {
+  position: relative; margin-top: 28px; border-radius: 22px; padding: clamp(22px, 3vw, 32px);
+  background: var(--glass); border: 1px solid var(--glass-line); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: var(--glass-shadow);
+}
+.panel-kicker { font-family: var(--mono); font-size: 12px; letter-spacing: .12em; color: var(--panel-c, var(--acc)); margin-bottom: 14px; }
+.panel-fact { --panel-c: var(--sky); }
+.panel-view { --panel-c: var(--vio); border-color: rgba(183,157,255,.2); }
+.panel-act { --panel-c: var(--acc); border-color: rgba(184,255,92,.3); background: linear-gradient(160deg, rgba(184,255,92,.08), rgba(255,255,255,.01)); }
+.panel h4 { margin-top: 4px; }
+.summary-list { list-style: none; counter-reset: sum; display: grid; gap: 10px; }
+.summary-list li { counter-increment: sum; position: relative; padding-left: 38px; color: var(--body2); }
+.summary-list li::before {
+  content: counter(sum, decimal-leading-zero); position: absolute; left: 0; top: .2em;
+  font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--sky);
+}
+.frameworks { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 6px; }
+.frameworks .label { white-space: normal; border-radius: 10px; max-width: 100%; }
+.source-link { margin-top: 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.stage-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+.stage-chips a { font-family: var(--mono); font-size: 12px; text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; }
+.stage-chips a:hover { border-color: var(--acc); }
 
-.panel-view .role-block { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border-strong); }
-.panel-view > p:not(.panel-kicker) { margin-top: 6px; }
-.role-block h4 { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
-.role-guide { margin: -4px 0 14px; font-size: 0.9rem; line-height: 1.6; color: var(--text-secondary); word-break: keep-all; }
+.panel-view .role-block { margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--line); }
+.panel-view > p:not(.panel-kicker) { margin-top: 8px; color: var(--body2); }
+.role-block h4 { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.role-block h4 .label { border-color: rgba(183,157,255,.5); color: var(--vio); }
+.role-guide { margin: -2px 0 14px; font-size: 14px; line-height: 1.6; color: var(--dim); }
 .panel-view > p.answer-guide {
-  margin-top: 20px; padding: 12px 14px; border-left: 3px solid var(--accent); background: var(--bg);
-  font-size: 0.9375rem; line-height: 1.65; word-break: keep-all;
+  margin-top: 20px; padding: 14px 16px; border-radius: 14px; border: 1px solid rgba(183,157,255,.25);
+  background: rgba(183,157,255,.06); font-size: 15px; line-height: 1.65;
 }
-.q { margin-top: 14px; }
-.q label { display: block; font-weight: 500; margin-bottom: 6px; }
-.q .unique-tag { font-size: 0.6875rem; font-weight: 700; color: var(--step-reflect); margin-left: 6px; white-space: nowrap; }
+.q { margin-top: 16px; }
+.q label { display: block; font-weight: 700; margin-bottom: 8px; }
+.q .unique-tag { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--gold); margin-left: 8px; white-space: nowrap; }
 .q textarea {
-  width: 100%; min-height: 84px; resize: vertical; font: inherit; font-size: 0.9375rem; line-height: 1.6;
-  padding: 10px 12px; border-radius: 6px; border: 1px solid var(--border-strong); background: var(--field-bg); color: var(--text);
+  width: 100%; min-height: 92px; resize: vertical; font: inherit; font-size: 15px; line-height: 1.6; color: var(--fg);
+  padding: 12px 14px; border-radius: 14px; border: 1px solid var(--line); background: rgba(13,17,23,.85);
+  transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
 }
-.q textarea:focus-visible { outline-offset: 1px; }
-.save-status { font-size: 0.8125rem; color: var(--text-secondary); min-height: 1.4em; margin-top: 4px; }
-.save-status.is-error { color: var(--negative); }
+.q textarea::placeholder { color: #5d6875; }
+.q textarea:hover { border-color: #2e3744; }
+.q textarea:focus-visible { outline: none; border-color: var(--sky); box-shadow: 0 0 0 3px rgba(143,211,255,.18); }
+.save-status { font-family: var(--mono); font-size: 12px; color: var(--dim); min-height: 1.5em; margin-top: 6px; }
+.save-status.is-error { color: var(--red); }
 .prompt-box {
-  margin-top: 10px; padding: 12px 14px; border-radius: 6px; background: var(--bg); border: 1px solid var(--border-strong);
-  font-size: 0.9375rem; white-space: pre-wrap; word-break: keep-all;
+  margin-top: 14px; padding: 14px 16px; background: var(--bg2); border: 1px solid var(--line);
+  font-family: var(--mono); font-size: 13px; line-height: 1.65; color: var(--code); white-space: pre-wrap;
 }
-.warn-line { margin-top: 10px; font-size: 0.875rem; font-weight: 600; color: var(--negative); }
-.read-toggle { margin-top: 28px; display: flex; align-items: center; gap: 10px; font-weight: 600; cursor: pointer; }
-.read-toggle input { width: 20px; height: 20px; accent-color: var(--accent); }
-
-/* ===== 학습일지 ===== */
-.notice {
-  background: var(--cr-light-bg); border-left: 4px solid var(--warning);
-  border-radius: 0 var(--radius) var(--radius) 0; padding: 18px 22px;
+.prompt-box::before { content: 'PROMPT'; display: block; font-size: 11px; letter-spacing: .14em; color: var(--acc); margin-bottom: 8px; }
+.warn-line { margin-top: 12px; font-size: 14px; font-weight: 700; color: var(--gold); }
+.read-toggle {
+  margin-top: 28px; display: inline-flex; align-items: center; gap: 12px; font-weight: 800; cursor: pointer;
+  border: 1px solid var(--line); border-radius: 999px; padding: 10px 20px 10px 14px; transition: border-color var(--duration-fast);
 }
-.notice li { font-size: 0.9375rem; color: var(--text-secondary); }
-.notice .cr-square-bullet li::before { background: var(--warning); }
-.journal-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 22px 0 8px; }
-.journal-item { margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--border-strong); }
-.journal-qa { margin-top: 14px; }
-.journal-qa dt { font-weight: 600; font-size: 0.9375rem; }
-.journal-qa dt .label { margin-right: 6px; }
-.journal-qa dd { margin-top: 4px; padding-left: 12px; border-left: 2px solid var(--step-reflect); white-space: pre-wrap; }
+.read-toggle:hover { border-color: var(--acc); }
+.read-toggle input { width: 20px; height: 20px; accent-color: var(--acc); }
 
-/* ===== 버튼 ===== */
-.btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px; font: inherit; font-size: 0.9375rem; font-weight: 600;
-  padding: 11px 20px; border-radius: 6px; border: 1px solid transparent; cursor: pointer; text-decoration: none;
-  transition: transform var(--duration-fast) ease, background var(--duration-fast) ease, border-color var(--duration-fast) ease;
-}
-.btn:active { transform: translateY(1px); }
-.btn-solid { background: var(--accent); color: var(--on-accent); }
-.btn-solid:hover { background: var(--accent-secondary); }
-.btn-outline-danger { background: transparent; color: var(--negative); border-color: var(--negative); }
-.btn-outline-danger:hover { background: color-mix(in srgb, var(--negative) 8%, transparent); }
+/* ===== 18. 학습일지 ===== */
+.notice { border: 1px solid rgba(255,212,71,.25); background: rgba(255,212,71,.05); border-radius: 22px; padding: 20px 24px; }
+.notice li { font-size: 15px; color: var(--body2); }
+.journal-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0 10px; }
+.journal-item { margin-top: 28px; padding: 24px; border-radius: 22px; border: 1px solid var(--glass-line); background: var(--glass); }
+.journal-item h3 a { color: var(--fg); text-decoration: none; }
+.journal-item h3 a:hover { color: var(--acc); }
+.journal-item .item-meta { margin-top: 6px; }
+.journal-qa { margin-top: 16px; }
+.journal-qa dt { font-weight: 700; font-size: 15px; }
+.journal-qa dt .label { margin-right: 8px; border-color: rgba(183,157,255,.5); color: var(--vio); }
+.journal-qa dd { margin-top: 6px; padding-left: 14px; border-left: 2px solid var(--vio); color: var(--body2); white-space: pre-wrap; }
 
-/* ===== 푸터 ===== */
-.footer { border-top: 1px solid var(--border-strong); padding-block: 36px; }
-.footer-inner { display: flex; flex-wrap: wrap; gap: 12px 16px; align-items: center; justify-content: space-between; }
-.footer-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: -0.02em; }
-.footer-mark { width: 10px; height: 10px; background: var(--accent); flex: none; }
-.footer p, .footer a { font-size: 0.875rem; color: var(--text-secondary); }
+/* ===== 19. 푸터 ===== */
+.footer { border-top: 1px solid var(--line); }
+.foot { padding: 70px 20px 90px; text-align: center; }
+.foot p { color: var(--dim); margin: 14px 0 0; font-size: 14px; }
+.foot a { color: var(--dim); }
+.foot a:hover { color: var(--acc); }
+.endmark { font-weight: 200; letter-spacing: .55em; font-size: 18px; color: rgba(255,255,255,.5); margin-top: 40px; }
 
-/* ===== 메뉴 ===== */
-.viz-menu { position: fixed; top: calc(var(--site-nav-h) + 12px); right: 16px; z-index: 60; }
+/* ===== 20. 메뉴 ===== */
+.viz-menu { position: fixed; top: calc(var(--site-nav-h) + 12px); right: 16px; z-index: 75; }
 .viz-menu-toggle {
-  width: 42px; height: 42px; border-radius: 12px; background: var(--menu-bg); border: 1px solid var(--menu-border);
-  color: var(--menu-text); cursor: pointer; display: flex; align-items: center; justify-content: center;
-  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transition: background var(--duration-fast);
+  width: 42px; height: 42px; border-radius: 999px; background: rgba(13,17,23,.85); border: 1px solid var(--line); color: var(--fg);
+  display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
 }
-.viz-menu-toggle:hover { background: var(--menu-bg-hover); }
+.viz-menu-toggle:hover { border-color: var(--acc); box-shadow: 0 0 22px rgba(184,255,92,.3); }
 .viz-menu-dropdown {
-  position: absolute; top: 52px; right: 0; min-width: 200px; background: var(--menu-bg); border: 1px solid var(--menu-border);
-  border-radius: 12px; padding: 8px; opacity: 0; visibility: hidden; transform: translateY(-8px);
+  position: absolute; top: 52px; right: 0; min-width: 200px; padding: 8px; border-radius: 14px;
+  background: rgba(13,17,23,.92); border: 1px solid var(--glass-line); box-shadow: 0 30px 80px rgba(0,0,0,.5);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  opacity: 0; visibility: hidden; transform: translateY(-8px);
   transition: opacity var(--duration-fast), visibility var(--duration-fast), transform var(--duration-fast);
-  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: 0 8px 32px rgba(0,0,0,0.12);
 }
 .viz-menu-dropdown.open { opacity: 1; visibility: visible; transform: translateY(0); }
 .viz-menu-dropdown button {
-  width: 100%; padding: 10px 14px; border: none; border-radius: 8px; background: transparent; color: var(--menu-text);
-  font-size: 14px; font-family: inherit; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 10px;
+  width: 100%; padding: 10px 14px; border: none; border-radius: 10px; background: transparent; color: var(--fg);
+  font-size: 14px; text-align: left; display: flex; align-items: center; gap: 12px;
 }
-.viz-menu-dropdown button:hover { background: var(--menu-item-hover); }
+.viz-menu-dropdown button:hover { background: rgba(184,255,92,.08); }
 
 .skip-link {
   position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; overflow: hidden; z-index: 10000;
-  padding: 8px 16px; background: var(--accent); color: var(--on-accent); text-decoration: none; border-radius: 4px;
+  padding: 8px 16px; background: var(--acc); color: var(--on-acc); font-weight: 800; text-decoration: none; border-radius: 999px;
 }
 .skip-link:focus { position: fixed; left: 16px; top: 16px; width: auto; height: auto; overflow: visible; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 #main-content:focus { outline: none; }
 
-/* ===== 애니메이션 — transform·opacity만 ===== */
-@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-.animate { animation: fadeInUp 0.6s var(--ease-out-expo) both; }
-.animate.delay-1 { animation-delay: 0.08s; }
-.animate.delay-2 { animation-delay: 0.16s; }
-.animate.delay-3 { animation-delay: 0.24s; }
-.view.is-entering { animation: fadeInUp 0.4s var(--ease-out-expo) both; }
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation: none !important; transition: none !important; }
-}
+/* ===== 21. 등장 모션 — transform·opacity만 ===== */
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+.hero > div > *, .step-ribbon .step, .kpis { animation: fadeInUp .7s var(--ease-out-expo) both; }
+.hero > div > *:nth-child(2) { animation-delay: .06s; }
+.hero > div > *:nth-child(3) { animation-delay: .12s; }
+.hero > div > *:nth-child(4) { animation-delay: .18s; }
+.hero > div > *:nth-child(5) { animation-delay: .24s; }
+.step-ribbon .step:nth-child(1) { animation-delay: .2s; }
+.step-ribbon .step:nth-child(2) { animation-delay: .3s; }
+.step-ribbon .step:nth-child(3) { animation-delay: .4s; }
+.kpis { animation-delay: .45s; }
+.view.is-entering { animation: fadeInUp .4s var(--ease-out-expo) both; }
 
-/* ===== 반응형 ===== */
-@media (max-width: 960px) {
-  .hero-grid { grid-template-columns: 1fr; }
-  .step:nth-child(2), .step:nth-child(3) { margin-left: 0; }
+/* ===== 22. 반응형 ===== */
+@media (max-width: 980px) {
   .stage-grid { grid-template-columns: repeat(2, 1fr); }
   .card-grid.is-must { grid-template-columns: 1fr 1fr; }
   .card-grid.is-must .item-card, .card-grid.is-must .item-card:first-child { grid-column: span 1; grid-row: auto; }
   .card-grid.is-must .item-card:first-child { grid-column: 1 / -1; }
 }
+@media (max-width: 860px) {
+  .hero { grid-template-columns: 1fr; }
+  .step:nth-child(2), .step:nth-child(3) { margin-left: 0; }
+  .kpis { grid-template-columns: 1fr; }
+  .view { padding: 48px 0 60px; }
+}
 @media (max-width: 640px) {
+  .presents { letter-spacing: .5em; }
+  .top .dim { display: none; }
   .card-grid.is-must { grid-template-columns: 1fr; }
+  .card-grid.is-must .item-card:first-child { padding: 24px; }
   .stage-grid { grid-template-columns: 1fr; }
   .row { grid-template-columns: 1fr; }
   .row .badges { grid-row: auto; grid-column: 1; justify-content: flex-start; }
   .journal-actions .btn { width: 100%; }
+  .filter-bar { border-radius: 14px; }
   .viz-menu { top: auto; bottom: 16px; }
   .viz-menu-dropdown { top: auto; bottom: 52px; }
 }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
 
-/* ===== 인쇄 — 현재 보는 화면만, 입력칸 대신 텍스트로 ===== */
+/* ===== 23. 인쇄 — 종이에서는 밝게, 현재 보는 화면만, 입력칸 대신 텍스트로 ===== */
 @media print {
-  body { background: white !important; color: black !important; padding-top: 0 !important; }
-  .viz-menu, .tabs, .hero, .footer, .skip-link, .journal-actions, .preview-banner,
+  :root { --fg: #111; --dim: #555; --body2: #222; --line: #ccc; --acc: #2f6b00; --sky: #075985; --vio: #5b21b6; --gold: #8a5a00; --code: #222; --bg2: #f4f4f4; }
+  body { background: #fff !important; color: #111 !important; padding-top: 0 !important; }
+  .aur, .grain, .grid-bg, .progress, .viz-menu, .tabs, .hero-shell, .footer, .skip-link, .journal-actions, .preview-banner,
   #chungram-nav, .back-link, .read-toggle, .role-tabs { display: none !important; }
-  .view { padding-block: 0; }
-  .item-card, .panel, .journal-item { break-inside: avoid; box-shadow: none; }
-  .all-details > summary::before { content: ''; }
-  * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  h1, h2, .block-title { background: none !important; color: #111 !important; -webkit-text-fill-color: #111; filter: none !important; }
+  .view { padding: 0; }
+  .item-card, .panel, .journal-item, .stage-tile, .notice, .ref-link {
+    background: #fff !important; box-shadow: none !important; backdrop-filter: none !important; border: 1px solid #ccc !important; break-inside: avoid;
+  }
+  .label-must, .cell i, .step-tag { box-shadow: none !important; }
+  .q textarea { background: #fff; color: #111; border-color: #ccc; }
+  * { print-color-adjust: exact; -webkit-print-color-adjust: exact; text-shadow: none !important; }
 }
 @page { margin: 16mm; }
 </style>
 </head>
 <body>
   <a href="#main-content" class="skip-link">본문으로 건너뛰기</a>
+
+  <!-- 배경 레이어: 오로라 2 · 필름 그레인 · 그리드 · 스크롤 진행바 -->
+  <div class="aur a" aria-hidden="true"></div><div class="aur b" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div><div class="grid-bg" aria-hidden="true"></div>
+  <div class="progress" id="prog" aria-hidden="true"></div>
 
   <div class="viz-menu">
     <button class="viz-menu-toggle" type="button" aria-label="보기 설정 메뉴" aria-haspopup="true" aria-expanded="false" id="vizMenuToggle">
@@ -427,28 +501,41 @@ a { color: var(--accent); text-underline-offset: 3px; }
       </svg>
     </button>
     <div class="viz-menu-dropdown" id="vizMenuDropdown">
-      <button type="button" data-action="theme"><span id="themeIcon" aria-hidden="true">☀️</span><span id="themeLabel">라이트</span></button>
-      <button type="button" data-action="print"><span aria-hidden="true">🖨️</span><span>인쇄 / PDF</span></button>
+      <button type="button" data-action="print"><span class="mono acc" aria-hidden="true">PDF</span><span>인쇄 / PDF</span></button>
     </div>
   </div>
 
   <div class="preview-banner" id="previewBanner" hidden role="status">
-    검수 전 미리보기입니다. 청람 검수(reviewedBy)를 마치지 않은 자료가 함께 보입니다. 이 화면은 공개하지 마세요.
+    검수 전 미리보기예요. 청람 검수(reviewedBy)를 마치지 않은 자료가 함께 보여요. 이 화면은 공개하지 마세요.
   </div>
 
-  <header class="hero">
-    <div class="cr-dot-grid" aria-hidden="true"></div>
-    <div class="wrap hero-grid">
-      <div>
-        <p class="eyebrow hero-eyebrow animate">청람M&amp;C · 공무원 AX 러닝 라이브러리</p>
-        <h1 class="animate delay-1">읽고, 답하고,<br><em>이번 주에 해보기</em>.</h1>
-        <p class="hero-sub animate delay-2">AI 전환(AX)에 관한 정부 발표와 해외 인사이트 가운데 먼저 볼 것만 골랐습니다. 자료마다 우리 기관에 적용해 볼 질문이 붙어 있습니다.</p>
+  <header class="hero-shell">
+    <div class="wrap">
+      <div class="top"><a href="https://www.crmc.co.kr" class="mark"><i></i>CHEONGRAM</a><span class="dim">AX LEARNING LIBRARY</span></div>
+
+      <div class="hero">
+        <div>
+          <p class="presents">CHEONGRAM M&amp;C PRESENTS</p>
+          <p class="kicker">공무원 AX 러닝 라이브러리</p>
+          <h1>읽고, 답하고,<br><span class="g">이번 주에 해보기.</span></h1>
+          <p class="lead"><b>먼저 볼 것만 골랐어요.</b> AI 전환(AX)에 관한 정부 발표와 해외 인사이트마다 우리 기관에 적용해 볼 질문이 붙어 있어요.</p>
+          <div class="ctas">
+            <a class="btn" href="#home">▶ 필독부터 읽기</a>
+            <a class="btn ghost" href="#map">AX 논리 지도</a>
+          </div>
+        </div>
+        <ol class="step-ribbon" aria-label="이 라이브러리를 쓰는 법">
+          <li class="step step-read"><span class="step-tag">01 READ</span><strong>읽기</strong><span>필독 자료부터 3줄 요약과 원문을 봐요.</span></li>
+          <li class="step step-reflect"><span class="step-tag">02 REFLECT</span><strong>답하기</strong><span>내 역할의 질문에 답을 남겨요.</span></li>
+          <li class="step step-act"><span class="step-tag">03 ACT</span><strong>해보기</strong><span>이번 주 과제 하나를 해 봐요.</span></li>
+        </ol>
       </div>
-      <ol class="step-ribbon animate delay-3" aria-label="이 라이브러리를 쓰는 법">
-        <li class="step step-read"><span class="step-tag">경험</span><strong>읽기</strong><span>필독 자료부터 3줄 요약과 원문을 봅니다.</span></li>
-        <li class="step step-reflect"><span class="step-tag">성찰</span><strong>답하기</strong><span>내 역할의 질문에 답을 남깁니다.</span></li>
-        <li class="step step-act"><span class="step-tag">실천</span><strong>해보기</strong><span>이번 주 과제 하나를 해 봅니다.</span></li>
-      </ol>
+
+      <div class="kpis" aria-label="라이브러리 현황">
+        <div class="kpi"><b class="acc" id="kpiItems">–</b><span>검수한 자료</span></div>
+        <div class="kpi"><b id="kpiStages">–</b><span>AX 질문 단계</span></div>
+        <div class="kpi"><b id="kpiFeed">–</b><span>최근 4주 새 자료</span></div>
+      </div>
     </div>
   </header>
 
@@ -467,27 +554,34 @@ a { color: var(--accent); text-underline-offset: 3px; }
       <div class="wrap">
         <h2 id="home-heading" class="sr-only">홈</h2>
 
-        <section class="block" aria-labelledby="must-heading">
+        <section class="block" id="must" aria-labelledby="must-heading">
           <div class="block-head">
-            <h3 id="must-heading"><span class="cr-accent-underline">필독</span></h3>
-            <p class="text-secondary">직급과 상관없이 먼저 읽을 자료입니다. 최대 5건만 고릅니다.</p>
+            <div>
+              <p class="cell"><i>01</i>MUST READ</p>
+              <h3 id="must-heading" class="block-title">필독</h3>
+            </div>
+            <p class="text-secondary">직급과 상관없이 먼저 읽을 자료예요. 최대 5건만 골라요.</p>
           </div>
           <div class="card-grid" id="mustList"></div>
         </section>
 
         <section class="block" aria-labelledby="rec-heading">
           <div class="block-head">
-            <h3 id="rec-heading"><span class="cr-accent-underline">내 역할 추천</span></h3>
-            <p class="text-secondary">역할을 고르면 그 역할에 특히 쓸모 있는 자료를 보여 줍니다.</p>
+            <div>
+              <p class="cell"><i>02</i>FOR YOUR ROLE</p>
+              <h3 id="rec-heading" class="block-title">내 역할 추천</h3>
+            </div>
+            <p class="text-secondary">역할을 고르면 그 역할에 특히 쓸모 있는 자료를 보여 줘요.</p>
           </div>
           <div class="role-tabs" role="tablist" aria-label="역할 선택" id="roleTabs"></div>
           <div class="card-grid" id="recList" role="tabpanel" aria-labelledby="rec-heading"></div>
         </section>
 
         <section class="block ref-link" aria-labelledby="ref-heading">
+          <p class="cell"><i>LINK</i>AI GOV LAB</p>
           <h3 id="ref-heading" class="ref-title">AI 정부 실험실 프로젝트 현황</h3>
-          <p class="text-secondary">공무원이 직접 만든 AI 과제를 모아 볼 수 있습니다.</p>
-          <a href="https://axboard.aigov.go.kr/" target="_blank" rel="noopener noreferrer">https://axboard.aigov.go.kr/<span class="sr-only"> (새 창)</span></a>
+          <p class="text-secondary">공무원이 직접 만든 AI 과제를 모아 볼 수 있어요.</p>
+          <a href="https://axboard.aigov.go.kr/" target="_blank" rel="noopener noreferrer">axboard.aigov.go.kr ↗<span class="sr-only"> (새 창)</span></a>
         </section>
 
         <section class="block" aria-labelledby="all-heading">
@@ -503,10 +597,13 @@ a { color: var(--accent); text-underline-offset: 3px; }
     <section class="view" id="view-feed" data-view="feed" aria-labelledby="feed-heading" hidden>
       <div class="wrap">
         <div class="block-head">
-          <h2 id="feed-heading"><span class="cr-accent-underline">이번 주 새 자료</span></h2>
-          <p class="text-secondary">등록된 기관의 새 발표를 매주 자동으로 모읍니다. 최근 4주 분량만 보여 줍니다.</p>
+          <div>
+            <p class="cell"><i>FEED</i>THIS WEEK</p>
+            <h2 id="feed-heading">이번 주 새 자료</h2>
+          </div>
+          <p class="text-secondary">등록된 기관의 새 발표를 매주 자동으로 모아요. 최근 4주 분량만 보여 줘요.</p>
         </div>
-        <p class="auto-notice"><span class="label label-auto">자동 수집 · 청람 검수 전</span> 요약은 AI가 썼습니다. 판단은 반드시 원문으로 하세요.</p>
+        <p class="auto-notice"><span class="label label-auto">자동 수집 · 청람 검수 전</span> 요약은 AI가 썼어요. 판단은 꼭 원문으로 하세요.</p>
         <ol class="feed-list" id="feedList"></ol>
         <details class="all-details" id="feedArchiveDetails">
           <summary id="feedArchiveSummary">지난 자료</summary>
@@ -518,8 +615,11 @@ a { color: var(--accent); text-underline-offset: 3px; }
     <section class="view" id="view-map" data-view="map" aria-labelledby="map-heading" hidden>
       <div class="wrap">
         <div class="block-head">
-          <h2 id="map-heading"><span class="cr-accent-underline">AX 논리 지도</span></h2>
-          <p class="text-secondary">AI 전환을 10개의 질문으로 나눴습니다. 단계를 누르면 그 단계의 자료만 모아 봅니다.</p>
+          <div>
+            <p class="cell"><i>MAP</i>10 QUESTIONS</p>
+            <h2 id="map-heading">AX 논리 지도</h2>
+          </div>
+          <p class="text-secondary">AI 전환을 10개의 질문으로 나눴어요. 단계를 누르면 그 단계 자료만 모아 봐요.</p>
         </div>
         <ol class="stage-grid" id="stageGrid"></ol>
       </div>
@@ -528,8 +628,11 @@ a { color: var(--accent); text-underline-offset: 3px; }
     <section class="view" id="view-library" data-view="library" aria-labelledby="library-heading" hidden>
       <div class="wrap">
         <div class="block-head">
-          <h2 id="library-heading"><span class="cr-accent-underline">자료실</span></h2>
-          <p class="text-secondary">청람이 검수한 자료를 출처별로 나눴습니다.</p>
+          <div>
+            <p class="cell"><i>LIB</i>REVIEWED</p>
+            <h2 id="library-heading">자료실</h2>
+          </div>
+          <p class="text-secondary">청람이 검수한 자료를 출처별로 나눴어요.</p>
         </div>
         <div class="filter-bar" id="filterBar" hidden></div>
         <div id="libraryGroups"></div>
@@ -543,14 +646,17 @@ a { color: var(--accent); text-underline-offset: 3px; }
     <section class="view" id="view-journal" data-view="journal" aria-labelledby="journal-heading" hidden>
       <div class="wrap">
         <div class="block-head">
-          <h2 id="journal-heading"><span class="cr-accent-underline">내 학습일지</span></h2>
-          <p class="text-secondary">내가 남긴 답을 모았습니다. 교육 과제로 낼 때는 인쇄하거나 PDF로 저장하세요.</p>
+          <div>
+            <p class="cell"><i>LOG</i>MY JOURNAL</p>
+            <h2 id="journal-heading">내 학습일지</h2>
+          </div>
+          <p class="text-secondary">내가 남긴 답을 모았어요. 교육 과제로 낼 때는 인쇄하거나 PDF로 저장하세요.</p>
         </div>
         <div class="notice">
           <ul class="cr-square-bullet">
-            <li>답은 이 브라우저에만 저장되고 서버로 보내지 않습니다.</li>
+            <li>답은 이 브라우저에만 저장되고 서버로 보내지 않아요.</li>
             <li>여러 사람이 쓰는 기관 PC라면 다 쓴 뒤 PDF로 저장하고 "답 모두 지우기"를 눌러 주세요.</li>
-            <li>브라우저 기록을 지우면 답도 함께 사라집니다.</li>
+            <li>브라우저 기록을 지우면 답도 함께 사라져요.</li>
           </ul>
         </div>
         <div class="journal-actions">
@@ -563,15 +669,16 @@ a { color: var(--accent); text-underline-offset: 3px; }
   </main>
 
   <footer class="footer">
-    <div class="wrap footer-inner">
-      <p class="footer-brand"><span class="footer-mark" aria-hidden="true"></span>청람M&amp;C</p>
+    <div class="wrap foot">
+      <h2>읽은 만큼, 이번 주에 하나.</h2>
       <p><a href="https://www.crmc.co.kr">crmc.co.kr</a> · <a href="https://www.crmc.co.kr/cheongram_proposal_v2.html">교육 문의</a> · <span id="builtAt"></span></p>
+      <div class="endmark">CHEONGRAM M&amp;C</div>
     </div>
   </footer>
 
   <p class="sr-only" id="liveRegion" aria-live="polite"></p>
 
-  <script id="ax-data" type="application/json">{"meta":{"builtAt":"2026-10-19T07:46:11.963Z","preview":false,"storagePrefix":"chungram_axlib_v1_","sourceTypeLabels":{"gov":"정부 정책","consulting":"해외 인사이트","intl":"국제기구","chungram":"청람 현장"},"roleLabels":{"staff":"실무자","leader":"관리자","planner":"기획·인사"},"roleGuides":{"staff":"내 업무에 바로 적용할 거리를 찾는 질문입니다. 답은 '이번 주 해보기' 과제의 재료가 됩니다.","leader":"팀을 어떻게 이끌지 정리하는 질문입니다. 답은 팀 회의 안건이나 팀원 1:1 대화의 재료로 쓰세요.","planner":"기관의 제도·교육·지침을 손볼 지점을 찾는 질문입니다. 답은 개선 제안이나 보고서의 근거 메모로 쓰세요."}},"stages":[{"n":1,"name":"AI Adoption","nameKo":"AI 도입","question":"우리 기관은 AI를 어디서부터 쓰기 시작하는가?"},{"n":2,"name":"Agent","nameKo":"AI 에이전트","question":"일을 이어서 처리하는 AI에게 무엇을 맡길 수 있는가?"},{"n":3,"name":"Collaboration","nameKo":"사람-AI 협업","question":"담당자와 AI는 일을 어떻게 나눠 맡는가?"},{"n":4,"name":"Work Redesign","nameKo":"업무 재설계","question":"어떤 업무 절차를 AI 기준으로 다시 짜야 하는가?"},{"n":5,"name":"Role Redesign","nameKo":"역할 재설계","question":"직무기술서·사무분장은 어떻게 바뀌는가?"},{"n":6,"name":"Organization","nameKo":"조직","question":"부서 구조와 협업 체계는 어떻게 바뀌어야 하는가?"},{"n":7,"name":"Leadership","nameKo":"리더십","question":"관리자는 팀의 AI 활용을 어떻게 이끄는가?"},{"n":8,"name":"","nameKo":"","question":"","draft":true},{"n":9,"name":"Governance","nameKo":"거버넌스","question":"AI 활용의 기준·책임·보안은 누가 어떻게 정하는가?"},{"n":10,"name":"Value","nameKo":"가치","question":"AI 도입의 성과를 국민과 기관에 어떻게 증명하는가?"}],"library":[{"id":"gov-001","sourceType":"gov","issuer":"인사혁신처","issuerLevel":"중앙부처","docType":"지침","status":"원문확인중","date":"2026-05-22","title":"교육훈련 보고서 생성형 AI 활용 지침","titleKo":"교육훈련 보고서 생성형 AI 활용 지침","url":"https://www.etnews.com/20260521000475","stage":[9],"level":"입문","minutes":10,"summaryKo":["인사혁신처가 교육훈련 보고서를 쓸 때 생성형 AI를 어떻게 쓸지 기준을 내놓았다.","AI는 보조 도구이며 최종 책임은 작성자 본인에게 있다는 점을 분명히 했다.","활용 사실 공개, 비판적 검토, 개인정보 보호 등 7대 원칙을 제시했다."],"frameworks":["생성형 AI 활용 7대 원칙"],"publicImplication":"보고서에 AI를 썼다면 '썼다는 사실'과 '내가 무엇을 검토했는지'를 함께 남기는 것이 기본이 됩니다. 책임은 도구가 아니라 사람에게 남습니다.","questions":{"staff":[{"id":"gov-001.staff.1","text":"최근 작성한 보고서 중 AI를 썼다면, 활용 사실을 어디에 어떻게 밝힐 수 있었을까요?","unique":true},{"id":"gov-001.staff.2","text":"AI가 만든 문장을 그대로 쓰기 전에 나는 무엇을 확인하나요?"},{"id":"gov-001.staff.3","text":"내 업무 자료 중 AI에 넣으면 안 되는 정보는 무엇인가요?"}],"leader":[{"id":"gov-001.leader.1","text":"팀원이 AI로 쓴 보고서를 검토할 때 무엇을 기준으로 보시겠어요?","unique":true},{"id":"gov-001.leader.2","text":"'최종 책임은 본인'이라는 원칙을 팀에서 어떻게 안내하면 부담이 아닌 기준으로 받아들여질까요?"},{"id":"gov-001.leader.3","text":"팀 안에서 AI 활용 사실을 공유하는 방식을 하나 정한다면 무엇인가요?"}],"planner":[{"id":"gov-001.planner.1","text":"우리 기관의 교육훈련 운영 지침에 이 7대 원칙을 반영하려면 어느 조항을 고쳐야 하나요?","unique":true},{"id":"gov-001.planner.2","text":"교육훈련 외 다른 보고서에도 같은 원칙을 넓혀 적용할 수 있을까요?"},{"id":"gov-001.planner.3","text":"원칙 준수 여부를 부담 없이 확인할 수 있는 장치는 무엇일까요?"}]},"actionTask":"이번 주 보고서 하나에 'AI 활용 표기' 한 줄을 넣어 보세요.","samplePrompt":"아래 초안의 논리 흐름에서 근거가 약한 부분을 3가지만 짚어 줘. (초안 붙여넣기)","priority":"must","recommendedFor":[],"reviewedBy":"정구영","reviewedAt":"2026-10-19","isPreview":false,"isNew":true},{"id":"gov-002","sourceType":"gov","issuer":"행정안전부·과학기술정보통신부","issuerLevel":"중앙부처","docType":"사례","status":"원문확인중","date":"2025-11-25","title":"범정부 AI 공통기반 시범운영","titleKo":"범정부 AI 공통기반 시범운영","url":"https://www.mstoday.co.kr/news/articleView.html?idxno=99639","stage":[1,3],"level":"입문","minutes":8,"summaryKo":["행정안전부와 과학기술정보통신부가 범정부 AI 공통기반 시범운영을 시작했다.","공무원이 내부망에서 민간 AI 챗봇으로 법령·지침을 요약할 수 있게 했다.","2026년 3월부터 전 중앙·지방정부로 단계적으로 넓힐 계획이다."],"frameworks":["내부망 AI 공통기반"],"publicImplication":"곧 내 자리에서도 내부망 AI를 쓰게 됩니다. '쓸 수 있느냐'보다 '어떤 일에 먼저 쓸지'를 미리 정해 두는 기관이 빨리 효과를 봅니다.","questions":{"staff":[{"id":"gov-002.staff.1","text":"내부망 AI가 열리면 가장 먼저 요약시키고 싶은 법령·지침은 무엇인가요?","unique":true},{"id":"gov-002.staff.2","text":"AI 요약을 믿고 쓰기 전에 원문에서 꼭 다시 볼 부분은 어디인가요?"},{"id":"gov-002.staff.3","text":"지금 법령·지침을 찾고 읽는 데 일주일에 얼마나 쓰고 있나요?"}],"leader":[{"id":"gov-002.leader.1","text":"공통기반이 들어오면 우리 팀에서 시범으로 써 볼 업무 하나를 고른다면 무엇인가요?","unique":true},{"id":"gov-002.leader.2","text":"팀원 사이의 활용 격차를 줄이려면 무엇을 먼저 해야 할까요?"},{"id":"gov-002.leader.3","text":"효과를 확인하려면 도입 전에 무엇을 기록해 두어야 할까요?"}],"planner":[{"id":"gov-002.planner.1","text":"우리 기관이 확대 대상이 되기 전에 준비해야 할 교육·안내는 무엇인가요?","unique":true},{"id":"gov-002.planner.2","text":"기관 자체 도입 계획과 범정부 공통기반은 어떻게 역할을 나눠야 할까요?"},{"id":"gov-002.planner.3","text":"부서별 활용 사례를 모으는 창구를 어떻게 만들 수 있을까요?"}]},"priority":"recommended","recommendedFor":["staff"],"reviewedBy":"정구영","reviewedAt":"2026-10-19","isPreview":false,"isNew":true},{"id":"gov-003","sourceType":"gov","issuer":"한국지능정보사회진흥원(NIA)","issuerLevel":"집행기관","docType":"사례","status":"원문확인","date":"2025-12-18","title":"공공부문 AI 도입·활용 사례집 / 데이터 분석 업무 운영 가이드","titleKo":"공공부문 AI 도입·활용 사례집 / 데이터 분석 업무 운영 가이드","url":"https://www.nia.or.kr/site/nia_kor/ex/bbs/View.do?cbIdx=90549\u0026bcIdx=28875","stage":[4],"level":"입문","minutes":20,"summaryKo":["NIA가 공공부문의 AI 도입·활용 사례와 데이터 분석 업무 운영 가이드를 묶어 냈다.","작게 시작하는 PoC(개념검증) 도입 전략과 단계별 필수 점검 리스트를 담았다.","대전 중구 인수인계, 군위군 설문 분석 같은 지자체 사례를 소개한다."],"frameworks":["소규모 PoC 도입 전략","단계별 필수 점검 리스트"],"publicImplication":"큰 시스템을 사지 않아도 인수인계·설문 분석처럼 반복되는 업무 하나부터 바꿀 수 있습니다. 다른 지자체 사례는 내부 설득의 근거가 됩니다.","questions":{"staff":[{"id":"gov-003.staff.1","text":"대전 중구의 인수인계 사례처럼, 내 업무 중 매번 반복되는 정리 작업은 무엇인가요?","unique":true},{"id":"gov-003.staff.2","text":"그 작업을 AI에 맡긴다면 어떤 입력과 결과물이 필요할까요?"},{"id":"gov-003.staff.3","text":"결과가 틀렸을 때 바로 알아챌 수 있는 확인 방법은 무엇인가요?"}],"leader":[{"id":"gov-003.leader.1","text":"우리 팀이 한 달 안에 해 볼 수 있는 가장 작은 PoC는 무엇인가요?","unique":true},{"id":"gov-003.leader.2","text":"PoC가 성공했다고 판단할 기준을 미리 하나 정한다면 무엇인가요?"},{"id":"gov-003.leader.3","text":"실패해도 괜찮다는 신호를 팀에 어떻게 줄 수 있을까요?"}],"planner":[{"id":"gov-003.planner.1","text":"사례집의 단계별 점검 리스트 중 우리 기관에 지금 없는 항목은 무엇인가요?","unique":true},{"id":"gov-003.planner.2","text":"부서별 PoC를 기관 차원의 확산으로 잇는 절차는 어떻게 설계할까요?"},{"id":"gov-003.planner.3","text":"다른 기관 사례를 우리 기관 보고서에 인용할 때 무엇을 함께 밝혀야 할까요?"}]},"actionTask":"반복 업무 하나를 골라 '입력 → AI 처리 → 사람 확인' 3칸으로 적어 보세요.","samplePrompt":"아래 설문 응답(개인정보 제거본)을 주제별로 묶고 주제마다 대표 의견 1개씩 뽑아 줘.","priority":"recommended","recommendedFor":["staff","planner"],"reviewedBy":"정구영","reviewedAt":"2026-10-19","isPreview":false,"isNew":true},{"id":"con-001","sourceType":"consulting","issuer":"McKinsey \u0026 Company","date":"2026-08-25","title":"The state of AI in 2026: On the road to ROI","titleKo":"2026 AI 현황: 성과(ROI)로 가는 길","url":"https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai","stage":[1,10],"level":"입문","minutes":20,"summaryKo":["응답자 10명 중 8명은 AI로 개인 생산성이 올랐다고 답했지만, 조직 이익(EBIT)에 기여했다는 응답은 37%로 1년 전과 그대로다.","대기업의 AI 에이전트 확산은 27%에서 40%로 늘었고, AI 운영비(토큰 비용 등)가 사용을 제약한다는 곳도 약 20%다.","성과를 낸 소수 조직은 기존 업무에 AI를 끼워 넣지 않고 업무 흐름 자체를 다시 설계했다."],"frameworks":["AI 고성과 조직(High performers)의 3가지 차이: 효율+혁신 동시 추구, 업무 흐름 재설계, 리더십 의지와 운영 규율"],"publicImplication":"'개인은 편해졌는데 기관 성과는 그대로'라는 간극은 공공에도 똑같이 나타납니다. 도구를 나눠 주는 것만으로는 부족하고, 어떤 업무 흐름을 바꿀지 정해야 기관 단위 성과가 생깁니다.","questions":{"staff":[{"id":"con-001.staff.1","text":"AI로 내 일이 빨라졌다면, 아낀 시간은 지금 어디에 쓰이고 있나요?","unique":true},{"id":"con-001.staff.2","text":"내가 AI를 쓰는 방식 중 팀 전체가 따라 하면 좋을 것은 무엇인가요?"},{"id":"con-001.staff.3","text":"AI를 '끼워 넣은' 업무와 '처음부터 다시 짠' 업무를 하나씩 떠올려 볼 수 있나요?"}],"leader":[{"id":"con-001.leader.1","text":"팀원 개인의 생산성 향상을 팀 성과로 잇기 위해 무엇을 바꿔야 할까요?","unique":true},{"id":"con-001.leader.2","text":"우리 팀에서 AI로 '다시 설계'할 만한 업무 흐름 하나를 고른다면 무엇인가요?"},{"id":"con-001.leader.3","text":"AI 성과를 보고할 때 '사용 건수' 대신 쓸 지표는 무엇인가요?"}],"planner":[{"id":"con-001.planner.1","text":"우리 기관 AI 사업의 성과지표는 '도입·사용'을 재나요, '업무 결과'를 재나요?","unique":true},{"id":"con-001.planner.2","text":"AI 운영비(이용료·토큰 비용)를 내년 예산에서 어떻게 잡고 관리할 건가요?"},{"id":"con-001.planner.3","text":"고성과 조직의 3가지 차이 중 우리 기관이 가장 약한 것은 무엇인가요?"}]},"actionTask":"이번 주 AI를 쓴 업무 하나를 골라 '아낀 시간'과 '그 시간에 한 일'을 한 줄씩 적어 보세요.","samplePrompt":"아래 업무 절차를 AI가 있다고 가정하고 처음부터 다시 짜 줘. 없어지는 단계, 사람이 꼭 남아야 하는 단계를 구분해서. (절차 붙여넣기)","priority":"must","recommendedFor":[],"reviewedBy":"정구영","reviewedAt":"2026-10-19","isPreview":false,"isNew":true},{"id":"con-002","sourceType":"consulting","issuer":"McKinsey \u0026 Company","date":"2026-09-14","title":"Stacking the odds: A blueprint for successfully scaling agentic AI","titleKo":"AI 에이전트를 제대로 확산하는 설계도(블루프린트)","url":"https://www.mckinsey.com/capabilities/operations/our-insights/stacking-the-odds-a-blueprint-for-successfully-scaling-agentic-ai","stage":[2,4],"level":"심화","minutes":15,"summaryKo":["많은 조직이 일하는 방식은 그대로 둔 채 AI 에이전트부터 늘리고 있고, 에이전트는 기존 업무의 결함을 그대로 키운다.","흔한 실패는 5가지다: 고장 난 절차 자동화, 데이터 준비 미루기, 성급한 구매·자체개발 결정, 변화관리 소홀, 보고만 받는 거버넌스.","착수 전 4~8주의 설계 단계를 거치면 개발 기간이 30~40% 줄고 6개월 뒤 이용률이 40~60% 높았다고 한다."],"frameworks":["블루프린트 6요소: 풀 문제, 만들 해법, 업무 수용 체계, 기술·데이터 기반, 단계별 실행계획(PoC→MVP→확산), 통제하는 거버넌스","에이전트 도입 실패 5유형"],"publicImplication":"공공 AI 사업도 '시범사업부터 띄우고 보자'로 흐르기 쉽습니다. 에이전트가 무엇을 스스로 결정하고 무엇을 사람에게 넘기는지, 데이터가 실제로 쓸 만한지를 발주 전에 정해 두면 재작업과 예산 낭비를 줄일 수 있습니다.","questions":{"staff":[{"id":"con-002.staff.1","text":"지금 내 업무 절차 중 AI에 맡기기 전에 먼저 고쳐야 할 '고장 난 단계'는 어디인가요?","unique":true},{"id":"con-002.staff.2","text":"AI가 쓸 데이터가 실제로 정확하고 최신인지 어떻게 확인할 수 있나요?"},{"id":"con-002.staff.3","text":"AI가 판단하면 안 되고 반드시 나에게 넘겨야 할 상황은 무엇인가요?"}],"leader":[{"id":"con-002.leader.1","text":"우리 팀 AI 과제에서 에이전트가 '결정·실행·상위 보고'할 범위를 각각 어떻게 나누시겠어요?","unique":true},{"id":"con-002.leader.2","text":"도입 첫 주부터 변화관리를 함께 설계하려면 누구를 참여시켜야 할까요?"},{"id":"con-002.leader.3","text":"성과가 나지 않는 과제를 일찍 멈출 수 있는 기준은 무엇인가요?"}],"planner":[{"id":"con-002.planner.1","text":"우리 기관 AI 사업 추진위원회는 예산·범위를 바꿀 권한이 있나요, 보고만 받나요?","unique":true},{"id":"con-002.planner.2","text":"제안요청서(RFP)를 쓰기 전에 4~8주 설계 단계를 넣는다면 무엇을 산출물로 정하겠어요?"},{"id":"con-002.planner.3","text":"구매(외부 플랫폼)와 자체 개발 중 무엇을 고를지 판단할 기준은 무엇인가요?"}]},"actionTask":"AI를 붙이고 싶은 업무 하나를 골라 'AI가 결정 / AI가 실행 / 사람에게 넘김' 3칸 표를 채워 보세요.","samplePrompt":"아래 업무 절차에서 AI 에이전트가 맡을 단계와 사람이 확인해야 할 단계를 나누고, 데이터가 부족해서 막힐 지점을 짚어 줘. (절차 붙여넣기)","priority":"recommended","recommendedFor":["leader","planner"],"reviewedBy":"정구영","reviewedAt":"2026-10-19","isPreview":false,"isNew":true},{"id":"con-003","sourceType":"consulting","issuer":"McKinsey \u0026 Company","date":"2026-03-25","title":"State of AI trust in 2026: Shifting to the agentic era","titleKo":"2026 AI 신뢰 현황: 에이전트 시대로의 전환","url":"https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/tech-forward/state-of-ai-trust-in-2026-shifting-to-the-agentic-era","stage":[9],"level":"심화","minutes":15,"summaryKo":["약 500개 조직을 조사한 결과, 책임 있는 AI 성숙도는 평균 2.0에서 2.3으로 올랐지만 전략·거버넌스·에이전트 통제는 3단계 이상이 약 30%에 그쳤다.","에이전트 확산의 가장 큰 걸림돌은 보안·위험 우려이고, 책임 있는 AI 실행을 막는 1순위는 지식·교육 부족(약 60%)이다.","책임 주체를 분명히 정한 조직의 성숙도는 2.6, 정하지 않은 조직은 1.8로 차이가 컸다."],"frameworks":["AI 신뢰 성숙도 모델 5차원: 전략, 위험관리, 데이터·기술, 거버넌스, 에이전트 거버넌스·통제"],"publicImplication":"AI가 '틀린 말'을 하는 것을 넘어 '틀린 행동'을 할 수 있는 단계로 갑니다. 기관마다 AI 위험의 책임자를 정하고 직원 교육을 먼저 갖추는 것이 규정 정비만큼 중요합니다.","questions":{"staff":[{"id":"con-003.staff.1","text":"AI가 '틀린 말'이 아니라 '틀린 행동'을 했다면, 내 업무에서는 어떤 사고가 날 수 있나요?","unique":true},{"id":"con-003.staff.2","text":"AI 결과가 이상할 때 나는 누구에게, 어떻게 알리면 되나요?"},{"id":"con-003.staff.3","text":"AI 위험에 대해 내가 가장 모른다고 느끼는 부분은 무엇인가요?"}],"leader":[{"id":"con-003.leader.1","text":"우리 팀에서 AI 사고가 나면 누가 1차 책임을 지고 대응하나요? 지금 정해져 있나요?","unique":true},{"id":"con-003.leader.2","text":"팀원 교육에서 AI 활용법 말고 '위험 알아채기'를 어떻게 넣을 수 있을까요?"},{"id":"con-003.leader.3","text":"부정확성과 보안 중 우리 팀 업무에 더 큰 위험은 무엇인가요?"}],"planner":[{"id":"con-003.planner.1","text":"5개 차원 중 우리 기관이 3단계(체계적 운영)에 못 미치는 것은 무엇인가요?","unique":true},{"id":"con-003.planner.2","text":"기관 AI 위험의 책임 부서와 결정 권한을 문서로 정해 두었나요?"},{"id":"con-003.planner.3","text":"AI 사고 대응 절차를 기존 정보보안 사고 대응과 어떻게 연결할까요?"}]},"actionTask":"우리 팀 AI 업무 하나에 대해 '문제가 생기면 누가 멈추고, 누구에게 알리는지'를 한 줄로 정해 보세요.","samplePrompt":"아래 업무에 AI를 쓸 때 생길 수 있는 위험을 '잘못된 정보'와 '잘못된 행동'으로 나눠 각각 3가지씩 적고, 사람이 확인할 지점을 제안해 줘. (업무 설명)","priority":"recommended","recommendedFor":["planner"],"relatedPolicy":["gov-001"],"reviewedBy":"정구영","reviewedAt":"2026-10-19","isPreview":false,"isNew":true},{"id":"con-004","sourceType":"consulting","issuer":"McKinsey \u0026 Company","date":"2026-07-14","title":"Building expertise in the age of AI: Who trains the next generation?","titleKo":"AI 시대의 전문성 키우기: 다음 세대는 누가 길러내는가","url":"https://www.mckinsey.com/capabilities/people-and-organizational-performance/our-insights/building-expertise-in-the-age-of-ai-who-trains-the-next-generation","stage":[5,7],"level":"입문","minutes":25,"summaryKo":["자료 조사, 문서 정리, 기초 분석처럼 신입이 일을 배우던 업무를 AI가 가져가면서 '일하며 배우는' 통로가 좁아지고 있다.","AI는 숙련자의 처리량은 늘리지만, 결과를 검증할 판단력이 없는 신입에게는 오히려 부담이 될 수 있다.","지식관리, 역할 설계, 업무 중 학습, 관리자 코칭을 하나의 체계로 묶어 전문성을 의도적으로 키우라고 제안한다."],"frameworks":["전문성 육성 4요소: 지식관리, 역할 설계, 업무 흐름 속 학습, 관리자 코칭"],"publicImplication":"공직은 순환보직과 인수인계로 전문성을 이어 왔습니다. 초안 작성·자료 정리를 AI가 맡게 되면 신규 공무원이 판단력을 기를 기회를 따로 설계해야 하고, 그 역할은 중간관리자에게 있습니다.","questions":{"staff":[{"id":"con-004.staff.1","text":"내가 신입 때 '하면서 배운' 업무 중 지금 AI가 대신하는 것은 무엇인가요?","unique":true},{"id":"con-004.staff.2","text":"AI 결과를 검증할 수 있으려면 나는 어떤 지식을 더 쌓아야 하나요?"},{"id":"con-004.staff.3","text":"AI에 맡기지 않고 일부러 직접 해 볼 업무를 하나 고른다면 무엇인가요?"}],"leader":[{"id":"con-004.leader.1","text":"신규 직원이 AI 결과를 '그대로 쓰는지, 판단해서 쓰는지' 어떻게 알아보시겠어요?","unique":true},{"id":"con-004.leader.2","text":"AI가 만든 초안을 두고 신규 직원과 나눌 코칭 질문 하나는 무엇인가요?"},{"id":"con-004.leader.3","text":"팀의 노하우가 사람 머릿속에만 있지 않도록 어떻게 남기고 있나요?"}],"planner":[{"id":"con-004.planner.1","text":"신규 공무원 교육과정에 'AI 결과 검증' 훈련을 어떻게 넣을 수 있을까요?","unique":true},{"id":"con-004.planner.2","text":"순환보직 때 인수인계 자료를 AI가 쓸 수 있는 지식으로 쌓으려면 무엇이 필요할까요?"},{"id":"con-004.planner.3","text":"중간관리자 평가에 '후배 육성·코칭'을 어떻게 반영할 수 있을까요?"}]},"actionTask":"이번 주 AI 초안 하나를 두고, 후배(또는 나 자신)에게 '이 부분은 왜 이렇게 고쳤나'를 설명하는 메모를 남겨 보세요.","samplePrompt":"아래 AI 초안에서 신입 공무원이 놓치기 쉬운 오류나 판단 지점을 3가지 찾아, 각각 어떤 지식이 있어야 알아챌 수 있는지 설명해 줘. (초안 붙여넣기)","priority":"recommended","recommendedFor":["leader"],"reviewedBy":"정구영","reviewedAt":"2026-10-19","isPreview":false,"isNew":true},{"id":"con-005","sourceType":"consulting","issuer":"Deloitte Center for Government Insights","date":"2024-04-25","title":"Generative AI and government work: An in-depth analysis of 19,000 tasks","titleKo":"생성형 AI와 정부 업무: 1만 9천 개 과업 분석","url":"https://www.deloitte.com/us/en/insights/industry/government-public-sector-services/automation-and-generative-ai-in-government/generative-ai-for-government-work-tasks.html","stage":[3,4],"level":"입문","minutes":10,"summaryKo":["딜로이트가 미국 노동부 직무 자료의 과업 1만 9천여 개를 정확성, 창의성, 상황 가변성 기준으로 나눠 맞는 자동화 방식을 따졌다.","법령 요약, 연설문·보고서 초안처럼 중간 수준의 창의성이 필요한 일은 생성형 AI가, 자료 입력·비용 계산처럼 정확성이 핵심인 일은 기존 자동화가 맞다.","직원 코칭이나 전략 결정처럼 상황마다 달라지는 일은 여전히 사람이 잘하며, 실업급여 수급 자격 같은 고위험 판단에는 생성형 AI가 맞지 않다."],"frameworks":["과업 3분류: 생성형 AI / 기존 자동화(RPA·머신러닝) / 사람 판단","과업 평가 3기준: 정확성, 창의성, 상황 가변성"],"publicImplication":"'AI로 무엇을 할까'보다 '내 과업이 세 칸 중 어디에 속하나'를 먼저 따지면 엉뚱한 도입을 피할 수 있습니다. 민원 자격 판단처럼 틀리면 안 되는 일은 생성형 AI에 맡기지 않는다는 기준도 분명해집니다.","questions":{"staff":[{"id":"con-005.staff.1","text":"내 업무를 과업 5개로 쪼개면, 각각 생성형 AI / 기존 자동화 / 사람 중 어디에 속하나요?","unique":true},{"id":"con-005.staff.2","text":"내 업무 중 틀리면 안 돼서 생성형 AI에 맡기면 안 되는 판단은 무엇인가요?"},{"id":"con-005.staff.3","text":"법령 요약이나 보고서 초안처럼 생성형 AI가 잘 맞는 일을 지금 얼마나 하고 있나요?"}],"leader":[{"id":"con-005.leader.1","text":"팀 업무를 세 칸(생성형 AI / 기존 자동화 / 사람)으로 나눠 보면 어느 칸이 가장 큰가요?","unique":true},{"id":"con-005.leader.2","text":"'사람' 칸에 남는 일에 팀원 시간을 더 쓰게 하려면 무엇을 바꿔야 할까요?"},{"id":"con-005.leader.3","text":"생성형 AI가 아니라 RPA 같은 기존 자동화가 더 맞는 팀 업무는 무엇인가요?"}],"planner":[{"id":"con-005.planner.1","text":"우리 기관 AI 과제 목록을 세 칸으로 다시 분류하면 잘못 배정된 과제가 있나요?","unique":true},{"id":"con-005.planner.2","text":"고위험 행정 판단에 생성형 AI 사용을 제한하는 기준을 어떻게 문서화할까요?"},{"id":"con-005.planner.3","text":"직무분석 자료가 있다면 과업 단위 AI 적합도 평가에 어떻게 활용할 수 있을까요?"}]},"actionTask":"내 업무를 과업 5개로 쪼개고 '생성형 AI / 기존 자동화 / 사람' 중 하나씩 표시해 보세요.","samplePrompt":"아래 내 업무 과업 목록을 정확성, 창의성, 상황 가변성 기준으로 평가하고 '생성형 AI / 기존 자동화 / 사람 판단' 중 어디에 맞는지 이유와 함께 표로 정리해 줘. (과업 목록)","priority":"recommended","recommendedFor":["staff"],"relatedPolicy":["gov-002"],"reviewedBy":"정구영","reviewedAt":"2026-10-19","isPreview":false,"isNew":true},{"id":"con-006","sourceType":"consulting","issuer":"McKinsey \u0026 Company","date":"2025-10-16","title":"Deploying agentic AI with safety and security: A playbook for technology leaders","titleKo":"AI 에이전트를 안전하게 도입하기: 기술 책임자를 위한 실행 지침","url":"https://www.mckinsey.com/capabilities/risk-and-resilience/our-insights/deploying-agentic-ai-with-safety-and-security-a-playbook-for-technology-leaders","stage":[2,9],"level":"심화","minutes":20,"summaryKo":["AI 에이전트는 스스로 판단하고 실행하기 때문에 시스템 안에서 권한을 가진 '디지털 내부자'처럼 다뤄야 한다고 본다.","인용된 조사에서 조직의 80%가 에이전트의 부적절한 데이터 노출, 무단 시스템 접근 같은 위험 행동을 겪었다.","한 에이전트의 오류가 다른 에이전트로 번지는 '연쇄 취약성'처럼 기존 AI 위험 분류에 없던 새 위험을 짚는다."],"frameworks":["디지털 내부자(digital insiders) 관점","에이전트 신규 위험 요인(연쇄 취약성 등)"],"publicImplication":"행정 시스템에 연결된 에이전트는 공무원 계정처럼 권한 관리가 필요합니다. 어떤 시스템에 접근하고 어떤 행동을 했는지 기록을 남기는 장치가 도입 조건이 되어야 합니다.","questions":{"staff":[{"id":"con-006.staff.1","text":"내가 쓰는 AI 도구가 접근할 수 있는 시스템·자료는 어디까지인지 알고 있나요?","unique":true},{"id":"con-006.staff.2","text":"AI가 내 이름으로 무언가를 실행했다면 그 기록을 어디서 확인할 수 있나요?"},{"id":"con-006.staff.3","text":"AI에게 맡긴 일 중 다른 업무로 오류가 번질 수 있는 것은 무엇인가요?"}],"leader":[{"id":"con-006.leader.1","text":"팀에서 쓰는 AI 에이전트에게 사람 직원과 같은 수준의 권한 관리를 하고 있나요?","unique":true},{"id":"con-006.leader.2","text":"에이전트가 위험 행동을 했을 때 바로 멈출 수 있는 사람과 방법이 정해져 있나요?"},{"id":"con-006.leader.3","text":"여러 AI 도구가 이어진 업무에서 오류가 번지는 것을 어디서 막을까요?"}],"planner":[{"id":"con-006.planner.1","text":"기관 정보보안 규정에서 AI 에이전트를 '사용자'로 볼지 '시스템'으로 볼지 정해 두었나요?","unique":true},{"id":"con-006.planner.2","text":"에이전트 행동 기록(로그)을 남기고 점검하는 책임은 어느 부서에 둘까요?"},{"id":"con-006.planner.3","text":"에이전트 도입 사업 발주 시 보안 요구사항으로 꼭 넣을 항목은 무엇인가요?"}]},"priority":"none","recommendedFor":[],"reviewedBy":"정구영","reviewedAt":"2026-10-19","isPreview":false,"isNew":true},{"id":"chung-001","sourceType":"chungram","issuer":"BTW (betweenworld.org)","date":"2026-10-06","title":"AI 생산성 높이는 3가지 방법, 업무의 57%가 달라지는 시대의 현실 전략","titleKo":"AI 생산성 높이는 3가지 방법, 업무의 57%가 달라지는 시대의 현실 전략","url":"https://betweenworld.org/2026/10/06/ai-%ec%83%9d%ec%82%b0%ec%84%b1-%eb%86%92%ec%9d%b4%eb%8a%94-3%ea%b0%80%ec%a7%80-%eb%b0%a9%eb%b2%95-%ec%97%85%eb%ac%b4%ec%9d%98-57%ea%b0%80-%eb%8b%ac%eb%9d%bc%ec%a7%80%eb%8a%94-%ec%8b%9c%eb%8c%80/","stage":[4,5],"level":"입문","minutes":10,"summaryKo":["McKinsey는 오늘날 업무 '활동'의 약 57%를 AI로 수행할 수 있다고 보는데, 이는 직업이 사라진다는 뜻이 아니라 일의 구성이 바뀐다는 뜻이다.","업무를 'AI가 주도 / AI와 함께 / 사람이 끝까지' 3칸으로 나누고, 아낀 시간은 판단·코칭·관계에 다시 쓰라고 제안한다.","리더와 강사가 먼저 AI를 쓰고 틀린 경우까지 보여 줄 때 조직의 AI 신뢰가 높아진다."],"frameworks":["3단계 업무 분류법: AI 주도 / AI와 함께 / 사람이 끝까지","AI 결과물 검토 체크리스트 5가지: 사실, 출처, 맥락, 편향, 내 목소리"],"publicImplication":"공공 AX도 '얼마나 빨리'보다 '어떤 일을 사람이 쥐고 갈지'부터 정해야 합니다. 관리자가 AI를 쓰는 과정과 실수를 먼저 보여 주면 팀원도 안심하고 검증하며 씁니다.","questions":{"staff":[{"id":"chung-001.staff.1","text":"지난주 내 업무를 'AI 주도 / AI와 함께 / 사람이 끝까지' 3칸에 나누면 어느 칸이 가장 큰가요?","unique":true},{"id":"chung-001.staff.2","text":"AI로 아낀 시간을 동료·민원인과의 대화에 쓴다면 무엇을 하고 싶나요?"},{"id":"chung-001.staff.3","text":"검토 체크리스트 5가지 중 내가 가장 자주 건너뛰는 것은 무엇인가요?"}],"leader":[{"id":"chung-001.leader.1","text":"팀 앞에서 내가 AI를 쓰다 틀렸던 경험을 공유한다면 어떤 사례를 고르시겠어요?","unique":true},{"id":"chung-001.leader.2","text":"팀원이 아낀 시간을 판단·코칭에 쓰도록 하려면 업무 배분을 어떻게 바꿔야 할까요?"},{"id":"chung-001.leader.3","text":"1:1 면담에서 AI가 만든 질문 초안을 쓴다면, 사람이 꼭 정해야 할 것은 무엇인가요?"}],"planner":[{"id":"chung-001.planner.1","text":"역할 재설계, 역량 투자, 인센티브, 리더 시범 중 우리 기관 AI 계획에 빠진 것은 무엇인가요?","unique":true},{"id":"chung-001.planner.2","text":"직무기술서에 '사람이 끝까지 쥐는 일'을 명시한다면 어떻게 쓸 수 있을까요?"},{"id":"chung-001.planner.3","text":"AI 오류 찾기 실습을 기관 교육과정에 넣는다면 어떤 주제로 시작할까요?"}]},"actionTask":"지난주 업무 목록을 3칸(AI 주도 / AI와 함께 / 사람이 끝까지)으로 나누고, 아낀 시간에 동료 한 명과 대화할 약속을 잡아 보세요.","samplePrompt":"나는 [직무]입니다. 아래 지난주 업무 목록을 ① AI가 주도해도 되는 일 ② AI와 함께 하는 일 ③ 사람이 반드시 해야 하는 일로 나누고, 이유를 한 줄씩 써 줘. (업무 목록)","priority":"recommended","recommendedFor":["staff","leader"],"reviewedBy":"정구영","reviewedAt":"2026-10-19","isPreview":false,"isNew":true},{"id":"chung-002","sourceType":"chungram","issuer":"BTW (betweenworld.org)","date":"2026-09-12","title":"AI로 나만의 비식별화 도구 만들기: 데이터 보안 지키는 3단계 실전 가이드","titleKo":"AI로 나만의 비식별화 도구 만들기: 데이터 보안 지키는 3단계 실전 가이드","url":"https://betweenworld.org/2026/09/12/ai%eb%a1%9c-%eb%82%98%eb%a7%8c%ec%9d%98-%eb%b9%84%ec%8b%9d%eb%b3%84%ed%99%94-%eb%8f%84%ea%b5%ac-%eb%a7%8c%eb%93%a4%ea%b8%b0-%eb%8d%b0%ec%9d%b4%ed%84%b0-%eb%b3%b4%ec%95%88-%ec%a7%80%ed%82%a4%eb%8a%94/","stage":[9],"level":"입문","minutes":12,"summaryKo":["실무자가 개인정보가 든 원본을 AI에 그대로 붙여넣는 이유는 의지 부족이 아니라 손쉬운 비식별화 도구가 없어서다.","목표는 완벽한 보안이 아니라 '최소 노출'이다. 분석에 필요한 패턴은 남기고 개인을 특정할 조각만 지운다.","AI로 마스킹 규칙 설계, 내 PC에서만 도는 도구 만들기, 처리 결과를 AI로 재검증하는 3단계를 제안한다."],"frameworks":["최소 노출 원칙","비식별화 3단계: 규칙 설계 → 로컬 도구 제작 → AI 이중 검증"],"publicImplication":"민원·설문·인사 자료는 공공에서 AI를 가장 쓰고 싶은 데이터이자 가장 위험한 데이터입니다. 원본은 내 PC 밖으로 내보내지 않고, 처리된 결과만 AI에 넘기는 습관이 기본이 되어야 합니다. 조직 표준으로 쓰려면 개인정보 담당 부서의 검토를 거치세요.","questions":{"staff":[{"id":"chung-002.staff.1","text":"최근 AI에 붙여넣은 자료 중 이름·연락처·주민번호가 섞여 있었던 적이 있나요?","unique":true},{"id":"chung-002.staff.2","text":"'비고'나 '기타 의견'처럼 개인정보가 숨어 있기 쉬운 칸이 내 자료에는 어디에 있나요?"},{"id":"chung-002.staff.3","text":"분석에 꼭 필요한 정보와 지워도 되는 정보를 어떻게 구분하나요?"}],"leader":[{"id":"chung-002.leader.1","text":"우리 팀이 AI에 자주 넣는 자료 유형 중 비식별화가 가장 시급한 것은 무엇인가요?","unique":true},{"id":"chung-002.leader.2","text":"팀원이 만든 비식별화 도구를 팀 전체가 쓰기 전에 누구의 검토를 받아야 할까요?"},{"id":"chung-002.leader.3","text":"개인정보 사고를 막으려다 'AI 금지'로 가지 않으려면 어떤 대안을 제시해야 할까요?"}],"planner":[{"id":"chung-002.planner.1","text":"우리 기관 AI 활용 지침에 '원본은 로컬에서 처리, 결과만 AI 입력' 원칙을 넣을 수 있을까요?","unique":true},{"id":"chung-002.planner.2","text":"기관 표준 비식별화 도구를 마련한다면 정보보안·개인정보 부서와 역할을 어떻게 나눌까요?"},{"id":"chung-002.planner.3","text":"정규식 마스킹이 놓치는 이름·별칭 문제를 어떤 절차로 보완할까요?"}]},"actionTask":"이번 주 AI에 넣으려던 자료 하나에서 개인을 특정할 수 있는 열을 표시하고, 지운 뒤에 넣어 보세요.","samplePrompt":"아래 데이터는 이미 1차 마스킹을 마친 결과야. 이름, 연락처, 계좌번호, 주민등록번호 형태의 정보가 아직 남아 있는지 확인하고, 남아 있다면 어느 행, 어느 항목인지 짚어 줘. (마스킹된 데이터)","priority":"recommended","recommendedFor":["staff"],"relatedPolicy":["gov-001"],"reviewedBy":"정구영","reviewedAt":"2026-10-19","isPreview":false,"isNew":true},{"id":"chung-003","sourceType":"chungram","issuer":"BTW (betweenworld.org)","date":"2026-09-04","title":"AI 생산성 높이는 진짜 방법: 커스텀 에이전트 대신 범용 AI를 써야 하는 3가지 이유","titleKo":"AI 생산성 높이는 진짜 방법: 커스텀 에이전트 대신 범용 AI를 써야 하는 3가지 이유","url":"https://betweenworld.org/2026/09/04/ai-%ec%83%9d%ec%82%b0%ec%84%b1-%eb%86%92%ec%9d%b4%eb%8a%94-%ec%a7%84%ec%a7%9c-%eb%b0%a9%eb%b2%95-%ec%bb%a4%ec%8a%a4%ed%85%80-%ec%97%90%ec%9d%b4%ec%a0%84%ed%8a%b8-%eb%8c%80%ec%8b%a0-%eb%b2%94%ec%9a%a9/","stage":[1,2],"level":"입문","minutes":10,"summaryKo":["'우리만의 AI 만들기'와 'AI로 생산성 높이기'는 다른 목표이며, 커스텀 에이전트는 유지보수 주체 불분명, 데이터 정비 부담, 범용 AI 발전 속도 미달로 자주 멈춘다.","대신 업무 맥락을 문서로 정리해 범용 AI에 먼저 읽히면 모델이 좋아질수록 결과도 함께 좋아진다.","규칙이 거의 변하지 않는 대량 반복 업무(정형 전표, 고정 양식 입력)는 여전히 커스텀 자동화가 맞다."],"frameworks":["만들 것인가, 쓸 것인가(Make or Buy)","맥락 문서화 온보딩"],"publicImplication":"공공기관도 '기관 전용 AI 구축' 사업으로 먼저 가기 쉽습니다. 발주 전에 범용 AI와 업무 맥락 문서만으로 얼마나 되는지 확인하면, 몇 달짜리 구축이 끝나자마자 낡는 일을 줄일 수 있습니다.","questions":{"staff":[{"id":"chung-003.staff.1","text":"우리 팀 업무 배경을 AI에 먼저 읽힌다면 A4 한 장에 무엇을 담겠어요?","unique":true},{"id":"chung-003.staff.2","text":"맥락 없이 짧게 지시해서 결과가 엉뚱했던 경험이 있나요?"},{"id":"chung-003.staff.3","text":"내 업무 중 규칙이 거의 바뀌지 않아 자동화가 더 맞는 일은 무엇인가요?"}],"leader":[{"id":"chung-003.leader.1","text":"팀에 전용 AI가 필요하다는 요청이 오면, 범용 AI로 먼저 시험해 볼 기준은 무엇인가요?","unique":true},{"id":"chung-003.leader.2","text":"팀의 업무 맥락 문서를 누가, 얼마나 자주 고쳐야 할까요?"},{"id":"chung-003.leader.3","text":"자동화로 결과만 받다가 팀원이 판단 근거를 모르게 되는 일을 어떻게 막을까요?"}],"planner":[{"id":"chung-003.planner.1","text":"기관 전용 AI 구축 사업을 검토할 때 '범용 AI로 먼저 해 보기'를 필수 단계로 넣을 수 있을까요?","unique":true},{"id":"chung-003.planner.2","text":"커스텀 에이전트를 만든다면 개발 담당자가 떠난 뒤의 유지보수 책임을 어떻게 정할까요?"},{"id":"chung-003.planner.3","text":"범용 AI를 쓸 때 기밀·개인정보 입력을 막는 기관 기준은 무엇인가요?"}]},"actionTask":"우리 팀 업무 배경, 최근 결정사항, 자주 쓰는 용어를 한 장으로 정리해 AI에게 먼저 읽힌 뒤 보고서 초안을 요청해 보세요.","samplePrompt":"아래는 우리 팀의 업무 배경, 최근 결정사항 요약이야. (배경 요약) 이 맥락을 참고해 이번 주 보고서 초안을 써 줘. 빠진 정보가 있으면 먼저 질문해 줘.","priority":"recommended","recommendedFor":["planner"],"reviewedBy":"정구영","reviewedAt":"2026-10-19","isPreview":false,"isNew":true},{"id":"chung-004","sourceType":"chungram","issuer":"BTW (betweenworld.org)","date":"2026-08-30","title":"AI가 다 해주는 시대, 그래도 살아남는 직장인의 판단력 5가지","titleKo":"AI가 다 해주는 시대, 그래도 살아남는 직장인의 판단력 5가지","url":"https://betweenworld.org/2026/08/30/ai%ea%b0%80-%eb%8b%a4-%ed%95%b4%ec%a3%bc%eb%8a%94-%ec%8b%9c%eb%8c%80-%ea%b7%b8%eb%9e%98%eb%8f%84-%ec%82%b4%ec%95%84%eb%82%a8%eb%8a%94-%ec%a7%81%ec%9e%a5%ec%9d%b8%ec%9d%98-%ed%8c%90%eb%8b%a8%eb%a0%a5/","stage":[3],"level":"입문","minutes":8,"summaryKo":["AI는 '그럴듯함'과 '정확함'을 구분하지 못해, 빠진 수치나 최신 정책을 매끄러운 문장으로 덮어 버린다.","검증을 끝에 몰아서 하지 말고 처음부터 심어 두라는 '왼쪽으로 이동(Shift Left)' 원칙을 일하는 방식에 적용한다.","전체 흐름 보기, 자료 정리, 시점에 맞는 설계, 처음부터 검증 심기, 꾸준한 관리의 다섯 감각을 제시하고, 한 업무부터 작게 시작하라고 권한다."],"frameworks":["왼쪽으로 이동(Shift Left)","AI 시대 판단력 5가지"],"publicImplication":"공문서는 수치와 최신 법령 하나만 틀려도 신뢰가 무너집니다. AI에게 '확실한 사실과 추정을 구분해 표시해 달라'고 처음부터 요청하는 습관이 가장 싼 검증 장치입니다.","questions":{"staff":[{"id":"chung-004.staff.1","text":"AI 결과물에서 '그럴듯하지만 틀린' 내용을 발견했던 경험을 하나 떠올려 보세요. 무엇이 단서였나요?","unique":true},{"id":"chung-004.staff.2","text":"다섯 감각 중 내가 가장 약한 것은 무엇인가요?"},{"id":"chung-004.staff.3","text":"AI로 만든 문서 중 정책이 바뀌어 다시 점검해야 할 것이 있나요?"}],"leader":[{"id":"chung-004.leader.1","text":"팀원에게 AI 결과를 넘겨받을 때 '사실과 추정 구분'을 기본 양식으로 요구하면 어떨까요?","unique":true},{"id":"chung-004.leader.2","text":"검증을 처음 단계로 옮기려면 우리 팀 업무 절차의 어디를 바꿔야 할까요?"},{"id":"chung-004.leader.3","text":"완벽한 검증 체계 대신 이번 달에 적용할 업무 하나를 고른다면 무엇인가요?"}],"planner":[{"id":"chung-004.planner.1","text":"기관 AI 활용 교육에 '판단력 5가지'를 실습으로 넣는다면 어떤 과제를 주겠어요?","unique":true},{"id":"chung-004.planner.2","text":"AI로 만든 문서·도구를 정기 점검하는 주기와 책임을 어떻게 정할까요?"},{"id":"chung-004.planner.3","text":"AI 활용 역량 평가에서 '쓰는 능력'과 '검증하는 능력'을 어떻게 나눠 볼까요?"}]},"actionTask":"이번 주 AI 요청 3번에 '확실한 사실과 추정을 구분해 표시해 줘'를 붙여 보고, 달라진 점을 적어 보세요.","samplePrompt":"이 답변에서 확실한 사실과 추정을 구분해서 표시해 줘. 확인이 필요한 통계나 최신 정보가 있다면 어떤 부분인지 따로 알려 줘.","priority":"none","recommendedFor":[],"reviewedBy":"정구영","reviewedAt":"2026-10-19","isPreview":false,"isNew":true}],"feed":{"recent":[{"id":"f-sample-001","sourceId":"ai-committee","sourceType":"gov","issuer":"국가AI전략위원회(공공 AX 분과)","date":"2026-10-06","title":"공공 AX 규칙 재설계 발표","url":"https://zdnet.co.kr/view/?no=20261006143618","summaryAi":"도입 장벽은 기술보다 제도라며 정부혁신평가에 AI 지표를 반영하고 AI 서비스 조달 방식을 검토한다.","stageGuess":[9,10],"collectedAt":"2026-10-13T06:00:00+09:00","promoted":false},{"id":"f-sample-002","sourceId":"mois","sourceType":"gov","issuer":"행정안전부·NIA","date":"2026-05-07","title":"AI 챔피언 고급과정 운영","url":"https://www.newspim.com/news/view/20260507000299","summaryAi":"공무원이 바이브 코딩·에이전트로 직접 AI 프로그램을 개발하고, 우수 과제는 기관 도입을 지원한다.","stageGuess":[2,4],"collectedAt":"2026-10-06T06:00:00+09:00","promoted":false}],"archive":[{"id":"f-sample-003","sourceId":"nia","sourceType":"gov","issuer":"NIA","date":"2026-01-09","title":"2026년 12대 AI·디지털 트렌드","url":"https://eiec.kdi.re.kr/policy/domesticView.do?ac=0000201830","summaryAi":"스스로 일하는 AI 에이전트와 버티컬 AI 확산 등 정책 기초 전망을 정리했다.","stageGuess":[2],"collectedAt":"2026-09-08T06:00:00+09:00","promoted":false}]}}</script>
+  <script id="ax-data" type="application/json">{"meta":{"builtAt":"2026-10-21T01:47:12.386Z","preview":false,"storagePrefix":"chungram_axlib_v1_","sourceTypeLabels":{"gov":"정부 정책","consulting":"해외 인사이트","intl":"국제기구","chungram":"청람 현장"},"roleLabels":{"staff":"실무자","leader":"관리자","planner":"기획·인사"},"roleGuides":{"staff":"내 업무에 바로 적용할 거리를 찾는 질문입니다. 답은 '이번 주 해보기' 과제의 재료가 됩니다.","leader":"팀을 어떻게 이끌지 정리하는 질문입니다. 답은 팀 회의 안건이나 팀원 1:1 대화의 재료로 쓰세요.","planner":"기관의 제도·교육·지침을 손볼 지점을 찾는 질문입니다. 답은 개선 제안이나 보고서의 근거 메모로 쓰세요."}},"stages":[{"n":1,"name":"AI Adoption","nameKo":"AI 도입","question":"우리 기관은 AI를 어디서부터 쓰기 시작하는가?"},{"n":2,"name":"Agent","nameKo":"AI 에이전트","question":"일을 이어서 처리하는 AI에게 무엇을 맡길 수 있는가?"},{"n":3,"name":"Collaboration","nameKo":"사람-AI 협업","question":"담당자와 AI는 일을 어떻게 나눠 맡는가?"},{"n":4,"name":"Work Redesign","nameKo":"업무 재설계","question":"어떤 업무 절차를 AI 기준으로 다시 짜야 하는가?"},{"n":5,"name":"Role Redesign","nameKo":"역할 재설계","question":"직무기술서·사무분장은 어떻게 바뀌는가?"},{"n":6,"name":"Organization","nameKo":"조직","question":"부서 구조와 협업 체계는 어떻게 바뀌어야 하는가?"},{"n":7,"name":"Leadership","nameKo":"리더십","question":"관리자는 팀의 AI 활용을 어떻게 이끄는가?"},{"n":8,"name":"","nameKo":"","question":"","draft":true},{"n":9,"name":"Governance","nameKo":"거버넌스","question":"AI 활용의 기준·책임·보안은 누가 어떻게 정하는가?"},{"n":10,"name":"Value","nameKo":"가치","question":"AI 도입의 성과를 국민과 기관에 어떻게 증명하는가?"}],"library":[{"id":"gov-001","sourceType":"gov","issuer":"인사혁신처","issuerLevel":"중앙부처","docType":"지침","status":"원문확인중","date":"2026-05-22","title":"교육훈련 보고서 생성형 AI 활용 지침","titleKo":"교육훈련 보고서 생성형 AI 활용 지침","url":"https://www.etnews.com/20260521000475","stage":[9],"level":"입문","minutes":10,"summaryKo":["인사혁신처가 교육훈련 보고서를 쓸 때 생성형 AI를 어떻게 쓸지 기준을 내놓았다.","AI는 보조 도구이며 최종 책임은 작성자 본인에게 있다는 점을 분명히 했다.","활용 사실 공개, 비판적 검토, 개인정보 보호 등 7대 원칙을 제시했다."],"frameworks":["생성형 AI 활용 7대 원칙"],"publicImplication":"보고서에 AI를 썼다면 '썼다는 사실'과 '내가 무엇을 검토했는지'를 함께 남기는 것이 기본이 됩니다. 책임은 도구가 아니라 사람에게 남습니다.","questions":{"staff":[{"id":"gov-001.staff.1","text":"최근 작성한 보고서 중 AI를 썼다면, 활용 사실을 어디에 어떻게 밝힐 수 있었을까요?","unique":true},{"id":"gov-001.staff.2","text":"AI가 만든 문장을 그대로 쓰기 전에 나는 무엇을 확인하나요?"},{"id":"gov-001.staff.3","text":"내 업무 자료 중 AI에 넣으면 안 되는 정보는 무엇인가요?"}],"leader":[{"id":"gov-001.leader.1","text":"팀원이 AI로 쓴 보고서를 검토할 때 무엇을 기준으로 보시겠어요?","unique":true},{"id":"gov-001.leader.2","text":"'최종 책임은 본인'이라는 원칙을 팀에서 어떻게 안내하면 부담이 아닌 기준으로 받아들여질까요?"},{"id":"gov-001.leader.3","text":"팀 안에서 AI 활용 사실을 공유하는 방식을 하나 정한다면 무엇인가요?"}],"planner":[{"id":"gov-001.planner.1","text":"우리 기관의 교육훈련 운영 지침에 이 7대 원칙을 반영하려면 어느 조항을 고쳐야 하나요?","unique":true},{"id":"gov-001.planner.2","text":"교육훈련 외 다른 보고서에도 같은 원칙을 넓혀 적용할 수 있을까요?"},{"id":"gov-001.planner.3","text":"원칙 준수 여부를 부담 없이 확인할 수 있는 장치는 무엇일까요?"}]},"actionTask":"이번 주 보고서 하나에 'AI 활용 표기' 한 줄을 넣어 보세요.","samplePrompt":"아래 초안의 논리 흐름에서 근거가 약한 부분을 3가지만 짚어 줘. (초안 붙여넣기)","priority":"must","recommendedFor":[],"reviewedBy":"정구영","reviewedAt":"2026-10-19","isPreview":false,"isNew":true},{"id":"gov-002","sourceType":"gov","issuer":"행정안전부·과학기술정보통신부","issuerLevel":"중앙부처","docType":"사례","status":"원문확인중","date":"2025-11-25","title":"범정부 AI 공통기반 시범운영","titleKo":"범정부 AI 공통기반 시범운영","url":"https://www.mstoday.co.kr/news/articleView.html?idxno=99639","stage":[1,3],"level":"입문","minutes":8,"summaryKo":["행정안전부와 과학기술정보통신부가 범정부 AI 공통기반 시범운영을 시작했다.","공무원이 내부망에서 민간 AI 챗봇으로 법령·지침을 요약할 수 있게 했다.","2026년 3월부터 전 중앙·지방정부로 단계적으로 넓힐 계획이다."],"frameworks":["내부망 AI 공통기반"],"publicImplication":"곧 내 자리에서도 내부망 AI를 쓰게 됩니다. '쓸 수 있느냐'보다 '어떤 일에 먼저 쓸지'를 미리 정해 두는 기관이 빨리 효과를 봅니다.","questions":{"staff":[{"id":"gov-002.staff.1","text":"내부망 AI가 열리면 가장 먼저 요약시키고 싶은 법령·지침은 무엇인가요?","unique":true},{"id":"gov-002.staff.2","text":"AI 요약을 믿고 쓰기 전에 원문에서 꼭 다시 볼 부분은 어디인가요?"},{"id":"gov-002.staff.3","text":"지금 법령·지침을 찾고 읽는 데 일주일에 얼마나 쓰고 있나요?"}],"leader":[{"id":"gov-002.leader.1","text":"공통기반이 들어오면 우리 팀에서 시범으로 써 볼 업무 하나를 고른다면 무엇인가요?","unique":true},{"id":"gov-002.leader.2","text":"팀원 사이의 활용 격차를 줄이려면 무엇을 먼저 해야 할까요?"},{"id":"gov-002.leader.3","text":"효과를 확인하려면 도입 전에 무엇을 기록해 두어야 할까요?"}],"planner":[{"id":"gov-002.planner.1","text":"우리 기관이 확대 대상이 되기 전에 준비해야 할 교육·안내는 무엇인가요?","unique":true},{"id":"gov-002.planner.2","text":"기관 자체 도입 계획과 범정부 공통기반은 어떻게 역할을 나눠야 할까요?"},{"id":"gov-002.planner.3","text":"부서별 활용 사례를 모으는 창구를 어떻게 만들 수 있을까요?"}]},"priority":"recommended","recommendedFor":["staff"],"reviewedBy":"정구영","reviewedAt":"2026-10-19","isPreview":false,"isNew":true},{"id":"gov-003","sourceType":"gov","issuer":"한국지능정보사회진흥원(NIA)","issuerLevel":"집행기관","docType":"사례","status":"원문확인","date":"2025-12-18","title":"공공부문 AI 도입·활용 사례집 / 데이터 분석 업무 운영 가이드","titleKo":"공공부문 AI 도입·활용 사례집 / 데이터 분석 업무 운영 가이드","url":"https://www.nia.or.kr/site/nia_kor/ex/bbs/View.do?cbIdx=90549\u0026bcIdx=28875","stage":[4],"level":"입문","minutes":20,"summaryKo":["NIA가 공공부문의 AI 도입·활용 사례와 데이터 분석 업무 운영 가이드를 묶어 냈다.","작게 시작하는 PoC(개념검증) 도입 전략과 단계별 필수 점검 리스트를 담았다.","대전 중구 인수인계, 군위군 설문 분석 같은 지자체 사례를 소개한다."],"frameworks":["소규모 PoC 도입 전략","단계별 필수 점검 리스트"],"publicImplication":"큰 시스템을 사지 않아도 인수인계·설문 분석처럼 반복되는 업무 하나부터 바꿀 수 있습니다. 다른 지자체 사례는 내부 설득의 근거가 됩니다.","questions":{"staff":[{"id":"gov-003.staff.1","text":"대전 중구의 인수인계 사례처럼, 내 업무 중 매번 반복되는 정리 작업은 무엇인가요?","unique":true},{"id":"gov-003.staff.2","text":"그 작업을 AI에 맡긴다면 어떤 입력과 결과물이 필요할까요?"},{"id":"gov-003.staff.3","text":"결과가 틀렸을 때 바로 알아챌 수 있는 확인 방법은 무엇인가요?"}],"leader":[{"id":"gov-003.leader.1","text":"우리 팀이 한 달 안에 해 볼 수 있는 가장 작은 PoC는 무엇인가요?","unique":true},{"id":"gov-003.leader.2","text":"PoC가 성공했다고 판단할 기준을 미리 하나 정한다면 무엇인가요?"},{"id":"gov-003.leader.3","text":"실패해도 괜찮다는 신호를 팀에 어떻게 줄 수 있을까요?"}],"planner":[{"id":"gov-003.planner.1","text":"사례집의 단계별 점검 리스트 중 우리 기관에 지금 없는 항목은 무엇인가요?","unique":true},{"id":"gov-003.planner.2","text":"부서별 PoC를 기관 차원의 확산으로 잇는 절차는 어떻게 설계할까요?"},{"id":"gov-003.planner.3","text":"다른 기관 사례를 우리 기관 보고서에 인용할 때 무엇을 함께 밝혀야 할까요?"}]},"actionTask":"반복 업무 하나를 골라 '입력 → AI 처리 → 사람 확인' 3칸으로 적어 보세요.","samplePrompt":"아래 설문 응답(개인정보 제거본)을 주제별로 묶고 주제마다 대표 의견 1개씩 뽑아 줘.","priority":"recommended","recommendedFor":["staff","planner"],"reviewedBy":"정구영","reviewedAt":"2026-10-19","isPreview":false,"isNew":true},{"id":"con-001","sourceType":"consulting","issuer":"McKinsey \u0026 Company","date":"2026-08-25","title":"The state of AI in 2026: On the road to ROI","titleKo":"2026 AI 현황: 성과(ROI)로 가는 길","url":"https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai","stage":[1,10],"level":"입문","minutes":20,"summaryKo":["응답자 10명 중 8명은 AI로 개인 생산성이 올랐다고 답했지만, 조직 이익(EBIT)에 기여했다는 응답은 37%로 1년 전과 그대로다.","대기업의 AI 에이전트 확산은 27%에서 40%로 늘었고, AI 운영비(토큰 비용 등)가 사용을 제약한다는 곳도 약 20%다.","성과를 낸 소수 조직은 기존 업무에 AI를 끼워 넣지 않고 업무 흐름 자체를 다시 설계했다."],"frameworks":["AI 고성과 조직(High performers)의 3가지 차이: 효율+혁신 동시 추구, 업무 흐름 재설계, 리더십 의지와 운영 규율"],"publicImplication":"'개인은 편해졌는데 기관 성과는 그대로'라는 간극은 공공에도 똑같이 나타납니다. 도구를 나눠 주는 것만으로는 부족하고, 어떤 업무 흐름을 바꿀지 정해야 기관 단위 성과가 생깁니다.","questions":{"staff":[{"id":"con-001.staff.1","text":"AI로 내 일이 빨라졌다면, 아낀 시간은 지금 어디에 쓰이고 있나요?","unique":true},{"id":"con-001.staff.2","text":"내가 AI를 쓰는 방식 중 팀 전체가 따라 하면 좋을 것은 무엇인가요?"},{"id":"con-001.staff.3","text":"AI를 '끼워 넣은' 업무와 '처음부터 다시 짠' 업무를 하나씩 떠올려 볼 수 있나요?"}],"leader":[{"id":"con-001.leader.1","text":"팀원 개인의 생산성 향상을 팀 성과로 잇기 위해 무엇을 바꿔야 할까요?","unique":true},{"id":"con-001.leader.2","text":"우리 팀에서 AI로 '다시 설계'할 만한 업무 흐름 하나를 고른다면 무엇인가요?"},{"id":"con-001.leader.3","text":"AI 성과를 보고할 때 '사용 건수' 대신 쓸 지표는 무엇인가요?"}],"planner":[{"id":"con-001.planner.1","text":"우리 기관 AI 사업의 성과지표는 '도입·사용'을 재나요, '업무 결과'를 재나요?","unique":true},{"id":"con-001.planner.2","text":"AI 운영비(이용료·토큰 비용)를 내년 예산에서 어떻게 잡고 관리할 건가요?"},{"id":"con-001.planner.3","text":"고성과 조직의 3가지 차이 중 우리 기관이 가장 약한 것은 무엇인가요?"}]},"actionTask":"이번 주 AI를 쓴 업무 하나를 골라 '아낀 시간'과 '그 시간에 한 일'을 한 줄씩 적어 보세요.","samplePrompt":"아래 업무 절차를 AI가 있다고 가정하고 처음부터 다시 짜 줘. 없어지는 단계, 사람이 꼭 남아야 하는 단계를 구분해서. (절차 붙여넣기)","priority":"must","recommendedFor":[],"reviewedBy":"정구영","reviewedAt":"2026-10-19","isPreview":false,"isNew":true},{"id":"con-002","sourceType":"consulting","issuer":"McKinsey \u0026 Company","date":"2026-09-14","title":"Stacking the odds: A blueprint for successfully scaling agentic AI","titleKo":"AI 에이전트를 제대로 확산하는 설계도(블루프린트)","url":"https://www.mckinsey.com/capabilities/operations/our-insights/stacking-the-odds-a-blueprint-for-successfully-scaling-agentic-ai","stage":[2,4],"level":"심화","minutes":15,"summaryKo":["많은 조직이 일하는 방식은 그대로 둔 채 AI 에이전트부터 늘리고 있고, 에이전트는 기존 업무의 결함을 그대로 키운다.","흔한 실패는 5가지다: 고장 난 절차 자동화, 데이터 준비 미루기, 성급한 구매·자체개발 결정, 변화관리 소홀, 보고만 받는 거버넌스.","착수 전 4~8주의 설계 단계를 거치면 개발 기간이 30~40% 줄고 6개월 뒤 이용률이 40~60% 높았다고 한다."],"frameworks":["블루프린트 6요소: 풀 문제, 만들 해법, 업무 수용 체계, 기술·데이터 기반, 단계별 실행계획(PoC→MVP→확산), 통제하는 거버넌스","에이전트 도입 실패 5유형"],"publicImplication":"공공 AI 사업도 '시범사업부터 띄우고 보자'로 흐르기 쉽습니다. 에이전트가 무엇을 스스로 결정하고 무엇을 사람에게 넘기는지, 데이터가 실제로 쓸 만한지를 발주 전에 정해 두면 재작업과 예산 낭비를 줄일 수 있습니다.","questions":{"staff":[{"id":"con-002.staff.1","text":"지금 내 업무 절차 중 AI에 맡기기 전에 먼저 고쳐야 할 '고장 난 단계'는 어디인가요?","unique":true},{"id":"con-002.staff.2","text":"AI가 쓸 데이터가 실제로 정확하고 최신인지 어떻게 확인할 수 있나요?"},{"id":"con-002.staff.3","text":"AI가 판단하면 안 되고 반드시 나에게 넘겨야 할 상황은 무엇인가요?"}],"leader":[{"id":"con-002.leader.1","text":"우리 팀 AI 과제에서 에이전트가 '결정·실행·상위 보고'할 범위를 각각 어떻게 나누시겠어요?","unique":true},{"id":"con-002.leader.2","text":"도입 첫 주부터 변화관리를 함께 설계하려면 누구를 참여시켜야 할까요?"},{"id":"con-002.leader.3","text":"성과가 나지 않는 과제를 일찍 멈출 수 있는 기준은 무엇인가요?"}],"planner":[{"id":"con-002.planner.1","text":"우리 기관 AI 사업 추진위원회는 예산·범위를 바꿀 권한이 있나요, 보고만 받나요?","unique":true},{"id":"con-002.planner.2","text":"제안요청서(RFP)를 쓰기 전에 4~8주 설계 단계를 넣는다면 무엇을 산출물로 정하겠어요?"},{"id":"con-002.planner.3","text":"구매(외부 플랫폼)와 자체 개발 중 무엇을 고를지 판단할 기준은 무엇인가요?"}]},"actionTask":"AI를 붙이고 싶은 업무 하나를 골라 'AI가 결정 / AI가 실행 / 사람에게 넘김' 3칸 표를 채워 보세요.","samplePrompt":"아래 업무 절차에서 AI 에이전트가 맡을 단계와 사람이 확인해야 할 단계를 나누고, 데이터가 부족해서 막힐 지점을 짚어 줘. (절차 붙여넣기)","priority":"recommended","recommendedFor":["leader","planner"],"reviewedBy":"정구영","reviewedAt":"2026-10-19","isPreview":false,"isNew":true},{"id":"con-003","sourceType":"consulting","issuer":"McKinsey \u0026 Company","date":"2026-03-25","title":"State of AI trust in 2026: Shifting to the agentic era","titleKo":"2026 AI 신뢰 현황: 에이전트 시대로의 전환","url":"https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/tech-forward/state-of-ai-trust-in-2026-shifting-to-the-agentic-era","stage":[9],"level":"심화","minutes":15,"summaryKo":["약 500개 조직을 조사한 결과, 책임 있는 AI 성숙도는 평균 2.0에서 2.3으로 올랐지만 전략·거버넌스·에이전트 통제는 3단계 이상이 약 30%에 그쳤다.","에이전트 확산의 가장 큰 걸림돌은 보안·위험 우려이고, 책임 있는 AI 실행을 막는 1순위는 지식·교육 부족(약 60%)이다.","책임 주체를 분명히 정한 조직의 성숙도는 2.6, 정하지 않은 조직은 1.8로 차이가 컸다."],"frameworks":["AI 신뢰 성숙도 모델 5차원: 전략, 위험관리, 데이터·기술, 거버넌스, 에이전트 거버넌스·통제"],"publicImplication":"AI가 '틀린 말'을 하는 것을 넘어 '틀린 행동'을 할 수 있는 단계로 갑니다. 기관마다 AI 위험의 책임자를 정하고 직원 교육을 먼저 갖추는 것이 규정 정비만큼 중요합니다.","questions":{"staff":[{"id":"con-003.staff.1","text":"AI가 '틀린 말'이 아니라 '틀린 행동'을 했다면, 내 업무에서는 어떤 사고가 날 수 있나요?","unique":true},{"id":"con-003.staff.2","text":"AI 결과가 이상할 때 나는 누구에게, 어떻게 알리면 되나요?"},{"id":"con-003.staff.3","text":"AI 위험에 대해 내가 가장 모른다고 느끼는 부분은 무엇인가요?"}],"leader":[{"id":"con-003.leader.1","text":"우리 팀에서 AI 사고가 나면 누가 1차 책임을 지고 대응하나요? 지금 정해져 있나요?","unique":true},{"id":"con-003.leader.2","text":"팀원 교육에서 AI 활용법 말고 '위험 알아채기'를 어떻게 넣을 수 있을까요?"},{"id":"con-003.leader.3","text":"부정확성과 보안 중 우리 팀 업무에 더 큰 위험은 무엇인가요?"}],"planner":[{"id":"con-003.planner.1","text":"5개 차원 중 우리 기관이 3단계(체계적 운영)에 못 미치는 것은 무엇인가요?","unique":true},{"id":"con-003.planner.2","text":"기관 AI 위험의 책임 부서와 결정 권한을 문서로 정해 두었나요?"},{"id":"con-003.planner.3","text":"AI 사고 대응 절차를 기존 정보보안 사고 대응과 어떻게 연결할까요?"}]},"actionTask":"우리 팀 AI 업무 하나에 대해 '문제가 생기면 누가 멈추고, 누구에게 알리는지'를 한 줄로 정해 보세요.","samplePrompt":"아래 업무에 AI를 쓸 때 생길 수 있는 위험을 '잘못된 정보'와 '잘못된 행동'으로 나눠 각각 3가지씩 적고, 사람이 확인할 지점을 제안해 줘. (업무 설명)","priority":"recommended","recommendedFor":["planner"],"relatedPolicy":["gov-001"],"reviewedBy":"정구영","reviewedAt":"2026-10-19","isPreview":false,"isNew":true},{"id":"con-004","sourceType":"consulting","issuer":"McKinsey \u0026 Company","date":"2026-07-14","title":"Building expertise in the age of AI: Who trains the next generation?","titleKo":"AI 시대의 전문성 키우기: 다음 세대는 누가 길러내는가","url":"https://www.mckinsey.com/capabilities/people-and-organizational-performance/our-insights/building-expertise-in-the-age-of-ai-who-trains-the-next-generation","stage":[5,7],"level":"입문","minutes":25,"summaryKo":["자료 조사, 문서 정리, 기초 분석처럼 신입이 일을 배우던 업무를 AI가 가져가면서 '일하며 배우는' 통로가 좁아지고 있다.","AI는 숙련자의 처리량은 늘리지만, 결과를 검증할 판단력이 없는 신입에게는 오히려 부담이 될 수 있다.","지식관리, 역할 설계, 업무 중 학습, 관리자 코칭을 하나의 체계로 묶어 전문성을 의도적으로 키우라고 제안한다."],"frameworks":["전문성 육성 4요소: 지식관리, 역할 설계, 업무 흐름 속 학습, 관리자 코칭"],"publicImplication":"공직은 순환보직과 인수인계로 전문성을 이어 왔습니다. 초안 작성·자료 정리를 AI가 맡게 되면 신규 공무원이 판단력을 기를 기회를 따로 설계해야 하고, 그 역할은 중간관리자에게 있습니다.","questions":{"staff":[{"id":"con-004.staff.1","text":"내가 신입 때 '하면서 배운' 업무 중 지금 AI가 대신하는 것은 무엇인가요?","unique":true},{"id":"con-004.staff.2","text":"AI 결과를 검증할 수 있으려면 나는 어떤 지식을 더 쌓아야 하나요?"},{"id":"con-004.staff.3","text":"AI에 맡기지 않고 일부러 직접 해 볼 업무를 하나 고른다면 무엇인가요?"}],"leader":[{"id":"con-004.leader.1","text":"신규 직원이 AI 결과를 '그대로 쓰는지, 판단해서 쓰는지' 어떻게 알아보시겠어요?","unique":true},{"id":"con-004.leader.2","text":"AI가 만든 초안을 두고 신규 직원과 나눌 코칭 질문 하나는 무엇인가요?"},{"id":"con-004.leader.3","text":"팀의 노하우가 사람 머릿속에만 있지 않도록 어떻게 남기고 있나요?"}],"planner":[{"id":"con-004.planner.1","text":"신규 공무원 교육과정에 'AI 결과 검증' 훈련을 어떻게 넣을 수 있을까요?","unique":true},{"id":"con-004.planner.2","text":"순환보직 때 인수인계 자료를 AI가 쓸 수 있는 지식으로 쌓으려면 무엇이 필요할까요?"},{"id":"con-004.planner.3","text":"중간관리자 평가에 '후배 육성·코칭'을 어떻게 반영할 수 있을까요?"}]},"actionTask":"이번 주 AI 초안 하나를 두고, 후배(또는 나 자신)에게 '이 부분은 왜 이렇게 고쳤나'를 설명하는 메모를 남겨 보세요.","samplePrompt":"아래 AI 초안에서 신입 공무원이 놓치기 쉬운 오류나 판단 지점을 3가지 찾아, 각각 어떤 지식이 있어야 알아챌 수 있는지 설명해 줘. (초안 붙여넣기)","priority":"recommended","recommendedFor":["leader"],"reviewedBy":"정구영","reviewedAt":"2026-10-19","isPreview":false,"isNew":true},{"id":"con-005","sourceType":"consulting","issuer":"Deloitte Center for Government Insights","date":"2024-04-25","title":"Generative AI and government work: An in-depth analysis of 19,000 tasks","titleKo":"생성형 AI와 정부 업무: 1만 9천 개 과업 분석","url":"https://www.deloitte.com/us/en/insights/industry/government-public-sector-services/automation-and-generative-ai-in-government/generative-ai-for-government-work-tasks.html","stage":[3,4],"level":"입문","minutes":10,"summaryKo":["딜로이트가 미국 노동부 직무 자료의 과업 1만 9천여 개를 정확성, 창의성, 상황 가변성 기준으로 나눠 맞는 자동화 방식을 따졌다.","법령 요약, 연설문·보고서 초안처럼 중간 수준의 창의성이 필요한 일은 생성형 AI가, 자료 입력·비용 계산처럼 정확성이 핵심인 일은 기존 자동화가 맞다.","직원 코칭이나 전략 결정처럼 상황마다 달라지는 일은 여전히 사람이 잘하며, 실업급여 수급 자격 같은 고위험 판단에는 생성형 AI가 맞지 않다."],"frameworks":["과업 3분류: 생성형 AI / 기존 자동화(RPA·머신러닝) / 사람 판단","과업 평가 3기준: 정확성, 창의성, 상황 가변성"],"publicImplication":"'AI로 무엇을 할까'보다 '내 과업이 세 칸 중 어디에 속하나'를 먼저 따지면 엉뚱한 도입을 피할 수 있습니다. 민원 자격 판단처럼 틀리면 안 되는 일은 생성형 AI에 맡기지 않는다는 기준도 분명해집니다.","questions":{"staff":[{"id":"con-005.staff.1","text":"내 업무를 과업 5개로 쪼개면, 각각 생성형 AI / 기존 자동화 / 사람 중 어디에 속하나요?","unique":true},{"id":"con-005.staff.2","text":"내 업무 중 틀리면 안 돼서 생성형 AI에 맡기면 안 되는 판단은 무엇인가요?"},{"id":"con-005.staff.3","text":"법령 요약이나 보고서 초안처럼 생성형 AI가 잘 맞는 일을 지금 얼마나 하고 있나요?"}],"leader":[{"id":"con-005.leader.1","text":"팀 업무를 세 칸(생성형 AI / 기존 자동화 / 사람)으로 나눠 보면 어느 칸이 가장 큰가요?","unique":true},{"id":"con-005.leader.2","text":"'사람' 칸에 남는 일에 팀원 시간을 더 쓰게 하려면 무엇을 바꿔야 할까요?"},{"id":"con-005.leader.3","text":"생성형 AI가 아니라 RPA 같은 기존 자동화가 더 맞는 팀 업무는 무엇인가요?"}],"planner":[{"id":"con-005.planner.1","text":"우리 기관 AI 과제 목록을 세 칸으로 다시 분류하면 잘못 배정된 과제가 있나요?","unique":true},{"id":"con-005.planner.2","text":"고위험 행정 판단에 생성형 AI 사용을 제한하는 기준을 어떻게 문서화할까요?"},{"id":"con-005.planner.3","text":"직무분석 자료가 있다면 과업 단위 AI 적합도 평가에 어떻게 활용할 수 있을까요?"}]},"actionTask":"내 업무를 과업 5개로 쪼개고 '생성형 AI / 기존 자동화 / 사람' 중 하나씩 표시해 보세요.","samplePrompt":"아래 내 업무 과업 목록을 정확성, 창의성, 상황 가변성 기준으로 평가하고 '생성형 AI / 기존 자동화 / 사람 판단' 중 어디에 맞는지 이유와 함께 표로 정리해 줘. (과업 목록)","priority":"recommended","recommendedFor":["staff"],"relatedPolicy":["gov-002"],"reviewedBy":"정구영","reviewedAt":"2026-10-19","isPreview":false,"isNew":true},{"id":"con-006","sourceType":"consulting","issuer":"McKinsey \u0026 Company","date":"2025-10-16","title":"Deploying agentic AI with safety and security: A playbook for technology leaders","titleKo":"AI 에이전트를 안전하게 도입하기: 기술 책임자를 위한 실행 지침","url":"https://www.mckinsey.com/capabilities/risk-and-resilience/our-insights/deploying-agentic-ai-with-safety-and-security-a-playbook-for-technology-leaders","stage":[2,9],"level":"심화","minutes":20,"summaryKo":["AI 에이전트는 스스로 판단하고 실행하기 때문에 시스템 안에서 권한을 가진 '디지털 내부자'처럼 다뤄야 한다고 본다.","인용된 조사에서 조직의 80%가 에이전트의 부적절한 데이터 노출, 무단 시스템 접근 같은 위험 행동을 겪었다.","한 에이전트의 오류가 다른 에이전트로 번지는 '연쇄 취약성'처럼 기존 AI 위험 분류에 없던 새 위험을 짚는다."],"frameworks":["디지털 내부자(digital insiders) 관점","에이전트 신규 위험 요인(연쇄 취약성 등)"],"publicImplication":"행정 시스템에 연결된 에이전트는 공무원 계정처럼 권한 관리가 필요합니다. 어떤 시스템에 접근하고 어떤 행동을 했는지 기록을 남기는 장치가 도입 조건이 되어야 합니다.","questions":{"staff":[{"id":"con-006.staff.1","text":"내가 쓰는 AI 도구가 접근할 수 있는 시스템·자료는 어디까지인지 알고 있나요?","unique":true},{"id":"con-006.staff.2","text":"AI가 내 이름으로 무언가를 실행했다면 그 기록을 어디서 확인할 수 있나요?"},{"id":"con-006.staff.3","text":"AI에게 맡긴 일 중 다른 업무로 오류가 번질 수 있는 것은 무엇인가요?"}],"leader":[{"id":"con-006.leader.1","text":"팀에서 쓰는 AI 에이전트에게 사람 직원과 같은 수준의 권한 관리를 하고 있나요?","unique":true},{"id":"con-006.leader.2","text":"에이전트가 위험 행동을 했을 때 바로 멈출 수 있는 사람과 방법이 정해져 있나요?"},{"id":"con-006.leader.3","text":"여러 AI 도구가 이어진 업무에서 오류가 번지는 것을 어디서 막을까요?"}],"planner":[{"id":"con-006.planner.1","text":"기관 정보보안 규정에서 AI 에이전트를 '사용자'로 볼지 '시스템'으로 볼지 정해 두었나요?","unique":true},{"id":"con-006.planner.2","text":"에이전트 행동 기록(로그)을 남기고 점검하는 책임은 어느 부서에 둘까요?"},{"id":"con-006.planner.3","text":"에이전트 도입 사업 발주 시 보안 요구사항으로 꼭 넣을 항목은 무엇인가요?"}]},"priority":"none","recommendedFor":[],"reviewedBy":"정구영","reviewedAt":"2026-10-19","isPreview":false,"isNew":true},{"id":"chung-001","sourceType":"chungram","issuer":"BTW (betweenworld.org)","date":"2026-10-06","title":"AI 생산성 높이는 3가지 방법, 업무의 57%가 달라지는 시대의 현실 전략","titleKo":"AI 생산성 높이는 3가지 방법, 업무의 57%가 달라지는 시대의 현실 전략","url":"https://betweenworld.org/2026/10/06/ai-%ec%83%9d%ec%82%b0%ec%84%b1-%eb%86%92%ec%9d%b4%eb%8a%94-3%ea%b0%80%ec%a7%80-%eb%b0%a9%eb%b2%95-%ec%97%85%eb%ac%b4%ec%9d%98-57%ea%b0%80-%eb%8b%ac%eb%9d%bc%ec%a7%80%eb%8a%94-%ec%8b%9c%eb%8c%80/","stage":[4,5],"level":"입문","minutes":10,"summaryKo":["McKinsey는 오늘날 업무 '활동'의 약 57%를 AI로 수행할 수 있다고 보는데, 이는 직업이 사라진다는 뜻이 아니라 일의 구성이 바뀐다는 뜻이다.","업무를 'AI가 주도 / AI와 함께 / 사람이 끝까지' 3칸으로 나누고, 아낀 시간은 판단·코칭·관계에 다시 쓰라고 제안한다.","리더와 강사가 먼저 AI를 쓰고 틀린 경우까지 보여 줄 때 조직의 AI 신뢰가 높아진다."],"frameworks":["3단계 업무 분류법: AI 주도 / AI와 함께 / 사람이 끝까지","AI 결과물 검토 체크리스트 5가지: 사실, 출처, 맥락, 편향, 내 목소리"],"publicImplication":"공공 AX도 '얼마나 빨리'보다 '어떤 일을 사람이 쥐고 갈지'부터 정해야 합니다. 관리자가 AI를 쓰는 과정과 실수를 먼저 보여 주면 팀원도 안심하고 검증하며 씁니다.","questions":{"staff":[{"id":"chung-001.staff.1","text":"지난주 내 업무를 'AI 주도 / AI와 함께 / 사람이 끝까지' 3칸에 나누면 어느 칸이 가장 큰가요?","unique":true},{"id":"chung-001.staff.2","text":"AI로 아낀 시간을 동료·민원인과의 대화에 쓴다면 무엇을 하고 싶나요?"},{"id":"chung-001.staff.3","text":"검토 체크리스트 5가지 중 내가 가장 자주 건너뛰는 것은 무엇인가요?"}],"leader":[{"id":"chung-001.leader.1","text":"팀 앞에서 내가 AI를 쓰다 틀렸던 경험을 공유한다면 어떤 사례를 고르시겠어요?","unique":true},{"id":"chung-001.leader.2","text":"팀원이 아낀 시간을 판단·코칭에 쓰도록 하려면 업무 배분을 어떻게 바꿔야 할까요?"},{"id":"chung-001.leader.3","text":"1:1 면담에서 AI가 만든 질문 초안을 쓴다면, 사람이 꼭 정해야 할 것은 무엇인가요?"}],"planner":[{"id":"chung-001.planner.1","text":"역할 재설계, 역량 투자, 인센티브, 리더 시범 중 우리 기관 AI 계획에 빠진 것은 무엇인가요?","unique":true},{"id":"chung-001.planner.2","text":"직무기술서에 '사람이 끝까지 쥐는 일'을 명시한다면 어떻게 쓸 수 있을까요?"},{"id":"chung-001.planner.3","text":"AI 오류 찾기 실습을 기관 교육과정에 넣는다면 어떤 주제로 시작할까요?"}]},"actionTask":"지난주 업무 목록을 3칸(AI 주도 / AI와 함께 / 사람이 끝까지)으로 나누고, 아낀 시간에 동료 한 명과 대화할 약속을 잡아 보세요.","samplePrompt":"나는 [직무]입니다. 아래 지난주 업무 목록을 ① AI가 주도해도 되는 일 ② AI와 함께 하는 일 ③ 사람이 반드시 해야 하는 일로 나누고, 이유를 한 줄씩 써 줘. (업무 목록)","priority":"recommended","recommendedFor":["staff","leader"],"reviewedBy":"정구영","reviewedAt":"2026-10-19","isPreview":false,"isNew":true},{"id":"chung-002","sourceType":"chungram","issuer":"BTW (betweenworld.org)","date":"2026-09-12","title":"AI로 나만의 비식별화 도구 만들기: 데이터 보안 지키는 3단계 실전 가이드","titleKo":"AI로 나만의 비식별화 도구 만들기: 데이터 보안 지키는 3단계 실전 가이드","url":"https://betweenworld.org/2026/09/12/ai%eb%a1%9c-%eb%82%98%eb%a7%8c%ec%9d%98-%eb%b9%84%ec%8b%9d%eb%b3%84%ed%99%94-%eb%8f%84%ea%b5%ac-%eb%a7%8c%eb%93%a4%ea%b8%b0-%eb%8d%b0%ec%9d%b4%ed%84%b0-%eb%b3%b4%ec%95%88-%ec%a7%80%ed%82%a4%eb%8a%94/","stage":[9],"level":"입문","minutes":12,"summaryKo":["실무자가 개인정보가 든 원본을 AI에 그대로 붙여넣는 이유는 의지 부족이 아니라 손쉬운 비식별화 도구가 없어서다.","목표는 완벽한 보안이 아니라 '최소 노출'이다. 분석에 필요한 패턴은 남기고 개인을 특정할 조각만 지운다.","AI로 마스킹 규칙 설계, 내 PC에서만 도는 도구 만들기, 처리 결과를 AI로 재검증하는 3단계를 제안한다."],"frameworks":["최소 노출 원칙","비식별화 3단계: 규칙 설계 → 로컬 도구 제작 → AI 이중 검증"],"publicImplication":"민원·설문·인사 자료는 공공에서 AI를 가장 쓰고 싶은 데이터이자 가장 위험한 데이터입니다. 원본은 내 PC 밖으로 내보내지 않고, 처리된 결과만 AI에 넘기는 습관이 기본이 되어야 합니다. 조직 표준으로 쓰려면 개인정보 담당 부서의 검토를 거치세요.","questions":{"staff":[{"id":"chung-002.staff.1","text":"최근 AI에 붙여넣은 자료 중 이름·연락처·주민번호가 섞여 있었던 적이 있나요?","unique":true},{"id":"chung-002.staff.2","text":"'비고'나 '기타 의견'처럼 개인정보가 숨어 있기 쉬운 칸이 내 자료에는 어디에 있나요?"},{"id":"chung-002.staff.3","text":"분석에 꼭 필요한 정보와 지워도 되는 정보를 어떻게 구분하나요?"}],"leader":[{"id":"chung-002.leader.1","text":"우리 팀이 AI에 자주 넣는 자료 유형 중 비식별화가 가장 시급한 것은 무엇인가요?","unique":true},{"id":"chung-002.leader.2","text":"팀원이 만든 비식별화 도구를 팀 전체가 쓰기 전에 누구의 검토를 받아야 할까요?"},{"id":"chung-002.leader.3","text":"개인정보 사고를 막으려다 'AI 금지'로 가지 않으려면 어떤 대안을 제시해야 할까요?"}],"planner":[{"id":"chung-002.planner.1","text":"우리 기관 AI 활용 지침에 '원본은 로컬에서 처리, 결과만 AI 입력' 원칙을 넣을 수 있을까요?","unique":true},{"id":"chung-002.planner.2","text":"기관 표준 비식별화 도구를 마련한다면 정보보안·개인정보 부서와 역할을 어떻게 나눌까요?"},{"id":"chung-002.planner.3","text":"정규식 마스킹이 놓치는 이름·별칭 문제를 어떤 절차로 보완할까요?"}]},"actionTask":"이번 주 AI에 넣으려던 자료 하나에서 개인을 특정할 수 있는 열을 표시하고, 지운 뒤에 넣어 보세요.","samplePrompt":"아래 데이터는 이미 1차 마스킹을 마친 결과야. 이름, 연락처, 계좌번호, 주민등록번호 형태의 정보가 아직 남아 있는지 확인하고, 남아 있다면 어느 행, 어느 항목인지 짚어 줘. (마스킹된 데이터)","priority":"recommended","recommendedFor":["staff"],"relatedPolicy":["gov-001"],"reviewedBy":"정구영","reviewedAt":"2026-10-19","isPreview":false,"isNew":true},{"id":"chung-003","sourceType":"chungram","issuer":"BTW (betweenworld.org)","date":"2026-09-04","title":"AI 생산성 높이는 진짜 방법: 커스텀 에이전트 대신 범용 AI를 써야 하는 3가지 이유","titleKo":"AI 생산성 높이는 진짜 방법: 커스텀 에이전트 대신 범용 AI를 써야 하는 3가지 이유","url":"https://betweenworld.org/2026/09/04/ai-%ec%83%9d%ec%82%b0%ec%84%b1-%eb%86%92%ec%9d%b4%eb%8a%94-%ec%a7%84%ec%a7%9c-%eb%b0%a9%eb%b2%95-%ec%bb%a4%ec%8a%a4%ed%85%80-%ec%97%90%ec%9d%b4%ec%a0%84%ed%8a%b8-%eb%8c%80%ec%8b%a0-%eb%b2%94%ec%9a%a9/","stage":[1,2],"level":"입문","minutes":10,"summaryKo":["'우리만의 AI 만들기'와 'AI로 생산성 높이기'는 다른 목표이며, 커스텀 에이전트는 유지보수 주체 불분명, 데이터 정비 부담, 범용 AI 발전 속도 미달로 자주 멈춘다.","대신 업무 맥락을 문서로 정리해 범용 AI에 먼저 읽히면 모델이 좋아질수록 결과도 함께 좋아진다.","규칙이 거의 변하지 않는 대량 반복 업무(정형 전표, 고정 양식 입력)는 여전히 커스텀 자동화가 맞다."],"frameworks":["만들 것인가, 쓸 것인가(Make or Buy)","맥락 문서화 온보딩"],"publicImplication":"공공기관도 '기관 전용 AI 구축' 사업으로 먼저 가기 쉽습니다. 발주 전에 범용 AI와 업무 맥락 문서만으로 얼마나 되는지 확인하면, 몇 달짜리 구축이 끝나자마자 낡는 일을 줄일 수 있습니다.","questions":{"staff":[{"id":"chung-003.staff.1","text":"우리 팀 업무 배경을 AI에 먼저 읽힌다면 A4 한 장에 무엇을 담겠어요?","unique":true},{"id":"chung-003.staff.2","text":"맥락 없이 짧게 지시해서 결과가 엉뚱했던 경험이 있나요?"},{"id":"chung-003.staff.3","text":"내 업무 중 규칙이 거의 바뀌지 않아 자동화가 더 맞는 일은 무엇인가요?"}],"leader":[{"id":"chung-003.leader.1","text":"팀에 전용 AI가 필요하다는 요청이 오면, 범용 AI로 먼저 시험해 볼 기준은 무엇인가요?","unique":true},{"id":"chung-003.leader.2","text":"팀의 업무 맥락 문서를 누가, 얼마나 자주 고쳐야 할까요?"},{"id":"chung-003.leader.3","text":"자동화로 결과만 받다가 팀원이 판단 근거를 모르게 되는 일을 어떻게 막을까요?"}],"planner":[{"id":"chung-003.planner.1","text":"기관 전용 AI 구축 사업을 검토할 때 '범용 AI로 먼저 해 보기'를 필수 단계로 넣을 수 있을까요?","unique":true},{"id":"chung-003.planner.2","text":"커스텀 에이전트를 만든다면 개발 담당자가 떠난 뒤의 유지보수 책임을 어떻게 정할까요?"},{"id":"chung-003.planner.3","text":"범용 AI를 쓸 때 기밀·개인정보 입력을 막는 기관 기준은 무엇인가요?"}]},"actionTask":"우리 팀 업무 배경, 최근 결정사항, 자주 쓰는 용어를 한 장으로 정리해 AI에게 먼저 읽힌 뒤 보고서 초안을 요청해 보세요.","samplePrompt":"아래는 우리 팀의 업무 배경, 최근 결정사항 요약이야. (배경 요약) 이 맥락을 참고해 이번 주 보고서 초안을 써 줘. 빠진 정보가 있으면 먼저 질문해 줘.","priority":"recommended","recommendedFor":["planner"],"reviewedBy":"정구영","reviewedAt":"2026-10-19","isPreview":false,"isNew":true},{"id":"chung-004","sourceType":"chungram","issuer":"BTW (betweenworld.org)","date":"2026-08-30","title":"AI가 다 해주는 시대, 그래도 살아남는 직장인의 판단력 5가지","titleKo":"AI가 다 해주는 시대, 그래도 살아남는 직장인의 판단력 5가지","url":"https://betweenworld.org/2026/08/30/ai%ea%b0%80-%eb%8b%a4-%ed%95%b4%ec%a3%bc%eb%8a%94-%ec%8b%9c%eb%8c%80-%ea%b7%b8%eb%9e%98%eb%8f%84-%ec%82%b4%ec%95%84%eb%82%a8%eb%8a%94-%ec%a7%81%ec%9e%a5%ec%9d%b8%ec%9d%98-%ed%8c%90%eb%8b%a8%eb%a0%a5/","stage":[3],"level":"입문","minutes":8,"summaryKo":["AI는 '그럴듯함'과 '정확함'을 구분하지 못해, 빠진 수치나 최신 정책을 매끄러운 문장으로 덮어 버린다.","검증을 끝에 몰아서 하지 말고 처음부터 심어 두라는 '왼쪽으로 이동(Shift Left)' 원칙을 일하는 방식에 적용한다.","전체 흐름 보기, 자료 정리, 시점에 맞는 설계, 처음부터 검증 심기, 꾸준한 관리의 다섯 감각을 제시하고, 한 업무부터 작게 시작하라고 권한다."],"frameworks":["왼쪽으로 이동(Shift Left)","AI 시대 판단력 5가지"],"publicImplication":"공문서는 수치와 최신 법령 하나만 틀려도 신뢰가 무너집니다. AI에게 '확실한 사실과 추정을 구분해 표시해 달라'고 처음부터 요청하는 습관이 가장 싼 검증 장치입니다.","questions":{"staff":[{"id":"chung-004.staff.1","text":"AI 결과물에서 '그럴듯하지만 틀린' 내용을 발견했던 경험을 하나 떠올려 보세요. 무엇이 단서였나요?","unique":true},{"id":"chung-004.staff.2","text":"다섯 감각 중 내가 가장 약한 것은 무엇인가요?"},{"id":"chung-004.staff.3","text":"AI로 만든 문서 중 정책이 바뀌어 다시 점검해야 할 것이 있나요?"}],"leader":[{"id":"chung-004.leader.1","text":"팀원에게 AI 결과를 넘겨받을 때 '사실과 추정 구분'을 기본 양식으로 요구하면 어떨까요?","unique":true},{"id":"chung-004.leader.2","text":"검증을 처음 단계로 옮기려면 우리 팀 업무 절차의 어디를 바꿔야 할까요?"},{"id":"chung-004.leader.3","text":"완벽한 검증 체계 대신 이번 달에 적용할 업무 하나를 고른다면 무엇인가요?"}],"planner":[{"id":"chung-004.planner.1","text":"기관 AI 활용 교육에 '판단력 5가지'를 실습으로 넣는다면 어떤 과제를 주겠어요?","unique":true},{"id":"chung-004.planner.2","text":"AI로 만든 문서·도구를 정기 점검하는 주기와 책임을 어떻게 정할까요?"},{"id":"chung-004.planner.3","text":"AI 활용 역량 평가에서 '쓰는 능력'과 '검증하는 능력'을 어떻게 나눠 볼까요?"}]},"actionTask":"이번 주 AI 요청 3번에 '확실한 사실과 추정을 구분해 표시해 줘'를 붙여 보고, 달라진 점을 적어 보세요.","samplePrompt":"이 답변에서 확실한 사실과 추정을 구분해서 표시해 줘. 확인이 필요한 통계나 최신 정보가 있다면 어떤 부분인지 따로 알려 줘.","priority":"none","recommendedFor":[],"reviewedBy":"정구영","reviewedAt":"2026-10-19","isPreview":false,"isNew":true}],"feed":{"recent":[{"id":"f-sample-001","sourceId":"ai-committee","sourceType":"gov","issuer":"국가AI전략위원회(공공 AX 분과)","date":"2026-10-06","title":"공공 AX 규칙 재설계 발표","url":"https://zdnet.co.kr/view/?no=20261006143618","summaryAi":"도입 장벽은 기술보다 제도라며 정부혁신평가에 AI 지표를 반영하고 AI 서비스 조달 방식을 검토한다.","stageGuess":[9,10],"collectedAt":"2026-10-13T06:00:00+09:00","promoted":false},{"id":"f-sample-002","sourceId":"mois","sourceType":"gov","issuer":"행정안전부·NIA","date":"2026-05-07","title":"AI 챔피언 고급과정 운영","url":"https://www.newspim.com/news/view/20260507000299","summaryAi":"공무원이 바이브 코딩·에이전트로 직접 AI 프로그램을 개발하고, 우수 과제는 기관 도입을 지원한다.","stageGuess":[2,4],"collectedAt":"2026-10-06T06:00:00+09:00","promoted":false}],"archive":[{"id":"f-sample-003","sourceId":"nia","sourceType":"gov","issuer":"NIA","date":"2026-01-09","title":"2026년 12대 AI·디지털 트렌드","url":"https://eiec.kdi.re.kr/policy/domesticView.do?ac=0000201830","summaryAi":"스스로 일하는 AI 에이전트와 버티컬 AI 확산 등 정책 기초 전망을 정리했다.","stageGuess":[2],"collectedAt":"2026-09-08T06:00:00+09:00","promoted":false}]}}</script>
   <script>(function () {
   'use strict';
 
@@ -582,13 +689,12 @@ a { color: var(--accent); text-underline-offset: 3px; }
   var ROLE_ORDER = ['staff', 'leader', 'planner'];
   var CIRCLED = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩'];
   var SAVE_DELAY_MS = 400;
-  var ANSWER_GUIDE = '내 역할 질문부터 답하고, 다른 역할 질문은 상대 입장을 미리 생각해 보는 데 쓰세요. 적은 답은 \'내 학습일지\'에 모이며, 평소 쓰는 AI에 붙여넣어 실행 계획을 함께 다듬을 수 있습니다. 이때 개인정보·대외비는 빼 주세요.';
+  var ANSWER_GUIDE = '내 역할 질문부터 답하고, 다른 역할 질문은 상대 입장을 미리 생각해 보는 데 쓰세요. 적은 답은 \'내 학습일지\'에 모이고, 평소 쓰는 AI에 붙여넣어 실행 계획을 함께 다듬을 수 있어요. 이때 개인정보·대외비는 빼 주세요.';
   var JOURNAL_GUIDE = '역할별 답의 쓰임: 실무자 → 이번 주 과제, 관리자 → 팀 회의·1:1 대화, 기획·인사 → 제도 개선 메모';
   var KEYS = {
     answers: META.storagePrefix + 'answers',
     read: META.storagePrefix + 'read',
     role: META.storagePrefix + 'role',
-    theme: 'cr-viz-theme',
   };
   var itemsById = {};
   DATA.library.forEach(function (item) { itemsById[item.id] = item; });
@@ -740,17 +846,17 @@ a { color: var(--accent); text-underline-offset: 3px; }
     var list = DATA.library.filter(function (item) {
       return item.priority === 'recommended' && (item.recommendedFor || []).indexOf(state.role) !== -1;
     });
-    fillCards(byId('recList'), list, META.roleLabels[state.role] + ' 추천 자료는 청람 검수 후 공개됩니다.');
+    fillCards(byId('recList'), list, META.roleLabels[state.role] + ' 추천 자료는 청람 검수 후 공개돼요.');
   }
   function renderHome() {
     var must = DATA.library.filter(function (item) { return item.priority === 'must'; });
     var mustList = byId('mustList');
     mustList.classList.toggle('is-must', must.length > 1);
-    fillCards(mustList, must, '필독 자료는 청람 검수를 마치면 이곳에 올라옵니다.');
+    fillCards(mustList, must, '필독 자료는 청람 검수를 마치면 이곳에 올라와요.');
     renderRoleTabs();
     renderRecommended();
     byId('allSummary').textContent = '전체 자료 ' + DATA.library.length + '건 펼치기';
-    clear(byId('allList')).appendChild(sourceGroups(DATA.library, '아직 검수된 자료가 없습니다.'));
+    clear(byId('allList')).appendChild(sourceGroups(DATA.library, '아직 검수된 자료가 없어요.'));
   }
   byId('roleTabs').addEventListener('keydown', function (e) {
     if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
@@ -771,7 +877,7 @@ a { color: var(--accent); text-underline-offset: 3px; }
       el('p', { className: 'item-meta', text: item.issuer + ' · 발표 ' + formatDate(item.date) }),
       el('p', { className: 'feed-summary' }, [
         el('span', { className: 'label label-auto', text: 'AI 요약' }),
-        document.createTextNode(item.summaryPending ? '요약을 준비하고 있습니다. 원문을 먼저 확인해 주세요.' : item.summaryAi),
+        document.createTextNode(item.summaryPending ? '요약을 준비하고 있어요. 원문을 먼저 확인해 주세요.' : item.summaryAi),
       ]),
     ]);
   }
@@ -779,7 +885,7 @@ a { color: var(--accent); text-underline-offset: 3px; }
     var recent = DATA.feed.recent;
     var archive = DATA.feed.archive;
     var list = clear(byId('feedList'));
-    if (!recent.length) list.appendChild(el('li', {}, [emptyState('최근 4주 동안 새로 모은 자료가 없습니다.')]));
+    if (!recent.length) list.appendChild(el('li', {}, [emptyState('최근 4주 동안 새로 모은 자료가 없어요.')]));
     recent.forEach(function (item) { list.appendChild(feedItem(item)); });
     byId('feedArchiveDetails').hidden = !archive.length;
     byId('feedArchiveSummary').textContent = '지난 자료 ' + archive.length + '건';
@@ -805,7 +911,7 @@ a { color: var(--accent); text-underline-offset: 3px; }
         el('span', { className: 'stage-num', text: CIRCLED[stage.n - 1], attrs: { 'aria-hidden': 'true' } }),
         el('span', { className: 'stage-name', text: isDraft ? stage.n + '단계 · 확정 전' : stage.n + '단계 · ' + stage.nameKo }),
         isDraft ? null : el('span', { className: 'stage-en', text: stage.name }),
-        el('span', { className: 'stage-q', text: isDraft ? '이 단계의 질문은 정리 중입니다.' : stage.question }),
+        el('span', { className: 'stage-q', text: isDraft ? '이 단계의 질문은 정리 중이에요.' : stage.question }),
         el('span', { className: 'stage-count', text: '자료 ' + count + '건' }),
       ]);
       if (isDraft) tile.disabled = true;
@@ -825,7 +931,7 @@ a { color: var(--accent); text-underline-offset: 3px; }
       bar.appendChild(el('span', { text: CIRCLED[stageN - 1] + ' ' + (stage.nameKo || '확정 전 단계') + ' 단계 자료만 보는 중' }));
       bar.appendChild(el('a', { text: '필터 해제', attrs: { href: '#library' } }));
     }
-    clear(byId('libraryGroups')).appendChild(sourceGroups(items, '이 구분에 검수된 자료가 아직 없습니다.'));
+    clear(byId('libraryGroups')).appendChild(sourceGroups(items, '이 구분에 검수된 자료가 아직 없어요.'));
   }
 
   // === 상세 ===
@@ -859,7 +965,7 @@ a { color: var(--accent); text-underline-offset: 3px; }
         state.answers = withAnswer(state.answers, q.id, area.value);
         var ok = safeSet(KEYS.answers, JSON.stringify(state.answers));
         status.classList.toggle('is-error', !ok);
-        status.textContent = ok ? '저장됨' : '저장하지 못했습니다. 사생활 보호 모드라면 일반 창에서 열어 주세요.';
+        status.textContent = ok ? '저장됨' : '저장하지 못했어요. 사생활 보호 모드라면 일반 창에서 열어 주세요.';
       }, SAVE_DELAY_MS);
     });
     var label = el('label', { text: q.text, attrs: { for: fieldId } });
@@ -894,8 +1000,8 @@ a { color: var(--accent); text-underline-offset: 3px; }
     var root = clear(byId('itemDetail'));
     root.appendChild(el('a', { className: 'back-link', text: '← 자료실로', attrs: { href: '#library' } }));
     if (!item) {
-      root.appendChild(el('h2', { text: '자료를 찾을 수 없습니다', attrs: { id: 'item-heading' } }));
-      root.appendChild(emptyState('검수 전이거나 삭제된 자료입니다. 자료실에서 다른 자료를 골라 주세요.'));
+      root.appendChild(el('h2', { text: '자료를 찾을 수 없어요', attrs: { id: 'item-heading' } }));
+      root.appendChild(emptyState('검수 전이거나 삭제된 자료예요. 자료실에서 다른 자료를 골라 주세요.'));
       return;
     }
     var readBox = el('input', { attrs: { type: 'checkbox' } });
@@ -903,7 +1009,7 @@ a { color: var(--accent); text-underline-offset: 3px; }
     readBox.addEventListener('change', function () {
       state.read = withRead(state.read, item.id, readBox.checked);
       safeSet(KEYS.read, JSON.stringify(state.read));
-      announce(readBox.checked ? '읽음으로 표시했습니다.' : '읽음 표시를 지웠습니다.');
+      announce(readBox.checked ? '읽음으로 표시했어요.' : '읽음 표시를 지웠어요.');
     });
     root.appendChild(el('div', { className: 'item-head' }, [
       itemBadges(item),
@@ -934,7 +1040,7 @@ a { color: var(--accent); text-underline-offset: 3px; }
     root.appendChild(el('p', { className: 'item-meta', text: '작성한 답 ' + total + '개 · 자료 ' + written.length + '건' }));
     root.appendChild(el('p', { className: 'role-guide', text: JOURNAL_GUIDE }));
     if (!written.length) {
-      root.appendChild(emptyState('아직 남긴 답이 없습니다. 자료를 열고 질문에 답을 적어 보세요.'));
+      root.appendChild(emptyState('아직 남긴 답이 없어요. 자료를 열고 질문에 답을 적어 보세요.'));
       return;
     }
     written.forEach(function (entry) {
@@ -951,11 +1057,11 @@ a { color: var(--accent); text-underline-offset: 3px; }
     });
   }
   function clearAnswers() {
-    if (!window.confirm('이 브라우저에 저장된 답을 모두 지울까요? 되돌릴 수 없습니다.')) return;
+    if (!window.confirm('이 브라우저에 저장된 답을 모두 지울까요? 되돌릴 수 없어요.')) return;
     safeRemove(KEYS.answers);
     state.answers = {};
     renderJournal();
-    announce('저장된 답을 모두 지웠습니다.');
+    announce('저장된 답을 모두 지웠어요.');
   }
 
   // === 라우터 — #home, #feed, #map, #library, #library/stage-3, #item/gov-001, #journal ===
@@ -1012,19 +1118,29 @@ a { color: var(--accent); text-underline-offset: 3px; }
     var action = e.target.closest('[data-action]');
     if (!action) return;
     var name = action.getAttribute('data-action');
-    if (name === 'theme') applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
     if (name === 'print') { closeMenu(); window.print(); }
     if (name === 'clear-answers') clearAnswers();
   });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeMenu(); });
 
-  var currentTheme = safeGet(KEYS.theme) || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  function applyTheme(theme) {
-    document.documentElement.className = 'theme-' + theme;
-    byId('themeIcon').textContent = theme === 'dark' ? '🌙' : '☀️';
-    byId('themeLabel').textContent = theme === 'dark' ? '다크' : '라이트';
-    safeSet(KEYS.theme, theme);
-    currentTheme = theme;
+  // === 스크롤 진행바 — 프레임당 한 번만 transform을 바꾼다 ===
+  var progressBar = byId('prog');
+  var progressQueued = false;
+  function updateProgress() {
+    progressQueued = false;
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    progressBar.style.transform = 'scaleX(' + (max > 0 ? Math.min(window.scrollY / max, 1) : 0) + ')';
+  }
+  window.addEventListener('scroll', function () {
+    if (progressQueued) return;
+    progressQueued = true;
+    window.requestAnimationFrame(updateProgress);
+  }, { passive: true });
+
+  function renderKpis() {
+    byId('kpiItems').textContent = DATA.library.length + '건';
+    byId('kpiStages').textContent = DATA.stages.length + '단계';
+    byId('kpiFeed').textContent = DATA.feed.recent.length + '건';
   }
 
   // === crmc.co.kr 공통 네비 — 실제 사이트에서 열 때만 불러온다. 파일·로컬 미리보기에서는 건너뛴다 ===
@@ -1039,7 +1155,7 @@ a { color: var(--accent); text-underline-offset: 3px; }
   }
 
   // === 시작 ===
-  applyTheme(currentTheme);
+  renderKpis();
   byId('previewBanner').hidden = !META.preview;
   byId('builtAt').textContent = '업데이트 ' + formatDate(META.builtAt.slice(0, 10));
   renderFeed();
