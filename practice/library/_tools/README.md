@@ -37,7 +37,7 @@ npm run build:preview  # _preview/index.html 생성
 
 ## 주간 자동 수집 (`_tools/collect.mjs`)
 
-GitHub Actions(`.github/workflows/ax-library-weekly.yml`, 저장소 루트)가 매주 월요일 06:00(KST)에 실행한다. Actions 탭에서 "Run workflow"로 수동 실행·드라이런도 할 수 있다.
+GitHub Actions(`.github/workflows/ax-library-weekly.yml`, 저장소 루트)가 매주 월요일 09:00(KST)에 실행한다. Actions 탭에서 "Run workflow"로 수동 실행·드라이런도 할 수 있다.
 
 ```bash
 node _tools/collect.mjs --dry-run --no-ai   # 실제 사이트 수집·중복 점검만 (파일 안 씀)
