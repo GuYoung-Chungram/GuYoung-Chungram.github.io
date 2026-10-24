@@ -41,6 +41,9 @@
     ::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.5); border-radius: 9999px; }
     ::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.8); }
 
+    /* 빈 칸 안내 문구는 흐리게 — 실제 입력값과 구분 */
+    input::placeholder { color: #475569; opacity: 1; }
+
     /* 3D Perspective Card */
     .card-perspective { perspective: 1200px; }
     .card-preserve-3d {
@@ -138,7 +141,16 @@
               <i data-lucide="id-card" class="w-4 h-4 text-emerald-400"></i>
               기본 프로필 설정
             </h2>
-            <span class="text-[11px] px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 font-mono">실시간 동기화</span>
+            <div class="flex items-center gap-1.5">
+              <button type="button" onclick="loadSample()" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[11px] font-semibold text-slate-300 transition">
+                <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+                샘플
+              </button>
+              <button type="button" onclick="resetCard()" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-rose-600/15 hover:bg-rose-600/30 border border-rose-500/40 text-[11px] font-semibold text-rose-300 transition">
+                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                초기화
+              </button>
+            </div>
           </div>
 
           <!-- Photo Upload & Quick Reset -->
@@ -174,52 +186,52 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label class="block text-xs font-medium text-slate-400 mb-1.5">이름 (한글)</label>
-              <input type="text" id="input-name" value="정구영" placeholder="홍길동" oninput="updateCardData()" 
+              <input type="text" id="input-name" value="홍길동" placeholder="이름" oninput="updateCardData()" 
                 class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition">
             </div>
             <div>
               <label class="block text-xs font-medium text-slate-400 mb-1.5">학위 / 영문 성명</label>
-              <input type="text" id="input-en-name" value="Ph.D. | GuYoung Jung" placeholder="Ph.D. | Gildong Hong" oninput="updateCardData()" 
+              <input type="text" id="input-en-name" value="Gildong Hong" placeholder="Gildong Hong" oninput="updateCardData()" 
                 class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition">
             </div>
 
             <div>
               <label class="block text-xs font-medium text-slate-400 mb-1.5">회사 / 소속</label>
-              <input type="text" id="input-company" value="청람M&C" placeholder="청람M&C" oninput="updateCardData()" 
+              <input type="text" id="input-company" value="샘플컴퍼니" placeholder="회사명" oninput="updateCardData()" 
                 class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition">
             </div>
             <div>
               <label class="block text-xs font-medium text-slate-400 mb-1.5">직책 / 포지션</label>
-              <input type="text" id="input-role" value="CEO" placeholder="CEO / 대표이사" oninput="updateCardData()" 
+              <input type="text" id="input-role" value="대표" placeholder="CEO / 대표이사" oninput="updateCardData()" 
                 class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition">
             </div>
 
             <div class="sm:col-span-2">
               <label class="block text-xs font-medium text-slate-400 mb-1.5">슬로건 / 한 줄 소개</label>
-              <input type="text" id="input-bio" value="AI 시대에 진짜 일하는 방법을 설계하고, 체계적인 변화를 돕습니다." placeholder="소개 문구" oninput="updateCardData()" 
+              <input type="text" id="input-bio" value="고객의 성장을 함께 설계하는 파트너입니다." placeholder="소개 문구" oninput="updateCardData()" 
                 class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition">
             </div>
 
             <div>
               <label class="block text-xs font-medium text-slate-400 mb-1.5">휴대전화 번호</label>
-              <input type="tel" id="input-phone" value="010-2605-9683" placeholder="010-0000-0000" oninput="updateCardData()" 
+              <input type="tel" id="input-phone" value="010-1234-5678" placeholder="010-0000-0000" oninput="updateCardData()" 
                 class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition">
             </div>
             <div>
               <label class="block text-xs font-medium text-slate-400 mb-1.5">이메일 주소</label>
-              <input type="email" id="input-email" value="gyjung79@gmail.com" placeholder="name@company.com" oninput="updateCardData()" 
+              <input type="email" id="input-email" value="hello@example.com" placeholder="name@company.com" oninput="updateCardData()" 
                 class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition">
             </div>
 
             <div class="sm:col-span-2">
               <label class="block text-xs font-medium text-slate-400 mb-1.5">웹사이트 URL</label>
-              <input type="url" id="input-website" value="https://www.crmc.co.kr" placeholder="https://www.crmc.co.kr" oninput="updateCardData()" 
+              <input type="url" id="input-website" value="https://www.example.com" placeholder="https://" oninput="updateCardData()" 
                 class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition">
             </div>
 
             <div class="sm:col-span-2">
               <label class="block text-xs font-medium text-slate-400 mb-1.5">사무실 주소</label>
-              <input type="text" id="input-location" value="서울특별시 광진구 능동로 19길 35, 1417호" placeholder="서울시 광진구..." oninput="updateCardData()" 
+              <input type="text" id="input-location" value="서울특별시 샘플구 예시로 123, 4층" placeholder="서울특별시 ○○구 ○○로 00" oninput="updateCardData()" 
                 class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition">
             </div>
           </div>
@@ -354,7 +366,7 @@
                 <div>
                   <span id="disp-company-badge" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-extrabold tracking-wider uppercase border shadow-sm">
                     <span class="w-2 h-2 rounded-full bg-current animate-pulse"></span>
-                    <span id="disp-company">청람M&C</span>
+                    <span id="disp-company">샘플컴퍼니</span>
                   </span>
                 </div>
 
@@ -387,12 +399,12 @@
 
                 <div class="flex-1 space-y-1.5 w-full sm:w-auto">
                   <div class="flex flex-wrap items-baseline gap-2 justify-center sm:justify-start">
-                    <h3 id="disp-name" class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white leading-tight">정구영</h3>
-                    <span id="disp-en-name" class="text-xs sm:text-sm font-semibold opacity-80 tracking-wide text-slate-300">Ph.D. | GuYoung Jung</span>
+                    <h3 id="disp-name" class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white leading-tight">홍길동</h3>
+                    <span id="disp-en-name" class="text-xs sm:text-sm font-semibold opacity-80 tracking-wide text-slate-300">Gildong Hong</span>
                   </div>
-                  <p id="disp-role" class="text-sm sm:text-base font-bold tracking-wide text-emerald-400 leading-normal">CEO</p>
+                  <p id="disp-role" class="text-sm sm:text-base font-bold tracking-wide text-emerald-400 leading-normal">대표</p>
                   <p id="disp-bio" class="text-xs sm:text-[13px] opacity-90 leading-relaxed text-slate-200 break-keep">
-                    AI 시대에 진짜 일하는 방법을 설계하고, 체계적인 변화를 돕습니다.
+                    고객의 성장을 함께 설계하는 파트너입니다.
                   </p>
                 </div>
               </div>
@@ -402,27 +414,27 @@
                 
                 <!-- Row 1: 전화번호 & 이메일 (2분할) -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                  <a id="disp-phone-link" href="tel:01026059683" class="contact-box flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl backdrop-blur-md bg-white/5 hover:bg-white/10 transition border border-white/10 shadow-sm min-h-[44px]">
+                  <a id="disp-phone-link" href="tel:01012345678" class="contact-box flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl backdrop-blur-md bg-white/5 hover:bg-white/10 transition border border-white/10 shadow-sm min-h-[44px]">
                     <div class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0">
                       <i data-lucide="phone" class="w-3.5 h-3.5"></i>
                     </div>
-                    <span id="disp-phone" class="font-mono tracking-wide text-slate-100 font-medium">010-2605-9683</span>
+                    <span id="disp-phone" class="font-mono tracking-wide text-slate-100 font-medium">010-1234-5678</span>
                   </a>
 
-                  <a id="disp-email-link" href="mailto:gyjung79@gmail.com" class="contact-box flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl backdrop-blur-md bg-white/5 hover:bg-white/10 transition border border-white/10 shadow-sm min-h-[44px]">
+                  <a id="disp-email-link" href="mailto:hello@example.com" class="contact-box flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl backdrop-blur-md bg-white/5 hover:bg-white/10 transition border border-white/10 shadow-sm min-h-[44px]">
                     <div class="w-7 h-7 rounded-lg bg-teal-500/20 text-teal-400 flex items-center justify-center flex-shrink-0">
                       <i data-lucide="mail" class="w-3.5 h-3.5"></i>
                     </div>
-                    <span id="disp-email" class="font-mono tracking-wide text-slate-100 font-medium truncate">gyjung79@gmail.com</span>
+                    <span id="disp-email" class="font-mono tracking-wide text-slate-100 font-medium truncate">hello@example.com</span>
                   </a>
                 </div>
 
                 <!-- Row 2: 웹사이트 (유동 분할 또는 단독) -->
-                <a id="disp-website-link" href="https://www.crmc.co.kr" target="_blank" class="contact-box flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl backdrop-blur-md bg-white/5 hover:bg-white/10 transition border border-white/10 shadow-sm min-h-[44px]">
+                <a id="disp-website-link" href="https://www.example.com" target="_blank" class="contact-box flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl backdrop-blur-md bg-white/5 hover:bg-white/10 transition border border-white/10 shadow-sm min-h-[44px]">
                   <div class="w-7 h-7 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center flex-shrink-0">
                     <i data-lucide="globe" class="w-3.5 h-3.5"></i>
                   </div>
-                  <span id="disp-website" class="font-mono tracking-wide text-slate-100 font-medium truncate">www.crmc.co.kr</span>
+                  <span id="disp-website" class="font-mono tracking-wide text-slate-100 font-medium truncate">www.example.com</span>
                 </a>
 
                 <!-- Row 3: 긴 주소 전용 Full-Width 유동 박스 (줄바꿈 및 패딩 자동 확장) -->
@@ -431,7 +443,7 @@
                     <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
                   </div>
                   <span id="disp-location" class="leading-relaxed text-slate-100 font-medium text-[11.5px] sm:text-xs break-keep">
-                    서울특별시 광진구 능동로 19길 35, 1417호
+                    서울특별시 샘플구 예시로 123, 4층
                   </span>
                 </div>
 
@@ -480,15 +492,15 @@
 
     // State management
     const state = {
-      name: "정구영",
-      enName: "Ph.D. | GuYoung Jung",
-      company: "청람M&C",
-      role: "CEO",
-      bio: "AI 시대에 진짜 일하는 방법을 설계하고, 체계적인 변화를 돕습니다.",
-      phone: "010-2605-9683",
-      email: "gyjung79@gmail.com",
-      website: "https://www.crmc.co.kr",
-      location: "서울특별시 광진구 능동로 19길 35, 1417호",
+      name: "홍길동",
+      enName: "Gildong Hong",
+      company: "샘플컴퍼니",
+      role: "대표",
+      bio: "고객의 성장을 함께 설계하는 파트너입니다.",
+      phone: "010-1234-5678",
+      email: "hello@example.com",
+      website: "https://www.example.com",
+      location: "서울특별시 샘플구 예시로 123, 4층",
       avatarUrl: DEFAULT_AVATARS.sample1,
       theme: "neo-cyber",
       pattern: "grid"
@@ -644,38 +656,74 @@
       }
     }
 
-    // Live update card from form fields
-    function updateCardData() {
-      state.name = document.getElementById('input-name').value.trim() || '정구영';
-      state.enName = document.getElementById('input-en-name').value.trim() || '';
-      state.company = document.getElementById('input-company').value.trim() || '청람M&C';
-      state.role = document.getElementById('input-role').value.trim() || '직책';
-      state.bio = document.getElementById('input-bio').value.trim() || '';
-      state.phone = document.getElementById('input-phone').value.trim() || '-';
-      state.email = document.getElementById('input-email').value.trim() || '-';
-      state.website = document.getElementById('input-website').value.trim() || 'https://';
-      state.location = document.getElementById('input-location').value.trim() || '-';
+    // 샘플 데이터 (배포용 — 실제 개인정보 아님)
+    const SAMPLE_DATA = {
+      name: '홍길동', enName: 'Gildong Hong', company: '샘플컴퍼니', role: '대표',
+      bio: '고객의 성장을 함께 설계하는 파트너입니다.',
+      phone: '010-1234-5678', email: 'hello@example.com',
+      website: 'https://www.example.com', location: '서울특별시 샘플구 예시로 123, 4층'
+    };
+    const FIELD_IDS = {
+      name: 'input-name', enName: 'input-en-name', company: 'input-company', role: 'input-role',
+      bio: 'input-bio', phone: 'input-phone', email: 'input-email',
+      website: 'input-website', location: 'input-location'
+    };
 
-      // Update Card Visuals
-      document.getElementById('disp-name').textContent = state.name;
-      document.getElementById('disp-en-name').textContent = state.enName;
-      document.getElementById('disp-company').textContent = state.company;
-      document.getElementById('disp-role').textContent = state.role;
-      document.getElementById('disp-bio').textContent = state.bio;
-      document.getElementById('disp-phone').textContent = state.phone;
-      document.getElementById('disp-email').textContent = state.email;
-      
-      const cleanWeb = state.website.replace(/^https?:\/\//i, '');
-      document.getElementById('disp-website').textContent = cleanWeb;
-      document.getElementById('disp-location').textContent = state.location;
+    // Live update card from form fields
+    //  state에는 입력값 그대로(빈 값 허용) 저장 → 빈 칸은 카드에만 안내 문구로 표시, QR·vCard에는 넣지 않음
+    function updateCardData() {
+      Object.keys(FIELD_IDS).forEach(k => {
+        state[k] = document.getElementById(FIELD_IDS[k]).value.trim();
+      });
+
+      const show = (id, v, hint) => {
+        const el = document.getElementById(id);
+        el.textContent = v || hint;
+        el.style.opacity = v ? '' : '0.45';
+      };
+      show('disp-name', state.name, '이름');
+      show('disp-en-name', state.enName, '');
+      show('disp-company', state.company, '회사명');
+      show('disp-role', state.role, '직책');
+      show('disp-bio', state.bio, '');
+      show('disp-phone', state.phone, '휴대전화');
+      show('disp-email', state.email, '이메일');
+      show('disp-website', state.website.replace(/^https?:\/\//i, ''), '웹사이트');
+      show('disp-location', state.location, '주소');
 
       // Update interactive links
-      document.getElementById('disp-phone-link').href = `tel:${state.phone.replace(/[^0-9+]/g, '')}`;
-      document.getElementById('disp-email-link').href = `mailto:${state.email}`;
-      document.getElementById('disp-website-link').href = state.website.startsWith('http') ? state.website : `https://${state.website}`;
+      document.getElementById('disp-phone-link').href = state.phone ? `tel:${state.phone.replace(/[^0-9+]/g, '')}` : '#';
+      document.getElementById('disp-email-link').href = state.email ? `mailto:${state.email}` : '#';
+      document.getElementById('disp-website-link').href = state.website
+        ? (/^https?:\/\//i.test(state.website) ? state.website : `https://${state.website}`) : '#';
 
       // Refresh QR Code
       renderQR();
+    }
+
+    // 입력값 일괄 채우기
+    function fillFields(data) {
+      Object.keys(FIELD_IDS).forEach(k => {
+        document.getElementById(FIELD_IDS[k]).value = data[k] || '';
+      });
+      updateCardData();
+    }
+
+    // 초기화: 모든 입력값과 사진을 한 번에 지움
+    function resetCard() {
+      if (!confirm('입력한 정보와 사진을 모두 지울까요?')) return;
+      fillFields({});
+      const fileInput = document.getElementById('input-avatar-file');
+      if (fileInput) fileInput.value = '';
+      setAvatarImage(DEFAULT_AVATARS.sample1);
+      showToast('모든 정보가 초기화되었습니다. 내 정보를 새로 입력하세요.');
+    }
+
+    // 샘플 데이터 다시 불러오기
+    function loadSample() {
+      fillFields(SAMPLE_DATA);
+      setAvatarImage(DEFAULT_AVATARS.sample1);
+      showToast('샘플 데이터를 불러왔습니다.');
     }
 
     // Set Theme
@@ -759,7 +807,7 @@
         `N:${nameToN(state.name)}`,
         `FN:${vEsc(state.name)}`,
         has(state.company) ? `ORG:${vEsc(state.company)}` : '',
-        has(state.role) && state.role !== '직책' ? `TITLE:${vEsc(state.role)}` : '',
+        has(state.role) ? `TITLE:${vEsc(state.role)}` : '',
         tel ? `TEL;TYPE=CELL:${tel}` : '',
         has(state.email) ? `EMAIL:${state.email}` : '',
       ];
@@ -785,6 +833,10 @@
         return;
       }
       qrcode.stringToBytes = qrcode.stringToBytesFuncs['UTF-8'];
+      if (!state.name && !state.phone && !state.email) {
+        box.innerHTML = '<span style="font-size:10px;line-height:1.35;color:#64748b;text-align:center">이름·연락처를<br>입력하면<br>QR이 생성됩니다</span>';
+        return;
+      }
 
       const tryMake = (text, level) => {
         const qr = qrcode(0, level);   // 0 = 데이터 길이에 맞춰 버전 자동 선택
@@ -856,7 +908,7 @@
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `${state.name}_연락처.vcf`);
+      link.setAttribute('download', `${state.name || '명함'}_연락처.vcf`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -925,7 +977,7 @@
         const imgData = canvas.toDataURL('image/png');
         const link = document.createElement('a');
         link.href = imgData;
-        link.download = `${state.name}_디지털명함.png`;
+        link.download = `${state.name || '명함'}_디지털명함.png`;
         link.click();
         showToast('사진 비율과 텍스트가 최적화된 명함이 저장되었습니다!');
       }).catch(err => {
