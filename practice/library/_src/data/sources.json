@@ -98,6 +98,26 @@
       "url": "https://www.accenture.com/us-en/industries/public-service-index",
       "enabled": false,
       "rank": 2
+    },
+    {
+      "id": "mckinsey-mail",
+      "name": "McKinsey & Company (AI 인사이트 메일)",
+      "sourceType": "consulting",
+      "method": "list",
+      "url": "https://www.mckinsey.com/featured-insights",
+      "enabled": false,
+      "rank": 2,
+      "note": "collect.mjs 대상 아님. 매주 월요일 Claude 예약 작업이 대표님 Gmail의 McKinsey 구독 메일(publishing@email.mckinsey.com)에서 AI·조직 관련 글을 최대 4건 골라 feed.json에 직접 추가한다."
+    },
+    {
+      "id": "deloitte-kr-ai",
+      "name": "Deloitte Korea AI Institute",
+      "sourceType": "consulting",
+      "method": "list",
+      "url": "https://www.deloitte.com/kr/ko/issues/generative-ai.html",
+      "enabled": false,
+      "rank": 2,
+      "note": "collect.mjs 대상 아님. 매주 월요일 Claude 예약 작업이 '최신 생성형 AI 인사이트' 목록에서 공공 AX 관련 글을 2건 골라 feed.json에 직접 추가한다."
     }
   ]
 }

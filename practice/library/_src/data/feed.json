@@ -5,6 +5,87 @@
   },
   "items": [
     {
+      "id": "f-9d653fbf3504",
+      "sourceId": "mckinsey-mail",
+      "sourceType": "consulting",
+      "issuer": "McKinsey & Company",
+      "date": "2026-10-22",
+      "title": "What is a forward-deployed engineer?",
+      "url": "https://www.mckinsey.com/featured-insights/mckinsey-explainers/what-is-a-forward-deployed-engineer",
+      "summaryAi": "AI를 조직의 실제 문제에 맞춰 붙이는 '현장 배치 엔지니어(FDE)'의 역할과 일하는 방식을 설명한다.",
+      "stageGuess": [
+        3,
+        5
+      ],
+      "collectedAt": "2026-10-26T05:42:39.000Z",
+      "promoted": false
+    },
+    {
+      "id": "f-223a679e83d3",
+      "sourceId": "mckinsey-mail",
+      "sourceType": "consulting",
+      "issuer": "McKinsey & Company",
+      "date": "2026-10-21",
+      "title": "What does AI really cost?",
+      "url": "https://www.mckinsey.com/featured-insights/mckinsey-explainers/what-does-ai-really-cost",
+      "summaryAi": "사용량 과금 시대에 AI 비용이 불어나는 이유와, 통제 없이 지출이 8배로 뛴 은행 사례로 관리법을 짚는다.",
+      "stageGuess": [
+        9,
+        10
+      ],
+      "collectedAt": "2026-10-26T05:42:39.000Z",
+      "promoted": false
+    },
+    {
+      "id": "f-f9d68301061f",
+      "sourceId": "mckinsey-mail",
+      "sourceType": "consulting",
+      "issuer": "McKinsey & Company",
+      "date": "2026-10-20",
+      "title": "The AI value curve: The economics of applying AI to existing work",
+      "url": "https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-ai-value-curve-the-economics-of-applying-ai-to-existing-work",
+      "summaryAi": "도입률이 아닌 가치를 재야 한다며, 기존 업무 중 AI 자동화가 가장 비용 효과적인 지점을 찾는 틀을 제시한다.",
+      "stageGuess": [
+        4,
+        10
+      ],
+      "collectedAt": "2026-10-26T05:42:39.000Z",
+      "promoted": false
+    },
+    {
+      "id": "f-8ca8520cd218",
+      "sourceId": "deloitte-kr-ai",
+      "sourceType": "consulting",
+      "issuer": "Deloitte Korea",
+      "date": "2026-09-09",
+      "title": "AI 에이전트 시대, PI의 핵심 산출물은 ‘To-Be 프로세스’가 아니라 ‘운영모델’이다",
+      "url": "https://www.deloitte.com/kr/ko/Industries/insurance/perspectives/ai-agent-process-innovation-operating-model-transformation.html",
+      "summaryAi": "AI 에이전트 도입은 프로세스 개선이 아니라 운영모델 전환이라며 권한·결정·증적·예외 4대 통제 설계를 제시한다.",
+      "stageGuess": [
+        2,
+        6,
+        9
+      ],
+      "collectedAt": "2026-10-26T05:42:39.000Z",
+      "promoted": false
+    },
+    {
+      "id": "f-aea02ad46b7f",
+      "sourceId": "deloitte-kr-ai",
+      "sourceType": "consulting",
+      "issuer": "Deloitte Korea",
+      "date": "2026-08-25",
+      "title": "금융 AX 성과 격차의 출발점, AI 거버넌스",
+      "url": "https://www.deloitte.com/kr/ko/Industries/financial-services/perspectives/banking-on-trust.html",
+      "summaryAi": "AI 활용 인력은 1년 새 두 배가 됐지만 거버넌스 성숙 기관은 13%뿐이라며, 안전한 AI 확산 공식을 정리했다.",
+      "stageGuess": [
+        1,
+        9
+      ],
+      "collectedAt": "2026-10-26T05:42:39.000Z",
+      "promoted": false
+    },
+    {
       "id": "f-a4554c7270b0",
       "sourceId": "mois",
       "sourceType": "gov",
