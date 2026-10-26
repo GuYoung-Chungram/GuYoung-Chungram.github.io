@@ -1,5 +1,5 @@
 # 청람 AX 공공 러닝 라이브러리 — 주간 자동 수집
-# 매주 월요일 09:00(KST)에 등록 기관의 새 발표를 모아 practice/library/_src/data/feed.json을 갱신하고,
+# 매주 월요일 08:07(KST)에 등록 기관의 새 발표를 모아 practice/library/_src/data/feed.json을 갱신하고,
 # 단일 HTML(practice/library/index.html)을 다시 빌드해 main에 커밋한다. GitHub Pages가 자동 배포한다.
 # 필요한 설정: Settings → Secrets and variables → Actions
 #   - Secret  GEMINI_API_KEY : 요약·판별용 키 (없으면 제목·링크만 올리고 요약은 다음 실행으로 미룸)
@@ -9,6 +9,12 @@ name: AX 라이브러리 주간 수집
 on:
   schedule:
     - cron: '7 23 * * 0'   # 일요일 23:07 UTC = 월요일 08:07 KST (정각 혼잡 지연을 피해 일찍 시작)
+  # 해외 인사이트(Claude 예약 작업)가 feed.json을 올리면 수집 없이 index.html만 다시 빌드한다
+  push:
+    branches: [main]
+    paths:
+      - 'practice/library/_src/data/feed.json'
+      - 'practice/library/_src/data/sources.json'
   workflow_dispatch:
     inputs:
       dry_run:
@@ -41,6 +47,7 @@ jobs:
         run: npm test
 
       - name: 수집·중복 제거·요약
+        if: ${{ github.event_name != 'push' }}
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
@@ -61,4 +68,5 @@ jobs:
             exit 0
           fi
           git commit -m "chore: AX 라이브러리 주간 수집 $(TZ=Asia/Seoul date +%Y-%m-%d)"
+          git pull --rebase
           git push
