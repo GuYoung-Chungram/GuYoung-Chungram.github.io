@@ -1,29 +1,88 @@
 {
-  "meta": { "sample": true, "note": "화면 확인용 샘플. PRD 공공기관 발표자료 트랙의 내용을 옮겼다. 수집기가 생기면 자동으로 덮어쓴다." },
+  "meta": {
+    "note": "매주 자동 수집 결과입니다. 직접 고치지 마세요(승격 표시 promoted만 예외).",
+    "lastRunAt": "2026-10-26T04:16:06.469Z"
+  },
   "items": [
     {
-      "id": "f-sample-001", "sourceId": "ai-committee", "sourceType": "gov",
-      "issuer": "국가AI전략위원회(공공 AX 분과)", "date": "2026-10-06",
-      "title": "공공 AX 규칙 재설계 발표",
-      "url": "https://zdnet.co.kr/view/?no=20261006143618",
-      "summaryAi": "도입 장벽은 기술보다 제도라며 정부혁신평가에 AI 지표를 반영하고 AI 서비스 조달 방식을 검토한다.",
-      "stageGuess": [9, 10], "collectedAt": "2026-10-13T06:00:00+09:00", "promoted": false
+      "id": "f-a4554c7270b0",
+      "sourceId": "mois",
+      "sourceType": "gov",
+      "issuer": "행정안전부",
+      "date": "2026-10-21",
+      "title": "국가정보자원관리원, ‘입주기관 협의회’ 개최",
+      "url": "https://www.mois.go.kr/frt/bbs/type010/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000008&nttId=130379",
+      "summaryAi": "국가정보자원관리원은 중앙 부처 및 공공기관 정보화 담당자들과 AI 활용 해킹 대응 보안체계 강화를 논의했다.",
+      "stageGuess": [
+        9
+      ],
+      "collectedAt": "2026-10-26T04:16:06.469Z",
+      "promoted": false
     },
     {
-      "id": "f-sample-002", "sourceId": "mois", "sourceType": "gov",
-      "issuer": "행정안전부·NIA", "date": "2026-05-07",
-      "title": "AI 챔피언 고급과정 운영",
-      "url": "https://www.newspim.com/news/view/20260507000299",
-      "summaryAi": "공무원이 바이브 코딩·에이전트로 직접 AI 프로그램을 개발하고, 우수 과제는 기관 도입을 지원한다.",
-      "stageGuess": [2, 4], "collectedAt": "2026-10-06T06:00:00+09:00", "promoted": false
+      "id": "f-6589c92e940c",
+      "sourceId": "mois",
+      "sourceType": "gov",
+      "issuer": "행정안전부",
+      "date": "2026-10-21",
+      "title": "공무원이 만든 AI 도구, 범정부 서비스로 키운다… 행안부 공공 AI 대전환 챌린지",
+      "url": "https://www.mois.go.kr/frt/bbs/type010/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000008&nttId=130377",
+      "summaryAi": "행정안전부는 공무원이 직접 만든 AI 도구의 현장 활용 가능성을 겨루고 범정부 서비스로 확대하기 위한 챌린지를 개최한다.",
+      "stageGuess": [
+        1,
+        4,
+        10
+      ],
+      "collectedAt": "2026-10-26T04:16:06.469Z",
+      "promoted": false
     },
     {
-      "id": "f-sample-003", "sourceId": "nia", "sourceType": "gov",
-      "issuer": "NIA", "date": "2026-01-09",
-      "title": "2026년 12대 AI·디지털 트렌드",
-      "url": "https://eiec.kdi.re.kr/policy/domesticView.do?ac=0000201830",
-      "summaryAi": "스스로 일하는 AI 에이전트와 버티컬 AI 확산 등 정책 기초 전망을 정리했다.",
-      "stageGuess": [2], "collectedAt": "2026-09-08T06:00:00+09:00", "promoted": false
+      "id": "f-55867ce3353b",
+      "sourceId": "msit",
+      "sourceType": "gov",
+      "issuer": "과학기술정보통신부",
+      "date": "2026-10-13",
+      "title": "국가 인공지능 데이터의 체계적 관리·활용을 위한 ｢인공지능 기본법｣, ｢데이터산업법｣ 개정안 국무회의 통과",
+      "url": "https://www.msit.go.kr/bbs/view.do?sCode=user&bbsSeqNo=94&nttSeqNo=3187861",
+      "summaryAi": "인공지능 기본법 및 데이터산업법 개정안이 국무회의를 통과하여 국가 AI 데이터 관리 및 활용 체계를 강화한다.",
+      "stageGuess": [
+        9
+      ],
+      "collectedAt": "2026-10-26T04:16:06.469Z",
+      "promoted": false
+    },
+    {
+      "id": "f-711b8d1b3ad7",
+      "sourceId": "msit",
+      "sourceType": "gov",
+      "issuer": "과학기술정보통신부",
+      "date": "2026-10-12",
+      "title": "(관계 부처합동) 인공지능이 폐기물 종류 확인부터 배출 방법 안내까지 한번에! ‘인공지능 폐기물 처리 도우미’ 앱 실증 개시",
+      "url": "https://www.msit.go.kr/bbs/view.do?sCode=user&bbsSeqNo=94&nttSeqNo=3187857",
+      "summaryAi": "과기정통부와 기후에너지환경부가 공공 AI 전환 사업으로 AI 폐기물 처리 도우미 앱 시범 서비스를 개시한다.",
+      "stageGuess": [
+        1,
+        4
+      ],
+      "collectedAt": "2026-10-26T04:16:06.469Z",
+      "promoted": false
+    },
+    {
+      "id": "f-e1419f52162a",
+      "sourceId": "nia",
+      "sourceType": "gov",
+      "issuer": "한국지능정보사회진흥원(NIA)",
+      "date": "2026-10-19",
+      "title": "NIA, 공무원의 AI 활용 직접개발 산출물의 권리 귀속과 인센티브 방안 마련을 위한 「제1회 AI 정부 포럼」 개최",
+      "url": "https://www.nia.or.kr/site/nia_kor/ex/bbs/View.do?cbIdx=90549&bcIdx=30078&parentSeq=30078",
+      "summaryAi": "NIA는 공무원의 AI 활용 직접개발 산출물에 대한 권리 귀속 및 인센티브 방안 마련을 위한 AI 정부 포럼을 개최한다.",
+      "stageGuess": [
+        5,
+        9,
+        10
+      ],
+      "collectedAt": "2026-10-26T04:16:06.469Z",
+      "promoted": false
     }
   ]
 }
