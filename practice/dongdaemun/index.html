@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>보고서킷 — 청람M&C</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1652D8">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="보고서킷">
+<link rel="icon" href="icon-192.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  :root{
+    --bg:#FFFFFF; --surface:#F8FAFF; --surface-hover:#EEF3FD;
+    --border:#D0D9F5; --text:#1A1A1A; --text-secondary:#666666;
+    --accent:#1652D8; --accent-secondary:#0F3D99;
+    --warn:#E88F00; --ok:#059669;
+  }
+  html,body{height:100%;}
+  body{
+    font-family:'Noto Sans KR',-apple-system,BlinkMacSystemFont,sans-serif;
+    background:var(--bg); color:var(--text); line-height:1.6;
+    -webkit-font-smoothing:antialiased; overscroll-behavior-y:none;
+    padding-top:env(safe-area-inset-top); padding-bottom:env(safe-area-inset-bottom);
+  }
+  .app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;background:var(--bg);}
+
+  .topbar{
+    background:linear-gradient(135deg,var(--accent) 0%,var(--accent-secondary) 100%);
+    color:#fff; padding:22px 20px 26px; position:relative;
+  }
+  .topbar-row{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+  .topbar h1{font-size:1.35rem;font-weight:800;letter-spacing:-0.02em;}
+  .topbar p{font-size:0.85rem;color:rgba(255,255,255,0.85);margin-top:4px;}
+  .back-btn{
+    display:none; align-items:center; gap:6px; background:rgba(255,255,255,0.15);
+    border:none; color:#fff; font-size:0.85rem; font-weight:600;
+    padding:7px 12px; border-radius:20px; margin-bottom:12px; cursor:pointer;
+  }
+  .back-btn.show{display:inline-flex;}
+  .gear-btn{
+    background:rgba(255,255,255,0.15); border:none; color:#fff; width:36px;height:36px;
+    border-radius:50%; font-size:1rem; cursor:pointer; flex-shrink:0; display:none;
+  }
+  .gear-btn.show{display:block;}
+  .status-chip{
+    display:inline-block; font-size:0.72rem; font-weight:600; padding:3px 10px;
+    border-radius:20px; margin-top:10px;
+  }
+  .status-chip.live{background:rgba(255,255,255,0.18);color:#fff;}
+  .status-chip.sample{background:rgba(255,255,255,0.18);color:#fff;}
+
+  main{flex:1; padding:20px; padding-bottom:40px;}
+
+  #screen-home .hint{color:var(--text-secondary);font-size:0.88rem;margin-bottom:16px;}
+  .doc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .doc-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:16px;
+    padding:20px 14px; text-align:left; cursor:pointer;
+    display:flex; flex-direction:column; gap:10px; min-height:120px;
+    transition:transform .12s ease; -webkit-tap-highlight-color:transparent;
+  }
+  .doc-card:active{transform:scale(0.97);}
+  .doc-card .glyph{width:30px;height:34px;position:relative;background:#fff;border:2px solid var(--accent);border-radius:4px;flex-shrink:0;}
+  .doc-card .glyph::before{content:'';position:absolute;top:6px;left:5px;right:5px;height:2.5px;background:var(--accent);box-shadow:0 7px 0 var(--accent),0 14px 0 var(--accent);}
+  .doc-card b{font-size:0.95rem;font-weight:700;line-height:1.3;}
+  .doc-card span.sub{font-size:0.75rem;color:var(--text-secondary);}
+
+  #screen-form,#screen-result,#screen-admin-login,#screen-admin,#screen-admin-edit{display:none;}
+  .admin-login-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px 18px;margin-top:10px;}
+  .admin-login-card .field-note{color:var(--text-secondary);margin:0 0 18px;}
+  .form-title{font-size:1.15rem;font-weight:700;margin-bottom:4px;}
+  .form-sub{color:var(--text-secondary);font-size:0.85rem;margin-bottom:20px;}
+  .field{margin-bottom:16px;}
+  .field label{display:block;font-size:0.85rem;font-weight:600;margin-bottom:6px;}
+  .field label .req{color:var(--warn);margin-left:2px;}
+  .field input,.field select,.field textarea{
+    width:100%; border:1px solid var(--border); border-radius:10px;
+    padding:12px 14px; font-size:0.95rem; font-family:inherit; background:var(--bg); color:var(--text);
+  }
+  .field input:focus,.field select:focus,.field textarea:focus{outline:2px solid var(--accent);outline-offset:1px;}
+  .field textarea{resize:vertical;min-height:64px;}
+  .field textarea.tall{min-height:160px;}
+  .field-note{font-size:0.78rem;color:var(--warn);margin-top:6px;line-height:1.5;}
+  #policy-intake{display:none;}
+  #policy-intake.open{display:block;}
+  .policy-guide{background:var(--surface-hover);border:1px solid var(--border);border-radius:12px;padding:13px 14px;margin:2px 0 16px;font-size:0.82rem;color:var(--text-secondary);line-height:1.55;}
+  .policy-guide b{color:var(--accent);}
+  .policy-field textarea{min-height:88px;}
+  .optional-toggle{
+    display:flex;align-items:center;justify-content:space-between;
+    background:var(--surface-hover);border-radius:10px;padding:12px 14px;
+    font-size:0.88rem;font-weight:600;cursor:pointer;margin:20px 0 4px;
+  }
+  .optional-toggle .arrow{transition:transform .2s ease;}
+  .optional-toggle.open .arrow{transform:rotate(180deg);}
+  #optional-fields{display:none;padding-top:14px;}
+  #optional-fields.open{display:block;}
+
+  .primary-btn{
+    width:100%; background:var(--accent); color:#fff; border:none; border-radius:12px;
+    padding:15px; font-size:1rem; font-weight:700; font-family:inherit; cursor:pointer;
+    margin-top:24px; -webkit-tap-highlight-color:transparent;
+  }
+  .primary-btn:active{background:var(--accent-secondary);}
+  .ghost-btn{
+    width:100%; background:transparent; color:var(--accent); border:1px solid var(--border);
+    border-radius:12px; padding:13px; font-size:0.9rem; font-weight:600; font-family:inherit;
+    cursor:pointer; margin-top:10px;
+  }
+
+  .result-label{font-size:0.85rem;font-weight:600;color:var(--text-secondary);margin-bottom:8px;}
+  .result-box{
+    background:var(--surface); border:1px solid var(--border); border-radius:14px;
+    padding:18px; font-size:0.9rem; white-space:pre-wrap; line-height:1.65;
+    max-height:52vh; overflow-y:auto;
+  }
+  .copy-btn{
+    width:100%; background:var(--accent); color:#fff; border:none; border-radius:12px;
+    padding:15px; font-size:1rem; font-weight:700; font-family:inherit; cursor:pointer;
+    margin-top:16px; display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .copy-btn.copied{background:var(--ok);}
+
+  .admin-row{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:14px 16px; margin-bottom:10px;
+  }
+  .admin-row b{font-size:0.9rem;}
+  .admin-row span{font-size:0.75rem;color:var(--text-secondary);display:block;margin-top:2px;}
+  .edit-icon{background:var(--surface-hover);border:none;border-radius:8px;padding:8px 12px;font-size:0.8rem;font-weight:600;color:var(--accent);cursor:pointer;flex-shrink:0;}
+
+  .toast{
+    position:fixed; left:50%; bottom:28px; transform:translateX(-50%);
+    background:#1A1A1A; color:#fff; padding:10px 18px; border-radius:24px;
+    font-size:0.85rem; opacity:0; pointer-events:none; transition:opacity .25s ease;
+    z-index:999; max-width:88%; text-align:center;
+  }
+  .toast.show{opacity:1;}
+
+  footer{text-align:center;padding:16px 20px 24px;font-size:0.75rem;color:var(--text-secondary);}
+  footer a{color:var(--accent);text-decoration:none;font-weight:600;}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="topbar">
+    <div class="topbar-row">
+      <div>
+        <button class="back-btn" id="backBtn" onclick="goHome()">← 서식 다시 선택</button>
+        <h1 id="topTitle">보고서킷</h1>
+        <p id="topSub">서식을 고르면 프롬프트가 자동으로 만들어져요</p>
+      </div>
+      <button class="gear-btn" id="gearBtn" onclick="openAdmin()">⚙</button>
+    </div>
+    <span class="status-chip" id="statusChip"></span>
+  </div>
+
+  <main>
+    <section id="screen-home">
+      <p class="hint">작성할 보고서 종류를 선택하세요</p>
+      <div class="doc-grid" id="docGrid"></div>
+    </section>
+
+    <section id="screen-form">
+      <div class="form-title" id="formTitle"></div>
+      <div class="form-sub">필수 항목만 채워도 바로 만들어져요</div>
+
+      <div class="field">
+        <label>보고 대상<span class="req">*</span></label>
+        <input type="text" id="f-target" placeholder="예: 과장님, 국장님 결재선">
+      </div>
+      <div class="field">
+        <label>보고 목적<span class="req">*</span></label>
+        <input type="text" id="f-purpose" placeholder="예: 3분기 추진현황 정기보고">
+      </div>
+      <div class="field">
+        <label>분량<span class="req">*</span></label>
+        <select id="f-length">
+          <option value="A4 반 장 내외, 3줄 요약형">A4 반 장 (짧게)</option>
+          <option value="A4 1장 내외" selected>A4 1장 (표준)</option>
+          <option value="A4 2장 내외, 세부 항목 포함">A4 2장 (상세)</option>
+        </select>
+      </div>
+      <div class="field" id="generic-content-field">
+        <label>실제 업무 내용<span class="req">*</span></label>
+        <textarea id="f-content" class="tall" placeholder=""></textarea>
+        <div class="field-note">여기에 실제 내용을 적어야 AI가 지어내지 않고 씁니다. 메모 수준이어도 괜찮아요.</div>
+      </div>
+
+      <div id="policy-intake">
+        <div class="policy-guide"><b>1~5 항목을 직접 쓰지 마세요.</b><br>확인한 사실과 이번 보고에서 받을 결정만 입력하면, AI가 정책보고서 구조로 정리합니다.</div>
+        <div class="field policy-field">
+          <label>문제 상황<span class="req">*</span></label>
+          <textarea id="p-problem" placeholder="예: 주민총회 참여율이 낮고, 주민자치회가 홍보·기획에 어려움을 겪고 있음"></textarea>
+        </div>
+        <div class="field policy-field">
+          <label>확인된 사실·수치 및 출처<span class="req">*</span></label>
+          <textarea id="p-facts" placeholder="예: 2025년 참여율 42%, 18개 동 중 14개 동에서 교육 수요 제기 (주민자치회 회의자료)"></textarea>
+          <div class="field-note">수치·일정·예산은 확인된 내용과 출처만 적어주세요.</div>
+        </div>
+        <div class="field policy-field">
+          <label>이번 보고에서 받을 결정<span class="req">*</span></label>
+          <textarea id="p-decision" placeholder="예: 주민자치회 대상 AI 활용 교육의 시범운영 및 예산 검토 결정 요청"></textarea>
+        </div>
+        <div class="field policy-field">
+          <label>제약조건·일정 <span style="font-weight:400;color:var(--text-secondary)">(선택)</span></label>
+          <textarea id="p-constraints" placeholder="예: 예산은 별도 검토 필요, 10월 시범운영 희망, 교육 대상 동은 확정 전"></textarea>
+        </div>
+      </div>
+
+      <div class="optional-toggle" id="optToggle" onclick="toggleOptional()">
+        <span>선택 항목 더보기 (핵심메시지·톤)</span>
+        <span class="arrow">▾</span>
+      </div>
+      <div id="optional-fields">
+        <div class="field">
+          <label>핵심 메시지 / 결론</label>
+          <textarea id="f-message" placeholder="예: 예산 부족으로 일정 2주 지연, 추가 인력 1명 요청"></textarea>
+        </div>
+        <div class="field">
+          <label>톤 / 격식 수준</label>
+          <select id="f-tone">
+            <option value="정례 보고 수준의 담담한 어조" selected>정례 보고 (담담하게)</option>
+            <option value="긴급 보고에 맞는 간결하고 신속한 어조">긴급 보고 (간결하게)</option>
+            <option value="국장급 이상 상위 결재용 격식 있는 어조">상위 결재용 (격식 있게)</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="primary-btn" onclick="generatePrompt()">프롬프트 생성</button>
+    </section>
+
+    <section id="screen-result">
+      <div class="result-label">완성된 프롬프트 — 복사해서 AI 도구에 붙여넣으세요</div>
+      <div class="result-box" id="resultBox"></div>
+      <button class="copy-btn" id="copyBtn" onclick="copyResult()">
+        <span id="copyIcon">📋</span><span id="copyLabel">복사하기</span>
+      </button>
+      <button class="ghost-btn" onclick="goHome()">다른 서식으로 다시 만들기</button>
+    </section>
+
+    <!-- 관리자: 앱 안에서 인증 -->
+    <section id="screen-admin-login">
+      <div class="form-title">관리자 인증</div>
+      <div class="form-sub">비밀번호를 입력하면 서식 관리로 이동합니다.</div>
+      <div class="admin-login-card">
+        <div class="field-note">서식 추가·편집은 관리자만 할 수 있습니다.</div>
+        <div class="field">
+          <label for="admin-password">관리자 비밀번호</label>
+          <input type="password" id="admin-password" placeholder="비밀번호 입력" autocomplete="current-password" onkeydown="if(event.key==='Enter') submitAdminLogin()">
+        </div>
+        <button class="primary-btn" style="margin-top:4px" onclick="submitAdminLogin()">서식 관리 열기</button>
+        <button class="ghost-btn" onclick="goHome()">취소</button>
+      </div>
+    </section>
+
+    <!-- 관리자: 서식 목록 -->
+    <section id="screen-admin">
+      <p class="hint">서식별 디자인 프롬프트를 관리합니다. 저장하면 구글시트에 바로 반영됩니다.</p>
+      <div id="adminList"></div>
+      <button class="ghost-btn" onclick="addNewDoc()">+ 새 서식 추가</button>
+    </section>
+
+    <!-- 관리자: 편집 화면 -->
+    <section id="screen-admin-edit">
+      <div class="form-title" id="adminEditTitle">서식 편집</div>
+      <div class="field">
+        <label>서식명</label>
+        <input type="text" id="a-name" placeholder="예: 주간업무보고서">
+      </div>
+      <div class="field">
+        <label>서브타이틀 (카드에 작게 표시)</label>
+        <input type="text" id="a-sub" placeholder="예: 개조식 · 실적/계획형">
+      </div>
+      <div class="field">
+        <label>디자인 프롬프트</label>
+        <textarea id="a-prompt" class="tall" placeholder="LLM으로 서식을 분석해서 뽑은 프롬프트를 여기 붙여넣으세요"></textarea>
+      </div>
+      <div class="field">
+        <label>업무 내용 입력 안내문구</label>
+        <textarea id="a-hint" placeholder="예: 사업명·예산·진행경과·이슈사항을 메모 형태로 적어주세요"></textarea>
+        <div class="field-note">참가자가 '실제 업무 내용' 칸에 뭘 적어야 할지 알려주는 예시 문구입니다.</div>
+      </div>
+      <button class="primary-btn" onclick="saveAdminDoc()">저장</button>
+      <button class="ghost-btn" onclick="showScreen('screen-admin')">취소</button>
+    </section>
+  </main>
+
+  <footer>
+    <a href="https://www.crmc.co.kr" target="_blank" rel="noopener">청람M&C</a> · 실무 교육용 프로토타입
+  </footer>
+</div>
+
+<div class="toast" id="toast">복사되었습니다</div>
+
+<script>
+  // ============================================================
+  // 설정: Apps Script 웹앱 배포 후 이 URL을 채우면 구글시트 연동으로 전환됩니다.
+  // 비어있으면 아래 SAMPLE_DOC_TYPES(샘플 프롬프트)로 동작합니다.
+  // ============================================================
+  var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxbpEM3imBDN-YQFsZsGLj5gkeF4x4JvlAi-MWEywRKBXl9yd3KcpB7pKjQ_Qor_zdSEA/exec'; // 예: 'https://script.google.com/macros/s/AKfycb.../exec'
+  var ADMIN_PASSWORD = 'DM2026'; // 실습 현장에서 바꿔서 쓰세요 (완벽한 보안 아님, 최소한의 오조작 방지용)
+
+  var SAMPLE_DOC_TYPES = [
+    {
+      id: 'weekly',
+      name: '주간업무보고서',
+      sub: '개조식 · 실적/계획형 (샘플)',
+      formatPrompt: '주간업무보고서 형식으로 작성해줘. 문체는 개조식(-함, -임으로 종결)을 쓰고, 항목은 [1. 금주 추진실적] [2. 차주 추진계획] [3. 특이사항 및 건의사항] 순서로 구성해줘. 각 항목은 핵심만 1~2줄로 압축하고, 불필요한 수식어는 빼줘.',
+      contentHint: '예: 이번주 한 일 — 화요일 현장점검 완료, 계약서 초안 검토 중. 다음주 할 일 — 예산 협의 미팅, 결과보고서 초안 작성. 특이사항 — 자재 납품 1주 지연 예상'
+    },
+    {
+      id: 'policy',
+      name: '정책보고서',
+      sub: '배경-현황-대안형 (샘플)',
+      formatPrompt: '정책보고서 형식으로 작성해줘. 항목은 [1. 추진배경] [2. 현황 및 문제점] [3. 정책 방향(대안)] [4. 기대효과] [5. 향후계획] 순서로 구성하고, 가능하면 통계나 근거자료를 인용하는 문장을 넣어줘. 문체는 개조식이되 논리적 흐름이 이어지게 써줘.',
+      contentHint: '예: 추진배경 — 민원 급증(월 30건→80건). 현황 — 담당인력 2명, 처리기한 평균 14일 초과. 검토 중인 대안 — 온라인 접수 시스템 도입, 예상 예산 5천만원'
+    },
+    {
+      id: 'project',
+      name: '사업보고서',
+      sub: '개요-경과-실적형 (샘플)',
+      formatPrompt: '사업보고서 형식으로 작성해줘. 항목은 [1. 사업개요(목적·기간·예산)] [2. 추진경과] [3. 추진실적(정량·정성)] [4. 향후계획 및 보완사항] 순서로 구성하고, 실적 부분은 표로 정리할 수 있게 항목을 구분해줘.',
+      contentHint: '예: 사업명 — OO주민센터 리모델링. 예산 3억, 기간 26.3~26.9. 진행경과 — 설계 완료, 시공사 선정 중. 실적 — 예산집행률 22%. 이슈 — 집중호우로 착공 2주 지연'
+    },
+    {
+      id: 'complaint',
+      name: '민원보고서',
+      sub: '경위-처리-조치형 (샘플)',
+      formatPrompt: '민원보고서 형식으로 작성해줘. 항목은 [1. 민원 개요(접수일·민원인·내용요지)] [2. 처리경과] [3. 처리결과 및 향후조치] [4. 유의사항(재발방지 대책)] 순서로 구성하고, 문체는 객관적 사실 중심으로 감정적 표현 없이 써줘.',
+      contentHint: '예: 접수일 8/20, 민원내용 — 인근 공사장 소음. 처리경과 — 현장방문, 시공사 시정요청. 처리결과 — 작업시간 조정 합의. 재발방지 — 정기 소음측정 실시'
+    }
+  ];
+
+  var DOC_TYPES = [];
+  var currentDoc = null;
+  var editingDocId = null;
+  var isAdminUnlocked = false;
+  var activeScreen = 'screen-home';
+
+  // ===== 데이터 로드 =====
+  function loadDocTypes(){
+    var isAdminUrl = new URLSearchParams(location.search).get('admin') === '1';
+    if(isAdminUrl){ document.getElementById('gearBtn').classList.add('show'); }
+
+    if(!APPS_SCRIPT_URL){
+      DOC_TYPES = SAMPLE_DOC_TYPES.slice();
+      setStatus('sample', '샘플 프롬프트로 동작 중 (구글시트 미연결)');
+      renderGrid();
+      showScreen('screen-home');
+      return;
+    }
+    setStatus('sample', '불러오는 중…');
+    fetch(APPS_SCRIPT_URL)
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if(data && data.docs && data.docs.length){
+          DOC_TYPES = data.docs;
+          setStatus('live', '구글시트 연동됨 · 실시간 반영');
+        } else {
+          DOC_TYPES = SAMPLE_DOC_TYPES.slice();
+          setStatus('sample', '시트가 비어있어 샘플로 표시 중');
+        }
+        renderGrid();
+        if(activeScreen === 'screen-admin') renderAdminList();
+        if(activeScreen === 'screen-home') showScreen('screen-home');
+      })
+      .catch(function(){
+        DOC_TYPES = SAMPLE_DOC_TYPES.slice();
+        setStatus('sample', '시트 연결 실패 — 샘플로 표시 중');
+        renderGrid();
+        if(activeScreen === 'screen-admin') renderAdminList();
+        if(activeScreen === 'screen-home') showScreen('screen-home');
+      });
+  }
+
+  function setStatus(kind, msg){
+    var chip = document.getElementById('statusChip');
+    chip.textContent = msg;
+    chip.className = 'status-chip ' + kind;
+  }
+
+  function renderGrid(){
+    var grid = document.getElementById('docGrid');
+    grid.innerHTML = '';
+    DOC_TYPES.forEach(function(d){
+      var el = document.createElement('button');
+      el.className = 'doc-card';
+      el.onclick = function(){ openForm(d); };
+      el.innerHTML = '<div class="glyph"></div><b>'+escapeHtml(d.name)+'</b><span class="sub">'+escapeHtml(d.sub||'')+'</span>';
+      grid.appendChild(el);
+    });
+  }
+
+  function escapeHtml(s){
+    return String(s||'').replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+
+  function showScreen(id){
+    activeScreen = id;
+    ['screen-home','screen-form','screen-result','screen-admin-login','screen-admin','screen-admin-edit'].forEach(function(s){
+      document.getElementById(s).style.display = (s===id) ? 'block' : 'none';
+    });
+    document.getElementById('backBtn').classList.toggle('show', id!=='screen-home');
+  }
+
+  // ===== 참가자 화면 =====
+  function openForm(doc){
+    currentDoc = doc;
+    document.getElementById('topTitle').textContent = doc.name;
+    document.getElementById('topSub').textContent = '필수 항목만 채우면 완성돼요';
+    document.getElementById('formTitle').textContent = doc.name + ' 정보 입력';
+    document.getElementById('f-target').value='';
+    document.getElementById('f-purpose').value='';
+    document.getElementById('f-message').value='';
+    document.getElementById('f-content').value='';
+    document.getElementById('p-problem').value='';
+    document.getElementById('p-facts').value='';
+    document.getElementById('p-decision').value='';
+    document.getElementById('p-constraints').value='';
+    var isPolicy = doc.id === 'policy';
+    document.getElementById('generic-content-field').style.display = isPolicy ? 'none' : 'block';
+    document.getElementById('policy-intake').classList.toggle('open', isPolicy);
+    document.querySelector('#screen-form .form-sub').textContent = isPolicy ? '1~5를 쓰지 말고, 확인한 사실과 결정만 입력하세요' : '필수 항목만 채워도 바로 만들어져요';
+    document.getElementById('f-content').placeholder = doc.contentHint || '실제 업무 내용을 메모 형태로 적어주세요 (담당자·수치·경과 등)';
+    document.getElementById('optional-fields').classList.remove('open');
+    document.getElementById('optToggle').classList.remove('open');
+    showScreen('screen-form');
+  }
+
+  function goHome(){
+    currentDoc = null;
+    document.getElementById('topTitle').textContent = '보고서킷';
+    document.getElementById('topSub').textContent = '서식을 고르면 프롬프트가 자동으로 만들어져요';
+    showScreen('screen-home');
+  }
+
+  function toggleOptional(){
+    document.getElementById('optional-fields').classList.toggle('open');
+    document.getElementById('optToggle').classList.toggle('open');
+  }
+
+  function generatePrompt(){
+    var target = document.getElementById('f-target').value.trim();
+    var purpose = document.getElementById('f-purpose').value.trim();
+    if(!target || !purpose){
+      showToast('보고 대상과 목적은 꼭 입력해주세요');
+      return;
+    }
+
+    var isPolicy = currentDoc && currentDoc.id === 'policy';
+    var content = document.getElementById('f-content').value.trim();
+    var policyProblem = document.getElementById('p-problem').value.trim();
+    var policyFacts = document.getElementById('p-facts').value.trim();
+    var policyDecision = document.getElementById('p-decision').value.trim();
+    var policyConstraints = document.getElementById('p-constraints').value.trim();
+
+    if(isPolicy && (!policyProblem || !policyFacts || !policyDecision)){
+      showToast('문제 상황, 확인된 사실·수치, 받을 결정을 입력해주세요');
+      return;
+    }
+    if(!isPolicy && !content){
+      showToast('실제 업무 내용을 적어야 AI가 지어내지 않고 씁니다');
+      return;
+    }
+
+    var length = document.getElementById('f-length').value;
+    var message = document.getElementById('f-message').value.trim();
+    var tone = document.getElementById('f-tone').value;
+    var lines = [];
+    lines.push(currentDoc.formatPrompt);
+    lines.push('');
+
+    if(isPolicy){
+      lines.push('아래는 담당자가 확인한 정책보고서 재료야. 1~5 항목을 담당자에게 다시 쓰라고 요구하지 말고, 아래 재료를 각 항목에 배치해 초안을 작성해줘.');
+      lines.push('수치·일정·예산·대상은 아래에 있는 내용만 사실처럼 쓰고, 누락되거나 불확실한 내용은 추정하지 말고 "[확인 필요]"로 표시해줘.');
+      lines.push('1. 추진배경은 문제 상황을, 2. 현황 및 문제점은 확인된 사실·수치와 출처를, 3. 정책 방향은 이번에 받을 결정을 중심으로 구성해줘. 4. 기대효과는 과장하지 말고, 5. 향후계획은 제약조건·일정을 반영해줘.');
+      lines.push('---');
+      lines.push('[문제 상황]\n' + policyProblem);
+      lines.push('');
+      lines.push('[확인된 사실·수치 및 출처]\n' + policyFacts);
+      lines.push('');
+      lines.push('[이번 보고에서 받을 결정]\n' + policyDecision);
+      lines.push('');
+      lines.push('[제약조건·일정]\n' + (policyConstraints || '[확인 필요]'));
+      lines.push('---');
+    } else {
+      lines.push('아래는 실제 업무 내용이야. 여기 없는 내용은 지어내지 말고, 애매하거나 빠진 부분은 "[확인 필요]"라고 표시해줘.');
+      lines.push('---');
+      lines.push(content);
+      lines.push('---');
+    }
+
+    lines.push('');
+    lines.push('▸ 보고 대상: ' + target);
+    lines.push('▸ 보고 목적: ' + purpose);
+    lines.push('▸ 분량: ' + length);
+    if(message) lines.push('▸ 핵심 메시지: ' + message);
+    lines.push('▸ 톤: ' + tone);
+    lines.push('');
+    lines.push('위 내용과 조건에 맞춰 보고서 초안을 작성해줘.');
+
+    document.getElementById('resultBox').textContent = lines.join('\n');
+    document.getElementById('topTitle').textContent = '완성됐어요';
+    document.getElementById('topSub').textContent = currentDoc.name + ' 프롬프트';
+    showScreen('screen-result');
+  }
+
+  function copyResult(){
+    var text = document.getElementById('resultBox').textContent;
+    var btn = document.getElementById('copyBtn');
+    function done(){
+      document.getElementById('copyIcon').textContent = '✅';
+      document.getElementById('copyLabel').textContent = '복사됨';
+      btn.classList.add('copied');
+      showToast('복사되었습니다. AI 도구에 붙여넣으세요');
+      setTimeout(function(){
+        document.getElementById('copyIcon').textContent = '📋';
+        document.getElementById('copyLabel').textContent = '복사하기';
+        btn.classList.remove('copied');
+      }, 1800);
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done).catch(function(){ fallbackCopy(text, done); });
+    } else {
+      fallbackCopy(text, done);
+    }
+  }
+  function fallbackCopy(text, cb){
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); }catch(e){}
+    document.body.removeChild(ta);
+    cb();
+  }
+  function showToast(msg){
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(function(){ t.classList.remove('show'); }, 2200);
+  }
+
+  // ===== 관리자 화면 =====
+  function openAdmin(){
+    if(!isAdminUnlocked){
+      openAdminLogin();
+      return;
+    }
+    renderAdminList();
+    document.getElementById('topTitle').textContent = '서식 관리';
+    document.getElementById('topSub').textContent = '저장하면 참가자 화면에 바로 반영돼요';
+    showScreen('screen-admin');
+  }
+
+  function openAdminLogin(){
+    var input = document.getElementById('admin-password');
+    input.value = '';
+    document.getElementById('topTitle').textContent = '관리자 인증';
+    document.getElementById('topSub').textContent = '비밀번호를 입력해주세요';
+    showScreen('screen-admin-login');
+    setTimeout(function(){ input.focus(); }, 0);
+  }
+
+  function submitAdminLogin(){
+    var input = document.getElementById('admin-password');
+    if(input.value !== ADMIN_PASSWORD){
+      input.value = '';
+      input.focus();
+      showToast('비밀번호가 맞지 않습니다');
+      return;
+    }
+    isAdminUnlocked = true;
+    input.value = '';
+    openAdmin();
+  }
+
+  function renderAdminList(){
+    var wrap = document.getElementById('adminList');
+    wrap.innerHTML = '';
+    DOC_TYPES.forEach(function(d){
+      var row = document.createElement('div');
+      row.className = 'admin-row';
+      row.innerHTML = '<div><b>'+escapeHtml(d.name)+'</b><span>'+escapeHtml(d.sub||'')+'</span></div>'+
+                       '<button class="edit-icon">편집</button>';
+      row.querySelector('.edit-icon').onclick = function(){ openAdminEdit(d); };
+      wrap.appendChild(row);
+    });
+  }
+
+  function addNewDoc(){
+    openAdminEdit({ id: 'doc_' + Date.now(), name: '', sub: '', formatPrompt: '', contentHint: '' });
+  }
+
+  function openAdminEdit(doc){
+    editingDocId = doc.id;
+    document.getElementById('adminEditTitle').textContent = doc.name ? (doc.name + ' 편집') : '새 서식 만들기';
+    document.getElementById('a-name').value = doc.name || '';
+    document.getElementById('a-sub').value = doc.sub || '';
+    document.getElementById('a-prompt').value = doc.formatPrompt || '';
+    document.getElementById('a-hint').value = doc.contentHint || '';
+    showScreen('screen-admin-edit');
+  }
+
+  function saveAdminDoc(){
+    var name = document.getElementById('a-name').value.trim();
+    var sub = document.getElementById('a-sub').value.trim();
+    var prompt = document.getElementById('a-prompt').value.trim();
+    var hint = document.getElementById('a-hint').value.trim();
+    if(!name || !prompt){
+      showToast('서식명과 디자인 프롬프트는 필수예요');
+      return;
+    }
+    var payload = { id: editingDocId, name: name, sub: sub, formatPrompt: prompt, contentHint: hint };
+
+    // 로컬 목록 즉시 반영
+    var idx = DOC_TYPES.findIndex(function(d){ return d.id === payload.id; });
+    if(idx === -1) DOC_TYPES.push(payload); else DOC_TYPES[idx] = payload;
+    renderGrid();
+    renderAdminList();
+
+    if(!APPS_SCRIPT_URL){
+      showToast('저장됨 (이 세션에서만 유지 — Apps Script URL을 연결하면 구글시트에 영구 저장됩니다)');
+      showScreen('screen-admin');
+      return;
+    }
+
+    // Apps Script로 전송 — text/plain으로 보내야 CORS 프리플라이트를 피할 수 있음
+    fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(res){
+      if(res && res.status === 'ok'){
+        showToast('구글시트에 저장되었습니다');
+      } else {
+        showToast('저장 중 문제가 발생했습니다: ' + (res && res.message || '알 수 없는 오류'));
+      }
+      showScreen('screen-admin');
+    })
+    .catch(function(){
+      showToast('시트 저장 실패 — 로컬에는 반영됨');
+      showScreen('screen-admin');
+    });
+  }
+
+  loadDocTypes();
+</script>
+</body>
+</html>
