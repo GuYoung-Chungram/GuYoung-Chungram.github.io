@@ -56,3 +56,12 @@ GEMINI_API_KEY=... node _tools/collect.mjs  # 수집 + Gemini 판별·요약 + f
 1. 저장소 Settings → Secrets and variables → Actions → New repository secret: `GEMINI_API_KEY`
 2. (선택) Variables 탭에 `GEMINI_MODEL` — 비우면 `config.mjs`의 기본 모델을 쓴다. 기관 계정에서 쓸 수 있는 모델명인지 첫 실행 로그로 확인한다.
 3. Actions 탭에서 워크플로를 드라이런으로 한 번 실행해 기관별 결과표를 확인한다.
+
+## 해외 인사이트 주간 추가 (Claude 예약 작업)
+
+`collect.mjs`와 별도로, 매주 월요일 Claude 예약 작업이 해외 인사이트를 `feed.json`에 직접 추가한다.
+
+- McKinsey: 대표님 Gmail의 구독 메일(`publishing@email.mckinsey.com`, 지난 7일)에서 AI·조직 관련 글 최대 4건 → `sourceId: mckinsey-mail`
+- Deloitte: Deloitte Korea AI Institute '최신 생성형 AI 인사이트' 목록에서 공공 AX 관련 글 2건 → `sourceId: deloitte-kr-ai`
+- 항목 형식은 수집기와 같다(`sourceType: consulting`, `summaryAi` 80자 이내, 원문은 mckinsey.com·deloitte.com 주소). 이미 있는 URL은 건너뛴다.
+- `feed.json`이 main에 올라오면 워크플로가 `push` 이벤트로 수집 단계 없이 `index.html`만 다시 빌드한다.
