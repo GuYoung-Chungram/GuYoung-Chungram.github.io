@@ -8,7 +8,7 @@ name: AX 라이브러리 주간 수집
 
 on:
   schedule:
-    - cron: '0 0 * * 1'    # 월요일 00:00 UTC = 월요일 09:00 KST
+    - cron: '7 23 * * 0'   # 일요일 23:07 UTC = 월요일 08:07 KST (정각 혼잡 지연을 피해 일찍 시작)
   workflow_dispatch:
     inputs:
       dry_run:
