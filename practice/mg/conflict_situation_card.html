@@ -1,0 +1,1007 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>MG 새마을금고 갈등 상황카드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap">
+<style>
+/* ==========================================================================
+   J-STYLE (제이스타일) — Connect AI Lab 실습 페이지 원본 스타일
+   출처: aicitybuilders.com/dubbing 에서 추출·정리. 캐스케이드 순서를 그대로 유지합니다.
+   구성: 1 토큰/리셋 · 2 배경 · 3 탑바/버튼 · 4 히어로/오브 · 5 KPI · 6 레일 · 7 섹션/셀 라벨
+         8 코드박스 · 9 시각화 카드(.vis)와 부품들 · 10 차트/가격 · 11 푸터 · 12 반응형
+         13 폴리시(입체감) 레이어 · 14 필름 플레이어
+   ========================================================================== */
+
+/* ---------- 1. 토큰 / 리셋 ---------- */
+:root{
+  --bg:#06080b; --bg2:#0d1117; --line:#1f2630; --fg:#fff; --dim:#97a3b0;
+  --acc:#b8ff5c;   /* 형광 라임: 메인 강조 */
+  --vio:#b79dff;   /* 보라: 비교 대상/보조 */
+  --gold:#ffd447;  /* 금색: 주의·수치·특수 */
+  --red:#ff5d5d;   /* 빨강: 오답/위험/녹화 */
+  --sky:#8fd3ff;   /* 하늘: 녹음/입력 */
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:Pretendard,-apple-system,system-ui,sans-serif;line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+.wrap{max-width:1160px;margin:0 auto;padding:0 20px}
+.mono{font-family:var(--mono)}
+.acc{color:var(--acc)}.vio{color:var(--vio)}.gold{color:var(--gold)}.red{color:var(--red)}.dim{color:var(--dim)}.sky{color:var(--sky)}
+
+/* ---------- 2. 배경 레이어 (grid-bg, progress) ---------- */
+.grid-bg{position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:56px 56px;opacity:.35;mask-image:radial-gradient(ellipse at 50% 0%,#000 30%,transparent 75%)}
+.progress{position:fixed;left:0;top:0;height:3px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--acc),var(--vio));z-index:60}
+
+/* ---------- 3. 탑바 / 버튼 ---------- */
+.top{display:flex;justify-content:space-between;align-items:center;padding:18px 0;font-family:var(--mono);font-size:13px;letter-spacing:.06em}
+.top a{text-decoration:none;color:var(--dim)}
+.top a:hover{color:var(--fg)}
+.btn{display:inline-flex;align-items:center;gap:10px;text-decoration:none;font-weight:800;border-radius:999px;padding:13px 24px;background:var(--acc);color:#06080b;font-size:16px;box-shadow:0 0 40px rgba(184,255,92,.25)}
+.btn:hover{transform:translateY(-1px)}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line);box-shadow:none}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+
+/* ---------- 4. 히어로 / 오브 ---------- */
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:30px;align-items:center;padding:24px 0 40px}
+.kicker{font-family:var(--mono);font-size:13px;letter-spacing:.16em;color:var(--acc)}
+h1{font-size:clamp(46px,8vw,104px);line-height:.95;margin:14px 0 18px;letter-spacing:-.05em;font-weight:900}
+h1 .g{background:linear-gradient(100deg,var(--acc),var(--sky) 55%,var(--vio));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{font-size:clamp(17px,2vw,20px);color:#d7dde4;max-width:30em;margin:0 0 26px}
+.ctas{display:flex;gap:12px;flex-wrap:wrap}
+.orb{position:relative;aspect-ratio:1;max-width:520px;width:100%;justify-self:center}
+.orb canvas{position:absolute;inset:0;width:100%;height:100%}
+.orb .core{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none}
+.orb .core b{display:block;font-size:clamp(22px,3vw,32px);font-weight:900;letter-spacing:-.02em}
+.orb .core span{font-family:var(--mono);font-size:12px;color:var(--dim);letter-spacing:.14em}
+.lang{position:absolute;transform:translate(-50%,-50%);border:1px solid var(--line);background:rgba(13,17,23,.85);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:800;white-space:nowrap;color:var(--fg);transition:border-color .2s,box-shadow .2s}
+.lang:hover,.lang.on{border-color:var(--acc);box-shadow:0 0 22px rgba(184,255,92,.35)}
+.lang small{font-family:var(--mono);color:var(--dim);font-weight:500;margin-left:6px;font-size:11px}
+
+/* ---------- 5. KPI 3분할 ---------- */
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin:10px 0 0}
+.kpi{background:var(--bg);padding:22px 24px}
+.kpi b{display:block;font-size:clamp(34px,5vw,56px);font-weight:900;letter-spacing:-.04em;line-height:1}
+.kpi span{color:var(--dim);font-size:14px}
+
+/* ---------- 6. 스티키 레일(셀 네비) ---------- */
+.rail{position:sticky;top:0;z-index:40;background:rgba(6,8,11,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);margin-top:56px}
+.rail .wrap{display:flex;gap:6px;overflow-x:auto;padding:10px 20px;scrollbar-width:none}
+.rail a{flex:none;text-decoration:none;font-family:var(--mono);font-size:12px;color:var(--dim);border:1px solid var(--line);border-radius:999px;padding:5px 12px;white-space:nowrap}
+.rail a.cur{color:#06080b;background:var(--acc);border-color:var(--acc)}
+
+/* ---------- 7. 섹션 / 셀 라벨 / 제목 ---------- */
+.s{padding:84px 0;border-bottom:1px solid var(--line)}
+.row{display:grid;grid-template-columns:.9fr 1.1fr;gap:44px;align-items:center}
+.cell{font-family:var(--mono);font-size:13px;color:var(--acc);letter-spacing:.12em;margin-bottom:12px}
+.cell i{font-style:normal;color:#06080b;background:var(--acc);padding:2px 8px;margin-right:10px}
+h2{font-size:clamp(32px,4.6vw,56px);line-height:1.05;margin:0 0 14px;letter-spacing:-.04em;font-weight:900}
+.one{font-size:18px;color:#d7dde4;margin:0 0 18px;max-width:28em}
+.tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.tag{font-family:var(--mono);font-size:12px;border:1px solid var(--line);padding:3px 10px;border-radius:999px;color:var(--dim)}
+
+/* ---------- 8. 코드 보기 박스 (details + 복사 버튼) ---------- */
+details.code{border:1px solid var(--line);background:var(--bg2)}
+details.code summary{cursor:pointer;padding:10px 14px;font-family:var(--mono);font-size:13px;color:var(--dim);list-style:none}
+details.code summary::-webkit-details-marker{display:none}
+details.code summary:before{content:"▸ ";color:var(--acc)}
+details.code[open] summary:before{content:"▾ "}
+details.code pre{margin:0;padding:14px 16px;overflow-x:auto;font-family:var(--mono);font-size:12.5px;line-height:1.6;color:#d5dde6;border-top:1px solid var(--line);max-height:420px}
+.copy{float:right;margin:6px 8px 0 0;font-family:var(--mono);font-size:12px;background:transparent;color:var(--dim);border:1px solid var(--line);border-radius:6px;padding:2px 10px}
+
+/* ---------- 9. 시각화 카드(.vis)와 부품 ---------- */
+.vis{position:relative;border:1px solid var(--line);background:linear-gradient(180deg,#0b0f15,#06080b);min-height:330px;padding:24px;overflow:hidden}
+.vis .cap{position:absolute;left:16px;bottom:12px;font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.08em}
+/* 떨어지는 칩 */
+.pk{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:24px}
+.pk div{border:1px solid var(--line);background:var(--bg2);padding:14px 18px;font-family:var(--mono);font-weight:700;font-size:15px}
+.on .pk div{animation:drop .7s cubic-bezier(.2,1.4,.4,1) both}
+.on .pk div:nth-child(2){animation-delay:.18s}
+.on .pk div:nth-child(3){animation-delay:.36s}
+.on .pk div:nth-child(4){animation-delay:.54s}
+@keyframes drop{from{transform:translateY(-120px);opacity:0}to{transform:none;opacity:1}}
+/* 박스(받는 그릇) / 재시작 */
+.box{margin:30px auto 0;width:min(320px,90%);height:96px;border:2px solid var(--acc);border-top:none;display:grid;place-items:center;font-weight:900;font-size:20px;box-shadow:0 20px 50px rgba(184,255,92,.1)}
+.restart{display:flex;align-items:center;gap:10px;justify-content:center;margin-top:20px;color:var(--gold);font-weight:800}
+.restart svg{width:26px;height:26px}
+.on .restart svg{animation:spin 1.4s .9s 2 ease-in-out}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* 파형 박스 + 구간 브래킷 */
+.wavebox canvas{width:100%;height:170px;display:block}
+.bracket{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;color:var(--dim);border-top:2px solid var(--acc);margin-top:8px;padding-top:6px}
+/* DO / DON'T */
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
+.dos div{border:1px solid var(--line);padding:10px 12px;font-weight:700;font-size:15px}
+.dos .x{color:var(--red)}
+.dos .o{color:var(--acc)}
+/* 음성 결과 한 줄(.gl) + 재생 버튼 */
+.gen{display:grid;gap:12px}
+.gl{display:grid;grid-template-columns:52px 1fr auto;gap:12px;align-items:center;border:1px solid var(--line);padding:10px 12px;background:var(--bg2)}
+.gl .f{font-size:26px;text-align:center}
+.gl .t{font-size:14px;color:#d5dde6;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gl canvas{grid-column:1/3;width:100%;height:46px}
+.play{border:1px solid var(--acc);background:transparent;color:var(--acc);border-radius:999px;padding:6px 14px;font-weight:800;font-size:13px}
+.play.on{background:var(--acc);color:#06080b}
+/* 입력 줄(.spk) + 노브 */
+.spk{display:grid;gap:10px}
+.spk .in{border:1px solid var(--line);background:var(--bg2);padding:10px 14px;font-size:17px;display:flex;gap:14px;align-items:center}
+.spk .l{font-family:var(--mono);font-size:12px;color:var(--dim);min-width:58px}
+.knobs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.knobs div{border:1px solid var(--line);padding:12px}
+.knobs span{font-family:var(--mono);font-size:13px;color:var(--dim)}
+.knobs b{display:block;font-size:30px;font-weight:900;color:var(--gold)}
+.knobs small{color:var(--dim)}
+.knobs i{display:block;height:6px;background:var(--line);margin:8px 0 6px;position:relative}
+.knobs i:after{content:"";position:absolute;left:0;top:0;bottom:0;width:var(--w);background:var(--gold)}
+/* 파일 묶음(zip) */
+.zipv{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:20px}
+.zipv div{border:1px solid var(--acc);padding:14px 6px;text-align:center;font-size:30px}
+.zipv b{display:block;font-family:var(--mono);font-size:13px;color:var(--acc)}
+.on .zipv div{animation:drop .7s cubic-bezier(.2,1.4,.4,1) both}
+.zipbox{margin:34px auto 0;width:min(320px,90%);border:2px solid var(--gold);padding:22px;text-align:center;font-weight:900;font-size:22px;color:var(--gold)}
+/* 원형 링(국기/아이콘 N개) */
+.lring{position:relative;width:100%;max-width:440px;aspect-ratio:1;margin:0 auto}
+.ld{position:absolute;transform:translate(-50%,-50%);width:13%;aspect-ratio:1;border-radius:50%;border:2px solid #3a434f;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.14),rgba(13,17,23,.92) 70%);font-size:clamp(14px,2.4vw,24px);display:grid;place-items:center;padding:0;cursor:pointer;transition:transform .25s,box-shadow .25s}
+.ld.lit{border-color:var(--acc);box-shadow:0 0 18px -6px var(--acc)}
+.ld.ja{border-color:var(--gold)}
+.ld.cur,.ld:hover{transform:translate(-50%,-50%) scale(1.3);z-index:2}
+.lc{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;display:grid;place-items:center;gap:2px;width:60%}
+.lc span{font-size:clamp(40px,7vw,64px);line-height:1}
+.lc b{font-size:clamp(22px,3.4vw,34px);font-weight:900}
+.lc .n23{font-size:clamp(60px,10vw,96px);line-height:1;text-shadow:0 0 40px rgba(184,255,92,.4)}
+.lc i{font-style:normal;font-family:var(--mono);font-size:13px;color:var(--dim);letter-spacing:.12em}
+.lc i.lit{color:var(--acc)}
+.lc i.ja{color:var(--gold)}
+/* 대결 카드(A vs B) */
+.lab{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.duel{border:1px solid var(--line);padding:22px;background:var(--bg2)}
+.duel h3{margin:0 0 6px;font-size:22px}
+.duel .score{font-size:56px;font-weight:900;letter-spacing:-.04em;line-height:1}
+
+/* ---------- 10. 차트 / 가격 막대 ---------- */
+.chart{width:100%;display:block}
+.chart text{font-family:Pretendard,sans-serif;fill:#d5dde6;font-size:13px}
+.chart .ax{font-family:var(--mono);fill:var(--dim);font-size:11px}
+.legend{display:flex;gap:18px;font-size:14px;color:var(--dim);margin:10px 0 0}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+.price{display:grid;gap:10px}
+.pr{display:grid;grid-template-columns:200px 1fr;gap:14px;align-items:center}
+.pr span{font-weight:700;font-size:15px}
+.pr .tr{position:relative;height:34px}
+.pr .tr i{position:absolute;left:0;top:0;bottom:0;border-radius:6px;width:0;transition:width 1.2s cubic-bezier(.2,.8,.2,1)}
+.on .pr .tr i{width:var(--w)}
+.pr .tr b{position:absolute;top:50%;transform:translateY(-50%);left:calc(var(--w) + 10px);font-family:var(--mono);font-size:16px;white-space:nowrap}
+
+/* ---------- 11. 푸터 ---------- */
+.foot{padding:70px 0 90px;text-align:center}
+.foot p{color:var(--dim);margin:14px 0 26px}
+
+/* ---------- 12. 반응형 / 모션 감소 ---------- */
+@media (max-width:860px){
+  .hero,.row,.lab{grid-template-columns:1fr}
+  .kpis{grid-template-columns:1fr}
+  .pr{grid-template-columns:1fr}
+  .s{padding:60px 0}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---------- 13. 폴리시 레이어: 입체감·깊이 (원본에서 뒤에 덮어쓰는 규칙) ---------- */
+body{background:radial-gradient(1400px 900px at 80% -10%,#0f1a14 0%,#06080b 55%)}
+.aur{position:fixed;border-radius:50%;pointer-events:none;z-index:-1;opacity:.2;background:radial-gradient(closest-side,var(--c),transparent)}
+.aur.a{width:1000px;height:800px;right:-300px;top:-360px;--c:#b8ff5c;animation:dr1 20s ease-in-out infinite alternate}
+.aur.b{width:900px;height:800px;left:-300px;top:60vh;--c:#b79dff;opacity:.13;animation:dr2 24s ease-in-out infinite alternate}
+@keyframes dr1{to{transform:translate(-240px,200px) scale(1.15)}}
+@keyframes dr2{to{transform:translate(300px,-200px) scale(.9)}}
+.grain{position:fixed;inset:0;pointer-events:none;z-index:70;opacity:.05;animation:gr .8s steps(5) infinite;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+@keyframes gr{0%{background-position:0 0}25%{background-position:-60px 40px}50%{background-position:50px -70px}75%{background-position:-40px 60px}100%{background-position:0 0}}
+.top .mark{display:flex;align-items:center;gap:12px;color:#fff;letter-spacing:.42em;font-weight:300;font-family:Pretendard,sans-serif}
+.top .mark i{width:11px;height:11px;border-radius:50%;background:var(--acc);box-shadow:0 0 16px var(--acc);animation:pl 2.4s ease-in-out infinite}
+@keyframes pl{50%{transform:scale(.7);opacity:.7}}
+.presents{font-weight:300;letter-spacing:.9em;font-size:12px;color:var(--dim);margin-bottom:6px}
+h1 .g{filter:drop-shadow(0 0 40px rgba(184,255,92,.35))}
+.vis{background:linear-gradient(160deg,rgba(255,255,255,.05),rgba(255,255,255,.01));backdrop-filter:blur(14px);border-color:rgba(255,255,255,.08);border-radius:22px;box-shadow:0 40px 100px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.06)}
+.kpis{border-radius:22px;overflow:hidden;background:rgba(255,255,255,.06)}
+.kpi{background:rgba(6,8,11,.82);backdrop-filter:blur(10px)}
+.kpi b.acc{text-shadow:0 0 40px rgba(184,255,92,.5)}
+.chip,.pk div,.zipv div,.gl,.duel,.dos div,.spk .in,.knobs div{border-radius:14px}
+.pk div,.zipv div{box-shadow:0 0 30px -10px var(--acc);background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.01))}
+.btn{box-shadow:0 0 50px rgba(184,255,92,.35),inset 0 1px 0 rgba(255,255,255,.4)}
+.cell i{border-radius:4px;box-shadow:0 0 18px rgba(184,255,92,.5)}
+h2{background:linear-gradient(100deg,#fff 40%,#b8ff5c 130%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.endmark{font-weight:200;letter-spacing:.55em;font-size:18px;color:rgba(255,255,255,.5);margin-top:40px}
+@media (prefers-reduced-motion:reduce){.aur,.grain{animation:none}}
+
+/* ---------- 14. 필름 플레이어 (영상 극장) ---------- */
+.film{padding:90px 0 40px}
+.film .head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:26px}
+.film .head .one{margin:0}
+.theater{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:start}
+.stage{position:relative;border-radius:24px;padding:1.5px;background:conic-gradient(from var(--ang,0deg),rgba(184,255,92,.9),rgba(143,211,255,.25),rgba(183,157,255,.85),rgba(184,255,92,.15),rgba(184,255,92,.9));animation:spinb 8s linear infinite;--amb:184,255,92}
+@property --ang{syntax:'<angle>';inherits:false;initial-value:0deg}
+@keyframes spinb{to{--ang:360deg}}
+.stage:before{content:"";position:absolute;inset:6% 4%;border-radius:40px;background:rgb(var(--amb));filter:blur(70px);opacity:.38;z-index:-1;transition:background .6s}
+.screen{position:relative;aspect-ratio:16/9;border-radius:22.5px;overflow:hidden;background:#000}
+.screen video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .45s ease,transform 1.2s cubic-bezier(.2,.8,.2,1),filter .45s}
+.screen video.out{opacity:0;transform:scale(1.035);filter:blur(6px)}
+.screen:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(0,0,0,.35),transparent 18%,transparent 70%,rgba(0,0,0,.65));border-radius:inherit}
+.hud{position:absolute;right:16px;top:14px;z-index:3;display:flex;gap:10px;align-items:center;font-family:var(--mono);font-size:12px;letter-spacing:.12em;color:#fff}
+.hud .no{color:#06080b;background:var(--acc);padding:2px 8px;border-radius:4px;font-weight:800;box-shadow:0 0 18px rgba(184,255,92,.6)}
+.hud .rec{width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 10px var(--red);animation:pl 1.2s ease-in-out infinite}
+.hud .rec.off{background:#666;box-shadow:none;animation:none}
+.tcard{position:absolute;inset:0;z-index:4;display:grid;place-items:center;pointer-events:none;opacity:0;background:radial-gradient(ellipse at center,rgba(6,8,11,.78),rgba(6,8,11,.35) 70%)}
+.tcard.go{animation:tc 1.6s cubic-bezier(.2,.8,.2,1) both}
+.tcard div{text-align:center}
+.tcard b{display:block;font-family:var(--mono);font-size:clamp(14px,1.6vw,18px);letter-spacing:.5em;color:var(--acc);margin-bottom:8px}
+.tcard h3{margin:0;font-size:clamp(34px,5.4vw,76px);font-weight:900;letter-spacing:-.04em;line-height:1;background:linear-gradient(100deg,#fff 30%,#b8ff5c 110%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 30px rgba(184,255,92,.35))}
+.tcard span{display:block;margin-top:10px;color:#d7dde4;font-size:clamp(14px,1.6vw,18px)}
+@keyframes tc{0%{opacity:0;transform:scale(1.08);filter:blur(10px)}18%{opacity:1;transform:none;filter:none}72%{opacity:1}100%{opacity:0;transform:scale(.98)}}
+.bigplay{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:5;border:0;border-radius:999px;padding:18px 30px 18px 22px;background:var(--acc);color:#06080b;font-weight:900;font-size:clamp(15px,1.8vw,19px);display:flex;gap:12px;align-items:center;box-shadow:0 0 0 0 rgba(184,255,92,.6),0 20px 60px rgba(0,0,0,.5);animation:bp 2s ease-out infinite}
+.bigplay i{width:34px;height:34px;border-radius:50%;background:#06080b;color:var(--acc);display:grid;place-items:center;font-style:normal;font-size:14px}
+.bigplay small{display:block;font-weight:600;font-size:12px;opacity:.75;font-family:var(--mono);letter-spacing:.06em}
+@keyframes bp{0%{box-shadow:0 0 0 0 rgba(184,255,92,.55),0 20px 60px rgba(0,0,0,.5)}100%{box-shadow:0 0 0 26px rgba(184,255,92,0),0 20px 60px rgba(0,0,0,.5)}}
+.bigplay.hide{opacity:0;pointer-events:none;transform:translate(-50%,-50%) scale(.9);transition:.3s}
+.dock{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:0 14px 10px;transition:opacity .3s}
+.segs{display:flex;gap:3px;height:4px;margin-bottom:9px;cursor:pointer}
+.segs i{position:relative;flex:var(--d) 1 0;background:rgba(255,255,255,.22);border-radius:2px;overflow:hidden}
+.segs i:after{content:"";position:absolute;inset:0;width:calc(var(--p,0)*100%);background:var(--acc);box-shadow:0 0 10px var(--acc)}
+.segs i:hover{background:rgba(255,255,255,.4)}
+.ctl{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:12px;color:#fff}
+.ctl button{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:#fff;border-radius:999px;padding:5px 11px;font-size:12px;backdrop-filter:blur(8px)}
+.ctl button:hover{border-color:var(--acc);color:var(--acc)}
+.ctl button.snd.on{background:var(--acc);color:#06080b;border-color:var(--acc)}
+.ctl .t{margin-left:auto;opacity:.8}
+.chaps{list-style:none;margin:0;padding:0;display:grid;gap:8px;max-height:min(62vw,540px);overflow-y:auto;scrollbar-width:thin}
+.chaps li{position:relative;display:grid;grid-template-columns:96px 1fr;gap:10px;align-items:center;padding:7px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.025);cursor:pointer;transition:border-color .2s,background .2s,transform .2s}
+.chaps li:hover{border-color:rgba(184,255,92,.5);transform:translateX(-2px)}
+.chaps li.cur{border-color:var(--acc);background:rgba(184,255,92,.07);box-shadow:0 0 30px -12px var(--acc)}
+.chaps img{width:96px;aspect-ratio:16/9;object-fit:cover;border-radius:8px;display:block;filter:saturate(.8) brightness(.85)}
+.chaps li.cur img{filter:none}
+.chaps b{display:block;font-size:14px;font-weight:800;line-height:1.3}
+.chaps span{display:block;font-size:12px;color:var(--dim);line-height:1.35}
+.chaps em{position:absolute;right:9px;top:7px;font-style:normal;font-family:var(--mono);font-size:10.5px;color:var(--dim)}
+.chaps .n{font-family:var(--mono);font-size:10.5px;color:var(--acc);letter-spacing:.1em}
+.chaps .eqz{display:none;position:absolute;right:10px;bottom:9px;gap:2px;align-items:flex-end;height:12px}
+.chaps li.cur.snd .eqz{display:flex}
+.eqz i{width:3px;background:var(--acc);animation:eqz .7s ease-in-out infinite alternate}
+.eqz i:nth-child(2){animation-delay:.2s}
+.eqz i:nth-child(3){animation-delay:.4s}
+@keyframes eqz{from{height:3px}to{height:12px}}
+.chaps .bar{position:absolute;left:7px;right:7px;bottom:3px;height:2px;background:transparent}
+.chaps li.cur .bar:after{content:"";position:absolute;left:0;top:0;bottom:0;width:calc(var(--p,0)*100%);background:var(--acc)}
+.filmjump{display:inline-flex;align-items:center;gap:10px;margin-top:16px;border:1px solid rgba(184,255,92,.45);background:rgba(184,255,92,.06);color:#fff;border-radius:999px;padding:7px 16px 7px 8px;font-weight:800;font-size:14px;transition:.2s}
+.filmjump:hover{background:rgba(184,255,92,.14);box-shadow:0 0 30px -8px var(--acc)}
+.filmjump img{width:54px;aspect-ratio:16/9;object-fit:cover;border-radius:6px}
+.filmjump small{font-family:var(--mono);color:var(--acc);font-weight:600}
+.stage:fullscreen{padding:0;background:#000;border-radius:0;display:grid;place-items:center}
+.stage:fullscreen .screen{width:100%;max-height:100vh;border-radius:0}
+@media (max-width:980px){
+  .theater{grid-template-columns:1fr}
+  .chaps{grid-auto-flow:column;grid-auto-columns:200px;max-height:none;overflow-x:auto;overflow-y:hidden;padding-bottom:6px}
+  .chaps li{grid-template-columns:1fr}
+  .chaps img{width:100%}
+}
+@media (max-width:600px){
+  .ctl .t{display:none}
+  .ctl button{padding:4px 8px;font-size:11px}
+  .bigplay{padding:8px 16px 8px 8px;font-size:14px;top:42%;gap:8px}
+  .bigplay i{width:26px;height:26px;font-size:11px}
+  .bigplay small{display:none}
+  .dock{padding:0 10px 7px}
+  .segs{margin-bottom:6px}
+  .film{padding:60px 0 20px}
+  .hud{font-size:10.5px;top:9px;right:10px}
+}
+@media (prefers-reduced-motion:reduce){.stage{animation:none}.tcard.go{animation:none}}
+
+</style>
+<style>
+/* 페이지 덧씀: 제이스타일 토큰만 사용. 폰트는 아티팩트 환경이라 Noto Sans KR로 대체 */
+:root{color-scheme:dark}
+body{font-family:'Noto Sans KR',Pretendard,-apple-system,system-ui,sans-serif}
+.rail{top:env(safe-area-inset-top,0px)}
+.hero{grid-template-columns:1fr}
+.row{align-items:start}
+.row > div{min-width:0}
+
+/* 가이드: TKI 5모드 + 진행 순서 */
+.modes5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-top:28px}
+.m5{border:1px solid var(--line);border-radius:14px;background:var(--bg2);padding:16px 16px 14px;display:flex;flex-direction:column;gap:4px}
+.m5 .n{font-family:var(--mono);font-size:12px;color:var(--dim);letter-spacing:.12em}
+.m5 b{font-size:24px;font-weight:900;letter-spacing:-.03em}
+.m5 span{font-size:14px;color:#d7dde4;line-height:1.5}
+.m5 small{font-size:13px;color:var(--dim);line-height:1.5}
+.m5.hot{border-color:var(--acc);box-shadow:0 0 30px rgba(184,255,92,.12)}
+.m5.hot b{color:var(--acc)}
+.axis{margin-top:14px;font-family:var(--mono);font-size:12px;color:var(--dim);letter-spacing:.06em}
+.steps{display:grid;gap:10px;margin-top:28px;counter-reset:st}
+.st{display:grid;grid-template-columns:44px 1fr auto;gap:16px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:14px 18px;background:rgba(13,17,23,.7)}
+.st i{font-style:normal;font-family:var(--mono);font-weight:700;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--acc);color:#06080b;box-shadow:0 0 18px rgba(184,255,92,.35)}
+.st div{min-width:0}
+.st b{display:block;font-size:17px}
+.st span{display:block;font-size:14px;color:#d7dde4;line-height:1.55}
+.st em{font-style:normal;font-family:var(--mono);font-size:12px;color:var(--gold);white-space:nowrap}
+.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}
+.rules div{border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:14px;color:#d7dde4;line-height:1.55}
+.rules b{display:block;color:var(--fg);font-size:15px;margin-bottom:2px}
+.rules .warn{border-color:rgba(255,93,93,.5)}
+.rules .warn b{color:var(--red)}
+
+/* 상황카드 보드(.vis 안) */
+.board{display:flex;flex-direction:column;gap:16px}
+.lbl{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--dim);display:block;margin-bottom:6px}
+.who{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:baseline}
+.who b{font-size:20px;font-weight:900;letter-spacing:-.02em}
+.issue{border:1px solid rgba(255,212,71,.45);border-radius:14px;padding:12px 14px;background:rgba(255,212,71,.06)}
+.issue p{margin:0;font-weight:700;color:var(--gold);font-size:16px}
+.talk ol{margin:0;padding-left:20px;display:grid;gap:6px;font-size:15px;color:#d7dde4;line-height:1.55}
+.cast{display:grid;gap:6px}
+.cast div{display:grid;grid-template-columns:86px 1fr;gap:10px;font-size:14px;border-bottom:1px dashed var(--line);padding-bottom:6px}
+.cast div span{color:var(--dim);font-family:var(--mono);font-size:12px;padding-top:2px}
+.pick{display:flex;flex-wrap:wrap;gap:8px}
+.pick button{font:inherit;font-size:14px;font-weight:700;cursor:pointer;border:1px solid var(--line);background:var(--bg2);color:var(--fg);border-radius:999px;padding:7px 16px;transition:all .15s}
+.pick button small{font-family:var(--mono);color:var(--dim);font-weight:400;margin-right:6px;font-size:11px}
+.pick button:hover{border-color:var(--acc)}
+.pick button[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:#06080b;box-shadow:0 0 22px rgba(184,255,92,.35)}
+.pick button[aria-pressed="true"] small{color:#06080b}
+.fields{display:grid;gap:8px}
+.fields input{width:100%;box-sizing:border-box;font:inherit;font-size:14px;color:var(--fg);background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:9px 12px}
+.fields input:focus{outline:none;border-color:var(--acc)}
+.fields input::placeholder{color:#6b7682}
+.cpy{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.cpy .btn{font-size:14px;padding:10px 18px;cursor:pointer;border:0}
+.cpy .dim{font-size:12px;color:var(--dim)}
+.ta{width:100%;box-sizing:border-box;min-height:120px;font-family:var(--mono);font-size:12px;color:#d5dde6;background:var(--bg2);border:1px solid var(--line);padding:10px}
+.foot ol{text-align:left;display:inline-grid;gap:8px;margin:0 auto 26px;padding-left:22px;color:#d7dde4;font-size:16px;max-width:34em}
+
+@media (max-width:860px){
+  .modes5{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .rules{grid-template-columns:1fr}
+  .st{grid-template-columns:40px 1fr}
+  .st em{grid-column:2}
+}
+</style>
+
+<!-- 배경 레이어 -->
+<div class="aur a"></div><div class="aur b"></div><div class="grain"></div><div class="grid-bg"></div>
+<div class="progress" id="prog"></div>
+
+<div class="wrap">
+  <div class="top"><a href="#top" class="mark"><i></i>청람M&amp;C</a><span class="dim">MG 새마을금고 · TKI 갈등관리</span></div>
+
+  <section class="hero" id="top">
+    <div>
+      <div class="presents">CHEONGRAM M&amp;C PRESENTS</div>
+      <div class="kicker">TKI CONFLICT LAB · 8 CASES</div>
+      <h1>갈등 앞에서<br><span class="g">우리는 어떻게 움직일까</span></h1>
+      <p class="lead"><b>내 TKI 결과를 우리 영업점 장면에 대입해 봐요.</b> 조별로 상황카드 1장을 받고, 대응 모드를 정해 3분 롤플레이로 직접 해 봐요.</p>
+      <div class="ctas">
+        <a class="btn" href="#guide">▶ 진행 순서 보기</a>
+        <a class="btn ghost" href="#c1">우리 조 카드로 가기</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="kpis">
+    <div class="kpi"><b class="acc">8개</b><span>조마다 다른 갈등 상황</span></div>
+    <div class="kpi"><b>5가지</b><span>TKI 갈등 대응 모드</span></div>
+    <div class="kpi"><b>3분</b><span>조별 롤플레이 시연</span></div>
+  </div>
+
+  <section class="s" id="guide">
+    <div class="cell"><i>GUIDE</i></div>
+    <h2>다섯 모드부터 짚고 시작해요</h2>
+    <p class="one">모드에는 좋고 나쁨이 없어요. 상황에 맞는 모드를 골라 꺼내 쓰는 힘이 갈등관리 역량이에요.</p>
+    <div class="modes5">
+      <div class="m5 hot"><span class="n">1 · 자기주장 ↑ 협조 ↓</span><b>경쟁</b><span>내 입장을 관철해요</span><small>규정·원칙이 걸릴 때</small></div>
+      <div class="m5 hot"><span class="n">2 · 자기주장 ↑ 협조 ↑</span><b>협력</b><span>함께 만족할 답을 찾아요</span><small>시간과 신뢰가 있을 때</small></div>
+      <div class="m5"><span class="n">3 · 중간</span><b>타협</b><span>서로 조금씩 양보해요</span><small>빠른 합의가 필요할 때</small></div>
+      <div class="m5"><span class="n">4 · 자기주장 ↓ 협조 ↓</span><b>회피</b><span>일단 한발 물러서요</span><small>감정이 격하거나 때가 나쁠 때</small></div>
+      <div class="m5"><span class="n">5 · 자기주장 ↓ 협조 ↑</span><b>수용</b><span>상대의 뜻을 따라요</span><small>관계가 더 중요할 때</small></div>
+    </div>
+    <p class="axis">번호는 동시 공개 때 채팅창에 입력할 숫자예요.</p>
+
+    <div class="steps">
+      <div class="st"><i>1</i><div><b>상황 읽기 · 개인 선택</b><span>우리 조 카드를 읽고 각자 모드 하나를 골라요. 셋을 세면 채팅에 번호를 동시에 입력해요.</span></div><em>5분</em></div>
+      <div class="st"><i>2</i><div><b>우리 조 대응 전략</b><span>연차가 짧은 사람부터 이유를 말해요. 조의 모드 1개와 핵심 대사 3개를 정해요.</span></div><em>15분</em></div>
+      <div class="st"><i>3</i><div><b>AI로 대본 만들기 (선택)</b><span>카드 오른쪽에서 모드를 누르고 대사를 적으면 프롬프트가 채워져요. 복사해서 ChatGPT·Claude·Gemini에 붙여넣어요.</span></div><em>10분</em></div>
+      <div class="st"><i>4</i><div><b>롤플레이 시연</b><span>카드의 등장인물대로 역할을 나눠요. 상사·선임 역할은 연차가 짧은 사람이 맡아요.</span></div><em>조당 3분</em></div>
+      <div class="st"><i>5</i><div><b>관찰 피드백 · 성찰</b><span>관찰자는 모드가 드러난 대사를 기록하고, 다른 모드였다면 결말이 어떻게 달라졌을지 나눠요.</span></div><em>10분</em></div>
+    </div>
+    <div class="rules">
+      <div><b>역할 역전</b>상사·선임 역할은 연차가 짧은 사람이, 후배 역할은 선임이 맡아요.</div>
+      <div><b>발언 순서</b>조별 토의는 입사 연차가 짧은 사람부터 말해요.</div>
+      <div class="warn"><b>정보 보호</b>AI에 실제 회원 이름·계좌 정보는 절대 넣지 않아요.</div>
+    </div>
+  </section>
+</div>
+
+<nav class="rail" aria-label="조별 상황카드"><div class="wrap" id="rail"></div></nav>
+
+<div class="wrap" id="cells"></div>
+
+<div class="wrap">
+  <section class="foot">
+    <h2>다른 모드였다면,<br>결말은 어땠을까요</h2>
+    <ol>
+      <li>내 TKI 1순위 모드와 우리 조의 선택은 같았나요?</li>
+      <li>8개 상황 중 내가 가장 꺼내기 어려운 모드는 무엇이었나요?</li>
+      <li>다음 주 현장에서 한 번 써 볼 모드와 장면은 무엇인가요?</li>
+    </ol>
+    <div><a class="btn" href="#top">▲ 맨 위로</a></div>
+    <div class="endmark">CHEONGRAM M&amp;C</div>
+  </section>
+</div>
+
+<script>
+(function(){
+  const COND = [
+    '조건',
+    '- 새마을금고 영업점 직원과 회원이 실제로 쓰는 말투로, 인물별 대사 형식으로 쓸 것',
+    '- 상대방이 처음에는 반발하다가 대화가 조금씩 움직이도록 구성할 것',
+    '- 등장인물 모두 한 번 이상 말하게 할 것',
+    '- 대본 끝에 \'이 모드가 통한 장면\'과 \'위험했던 장면\'을 한 줄씩 정리할 것'
+  ].join('\n');
+
+  const CASES = [
+    {t:'“30년 거래했는데<br>이것도 안 돼?”', who:'원로 회원 · 창구', size:6,
+     sit:'오후 3시 55분, 마감 5분 전이에요. 대의원 출신 원로 회원이 창구에 와서 배우자 명의 정기예금 3천만 원을 해지해 자녀 계좌로 보내 달라고 해요. 위임장도 본인 확인 서류도 없어요. “내가 이 금고 만들 때부터 다녔어. 이사장 불러와!” 뒤에는 대기 고객 4명이 서 있고, 당신은 이 창구 담당 직원이에요.',
+     issue:'규정 준수와 오래된 관계 사이',
+     qs:['수용하면 무엇을 잃고, 경쟁하면 무엇을 잃을까요?','원칙은 지키면서 회원의 체면도 살리는 대사는 무엇일까요?'],
+     cast:{me:'창구 담당 직원', you:'원로 회원', side:'대기 고객, 옆 창구 선임'}},
+    {t:'“이번 분기 공제 실적,<br>우리 팀만 미달이야”', who:'팀장 · 상사', size:6,
+     sit:'분기 마감 2주 전, 팀장이 팀 회의에서 지시해요. “만기 도래 회원한테 공제 상품 같이 권해. 특히 어르신들은 설명 잘하면 다 들어.” 당신은 지난달 75세 회원이 “이게 예금인 줄 알았다”며 항의한 건을 직접 처리했어요. 다른 팀원들은 말없이 고개만 끄덕이고 있어요.',
+     issue:'실적 압박과 불완전판매 위험',
+     qs:['상사에게 경쟁 모드를 쓴다면 어디까지가 적절할까요?','이 자리에서 회피하면 결국 누가 손해를 볼까요?'],
+     cast:{me:'팀원(나)', you:'팀장', side:'고개 끄덕이는 팀원 2명'}},
+    {t:'“그날은 저도<br>꼭 빠져야 해요”', who:'옆자리 동료', size:6,
+     sit:'12월 셋째 주 금요일은 연말 결산에 지역 김장나눔 행사까지 겹치는 날이에요. 당신은 석 달 전에 가족 해외여행을 예약했어요. 옆자리 동료는 아이 초등학교 졸업식이라 같은 날 연차를 신청했어요. 팀장은 “둘이 알아서 정해 와”라는 말만 남겼어요.',
+     issue:'둘 다 정당한 사정, 비울 수 있는 자리는 하나',
+     qs:['반차씩 나누는 타협이 정말 최선일까요?','협력 모드라면 판을 어떻게 다시 짤 수 있을까요?'],
+     cast:{me:'나', you:'옆자리 동료', side:'팀장, 다른 팀원'}},
+    {t:'“이사님 추천 건인데<br>그냥 넘기시죠”', who:'여신 담당 과장 · 타부서', size:6,
+     sit:'여신 담당 과장이 지역 상가 담보대출을 이번 주 안에 승인하자고 해요. 차주는 이사 한 분의 지인이에요. 심사를 맡은 당신이 보기에 감정평가가 시세보다 15%가량 높게 나와 재평가가 필요해요. 과장은 “이러다 차주가 다른 데로 가면 책임질 거야?”라며 언성을 높여요.',
+     issue:'영업 속도와 건전성 관리',
+     qs:['여기서 수용하면 누가 대가를 치를까요?','경쟁하면서도 과장과의 관계를 지킬 방법은 무엇일까요?'],
+     cast:{me:'심사 담당', you:'여신 담당 과장', side:'상무, 차주'}},
+    {t:'“어르신들은<br>앱 못 써요”', who:'20년 차 과장 · 세대', size:6,
+     sit:'창구 대기가 길어지자 입사 3년 차인 당신이 회의에서 제안해요. “단순 조회나 이체는 MG더뱅킹 앱으로 안내하면 어떨까요?” 20년 차 과장이 단칼에 잘라요. “우리 회원 절반이 70대야. 앱 얘기 꺼내면 다 떠나.” 회의실 분위기가 순식간에 싸해져요.',
+     issue:'업무 효율과 회원의 경험·정서',
+     qs:['이 순간 회피(회의 후 따로 대화)는 전략이 될 수 있을까요?','협력하려면 과장님께 무엇부터 물어야 할까요?'],
+     cast:{me:'입사 3년 차 직원', you:'20년 차 과장', side:'팀장, 동료'}},
+    {t:'“토요일 체육대회,<br>전 직원 참석입니다”', who:'위의 지시와 팀원들 · 중간관리자', size:6,
+     sit:'이사장이 지역 체육대회 후원을 결정하면서 전 직원 토요일 참석을 지시했고, 상무가 이를 팀장인 당신에게 전달했어요. 팀원 단톡방에는 “또 주말이야?”, “애 맡길 데가 없는데”라는 불만이 쏟아져요. 당신은 위의 지시와 아래의 불만 사이에 서 있어요.',
+     issue:'조직의 지시와 구성원의 사정 사이',
+     qs:['위로는 수용, 아래로는 경쟁을 쓰는 것이 맞을까요?','상무님께 다시 말씀드린다면 어떤 대안을 들고 가겠습니까?'],
+     cast:{me:'팀장', you:'상무', side:'불만 있는 팀원, 육아 중인 팀원'}},
+    {t:'“금리가 왜<br>이것밖에 안 돼!”', who:'화난 회원 · 객장', size:7,
+     sit:'예금 재예치 금리가 작년보다 1%p 떨어지자 한 회원이 객장에서 고성을 질러요. “다른 데는 더 준다던데, 사람 무시하는 거야?” 다른 회원들이 쳐다보고 있고, 응대하던 신입 직원은 얼어붙었어요. 당신은 옆 창구의 대리예요.',
+     issue:'격해진 감정, 공개된 장소, 동료 보호',
+     qs:['상담실로 자리를 옮기는 회피는 도망일까요, 전략일까요?','각 모드를 꺼낼 타이밍을 순서대로 짚어 봐요.'],
+     cast:{me:'옆 창구 대리', you:'화난 회원', side:'얼어붙은 신입 직원, 대기 회원 2명'}},
+    {t:'“그 예금,<br>제가 유치한 건데요”', who:'본점 입사 동기 · 공정성', size:7,
+     sit:'분사무소 주임인 당신이 6개월 동안 공들인 법인 회원이 5억 원을 예치했어요. 그런데 계좌를 본점에서 개설했다는 이유로 본점 대리의 실적으로 등록됐어요. 평가 시즌은 다음 주예요. 본점 대리는 당신의 입사 동기예요.',
+     issue:'실적의 공정성과 동기와의 관계',
+     qs:['수용하면 관계는 지켜질까요, 속으로 곪을까요?','경쟁·협력·타협을 각각 썼을 때 다음 장면은 어떻게 달라질까요?'],
+     cast:{me:'분사무소 주임', you:'본점 대리(입사 동기)', side:'분사무소 팀장, 본점 팀장, 평가 담당'}}
+  ];
+
+  const MODES = ['경쟁','협력','타협','회피','수용'];
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+  function prompt(c, st){
+    const L = (v, ph) => (v && v.trim()) ? v.trim() : ph;
+    return [
+      '너는 새마을금고 직원 교육용 롤플레이 대본 작가야.',
+      '아래 상황에서 우리 조가 정한 갈등 대응 전략으로 3분 분량의 롤플레이 대본을 써줘.',
+      '',
+      '[상황] ' + c.sit,
+      '[우리 조 대응 모드] ' + L(st.mode, '(경쟁·협력·타협·회피·수용 중 1개)'),
+      '[선택 이유] ' + L(st.why, '(우리 조가 이 모드를 고른 이유)'),
+      '[등장인물] 당사자: ' + c.cast.me + ' / 상대방: ' + c.cast.you + ' / 이해관계자: ' + c.cast.side,
+      '[꼭 넣을 핵심 대사] ① ' + L(st.l1, '(대사 1)') + ' ② ' + L(st.l2, '(대사 2)') + ' ③ ' + L(st.l3, '(대사 3)'),
+      '',
+      COND
+    ].join('\n');
+  }
+
+  window.JPAGE = {
+    cells: CASES.map((c, i) => ({
+      id: i + 1, t: c.t, one: c.sit,
+      tags: [(i + 1) + '조 · ' + c.size + '명', '갈등 상대 · ' + c.who],
+      vis: 'board', data: Object.assign({n: i + 1}, c),
+      code: prompt(c, {})
+    })),
+    visuals: {
+      board: (el, c) => {
+        const n = c.n;
+        el.innerHTML =
+          '<div class="board">' +
+            '<div><span class="lbl">COUNTERPART</span><div class="who"><b>' + esc(c.who) + '</b></div></div>' +
+            '<div class="issue"><span class="lbl">ISSUE · 쟁점</span><p>' + esc(c.issue) + '</p></div>' +
+            '<div class="talk"><span class="lbl">TALK · 조별 토의 질문</span><ol>' + c.qs.map((q) => '<li>' + esc(q) + '</li>').join('') + '</ol></div>' +
+            '<div class="cast"><span class="lbl">CAST · 등장인물</span>' +
+              '<div><span>당사자</span>' + esc(c.cast.me) + '</div>' +
+              '<div><span>상대방</span>' + esc(c.cast.you) + '</div>' +
+              '<div><span>이해관계자</span>' + esc(c.cast.side) + '</div>' +
+              '<div><span>관찰자</span>2명 · 모드가 드러난 대사를 기록</div>' +
+            '</div>' +
+            '<div><span class="lbl">OUR MODE · 우리 조 대응 모드</span><div class="pick" role="group" aria-label="' + n + '조 대응 모드">' +
+              MODES.map((m, k) => '<button type="button" aria-pressed="false" data-m="' + m + '"><small>' + (k + 1) + '</small>' + m + '</button>').join('') +
+            '</div></div>' +
+            '<div class="fields"><span class="lbl">STRATEGY · 이유와 핵심 대사</span>' +
+              '<input id="why' + n + '" data-k="why" placeholder="이 모드를 고른 이유" aria-label="선택 이유">' +
+              '<input id="l1-' + n + '" data-k="l1" placeholder="핵심 대사 ①" aria-label="핵심 대사 1">' +
+              '<input id="l2-' + n + '" data-k="l2" placeholder="핵심 대사 ②" aria-label="핵심 대사 2">' +
+              '<input id="l3-' + n + '" data-k="l3" placeholder="핵심 대사 ③" aria-label="핵심 대사 3">' +
+            '</div>' +
+            '<div class="cpy"><button type="button" class="btn go">▶ AI 프롬프트 복사</button><span class="dim msg">모드와 대사를 채우면 프롬프트에 들어가요</span></div>' +
+            '<textarea class="ta" readonly hidden aria-label="복사용 프롬프트"></textarea>' +
+          '</div>';
+
+        const st = {mode: '', why: '', l1: '', l2: '', l3: ''};
+        const sec = el.closest('.s');
+        const codeEl = sec.querySelector('details.code code');
+        const sync = () => { codeEl.textContent = prompt(c, st); };
+
+        el.querySelectorAll('.pick button').forEach((b) => b.addEventListener('click', () => {
+          const on = b.getAttribute('aria-pressed') !== 'true';
+          el.querySelectorAll('.pick button').forEach((x) => x.setAttribute('aria-pressed', 'false'));
+          b.setAttribute('aria-pressed', on ? 'true' : 'false');
+          st.mode = on ? b.dataset.m : '';
+          sync();
+        }));
+        el.querySelectorAll('.fields input').forEach((inp) => inp.addEventListener('input', () => { st[inp.dataset.k] = inp.value; sync(); }));
+
+        const msg = el.querySelector('.msg'), ta = el.querySelector('.ta');
+        el.querySelector('.go').addEventListener('click', () => {
+          const txt = prompt(c, st);
+          const fallback = () => { ta.hidden = false; ta.value = txt; ta.focus(); ta.select(); msg.textContent = '자동 복사가 막혀 있어요. 아래 글을 길게 눌러 복사하세요'; };
+          try {
+            navigator.clipboard.writeText(txt).then(() => { msg.textContent = '복사됐어요. AI 채팅창에 붙여넣으세요'; }, fallback);
+          } catch (e) { fallback(); }
+        });
+      }
+    }
+  };
+
+  // 셀 라벨·레일·코드박스 문구를 상황카드에 맞게 바꿈(제이스타일 런타임이 셀을 그린 뒤 실행)
+  const relabel = () => {
+    document.querySelectorAll('#cells .s').forEach((s, i) => {
+      const lab = s.querySelector('.cell i'); if (lab) lab.textContent = 'CASE ' + String(i + 1).padStart(2, '0') + ' · ' + (i + 1) + '조';
+      const sum = s.querySelector('details.code summary'); if (sum) sum.textContent = 'AI 프롬프트 미리 보기';
+    });
+    document.querySelectorAll('#rail a').forEach((a, i) => { a.textContent = (i + 1) + '조'; });
+    const g = document.createElement('a'); g.href = '#guide'; g.textContent = '진행 순서';
+    const rail = document.getElementById('rail'); if (rail) rail.insertBefore(g, rail.firstChild);
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => setTimeout(relabel, 0));
+  else setTimeout(relabel, 0);
+})();
+</script>
+<script>
+/* ==========================================================================
+   J-STYLE runtime (제이스타일) — 의존성 0, 바닐라 JS
+   사용: 페이지에 window.JPAGE = {...} 설정을 먼저 선언하고 이 파일을 로드하면 자동 초기화.
+   설정 스키마는 references/config.md 참고.
+   ========================================================================== */
+(function () {
+  'use strict';
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- 외부 앱 연동: Colab 링크 만들기 ---------- */
+  // colabUrl({user:'wonseokjung', repo:'aicb-colab', notebook:'AI더빙.ipynb', branch:'main'})
+  function colabUrl(o) {
+    return 'https://colab.research.google.com/github/' + o.user + '/' + o.repo +
+      '/blob/' + (o.branch || 'main') + '/' + encodeURIComponent(o.notebook);
+  }
+
+  /* ---------- 공용 오디오 플레이어: [data-a="파일명"] 버튼 하나로 재생/토글 ---------- */
+  let player = null, curBtn = null, audioBase = '/a/', audioExt = '.mp3';
+  function play(btn, name) {
+    if (player) { player.pause(); curBtn && curBtn.classList.remove('on'); }
+    if (curBtn === btn) { curBtn = null; return; }
+    player = new Audio(audioBase + name + audioExt);
+    curBtn = btn;
+    btn.classList.add('on');
+    player.addEventListener('ended', () => { btn.classList.remove('on'); curBtn = null; });
+    player.play().catch(() => btn.classList.remove('on'));
+    return player;
+  }
+  document.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-a]');
+    if (b) play(b, b.dataset.a);
+  });
+
+  /* ---------- 가짜 파형 캔버스 (오디오 분석 아님: 사인 합성 연출) ----------
+     개선: 화면 밖에서는 그리기를 건너뜁니다(원본은 계속 그림). */
+  const visObs = new IntersectionObserver((es) => es.forEach((e) => { e.target._vis = e.isIntersecting; }));
+  function waveCanvas(el, color, seed, speed = 1) {
+    const cv = document.createElement('canvas');
+    el.appendChild(cv);
+    visObs.observe(cv);
+    const cx = cv.getContext('2d');
+    (function draw(now) {
+      if (cv._vis !== false) {
+        const W = cv.clientWidth, H = cv.clientHeight, d = devicePixelRatio || 1;
+        if (cv.width !== W * d) { cv.width = W * d; cv.height = H * d; }
+        cx.setTransform(d, 0, 0, d, 0, 0);
+        cx.clearRect(0, 0, W, H);
+        const n = Math.max(20, Math.floor(W / 7)), t = now / 1000 * speed;
+        for (let i = 0; i < n; i++) {
+          const env = Math.abs(Math.sin(i * 0.37 + seed) * Math.sin(i * 0.11 + seed * 2)) * (0.55 + 0.45 * Math.sin(t * 3 + i * 0.25));
+          const h = Math.max(2, env * H * 0.9);
+          cx.fillStyle = color;
+          cx.globalAlpha = 0.35 + 0.65 * env;
+          cx.fillRect(i * 7, (H - h) / 2, 4, h);
+        }
+        cx.globalAlpha = 1;
+      }
+      requestAnimationFrame(draw);
+    })(performance.now());
+    return cv;
+  }
+
+  /* ---------- 히어로 오브: 파동 링 + 궤도를 도는 언어 칩 ---------- */
+  function initOrb(langs) {
+    const orb = $('#orb'), oc = $('#orbc');
+    if (!orb || !oc || !langs || !langs.length) return;
+    const ctx = oc.getContext('2d');
+    const chips = langs.map(([n, c, a]) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'lang'; b.dataset.a = a;
+      b.innerHTML = `${n}<small>${c}</small>`;
+      orb.appendChild(b);
+      return b;
+    });
+    const t0 = performance.now();
+    function drawOrb(now) {
+      const r = orb.getBoundingClientRect(), W = r.width, dpr = devicePixelRatio || 1;
+      if (oc.width !== W * dpr) { oc.width = W * dpr; oc.height = W * dpr; }
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, W, W);
+      const t = (now - t0) / 1000, cx = W / 2, cy = W / 2, R = W * 0.38;
+      const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, W * 0.22);
+      g.addColorStop(0, 'rgba(184,255,92,.30)'); g.addColorStop(1, 'rgba(184,255,92,0)');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, W * 0.22, 0, 7); ctx.fill();
+      const live = player && !player.paused;           // 재생 중이면 링이 더 크게 출렁
+      for (let k = 0; k < 3; k++) {
+        ctx.strokeStyle = `rgba(184,255,92,${0.25 - k * 0.07})`;
+        ctx.lineWidth = 1.5; ctx.beginPath();
+        for (let a = 0; a <= 360; a += 3) {
+          const rad = a * Math.PI / 180, amp = (live ? 10 : 4) * Math.sin(rad * (5 + k) + t * (2 + k));
+          const rr = W * (0.14 + k * 0.035) + amp;
+          const x = cx + Math.cos(rad) * rr, y = cy + Math.sin(rad) * rr;
+          a ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+        }
+        ctx.closePath(); ctx.stroke();
+      }
+      ctx.strokeStyle = 'rgba(255,255,255,.08)'; ctx.setLineDash([3, 6]);
+      ctx.beginPath(); ctx.arc(cx, cy, R, 0, 7); ctx.stroke(); ctx.setLineDash([]);
+      chips.forEach((b, i) => {
+        const a = t * 0.12 + i / chips.length * Math.PI * 2;   // 한 바퀴 약 52초
+        b.style.left = `${50 + Math.cos(a) * 38}%`;
+        b.style.top = `${50 + Math.sin(a) * 38}%`;
+        if (b.classList.contains('on')) {
+          ctx.strokeStyle = 'rgba(184,255,92,.6)'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + Math.cos(a) * R, cy + Math.sin(a) * R); ctx.stroke();
+        }
+      });
+      requestAnimationFrame(drawOrb);
+    }
+    requestAnimationFrame(drawOrb);
+  }
+
+  /* ---------- 셀 시각화 레시피(V): cell.vis 이름으로 호출, cell.data 로 내용 주입 ---------- */
+  const V = {};
+  V.install = (el, d = {}) => {            // 칩이 위에서 떨어져 박스에 담기고, 재시작 아이콘이 돈다
+    el.innerHTML = `<div class="pk">${(d.pkgs || []).map((p) => `<div>${p}</div>`).join('')}</div>
+      <div class="box">${d.box || ''}</div>
+      <div class="restart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>${d.restart || ''}</div>
+      <span class="cap">${d.cap || ''}</span>`;
+  };
+  V.ring = (el, d = {}) => {                // 원형으로 N개 아이콘, 호버/자동순환으로 중앙 정보 교체
+    const L = d.items || [], lit = new Set(d.lit || []), sp = d.special || {};
+    el.innerHTML = `<div class="lring">${L.map(([c, f], i) => {
+      const a = i / L.length * Math.PI * 2 - Math.PI / 2;
+      const cls = lit.has(c) ? ' lit' : '';
+      return `<button type="button" class="ld${cls}${sp[c] ? ' ja' : ''}" data-k="${i}" style="left:${50 + Math.cos(a) * 41}%;top:${50 + Math.sin(a) * 41}%" aria-label="${L[i][2]}">${f}</button>`;
+    }).join('')}<div class="lc"></div></div><span class="cap">${d.cap || ''}</span>`;
+    const lc = $('.lc', el), dots = $$('.ld', el);
+    let k = -1, hover = false;
+    const show = (i) => {
+      dots.forEach((x, j) => x.classList.toggle('cur', j === i));
+      if (i < 0) { lc.innerHTML = `<b class="n23">${d.center || L.length}</b><i>${d.centerLabel || ''}</i>`; return; }
+      const [c, f, n] = L[i];
+      const note = sp[c] ? ' · ' + sp[c] : lit.has(c) ? ' · ' + (d.litNote || '') : '';
+      lc.innerHTML = `<span>${f}</span><b>${n}</b><i class="${sp[c] ? 'ja' : lit.has(c) ? 'lit' : ''}">${c}${note}</i>`;
+    };
+    show(-1);
+    dots.forEach((x) => {
+      x.addEventListener('mouseenter', () => { hover = true; k = +x.dataset.k; show(k); });
+      x.addEventListener('mouseleave', () => { hover = false; });
+      x.addEventListener('focus', () => show(+x.dataset.k));
+    });
+    setInterval(() => {                      // 화면에 들어와 .on 일 때만 1.2초마다 순환
+      if (hover || !el.classList.contains('on')) return;
+      k = (k + 1) % L.length; show(k);
+    }, 1200);
+  };
+  V.voice = (el, d = {}) => {               // 파형 + 구간 브래킷 + DO/DON'T 4칸
+    const w = document.createElement('div'); w.className = 'wavebox'; el.appendChild(w);
+    waveCanvas(w, d.color || '#8fd3ff', 1.7);
+    const b = d.bracket || [];
+    w.insertAdjacentHTML('beforeend', `<div class="bracket">${b.map((x) => `<span>${x}</span>`).join('')}</div>`);
+    el.insertAdjacentHTML('beforeend', `<div class="dos">${(d.dos || []).map(([k, t]) => `<div class="${k}">${k === 'o' ? '✓' : '✕'} ${t}</div>`).join('')}</div>`);
+  };
+  V.speak = (el, d = {}) => {               // 입력 줄들 + 결과 한 줄(재생) + 노브 + 코드 캡션
+    const r = d.result || {};
+    el.innerHTML = `<div class="spk">${(d.inputs || []).map(([l, v, cls]) => `<div class="in"><span class="l">${l}</span>${cls ? `<b class="${cls}">${v}</b>` : v}</div>`).join('')}</div>
+      <div class="gl" style="margin-top:18px"><span class="f">${r.flag || ''}</span><span class="t">${r.file || ''}</span><button class="play" type="button" data-a="${r.audio || ''}">▶</button></div>
+      <div class="knobs">${(d.knobs || []).map((k) => `<div><span>${k.name}</span><b>${k.val}</b><i style="--w:${k.w}"></i><small>${k.note || ''}</small></div>`).join('')}</div>
+      <span class="cap">${d.cap || ''}</span>`;
+    waveCanvas($('.gl', el), '#b8ff5c', 0.5, 0.8);
+  };
+  V.multi = (el, d = {}) => {               // 결과 행 N개(각각 파형+재생)
+    el.innerHTML = `<div class="gen"></div><span class="cap">${d.cap || ''}</span>`;
+    const g = $('.gen', el);
+    (d.rows || []).forEach(([f, t, a], i) => {
+      const row = document.createElement('div'); row.className = 'gl';
+      row.innerHTML = `<span class="f">${f}</span><span class="t">${t}</span><button class="play" type="button" data-a="${a}">▶</button>`;
+      g.appendChild(row);
+      waveCanvas(row, '#b8ff5c', i * 2.3 + 0.5, 0.8);
+    });
+  };
+  V.zip = (el, d = {}) => {                 // 파일 칩들이 떨어져 zip 박스로
+    el.innerHTML = `<div class="zipv">${(d.files || []).map((l) => `<div>🎧<b>${l}.${d.ext || 'wav'}</b></div>`).join('')}</div>
+      <div class="zipbox">${d.box || ''}</div><span class="cap">${d.cap || ''}</span>`;
+  };
+
+  /* ---------- 셀 섹션 + 레일 생성, 코드박스(복사 버튼) ---------- */
+  function buildCells(cfg) {
+    const root = $('#cells'), rail = $('#rail');
+    if (!root || !cfg.cells) return;
+    cfg.cells.forEach((c) => {
+      const s = document.createElement('section');
+      s.className = 's'; s.id = 'c' + c.id;
+      s.innerHTML = `<div class="row"><div><div class="cell"><i>CELL ${String(c.id).padStart(2, '0')}</i></div><h2>${c.t}</h2><p class="one">${c.one || ''}</p>
+        <div class="tags">${(c.tags || []).map((x) => `<span class="tag">${x}</span>`).join('')}</div>
+        <details class="code"><summary>코드 보기</summary><button class="copy" type="button">복사</button><pre><code></code></pre></details></div>
+        <div class="vis" data-vis="${c.vis || ''}"></div></div>`;
+      root.appendChild(s);
+      if (c.code) $('code', s).textContent = c.code;
+      if (rail) {
+        const a = document.createElement('a');
+        a.href = '#c' + c.id; a.textContent = `${String(c.id).padStart(2, '0')} ${c.t}`;
+        rail.appendChild(a);
+      }
+    });
+    if (cfg.cellsJson) {                      // 코드가 길면 JSON으로 분리: [{i:1, code:'...'}]
+      fetch(cfg.cellsJson).then((r) => r.json())
+        .then((cells) => cells.forEach((c) => { const el = $(`#c${c.i} code`); if (el) el.textContent = c.code; }))
+        .catch(() => {});
+    }
+    document.addEventListener('click', (e) => {
+      const b = e.target.closest('.copy'); if (!b) return;
+      const txt = b.parentElement.querySelector('code').textContent;
+      navigator.clipboard.writeText(txt).then(() => { b.textContent = '복사됨'; setTimeout(() => (b.textContent = '복사'), 1400); }, () => {});
+    });
+    $$('.vis').forEach((el) => {
+      const sec = el.closest('.s'), name = el.dataset.vis, cell = sec && cfg.cells.find((c) => 'c' + c.id === sec.id);
+      const fn = (cfg.visuals && cfg.visuals[name]) || V[name];
+      fn && fn(el, cell && cell.data);
+    });
+  }
+
+  /* ---------- 덤벨 차트(SVG): 항목별 두 값을 선으로 이어 비교 ---------- */
+  function buildSweep(cfg) {
+    const sw = cfg.sweep, svg = $('#sweep');
+    if (!sw || !svg) return;
+    const rows = sw.rows, W = 1000, rh = 30, top = 30, H = top + rows.length * rh + 10, x0 = 210, x1 = 960;
+    const mn = sw.min ?? 0.5, mx = sw.max ?? 0.9, sx = (v) => x0 + (v - mn) / (mx - mn) * (x1 - x0);
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    let s = (sw.ticks || [0.5, 0.6, 0.7, 0.8, 0.9]).map((v) =>
+      `<line x1="${sx(v)}" x2="${sx(v)}" y1="${top - 8}" y2="${H}" stroke="#1f2630"/><text class="ax" x="${sx(v)}" y="${top - 14}" text-anchor="middle">${v.toFixed(1)}</text>`).join('');
+    rows.forEach(([n, a, b], i) => {
+      const y = top + i * rh + 12;
+      s += `<text x="0" y="${y + 4}">${n}</text>`;
+      if (a !== null) s += `<line x1="${sx(b)}" x2="${sx(a)}" y1="${y}" y2="${y}" stroke="rgba(184,255,92,.45)" stroke-width="4"/><circle cx="${sx(a)}" cy="${y}" r="7" fill="#b8ff5c"/>`;
+      else s += `<text class="ax" x="${x0 + 4}" y="${y + 4}" fill="#ff5d5d">${sw.missing || '미지원'}</text>`;
+      s += `<circle cx="${sx(b)}" cy="${y}" r="7" fill="#b79dff"/>`;
+    });
+    svg.innerHTML = s;
+  }
+
+  /* ---------- 가격/수치 막대: 화면에 들어오면 폭이 차오름 ---------- */
+  function buildPrice(cfg) {
+    const el = $('#price');
+    if (!el || !cfg.price) return;
+    const max = Math.max(...cfg.price.map((p) => p[1]));
+    el.innerHTML = cfg.price.map(([n, v, c, l]) =>
+      `<div class="pr"><span>${n}</span><div class="tr" style="--w:${Math.max(0.6, v / max * 70)}%"><i style="background:${c}"></i><b style="color:${c}">${l}</b></div></div>`).join('');
+  }
+
+  /* ---------- 진입 재생(.on) · 레일 하이라이트 · 상단 진행바 ---------- */
+  function initScrollFx() {
+    const io = new IntersectionObserver((es) => es.forEach((e) => {
+      if (e.isIntersecting) { e.target.classList.add('on'); e.target._play && e.target._play(); }
+      else e.target.classList.remove('on');
+    }), { threshold: 0.45 });
+    $$('.vis, #pricebox').forEach((el) => io.observe(el));
+    const rail = $('#rail');
+    if (rail) {
+      const links = $$('a', rail);
+      const so = new IntersectionObserver((es) => es.forEach((e) => {
+        if (!e.isIntersecting) return;
+        links.forEach((a) => a.classList.toggle('cur', a.getAttribute('href') === '#' + e.target.id));
+        const cur = links.find((a) => a.classList.contains('cur'));
+        cur && cur.scrollIntoView({ block: 'nearest', inline: 'center' });
+      }), { rootMargin: '-45% 0px -50% 0px' });
+      $$('#cells .s').forEach((s) => so.observe(s));
+    }
+    const prog = $('#prog');
+    if (prog) addEventListener('scroll', () => {
+      const h = document.documentElement;
+      prog.style.transform = `scaleX(${h.scrollTop / Math.max(1, h.scrollHeight - h.clientHeight)})`;
+    }, { passive: true });
+  }
+
+  /* ---------- 필름 플레이어: 더블버퍼 크로스페이드 · 장면 카드 · 세그먼트 · 앰비라이트 ---------- */
+  function initFilm(film) {
+    const stage = $('#stage');
+    if (!film || !stage) return;
+    const S = film.scenes;           // [[파일명(확장자 제외), 제목, 부제, 초]]
+    const base = film.base;          // 예: '/film/'  → base+파일명+'.mp4' / '.jpg'(포스터) / '_t.jpg'(썸네일)
+    const $id = (id) => document.getElementById(id), src = (i) => base + S[i][0];
+    const TOT = S.reduce((a, x) => a + x[3], 0), BEFORE = S.map((_, i) => S.slice(0, i).reduce((a, x) => a + x[3], 0));
+    const V2 = [$id('fv0'), $id('fv1')];
+    let a = 0, cur = 0, sound = false, playing = false, vis = false, started = false;
+    const fmt = (t) => Math.floor(t / 60) + ':' + String(Math.floor(t % 60)).padStart(2, '0');
+    const pad = (i) => String(i + 1).padStart(2, '0');
+
+    $id('fSegs').innerHTML = S.map((x, i) => `<i style="--d:${x[3].toFixed(1)}" data-i="${i}" title="${pad(i)} ${x[1]}"></i>`).join('');
+    $id('fChaps').innerHTML = S.map((x, i) =>
+      `<li data-i="${i}"><img src="${src(i)}_t.jpg" alt="" loading="lazy"><div><div class="n">SCENE ${pad(i)}</div><b>${x[1]}</b><span>${x[2]}</span></div><em>${fmt(x[3])}</em><span class="eqz"><i></i><i></i><i></i></span><span class="bar"></span></li>`).join('');
+    const segs = [...$id('fSegs').children], chaps = [...$id('fChaps').children];
+
+    function hud() {
+      $id('fNo').textContent = pad(cur); $id('fTitle').textContent = S[cur][1];
+      chaps.forEach((li, i) => { li.classList.toggle('cur', i === cur); li.classList.toggle('snd', sound && playing); });
+      $id('fRec').classList.toggle('off', !playing);
+      $id('fPlay').textContent = playing ? '❚❚' : '▶';
+      $id('fSnd').classList.toggle('on', sound);
+      $id('fSnd').textContent = sound ? '🔊 소리 켜짐' : '🔈 소리 켜기';
+    }
+    function card() {                // 장면 제목 카드: 클래스 제거 → 강제 리플로우 → 재추가로 매번 재생
+      if (reduce) return;
+      const c = $id('fCard');
+      $id('fCardNo').textContent = 'SCENE ' + pad(cur); $id('fCardT').textContent = S[cur][1]; $id('fCardS').textContent = S[cur][2];
+      c.classList.remove('go'); void c.offsetWidth; c.classList.add('go');
+    }
+    function go(i, opts = {}) {
+      const ni = (i + S.length) % S.length, v0 = V2[a];
+      if (ni === cur && v0.src && v0.src.indexOf(S[ni][0] + '.mp4') >= 0) {   // 같은 장면: 제자리 재시작
+        v0.muted = !sound; v0.currentTime = 0;
+        const p = v0.play(); playing = true;
+        if (p && p.catch) p.catch(() => { playing = false; hud(); });
+        card(); hud(); return;
+      }
+      cur = ni;
+      const nv = V2[1 - a], ov = V2[a];
+      nv.src = src(cur) + '.mp4'; nv.poster = src(cur) + '.jpg'; nv.muted = !sound; nv.currentTime = 0;
+      const show = () => { nv.classList.remove('out'); ov.classList.add('out'); setTimeout(() => { ov.pause(); }, 480); a = 1 - a; };
+      if (opts.play !== false) {
+        const p = nv.play();
+        if (p && p.then) p.then(show, () => { show(); playing = false; hud(); }); else show();
+        playing = true;
+      } else show();
+      card(); hud();
+      chaps[cur].scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
+    }
+    V2.forEach((v) => v.addEventListener('ended', () => {
+      if (v === V2[a]) { if (cur < S.length - 1) go(cur + 1); else { playing = false; hud(); } }
+    }));
+    (function tick() {               // 세그먼트/챕터 진행률 + 총 시간
+      const v = V2[a], d = v.duration || S[cur][3], p = Math.min(1, (v.currentTime || 0) / d);
+      segs.forEach((g, i) => g.style.setProperty('--p', i < cur ? 1 : i === cur ? p : 0));
+      chaps[cur].style.setProperty('--p', p);
+      $id('fTime').textContent = fmt(BEFORE[cur] + (v.currentTime || 0)) + ' / ' + fmt(TOT);
+      requestAnimationFrame(tick);
+    })();
+
+    // 앰비라이트: 영상 프레임 평균색 → --amb → .stage:before 후광
+    const amb = document.createElement('canvas'); amb.width = 16; amb.height = 9;
+    const ag = amb.getContext('2d', { willReadFrequently: true });
+    setInterval(() => {
+      const v = V2[a];
+      if (!vis || v.readyState < 2) return;
+      try {
+        ag.drawImage(v, 0, 0, 16, 9);
+        const d = ag.getImageData(0, 0, 16, 9).data;
+        let r = 0, g = 0, b = 0, n = 0;
+        for (let k = 0; k < d.length; k += 4) {
+          const m = Math.max(d[k], d[k + 1], d[k + 2]);
+          if (m < 40) continue;
+          r += d[k]; g += d[k + 1]; b += d[k + 2]; n++;
+        }
+        if (n) {
+          const s = 255 / Math.max(r / n, g / n, b / n, 1);
+          stage.style.setProperty('--amb', `${Math.min(255, r / n * s) | 0},${Math.min(255, g / n * s) | 0},${Math.min(255, b / n * s) | 0}`);
+        }
+      } catch (e) { /* CORS 등으로 픽셀을 못 읽으면 조용히 무시 */ }
+    }, 300);
+
+    function withSound(i) {
+      sound = true; started = true; $id('fBig').classList.add('hide');
+      V2.forEach((v) => (v.muted = false));
+      go(i == null ? cur : i);
+    }
+    $id('fBig').onclick = () => withSound(started ? cur : 0);
+    $id('fSnd').onclick = () => {
+      sound = !sound; V2.forEach((v) => (v.muted = !sound));
+      if (sound) { $id('fBig').classList.add('hide'); started = true; if (!playing) { V2[a].play(); playing = true; } }
+      hud();
+    };
+    $id('fPlay').onclick = () => { const v = V2[a]; if (playing) { v.pause(); playing = false; } else { v.play(); playing = true; } hud(); };
+    $id('fPrev').onclick = () => go(cur - 1);
+    $id('fNext').onclick = () => go(cur + 1);
+    $id('fFull').onclick = () => {
+      if (document.fullscreenElement) document.exitFullscreen();
+      else if (stage.requestFullscreen) stage.requestFullscreen();
+      else V2[a].webkitEnterFullscreen && V2[a].webkitEnterFullscreen();
+    };
+    $id('fSegs').onclick = (e) => { const i = e.target.dataset && e.target.dataset.i; if (i != null) go(+i); };
+    $id('fChaps').onclick = (e) => {
+      const li = e.target.closest('li');
+      if (li) { if (!sound) withSound(+li.dataset.i); else go(+li.dataset.i); }
+    };
+    stage.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') { go(cur + 1); e.preventDefault(); }
+      else if (e.key === 'ArrowLeft') { go(cur - 1); e.preventDefault(); }
+      else if (e.key === ' ') { $id('fPlay').click(); e.preventDefault(); }
+    });
+    // 페이지 다른 곳의 [data-film="N"] 버튼 → 필름까지 스크롤 + 해당 장면 소리와 함께 재생
+    $$('[data-film]').forEach((b) => b.addEventListener('click', (e) => {
+      e.preventDefault();
+      $id('film').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+      withSound(+b.dataset.film);
+    }));
+    V2[0].src = src(0) + '.mp4'; V2[0].poster = src(0) + '.jpg';
+    hud();
+    if (typeof IntersectionObserver === 'function') new IntersectionObserver((es) => {
+      vis = es[0].isIntersecting;
+      if (vis) {
+        if (!reduce && !started && !playing) {   // 화면에 보이면 음소거 미리보기 자동 재생
+          V2[a].muted = true;
+          const p = V2[a].play(); playing = true;
+          if (p && p.catch) p.catch(() => { playing = false; hud(); });
+          hud();
+        }
+      } else if (playing) { V2[a].pause(); playing = false; hud(); }
+    }, { threshold: 0.35 }).observe(stage);
+  }
+
+  /* ---------- 초기화 ---------- */
+  function init(cfg) {
+    cfg = cfg || {};
+    audioBase = cfg.audioBase || audioBase;
+    audioExt = cfg.audioExt || audioExt;
+    if (cfg.colab) $$('[data-colab]').forEach((a) => (a.href = typeof cfg.colab === 'string' ? cfg.colab : colabUrl(cfg.colab)));
+    initOrb(cfg.langs);
+    buildCells(cfg);
+    buildSweep(cfg);
+    buildPrice(cfg);
+    initScrollFx();
+    initFilm(cfg.film);
+  }
+
+  window.JStyle = { init, play, waveCanvas, colabUrl, visuals: V };
+  const boot = () => window.JPAGE && init(window.JPAGE);
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+})();
+
+</script>
+
+</body></html>
