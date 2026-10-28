@@ -127,6 +127,13 @@
   .sq-list li::before{content:'';position:absolute;left:0;top:.62em;width:6px;height:6px;background:var(--accent)}
   .actions{display:grid;gap:10px;margin:22px 0 8px}
 
+  .send-status{font-size:.88rem;text-align:center;min-height:1.3em;color:var(--sub)}
+  .send-status.ok{color:var(--accent);font-weight:700}
+  .send-status.err{color:#C62828;font-weight:700}
+  .btn-send{background:#0B8F5A;color:#fff}
+  .btn-send:hover:not(:disabled){background:#08724819;background:#087349}
+  .done-ico{width:56px;height:56px;border-radius:50%;background:#E6F6EE;color:#0B8F5A;font-size:30px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:6px auto 12px}
+
   /* ===== Footer ===== */
   footer{padding:36px 20px 44px;text-align:center}
   .footer-badge{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:.95rem;letter-spacing:.02em;color:var(--accent);
@@ -222,8 +229,13 @@
   ];
   var OPEN_Q = [
     'AI를 업무에 쓸 때 지금 가장 막히는 지점 한 가지는 무엇인가요?',
-    '동료에게 알려줄 수 있는 나만의 AI 활용 팁 한 가지를 적어주세요.'
+    '동료에게 알려줄 수 있는 나만의 AI 활용 팁 한 가지를 적어주세요.',
+    '이번 시간에 기대하는 것은 무엇인가요?'
   ];
+  var EXPECT_IDX = 2;   // 강사에게 전송되는 '기대하는 것' 문항 위치
+
+  /* ===== 강사 전송 설정: Apps Script 웹앱 URL을 아래에 붙여넣으세요 ===== */
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwxIUqdk-wjZNjmpoLUQGxhZGPTTWMJdxj9hXKBLRiL9NfEnncUSIApN6kyilXEDbJveg/exec';
   var LEVELS = [
     { min:4.2, name:'확산형', en:'AI Multiplier', desc:'AI를 능숙하게 쓰는 데서 나아가, 팀의 활용 수준을 함께 끌어올릴 수 있는 단계입니다.' },
     { min:3.4, name:'활용형', en:'AI Practitioner', desc:'AI를 업무 도구로 안정적으로 쓰고 있습니다. 검증과 공유를 더하면 한 단계 올라섭니다.' },
@@ -243,8 +255,9 @@
   var STORE_KEY = 'crmc-ai-diag::' + COURSE_LINE;
 
   /* ================= 상태 ================= */
-  function blank(){ return { name:'', dept:'', answers:{}, open:['',''], step:0, date:'' }; }
+  function blank(){ return { name:'', dept:'', answers:{}, open:['','',''], step:0, date:'', sent:false }; }
   var state = load() || blank();
+  while(state.open.length < OPEN_Q.length){ state.open.push(''); }
   function load(){ try{ var s = localStorage.getItem(STORE_KEY); return s ? JSON.parse(s) : null; }catch(e){ return null; } }
   function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){} }
 
@@ -281,7 +294,7 @@
         '<div class="field"><label for="inDept">소속</label><input id="inDept" maxlength="30" placeholder="예: 고객지원팀" value="' + esc(state.dept) + '"></div>' +
         '<button class="btn btn-primary" id="btnStart">' + (answeredCount() ? '이어서 진단하기' : '진단 시작하기') + '</button>' +
         (answeredCount() ? '<button class="btn btn-outline" id="btnReset" style="margin-top:10px">처음부터 다시 하기</button>' : '') +
-        '<p class="note">응답은 이 기기 안에서만 처리되며, 어디로도 전송되지 않습니다.</p>' +
+        '<p class="note">응답은 이 기기 안에서 처리되며, 결과 화면에서 ‘강사에게 결과 보내기’를 눌러야만 강사에게 전달됩니다.</p>' +
       '</div></main>';
 
     var n = document.getElementById('inName'), d = document.getElementById('inDept'), b = document.getElementById('btnStart');
@@ -369,7 +382,7 @@
           '<textarea id="open' + i + '" maxlength="200" placeholder="200자 이내로 적어주세요">' + esc(state.open[i]) + '</textarea></div>';
       }).join('') +
       '<div class="nav"><button class="btn btn-outline" id="btnPrev">이전</button><button class="btn btn-primary" id="btnDone">결과 보기</button></div><p class="hint"></p></main>';
-    [0,1].forEach(function(i){
+    OPEN_Q.forEach(function(_,i){
       document.getElementById('open'+i).addEventListener('input', function(e){ state.open[i] = e.target.value; save(); });
     });
     document.getElementById('btnPrev').addEventListener('click', function(){ go(AREAS.length); });
@@ -448,16 +461,55 @@
           '<li>내가 약한 영역에서 점수가 높은 조원에게, 그 영역의 비결 한 가지를 물어보세요.</li>' +
           '<li>우리 조가 공통으로 낮은 영역은 어디인가요? 그 이유는 개인의 문제일까요, 팀의 문제일까요?</li>' +
         '</ul></div>' +
-        '<div class="actions"><button class="btn btn-primary" id="btnPng">결과 리포트 이미지(PNG) 저장</button>' +
+        '<div class="actions"><button class="btn btn-send" id="btnSend">' + (state.sent ? '강사에게 다시 보내기 (수정 반영)' : '강사에게 결과 보내기') + '</button>' +
+        '<p class="send-status' + (state.sent ? ' ok' : '') + '" id="sendStatus" role="status" aria-live="polite">' + (state.sent ? '✓ 강사에게 전송을 완료했어요.' : '') + '</p>' +
+        '<button class="btn btn-primary" id="btnPng">결과 리포트 이미지(PNG) 저장</button>' +
         '<button class="btn btn-outline" id="btnEdit">응답 수정하기</button>' +
         '<button class="btn btn-outline" id="btnNew">새로 진단하기</button></div>' +
       '</main>';
 
     document.getElementById('btnPng').addEventListener('click', openPng);
+    document.getElementById('btnSend').addEventListener('click', function(){ sendToInstructor(r); });
     document.getElementById('btnEdit').addEventListener('click', function(){ go(1); });
     document.getElementById('btnNew').addEventListener('click', function(){
       if(!confirm('현재 결과를 지우고 새로 진단할까요? (다른 사람이 이 기기로 진단할 때도 이 버튼을 눌러주세요)')) return;
       state = blank(); save(); go(0);
+    });
+  }
+
+  /* ================= 강사에게 결과 보내기 ================= */
+  function sendToInstructor(r){
+    var btn = document.getElementById('btnSend'), st = document.getElementById('sendStatus');
+    function setSt(msg, cls){ st.textContent = msg; st.className = 'send-status' + (cls ? ' ' + cls : ''); }
+    if(!SCRIPT_URL || SCRIPT_URL.indexOf('PASTE_') === 0){
+      setSt('강사 전송 주소가 아직 설정되지 않았어요. 강사님께 알려주세요.', 'err'); return;
+    }
+    var payload = {
+      name: state.name, dept: state.dept, course: COURSE_LINE,
+      total: r.total, max: MAX_SCORE, level: r.level.name,
+      areas: r.areas.map(function(a){ return { key:a.key, name:a.name, avg: Math.round(a.avg*10)/10 }; }),
+      expect: (state.open[EXPECT_IDX] || '').trim()
+    };
+    btn.disabled = true; setSt('보내는 중이에요…');
+    var ctl = ('AbortController' in window) ? new AbortController() : null;
+    var timer = setTimeout(function(){ if(ctl) ctl.abort(); }, 20000);
+    fetch(SCRIPT_URL, {
+      method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify(payload), signal: ctl ? ctl.signal : undefined
+    }).then(function(){
+      clearTimeout(timer);
+      state.sent = true; save();
+      btn.disabled = false; btn.textContent = '강사에게 다시 보내기 (수정 반영)';
+      setSt('✓ 강사에게 전송을 완료했어요.', 'ok');
+      modal.classList.add('open');
+      modalBox.innerHTML = '<div class="done-ico">✓</div><h4 style="text-align:center">전송 완료!</h4>' +
+        '<p style="text-align:center">' + esc(state.name) + '님의 진단 결과가 강사님께 전달되었어요.</p>' +
+        '<div class="actions" style="grid-template-columns:1fr"><button class="btn btn-primary" id="mOk">확인</button></div>';
+      document.getElementById('mOk').addEventListener('click', closeModal);
+    }).catch(function(){
+      clearTimeout(timer);
+      btn.disabled = false;
+      setSt('전송하지 못했어요. 인터넷 연결을 확인하고 다시 눌러주세요.', 'err');
     });
   }
 
