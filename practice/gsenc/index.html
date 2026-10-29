@@ -1,1 +1,1161 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PREP LAB 보고 연습장</title>
+<meta name="description" content="신입사원을 위한 PREP 보고 실습 앱. 상황을 선택하고 직접 작성하면 모범 답안과 항목별 피드백을 제공합니다.">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+/* ==========================================================================
+   J-STYLE (제이스타일) — Connect AI Lab 실습 페이지 원본 스타일
+   출처: aicitybuilders.com/dubbing 에서 추출·정리. 캐스케이드 순서를 그대로 유지합니다.
+   구성: 1 토큰/리셋 · 2 배경 · 3 탑바/버튼 · 4 히어로/오브 · 5 KPI · 6 레일 · 7 섹션/셀 라벨
+         8 코드박스 · 9 시각화 카드(.vis)와 부품들 · 10 차트/가격 · 11 푸터 · 12 반응형
+         13 폴리시(입체감) 레이어 · 14 필름 플레이어
+   ========================================================================== */
 
+/* ---------- 1. 토큰 / 리셋 ---------- */
+:root{
+  --bg:#06080b; --bg2:#0d1117; --line:#1f2630; --fg:#fff; --dim:#97a3b0;
+  --acc:#b8ff5c;   /* 형광 라임: 메인 강조 */
+  --vio:#b79dff;   /* 보라: 비교 대상/보조 */
+  --gold:#ffd447;  /* 금색: 주의·수치·특수 */
+  --red:#ff5d5d;   /* 빨강: 오답/위험/녹화 */
+  --sky:#8fd3ff;   /* 하늘: 녹음/입력 */
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:Pretendard,-apple-system,system-ui,sans-serif;line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+.wrap{max-width:1160px;margin:0 auto;padding:0 20px}
+.mono{font-family:var(--mono)}
+.acc{color:var(--acc)}.vio{color:var(--vio)}.gold{color:var(--gold)}.red{color:var(--red)}.dim{color:var(--dim)}.sky{color:var(--sky)}
+
+/* ---------- 2. 배경 레이어 (grid-bg, progress) ---------- */
+.grid-bg{position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:56px 56px;opacity:.35;mask-image:radial-gradient(ellipse at 50% 0%,#000 30%,transparent 75%)}
+.progress{position:fixed;left:0;top:0;height:3px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--acc),var(--vio));z-index:60}
+
+/* ---------- 3. 탑바 / 버튼 ---------- */
+.top{display:flex;justify-content:space-between;align-items:center;padding:18px 0;font-family:var(--mono);font-size:13px;letter-spacing:.06em}
+.top a{text-decoration:none;color:var(--dim)}
+.top a:hover{color:var(--fg)}
+.btn{display:inline-flex;align-items:center;gap:10px;text-decoration:none;font-weight:800;border-radius:999px;padding:13px 24px;background:var(--acc);color:#06080b;font-size:16px;box-shadow:0 0 40px rgba(184,255,92,.25)}
+.btn:hover{transform:translateY(-1px)}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line);box-shadow:none}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+
+/* ---------- 4. 히어로 / 오브 ---------- */
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:30px;align-items:center;padding:24px 0 40px}
+.kicker{font-family:var(--mono);font-size:13px;letter-spacing:.16em;color:var(--acc)}
+h1{font-size:clamp(46px,8vw,104px);line-height:.95;margin:14px 0 18px;letter-spacing:-.05em;font-weight:900}
+h1 .g{background:linear-gradient(100deg,var(--acc),var(--sky) 55%,var(--vio));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{font-size:clamp(17px,2vw,20px);color:#d7dde4;max-width:30em;margin:0 0 26px}
+.ctas{display:flex;gap:12px;flex-wrap:wrap}
+.orb{position:relative;aspect-ratio:1;max-width:520px;width:100%;justify-self:center}
+.orb canvas{position:absolute;inset:0;width:100%;height:100%}
+.orb .core{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none}
+.orb .core b{display:block;font-size:clamp(22px,3vw,32px);font-weight:900;letter-spacing:-.02em}
+.orb .core span{font-family:var(--mono);font-size:12px;color:var(--dim);letter-spacing:.14em}
+.lang{position:absolute;transform:translate(-50%,-50%);border:1px solid var(--line);background:rgba(13,17,23,.85);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:800;white-space:nowrap;color:var(--fg);transition:border-color .2s,box-shadow .2s}
+.lang:hover,.lang.on{border-color:var(--acc);box-shadow:0 0 22px rgba(184,255,92,.35)}
+.lang small{font-family:var(--mono);color:var(--dim);font-weight:500;margin-left:6px;font-size:11px}
+
+/* ---------- 5. KPI 3분할 ---------- */
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin:10px 0 0}
+.kpi{background:var(--bg);padding:22px 24px}
+.kpi b{display:block;font-size:clamp(34px,5vw,56px);font-weight:900;letter-spacing:-.04em;line-height:1}
+.kpi span{color:var(--dim);font-size:14px}
+
+/* ---------- 6. 스티키 레일(셀 네비) ---------- */
+.rail{position:sticky;top:0;z-index:40;background:rgba(6,8,11,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);margin-top:56px}
+.rail .wrap{display:flex;gap:6px;overflow-x:auto;padding:10px 20px;scrollbar-width:none}
+.rail a{flex:none;text-decoration:none;font-family:var(--mono);font-size:12px;color:var(--dim);border:1px solid var(--line);border-radius:999px;padding:5px 12px;white-space:nowrap}
+.rail a.cur{color:#06080b;background:var(--acc);border-color:var(--acc)}
+
+/* ---------- 7. 섹션 / 셀 라벨 / 제목 ---------- */
+.s{padding:84px 0;border-bottom:1px solid var(--line)}
+.row{display:grid;grid-template-columns:.9fr 1.1fr;gap:44px;align-items:center}
+.cell{font-family:var(--mono);font-size:13px;color:var(--acc);letter-spacing:.12em;margin-bottom:12px}
+.cell i{font-style:normal;color:#06080b;background:var(--acc);padding:2px 8px;margin-right:10px}
+h2{font-size:clamp(32px,4.6vw,56px);line-height:1.05;margin:0 0 14px;letter-spacing:-.04em;font-weight:900}
+.one{font-size:18px;color:#d7dde4;margin:0 0 18px;max-width:28em}
+.tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.tag{font-family:var(--mono);font-size:12px;border:1px solid var(--line);padding:3px 10px;border-radius:999px;color:var(--dim)}
+
+/* ---------- 8. 코드 보기 박스 (details + 복사 버튼) ---------- */
+details.code{border:1px solid var(--line);background:var(--bg2)}
+details.code summary{cursor:pointer;padding:10px 14px;font-family:var(--mono);font-size:13px;color:var(--dim);list-style:none}
+details.code summary::-webkit-details-marker{display:none}
+details.code summary:before{content:"▸ ";color:var(--acc)}
+details.code[open] summary:before{content:"▾ "}
+details.code pre{margin:0;padding:14px 16px;overflow-x:auto;font-family:var(--mono);font-size:12.5px;line-height:1.6;color:#d5dde6;border-top:1px solid var(--line);max-height:420px}
+.copy{float:right;margin:6px 8px 0 0;font-family:var(--mono);font-size:12px;background:transparent;color:var(--dim);border:1px solid var(--line);border-radius:6px;padding:2px 10px}
+
+/* ---------- 9. 시각화 카드(.vis)와 부품 ---------- */
+.vis{position:relative;border:1px solid var(--line);background:linear-gradient(180deg,#0b0f15,#06080b);min-height:330px;padding:24px;overflow:hidden}
+.vis .cap{position:absolute;left:16px;bottom:12px;font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.08em}
+/* 떨어지는 칩 */
+.pk{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:24px}
+.pk div{border:1px solid var(--line);background:var(--bg2);padding:14px 18px;font-family:var(--mono);font-weight:700;font-size:15px}
+.on .pk div{animation:drop .7s cubic-bezier(.2,1.4,.4,1) both}
+.on .pk div:nth-child(2){animation-delay:.18s}
+.on .pk div:nth-child(3){animation-delay:.36s}
+.on .pk div:nth-child(4){animation-delay:.54s}
+@keyframes drop{from{transform:translateY(-120px);opacity:0}to{transform:none;opacity:1}}
+/* 박스(받는 그릇) / 재시작 */
+.box{margin:30px auto 0;width:min(320px,90%);height:96px;border:2px solid var(--acc);border-top:none;display:grid;place-items:center;font-weight:900;font-size:20px;box-shadow:0 20px 50px rgba(184,255,92,.1)}
+.restart{display:flex;align-items:center;gap:10px;justify-content:center;margin-top:20px;color:var(--gold);font-weight:800}
+.restart svg{width:26px;height:26px}
+.on .restart svg{animation:spin 1.4s .9s 2 ease-in-out}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* 파형 박스 + 구간 브래킷 */
+.wavebox canvas{width:100%;height:170px;display:block}
+.bracket{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;color:var(--dim);border-top:2px solid var(--acc);margin-top:8px;padding-top:6px}
+/* DO / DON'T */
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
+.dos div{border:1px solid var(--line);padding:10px 12px;font-weight:700;font-size:15px}
+.dos .x{color:var(--red)}
+.dos .o{color:var(--acc)}
+/* 음성 결과 한 줄(.gl) + 재생 버튼 */
+.gen{display:grid;gap:12px}
+.gl{display:grid;grid-template-columns:52px 1fr auto;gap:12px;align-items:center;border:1px solid var(--line);padding:10px 12px;background:var(--bg2)}
+.gl .f{font-size:26px;text-align:center}
+.gl .t{font-size:14px;color:#d5dde6;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gl canvas{grid-column:1/3;width:100%;height:46px}
+.play{border:1px solid var(--acc);background:transparent;color:var(--acc);border-radius:999px;padding:6px 14px;font-weight:800;font-size:13px}
+.play.on{background:var(--acc);color:#06080b}
+/* 입력 줄(.spk) + 노브 */
+.spk{display:grid;gap:10px}
+.spk .in{border:1px solid var(--line);background:var(--bg2);padding:10px 14px;font-size:17px;display:flex;gap:14px;align-items:center}
+.spk .l{font-family:var(--mono);font-size:12px;color:var(--dim);min-width:58px}
+.knobs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.knobs div{border:1px solid var(--line);padding:12px}
+.knobs span{font-family:var(--mono);font-size:13px;color:var(--dim)}
+.knobs b{display:block;font-size:30px;font-weight:900;color:var(--gold)}
+.knobs small{color:var(--dim)}
+.knobs i{display:block;height:6px;background:var(--line);margin:8px 0 6px;position:relative}
+.knobs i:after{content:"";position:absolute;left:0;top:0;bottom:0;width:var(--w);background:var(--gold)}
+/* 파일 묶음(zip) */
+.zipv{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:20px}
+.zipv div{border:1px solid var(--acc);padding:14px 6px;text-align:center;font-size:30px}
+.zipv b{display:block;font-family:var(--mono);font-size:13px;color:var(--acc)}
+.on .zipv div{animation:drop .7s cubic-bezier(.2,1.4,.4,1) both}
+.zipbox{margin:34px auto 0;width:min(320px,90%);border:2px solid var(--gold);padding:22px;text-align:center;font-weight:900;font-size:22px;color:var(--gold)}
+/* 원형 링(국기/아이콘 N개) */
+.lring{position:relative;width:100%;max-width:440px;aspect-ratio:1;margin:0 auto}
+.ld{position:absolute;transform:translate(-50%,-50%);width:13%;aspect-ratio:1;border-radius:50%;border:2px solid #3a434f;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.14),rgba(13,17,23,.92) 70%);font-size:clamp(14px,2.4vw,24px);display:grid;place-items:center;padding:0;cursor:pointer;transition:transform .25s,box-shadow .25s}
+.ld.lit{border-color:var(--acc);box-shadow:0 0 18px -6px var(--acc)}
+.ld.ja{border-color:var(--gold)}
+.ld.cur,.ld:hover{transform:translate(-50%,-50%) scale(1.3);z-index:2}
+.lc{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;display:grid;place-items:center;gap:2px;width:60%}
+.lc span{font-size:clamp(40px,7vw,64px);line-height:1}
+.lc b{font-size:clamp(22px,3.4vw,34px);font-weight:900}
+.lc .n23{font-size:clamp(60px,10vw,96px);line-height:1;text-shadow:0 0 40px rgba(184,255,92,.4)}
+.lc i{font-style:normal;font-family:var(--mono);font-size:13px;color:var(--dim);letter-spacing:.12em}
+.lc i.lit{color:var(--acc)}
+.lc i.ja{color:var(--gold)}
+/* 대결 카드(A vs B) */
+.lab{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.duel{border:1px solid var(--line);padding:22px;background:var(--bg2)}
+.duel h3{margin:0 0 6px;font-size:22px}
+.duel .score{font-size:56px;font-weight:900;letter-spacing:-.04em;line-height:1}
+
+/* ---------- 10. 차트 / 가격 막대 ---------- */
+.chart{width:100%;display:block}
+.chart text{font-family:Pretendard,sans-serif;fill:#d5dde6;font-size:13px}
+.chart .ax{font-family:var(--mono);fill:var(--dim);font-size:11px}
+.legend{display:flex;gap:18px;font-size:14px;color:var(--dim);margin:10px 0 0}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+.price{display:grid;gap:10px}
+.pr{display:grid;grid-template-columns:200px 1fr;gap:14px;align-items:center}
+.pr span{font-weight:700;font-size:15px}
+.pr .tr{position:relative;height:34px}
+.pr .tr i{position:absolute;left:0;top:0;bottom:0;border-radius:6px;width:0;transition:width 1.2s cubic-bezier(.2,.8,.2,1)}
+.on .pr .tr i{width:var(--w)}
+.pr .tr b{position:absolute;top:50%;transform:translateY(-50%);left:calc(var(--w) + 10px);font-family:var(--mono);font-size:16px;white-space:nowrap}
+
+/* ---------- 11. 푸터 ---------- */
+.foot{padding:70px 0 90px;text-align:center}
+.foot p{color:var(--dim);margin:14px 0 26px}
+
+/* ---------- 12. 반응형 / 모션 감소 ---------- */
+@media (max-width:860px){
+  .hero,.row,.lab{grid-template-columns:1fr}
+  .kpis{grid-template-columns:1fr}
+  .pr{grid-template-columns:1fr}
+  .s{padding:60px 0}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---------- 13. 폴리시 레이어: 입체감·깊이 (원본에서 뒤에 덮어쓰는 규칙) ---------- */
+body{background:radial-gradient(1400px 900px at 80% -10%,#0f1a14 0%,#06080b 55%)}
+.aur{position:fixed;border-radius:50%;pointer-events:none;z-index:-1;opacity:.2;background:radial-gradient(closest-side,var(--c),transparent)}
+.aur.a{width:1000px;height:800px;right:-300px;top:-360px;--c:#b8ff5c;animation:dr1 20s ease-in-out infinite alternate}
+.aur.b{width:900px;height:800px;left:-300px;top:60vh;--c:#b79dff;opacity:.13;animation:dr2 24s ease-in-out infinite alternate}
+@keyframes dr1{to{transform:translate(-240px,200px) scale(1.15)}}
+@keyframes dr2{to{transform:translate(300px,-200px) scale(.9)}}
+.grain{position:fixed;inset:0;pointer-events:none;z-index:70;opacity:.05;animation:gr .8s steps(5) infinite;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+@keyframes gr{0%{background-position:0 0}25%{background-position:-60px 40px}50%{background-position:50px -70px}75%{background-position:-40px 60px}100%{background-position:0 0}}
+.top .mark{display:flex;align-items:center;gap:12px;color:#fff;letter-spacing:.42em;font-weight:300;font-family:Pretendard,sans-serif}
+.top .mark i{width:11px;height:11px;border-radius:50%;background:var(--acc);box-shadow:0 0 16px var(--acc);animation:pl 2.4s ease-in-out infinite}
+@keyframes pl{50%{transform:scale(.7);opacity:.7}}
+.presents{font-weight:300;letter-spacing:.9em;font-size:12px;color:var(--dim);margin-bottom:6px}
+h1 .g{filter:drop-shadow(0 0 40px rgba(184,255,92,.35))}
+.vis{background:linear-gradient(160deg,rgba(255,255,255,.05),rgba(255,255,255,.01));backdrop-filter:blur(14px);border-color:rgba(255,255,255,.08);border-radius:22px;box-shadow:0 40px 100px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.06)}
+.kpis{border-radius:22px;overflow:hidden;background:rgba(255,255,255,.06)}
+.kpi{background:rgba(6,8,11,.82);backdrop-filter:blur(10px)}
+.kpi b.acc{text-shadow:0 0 40px rgba(184,255,92,.5)}
+.chip,.pk div,.zipv div,.gl,.duel,.dos div,.spk .in,.knobs div{border-radius:14px}
+.pk div,.zipv div{box-shadow:0 0 30px -10px var(--acc);background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.01))}
+.btn{box-shadow:0 0 50px rgba(184,255,92,.35),inset 0 1px 0 rgba(255,255,255,.4)}
+.cell i{border-radius:4px;box-shadow:0 0 18px rgba(184,255,92,.5)}
+h2{background:linear-gradient(100deg,#fff 40%,#b8ff5c 130%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.endmark{font-weight:200;letter-spacing:.55em;font-size:18px;color:rgba(255,255,255,.5);margin-top:40px}
+@media (prefers-reduced-motion:reduce){.aur,.grain{animation:none}}
+
+/* ---------- 14. 필름 플레이어 (영상 극장) ---------- */
+.film{padding:90px 0 40px}
+.film .head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:26px}
+.film .head .one{margin:0}
+.theater{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:start}
+.stage{position:relative;border-radius:24px;padding:1.5px;background:conic-gradient(from var(--ang,0deg),rgba(184,255,92,.9),rgba(143,211,255,.25),rgba(183,157,255,.85),rgba(184,255,92,.15),rgba(184,255,92,.9));animation:spinb 8s linear infinite;--amb:184,255,92}
+@property --ang{syntax:'<angle>';inherits:false;initial-value:0deg}
+@keyframes spinb{to{--ang:360deg}}
+.stage:before{content:"";position:absolute;inset:6% 4%;border-radius:40px;background:rgb(var(--amb));filter:blur(70px);opacity:.38;z-index:-1;transition:background .6s}
+.screen{position:relative;aspect-ratio:16/9;border-radius:22.5px;overflow:hidden;background:#000}
+.screen video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .45s ease,transform 1.2s cubic-bezier(.2,.8,.2,1),filter .45s}
+.screen video.out{opacity:0;transform:scale(1.035);filter:blur(6px)}
+.screen:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(0,0,0,.35),transparent 18%,transparent 70%,rgba(0,0,0,.65));border-radius:inherit}
+.hud{position:absolute;right:16px;top:14px;z-index:3;display:flex;gap:10px;align-items:center;font-family:var(--mono);font-size:12px;letter-spacing:.12em;color:#fff}
+.hud .no{color:#06080b;background:var(--acc);padding:2px 8px;border-radius:4px;font-weight:800;box-shadow:0 0 18px rgba(184,255,92,.6)}
+.hud .rec{width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 10px var(--red);animation:pl 1.2s ease-in-out infinite}
+.hud .rec.off{background:#666;box-shadow:none;animation:none}
+.tcard{position:absolute;inset:0;z-index:4;display:grid;place-items:center;pointer-events:none;opacity:0;background:radial-gradient(ellipse at center,rgba(6,8,11,.78),rgba(6,8,11,.35) 70%)}
+.tcard.go{animation:tc 1.6s cubic-bezier(.2,.8,.2,1) both}
+.tcard div{text-align:center}
+.tcard b{display:block;font-family:var(--mono);font-size:clamp(14px,1.6vw,18px);letter-spacing:.5em;color:var(--acc);margin-bottom:8px}
+.tcard h3{margin:0;font-size:clamp(34px,5.4vw,76px);font-weight:900;letter-spacing:-.04em;line-height:1;background:linear-gradient(100deg,#fff 30%,#b8ff5c 110%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 30px rgba(184,255,92,.35))}
+.tcard span{display:block;margin-top:10px;color:#d7dde4;font-size:clamp(14px,1.6vw,18px)}
+@keyframes tc{0%{opacity:0;transform:scale(1.08);filter:blur(10px)}18%{opacity:1;transform:none;filter:none}72%{opacity:1}100%{opacity:0;transform:scale(.98)}}
+.bigplay{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:5;border:0;border-radius:999px;padding:18px 30px 18px 22px;background:var(--acc);color:#06080b;font-weight:900;font-size:clamp(15px,1.8vw,19px);display:flex;gap:12px;align-items:center;box-shadow:0 0 0 0 rgba(184,255,92,.6),0 20px 60px rgba(0,0,0,.5);animation:bp 2s ease-out infinite}
+.bigplay i{width:34px;height:34px;border-radius:50%;background:#06080b;color:var(--acc);display:grid;place-items:center;font-style:normal;font-size:14px}
+.bigplay small{display:block;font-weight:600;font-size:12px;opacity:.75;font-family:var(--mono);letter-spacing:.06em}
+@keyframes bp{0%{box-shadow:0 0 0 0 rgba(184,255,92,.55),0 20px 60px rgba(0,0,0,.5)}100%{box-shadow:0 0 0 26px rgba(184,255,92,0),0 20px 60px rgba(0,0,0,.5)}}
+.bigplay.hide{opacity:0;pointer-events:none;transform:translate(-50%,-50%) scale(.9);transition:.3s}
+.dock{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:0 14px 10px;transition:opacity .3s}
+.segs{display:flex;gap:3px;height:4px;margin-bottom:9px;cursor:pointer}
+.segs i{position:relative;flex:var(--d) 1 0;background:rgba(255,255,255,.22);border-radius:2px;overflow:hidden}
+.segs i:after{content:"";position:absolute;inset:0;width:calc(var(--p,0)*100%);background:var(--acc);box-shadow:0 0 10px var(--acc)}
+.segs i:hover{background:rgba(255,255,255,.4)}
+.ctl{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:12px;color:#fff}
+.ctl button{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:#fff;border-radius:999px;padding:5px 11px;font-size:12px;backdrop-filter:blur(8px)}
+.ctl button:hover{border-color:var(--acc);color:var(--acc)}
+.ctl button.snd.on{background:var(--acc);color:#06080b;border-color:var(--acc)}
+.ctl .t{margin-left:auto;opacity:.8}
+.chaps{list-style:none;margin:0;padding:0;display:grid;gap:8px;max-height:min(62vw,540px);overflow-y:auto;scrollbar-width:thin}
+.chaps li{position:relative;display:grid;grid-template-columns:96px 1fr;gap:10px;align-items:center;padding:7px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.025);cursor:pointer;transition:border-color .2s,background .2s,transform .2s}
+.chaps li:hover{border-color:rgba(184,255,92,.5);transform:translateX(-2px)}
+.chaps li.cur{border-color:var(--acc);background:rgba(184,255,92,.07);box-shadow:0 0 30px -12px var(--acc)}
+.chaps img{width:96px;aspect-ratio:16/9;object-fit:cover;border-radius:8px;display:block;filter:saturate(.8) brightness(.85)}
+.chaps li.cur img{filter:none}
+.chaps b{display:block;font-size:14px;font-weight:800;line-height:1.3}
+.chaps span{display:block;font-size:12px;color:var(--dim);line-height:1.35}
+.chaps em{position:absolute;right:9px;top:7px;font-style:normal;font-family:var(--mono);font-size:10.5px;color:var(--dim)}
+.chaps .n{font-family:var(--mono);font-size:10.5px;color:var(--acc);letter-spacing:.1em}
+.chaps .eqz{display:none;position:absolute;right:10px;bottom:9px;gap:2px;align-items:flex-end;height:12px}
+.chaps li.cur.snd .eqz{display:flex}
+.eqz i{width:3px;background:var(--acc);animation:eqz .7s ease-in-out infinite alternate}
+.eqz i:nth-child(2){animation-delay:.2s}
+.eqz i:nth-child(3){animation-delay:.4s}
+@keyframes eqz{from{height:3px}to{height:12px}}
+.chaps .bar{position:absolute;left:7px;right:7px;bottom:3px;height:2px;background:transparent}
+.chaps li.cur .bar:after{content:"";position:absolute;left:0;top:0;bottom:0;width:calc(var(--p,0)*100%);background:var(--acc)}
+.filmjump{display:inline-flex;align-items:center;gap:10px;margin-top:16px;border:1px solid rgba(184,255,92,.45);background:rgba(184,255,92,.06);color:#fff;border-radius:999px;padding:7px 16px 7px 8px;font-weight:800;font-size:14px;transition:.2s}
+.filmjump:hover{background:rgba(184,255,92,.14);box-shadow:0 0 30px -8px var(--acc)}
+.filmjump img{width:54px;aspect-ratio:16/9;object-fit:cover;border-radius:6px}
+.filmjump small{font-family:var(--mono);color:var(--acc);font-weight:600}
+.stage:fullscreen{padding:0;background:#000;border-radius:0;display:grid;place-items:center}
+.stage:fullscreen .screen{width:100%;max-height:100vh;border-radius:0}
+@media (max-width:980px){
+  .theater{grid-template-columns:1fr}
+  .chaps{grid-auto-flow:column;grid-auto-columns:200px;max-height:none;overflow-x:auto;overflow-y:hidden;padding-bottom:6px}
+  .chaps li{grid-template-columns:1fr}
+  .chaps img{width:100%}
+}
+@media (max-width:600px){
+  .ctl .t{display:none}
+  .ctl button{padding:4px 8px;font-size:11px}
+  .bigplay{padding:8px 16px 8px 8px;font-size:14px;top:42%;gap:8px}
+  .bigplay i{width:26px;height:26px;font-size:11px}
+  .bigplay small{display:none}
+  .dock{padding:0 10px 7px}
+  .segs{margin-bottom:6px}
+  .film{padding:60px 0 20px}
+  .hud{font-size:10.5px;top:9px;right:10px}
+}
+@media (prefers-reduced-motion:reduce){.stage{animation:none}.tcard.go{animation:none}}
+
+</style>
+<style>
+/* ===== PREP LAB: 제이스타일 위에 얹는 앱 전용 규칙 (토큰은 j-style 그대로) ===== */
+button.btn{border:0;font-family:inherit}
+button.btn.ghost{border:1px solid var(--line)}
+button.btn[disabled]{opacity:.35;cursor:not-allowed;box-shadow:none}
+.stage-s{padding:56px 0 72px;border-bottom:1px solid var(--line)}
+.stage-s h2{margin-bottom:10px}
+.sub{color:#d7dde4;max-width:36em;margin:0 0 28px;font-size:17px}
+.hero{padding-top:30px}
+.hero.one{grid-template-columns:1fr}
+.hero h1{max-width:none}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+.opt{position:relative;text-align:left;color:var(--fg);cursor:pointer;border:1px solid rgba(255,255,255,.08);border-radius:22px;padding:24px 22px;background:linear-gradient(160deg,rgba(255,255,255,.05),rgba(255,255,255,.01));backdrop-filter:blur(14px);box-shadow:0 30px 80px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.06);transition:transform .25s,border-color .25s,box-shadow .25s}
+.opt:hover{transform:translateY(-3px);border-color:rgba(184,255,92,.6)}
+.opt.sel{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc),0 0 60px -10px rgba(184,255,92,.5),inset 0 1px 0 rgba(255,255,255,.1)}
+.opt .k{font-family:var(--mono);font-size:12px;letter-spacing:.14em;color:var(--acc)}
+.opt h3{margin:8px 0 6px;font-size:clamp(28px,3.4vw,38px);font-weight:900;letter-spacing:-.04em;line-height:1.05}
+.opt p{margin:0 0 12px;color:var(--dim);font-size:15px}
+.opt .tags{margin:0}
+.opt.sel .tag{border-color:rgba(184,255,92,.5);color:var(--acc)}
+.sect{font-family:var(--mono);font-size:13px;letter-spacing:.12em;color:var(--acc);margin:34px 0 12px}
+.sect i{font-style:normal;color:#06080b;background:var(--acc);padding:2px 8px;margin-right:10px;border-radius:4px;box-shadow:0 0 18px rgba(184,255,92,.5)}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{border:1px solid var(--line);background:var(--bg2);color:var(--fg);border-radius:999px;padding:9px 18px;font-weight:800;font-size:15px;transition:border-color .2s,box-shadow .2s}
+.chip small{font-family:var(--mono);font-weight:500;color:var(--dim);margin-left:8px;font-size:11px}
+.chip:hover{border-color:var(--acc)}
+.chip.sel{border-color:var(--acc);background:var(--acc);color:#06080b;box-shadow:0 0 30px rgba(184,255,92,.35)}
+.chip.sel small{color:#06080b}
+.hint{margin-top:16px;border-left:3px solid var(--acc);padding:6px 0 6px 14px;color:#d7dde4;font-size:15px}
+.hint b{color:var(--acc)}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:34px;align-items:center}
+.vis.fx{min-height:0;padding:26px}
+.vis h4{margin:0 0 12px;font-family:var(--mono);font-size:12px;letter-spacing:.14em;color:var(--acc);font-weight:500}
+.facts{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.facts li{border:1px solid var(--line);border-radius:14px;background:var(--bg2);padding:10px 14px;font-size:15px;color:#e6ebf0}
+.facts li:before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--acc);box-shadow:0 0 10px var(--acc);margin-right:10px;vertical-align:middle}
+.ctxbox{font-size:18px;color:#d7dde4;margin:0 0 18px;max-width:30em}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}
+.write{display:grid;grid-template-columns:.85fr 1.15fr;gap:30px;align-items:start}
+.write .vis{position:sticky;top:64px}
+.pbox{border:1px solid var(--line);border-radius:14px;background:var(--bg2);padding:14px 16px;margin-bottom:12px}
+.pbox label{display:flex;align-items:center;gap:10px;font-weight:800;font-size:16px}
+.pbox label i{font-style:normal;font-family:var(--mono);color:#06080b;background:var(--acc);border-radius:4px;padding:1px 8px;box-shadow:0 0 14px rgba(184,255,92,.45)}
+.pbox label{flex-wrap:wrap}
+.pbox label .lt{white-space:nowrap}
+.pbox label span{font-weight:400;color:var(--dim);font-size:13px}
+@media (max-width:860px){.pbox label span{flex-basis:100%}}
+.pbox textarea,.mitem textarea,.mitem select,.sfield{width:100%;margin-top:10px;background:#06080b;border:1px solid var(--line);border-radius:12px;color:var(--fg);font:inherit;font-size:16px;line-height:1.6;padding:10px 12px;resize:vertical}
+.pbox textarea{min-height:92px}
+.pbox textarea:focus,.mitem textarea:focus,.mitem select:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 3px rgba(184,255,92,.15)}
+.cnt{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--dim);margin-top:6px}
+.cnt .over{color:var(--gold)}
+.etc{border:1px solid var(--line);border-radius:14px;background:linear-gradient(160deg,rgba(255,255,255,.04),rgba(255,255,255,.01));padding:16px;margin:18px 0 0}
+.etc h5{margin:0 0 10px;font-family:var(--mono);font-size:12px;letter-spacing:.14em;color:var(--gold);font-weight:500}
+.chk{display:flex;gap:12px;align-items:flex-start;cursor:pointer;font-weight:700}
+.chk input{width:20px;height:20px;margin-top:3px;accent-color:#b8ff5c;flex:none}
+.chk span small{display:block;font-weight:400;color:var(--dim);font-size:13px}
+.mitem{border:1px dashed rgba(255,212,71,.45);border-radius:14px;padding:12px;margin-top:12px;background:rgba(255,212,71,.03)}
+.mitem .rowtop{display:flex;gap:10px;align-items:center;justify-content:space-between}
+.mitem select{margin-top:0;width:auto;min-width:130px;padding:6px 10px;font-size:14px}
+.mitem textarea{min-height:70px}
+.mini{font-family:var(--mono);font-size:12px;background:transparent;color:var(--dim);border:1px solid var(--line);border-radius:999px;padding:4px 12px}
+.mini:hover{color:var(--fg);border-color:var(--acc)}
+.warn{margin-top:14px;border:1px solid rgba(255,212,71,.4);color:var(--gold);border-radius:14px;padding:10px 14px;font-size:15px;background:rgba(255,212,71,.05)}
+.score{display:grid;grid-template-columns:auto 1fr;gap:30px;align-items:center}
+.ring{position:relative;width:180px;height:180px}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .tr{fill:none;stroke:var(--line);stroke-width:10}
+.ring .fg{fill:none;stroke:url(#rg);stroke-width:10;stroke-linecap:round;filter:drop-shadow(0 0 10px rgba(184,255,92,.5));transition:stroke-dashoffset 1.1s cubic-bezier(.2,.8,.2,1)}
+.ring .num{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.ring .num b{font-size:56px;font-weight:900;letter-spacing:-.04em;line-height:1;text-shadow:0 0 40px rgba(184,255,92,.5)}
+.ring .num span{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.14em}
+.grade{font-size:clamp(26px,3.4vw,38px);font-weight:900;letter-spacing:-.03em;margin:0 0 6px}
+.grade .g{background:linear-gradient(100deg,var(--acc),var(--sky));-webkit-background-clip:text;background-clip:text;color:transparent}
+.bars{display:grid;gap:12px;margin-top:6px}
+.bar{display:grid;grid-template-columns:130px 1fr 54px;gap:12px;align-items:center;font-size:14px}
+.bar .tk{height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar .tk i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--acc),var(--vio));transition:width 1s cubic-bezier(.2,.8,.2,1)}
+.bar em{font-style:normal;font-family:var(--mono);color:var(--dim);font-size:12px;text-align:right}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+.say{border-radius:14px;padding:14px 16px;border:1px solid var(--line);background:var(--bg2)}
+.say.good{border-color:rgba(184,255,92,.45)}
+.say.next{border-color:rgba(183,157,255,.5)}
+.say h5{margin:0 0 6px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;font-weight:500}
+.say.good h5{color:var(--acc)}.say.next h5{color:var(--vio)}
+.say p{margin:0;font-size:15.5px;color:#e6ebf0}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:6px}
+.col{border:1px solid var(--line);border-radius:14px;padding:14px 16px;background:var(--bg2)}
+.col.model{border-color:rgba(184,255,92,.45);box-shadow:0 0 40px -18px var(--acc)}
+.col h5{margin:0 0 10px;font-family:var(--mono);font-size:12px;letter-spacing:.14em;font-weight:500;color:var(--dim)}
+.col.model h5{color:var(--acc)}
+.pl{margin:0 0 12px}
+.pl b{font-family:var(--mono);font-size:12px;color:#06080b;background:var(--acc);border-radius:4px;padding:0 7px;margin-right:6px}
+.col:not(.model) .pl b{background:var(--vio)}
+.pl p{margin:4px 0 0;white-space:pre-wrap;font-size:15px;color:#e6ebf0}
+.pl small{display:block;color:var(--dim);font-size:13px;margin-top:3px}
+.empty{color:var(--dim);font-style:italic}
+.sig{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.sig li{display:flex;gap:10px;align-items:flex-start;font-size:15px}
+.sig .dot{flex:none;margin-top:8px;width:10px;height:10px;border-radius:50%}
+.sig .ok .dot{background:var(--acc);box-shadow:0 0 10px var(--acc)}
+.sig .chkit .dot{background:transparent;border:2px solid var(--gold)}
+.coach{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px}
+.cc{border:1px solid var(--line);border-radius:14px;background:var(--bg2);padding:16px}
+.cc h5{margin:0 0 10px;font-size:16px;font-weight:900;display:flex;align-items:center;gap:8px}
+.cc h5 i{font-style:normal;font-family:var(--mono);font-size:11px;color:var(--gold);border:1px solid rgba(255,212,71,.5);border-radius:99px;padding:1px 9px;letter-spacing:.08em;font-weight:500}
+.cc p{margin:0 0 10px;font-size:14.5px;color:#d7dde4}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{border:1px solid var(--line);background:transparent;color:var(--dim);border-radius:999px;padding:5px 12px;font-size:13px;font-weight:700}
+.seg button.on{border-color:var(--acc);color:#06080b;background:var(--acc)}
+.words{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.words button{border:1px solid var(--line);background:transparent;color:var(--fg);border-radius:8px;padding:3px 10px;font-size:14px}
+.words button.on{border-color:var(--gold);color:var(--gold);box-shadow:0 0 14px rgba(255,212,71,.3)}
+.timer{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.timer .t{font-family:var(--mono);font-size:28px;font-weight:700;color:var(--gold);min-width:92px}
+.cheer{margin-top:30px;border-radius:22px;padding:22px 24px;border:1px solid rgba(184,255,92,.4);background:linear-gradient(160deg,rgba(184,255,92,.09),rgba(183,157,255,.05));font-size:clamp(18px,2.2vw,22px);font-weight:800;letter-spacing:-.02em}
+.cheer small{display:block;margin-top:6px;font-weight:400;color:#d7dde4;font-size:15px;letter-spacing:0}
+.hist{margin-top:34px;font-family:var(--mono);font-size:12px;color:var(--dim)}
+.hist span{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:3px 12px;margin:0 6px 6px 0}
+.hist b{color:var(--acc)}
+.sr{position:absolute;left:-9999px}
+@media (max-width:860px){
+  .write,.two,.cmp,.coach,.score{grid-template-columns:1fr}
+  .write .vis{position:static}
+  .bar{grid-template-columns:100px 1fr 46px}
+  .ring{margin:0 auto}
+}
+@media print{.aur,.grain,.grid-bg,.progress,.rail,.actions{display:none}body{background:#fff;color:#000}}
+
+</style>
+</head>
+<body>
+<div class="aur a"></div><div class="aur b"></div><div class="grain"></div><div class="grid-bg"></div>
+<div class="progress" id="prog"></div>
+<div class="wrap">
+  <div class="top"><a href="#" class="mark" data-go="1"><i></i>PREP LAB</a><span class="dim">GS건설 신입사원 · 논리적 설득</span></div>
+</div>
+<nav class="rail" id="rail" aria-label="진행 단계" hidden><div class="wrap" id="railwrap"></div></nav>
+<main class="wrap" id="app"></main>
+<div class="wrap"><section class="foot" style="text-align:center;padding:60px 0 80px">
+  <p class="dim" style="max-width:34em;margin:0 auto">모든 상황은 연습용 가상 사례입니다. 점수는 비교 목적이 아니라 자기 점검을 위한 참고 지표이며, 작성한 내용은 이 기기 밖으로 전송되지 않습니다.</p>
+  <div class="endmark">PREP LAB</div>
+</section></div>
+<script>
+/* ===== PREP LAB 콘텐츠: 난이도 · 보고 스타일 · 보고 대상 · 시나리오 12개 (모두 가상 사례) ===== */
+var LV = {
+  basic:    {name:'기본', en:'LEVEL 1', desc:'사실관계가 명확하고 누락된 정보가 없습니다. 보고 대상은 한 명입니다.', feat:['정보 완결','대상 1명','시간 여유']},
+  applied:  {name:'응용', en:'LEVEL 2', desc:'수치가 일부 비어 있거나 의견이 엇갈립니다. 무엇을 먼저 보고할지 판단이 필요합니다.', feat:['일부 미확인','의견 상충','판단 필요']},
+  advanced: {name:'심화', en:'LEVEL 3', desc:'불리한 소식, 대안 비교, 수치 해석이 함께 제시됩니다. 우선순위를 정해 보고합니다.', feat:['불리한 소식','대안 비교','우선순위']}
+};
+
+var TY = {
+  urgent:  {name:'긴급 보고', en:'URGENT',  desc:'즉시 판단이 필요한 사안입니다. 결론을 먼저, 간결하게 전달합니다.', limit:350, target:30,
+            tips:['첫 문장에 결론과 요청을 함께 제시합니다','이유는 핵심 한두 가지로 압축합니다','3~4문장 이내로 마무리합니다'], size:'30초 · 350자 내외'},
+  weekly:  {name:'주간 보고', en:'WEEKLY',  desc:'금주 실적, 이슈, 차주 계획을 한 흐름으로 정리합니다.', limit:650, target:60,
+            tips:['계획 대비 실적을 먼저 제시합니다','이슈는 원인과 대응을 함께 제시합니다','차주 계획으로 마무리합니다'], size:'1분 · 650자 내외'},
+  interim: {name:'중간 보고', en:'INTERIM', desc:'진행 중인 업무의 진척 현황과 계획 대비 차이를 공유합니다.', limit:650, target:60,
+            tips:['현재 진척률을 수치로 먼저 제시합니다','차이가 있다면 원인과 만회 방안을 함께 제시합니다','필요한 의사결정은 분명하게 요청합니다'], size:'1분 · 650자 내외'},
+  result:  {name:'결과 보고', en:'RESULT',  desc:'완료된 업무의 결과, 잔여 사항, 재발 방지 대책을 보고합니다.', limit:650, target:90,
+            tips:['결과를 수치로 먼저 제시합니다','잔여 사항은 완료 시점을 명시합니다','재발 방지 대책을 한 가지 덧붙입니다'], size:'1분 30초 · 650자 내외'}
+};
+
+var AU = {
+  teamLead:    {name:'팀장', eun:'은', desc:'직속 상사',
+                care:'진행 현황과 지원이 필요한 사항을 알고자 합니다.',
+                open:'팀장님, 보고드릴 사항이 있습니다. 지금 1분 괜찮으시겠습니까?',
+                close:'이상입니다. 보완이 필요한 부분이 있으면 말씀해 주십시오.',
+                cues:['현황','진행','이슈','공유','계획','확인','말씀']},
+  siteManager: {name:'현장소장', eun:'은', desc:'현장 총괄 책임자',
+                care:'즉시 조치할 사항과 담당자, 완료 시점을 알고자 합니다.',
+                open:'소장님, 현장 상황부터 보고드리겠습니다.',
+                close:'즉시 조치할 사항에 대해 지시해 주시기 바랍니다.',
+                cues:['조치','투입','담당','오늘','내일','즉시','지시','결정','승인']},
+  executive:   {name:'임원', eun:'은', desc:'의사결정권자',
+                care:'결론과 수치, 본인이 판단해야 할 사항을 알고자 합니다.',
+                open:'결론부터 말씀드리겠습니다.',
+                close:'판단이 필요한 사항은 한 가지입니다.',
+                cues:['결정','승인','비용','영향','판단','%','추천','제안']},
+  client:      {name:'발주처', eun:'는', desc:'공사를 발주한 고객사',
+                care:'일정과 품질, 약속 이행 여부를 알고자 합니다.',
+                open:'안녕하십니까, 일정과 관련하여 먼저 말씀드리겠습니다.',
+                close:'확인되는 대로 문서로도 정리하여 전달드리겠습니다.',
+                cues:['일정','공기','납기','완료','예정','보수','계약','까지','확인']},
+  partner:     {name:'협력사', eun:'는', desc:'공사를 함께 수행하는 외부 업체',
+                care:'요청 사항의 내용과 회신 기한을 명확히 알고자 합니다.',
+                open:'현장 담당자입니다. 일정과 관련하여 요청드릴 사항이 있습니다.',
+                close:'가능한 일정을 회신해 주시기 바랍니다.',
+                cues:['요청','협조','일정','조치','부탁','확인','제출','회신']}
+};
+
+var SC = [
+/* ===================== 기본 ===================== */
+{id:'b-urgent', lv:'basic', ty:'urgent', title:'레미콘 차량 1시간 지연',
+ ctx:'오늘 아침 3층 슬래브 타설을 앞두고 있습니다. 귀하는 현장 상황을 실시간으로 확인하는 신입 담당자입니다.',
+ facts:['3층 슬래브 콘크리트 타설은 오늘 오전 9시 시작 예정이었습니다','레미콘 회사 연락: 차량이 사고 정체에 걸려 도착이 10시로 늦어집니다(1시간 지연)','타설 인원 12명이 현장에서 대기 중입니다','당초 완료 목표는 오후 4시이며, 1시간 지연되어도 오후 5시 안에는 완료할 수 있습니다','오늘 날씨는 맑아 타설에 지장이 없습니다'],
+ pol:'unnecessary', mk:[],
+ kp:{P1:[['타설'],['지연','늦어','1시간','10시']], R:[['레미콘'],['사고','정체','도착']], E:[['12명','인원'],['4시','5시','완료'],['맑','날씨']]},
+ m:{P1:'3층 슬래브 타설 시작이 오전 9시에서 10시로 1시간 늦어집니다. 시작 시간 조정을 승인해 주십시오.',
+    R:'레미콘 차량이 사고 정체에 걸려 도착이 10시로 확인되었기 때문입니다.',
+    E:'타설 인원 12명은 현장에서 대기 중이고, 원래 완료 목표는 오후 4시였지만 1시간 늦어져도 오후 5시 안에는 끝낼 수 있습니다. 날씨도 맑아 타설에는 문제가 없습니다.',
+    P2:'따라서 타설 시작을 10시로 조정하고 오후 5시 완료를 목표로 진행하겠습니다. 승인 부탁드립니다.'},
+ mat:{kind:'',content:''}},
+
+{id:'b-weekly', lv:'basic', ty:'weekly', title:'4층 골조 금주 공정 정리',
+ ctx:'금요일 오후입니다. 4층 골조 공정의 금주 결과를 정리하여 팀장에게 보고해야 합니다.',
+ facts:['금주 계획은 4건입니다: 철근 배근, 거푸집 설치, 콘크리트 타설, 배관 슬리브 설치','철근 배근·거푸집 설치·콘크리트 타설 3건은 완료했습니다','배관 슬리브 설치 1건은 차주 월요일로 이월됩니다','수요일 강우로 작업이 하루 중단되었습니다','차주 계획은 5층 철근 배근 착수와 슬리브 설치 마무리입니다','5층 철근 반입은 월요일 예정이나 일정이 아직 확정되지 않았습니다','금주 안전사고는 없었습니다'],
+ pol:'recommended', mk:[['철근'],['거푸집'],['타설'],['슬리브']],
+ kp:{P1:[['4건','3건'],['슬리브','월요일','넘어']], R:[['비','수요일'],['중단','하루','밀']], E:[['철근','거푸집','타설'],['5층'],['안전','무재해','사고']]},
+ m:{P1:'이번 주 계획 4건 중 3건을 완료했고, 배관 슬리브 설치 1건은 다음 주 월요일로 넘어갑니다.',
+    R:'수요일에 비가 와서 작업이 하루 중단되며 일정이 밀렸기 때문입니다.',
+    E:'철근 배근, 거푸집 설치, 콘크리트 타설은 완료했고 안전사고는 없었습니다. 다음 주에는 5층 철근 배근을 시작하고 슬리브 설치를 마무리할 계획입니다.',
+    P2:'다만 5층 철근 반입이 월요일 예정이지만 일정이 확정되지 않아, 자재팀에 확인한 뒤 바로 공유드리겠습니다.'},
+ mat:{kind:'표',content:'항목 / 계획 / 실적 3열 표. 철근 배근 완료, 거푸집 설치 완료, 콘크리트 타설 완료, 배관 슬리브 설치 순연(다음 주 월요일). 순연 사유란에 "수요일 비로 작업 하루 중단" 한 줄.'}},
+
+{id:'b-interim', lv:'basic', ty:'interim', title:'철근 배근 5일차 진척 현황',
+ ctx:'지하 1층 철근 배근 공사(총 10일 계획)가 5일차 오후입니다. 팀장이 현재까지의 진행 상황을 간략히 정리해 달라고 요청했습니다.',
+ facts:['총 10일 계획 중 오늘이 5일차입니다','철근 100톤 중 50톤 배근을 완료했습니다(50%)','계획상 5일차 진척률도 50%입니다','감독관 검측을 1회 받아 합격했습니다','투입 인원은 8명으로 변동이 없습니다'],
+ pol:'recommended', mk:[['계획'],['실적','50'],['검측']],
+ kp:{P1:[['50%','절반'],['계획','예정','완료']], R:[['8명','인원'],['변동','일정대로','계획']], E:[['100톤','50톤'],['검측','합격']]},
+ m:{P1:'지하 1층 철근 배근이 5일차 현재 50%로, 계획과 차이 없이 예정대로 5일 뒤 완료할 수 있습니다.',
+    R:'투입 인원 8명이 변동 없이 일정대로 작업하고 있기 때문입니다.',
+    E:'철근 100톤 중 50톤을 배근했고 계획상 진척률도 50%입니다. 감독관 검측도 1회 받아 합격했습니다.',
+    P2:'현재 계획을 바꿀 필요는 없으며, 남은 5일도 같은 속도로 진행하겠습니다. 변동이 생기면 바로 공유드리겠습니다.'},
+ mat:{kind:'그래프',content:'계획선과 실적선이 5일차에 모두 50%에서 만나는 꺾은선 그래프. 5일차 지점에 "검측 1회 합격" 표시.'}},
+
+{id:'b-result', lv:'basic', ty:'result', title:'신규 근로자 안전교육 결과',
+ ctx:'신규 투입 근로자 안전교육이 종료되었습니다. 교육 담당자로서 팀장에게 결과를 보고합니다.',
+ facts:['교육 대상은 40명이었습니다','38명(95%)이 이수했습니다','미이수 2명은 결근으로 참석하지 못했습니다','평가 평균은 88점이며 합격선은 70점입니다','이수자 38명은 모두 합격했습니다','미이수자는 이수 전 현장 출입이 불가하다는 것이 원칙입니다','보충교육은 차주 월요일 예정입니다'],
+ pol:'recommended', mk:[['40명','대상'],['38명','이수'],['2명','미이수'],['88']],
+ kp:{P1:[['38명','95%'],['보충','월요일','미이수']], R:[['결근'],['2명','미이수']], E:[['88점','평균'],['70점','합격']]},
+ m:{P1:'신규 근로자 안전교육을 40명 중 38명(95%)이 이수했습니다. 미이수 2명은 다음 주 월요일 보충교육으로 마무리하겠습니다.',
+    R:'미이수 2명은 결근으로 참석하지 못했기 때문입니다.',
+    E:'평가 평균은 88점으로 합격선 70점을 넘었고, 이수한 38명은 모두 합격했습니다.',
+    P2:'미이수 2명은 원칙대로 보충교육을 마치기 전까지 현장 출입을 제한하겠습니다. 이렇게 진행해도 될지 확인 부탁드립니다.'},
+ mat:{kind:'표',content:'교육 이수 현황 표. 대상 40명, 이수 38명(95%), 미이수 2명(결근), 평가 평균 88점(합격선 70점), 보충교육 다음 주 월요일.'}},
+
+/* ===================== 응용 ===================== */
+{id:'a-urgent', lv:'applied', ty:'urgent', title:'강우 예보와 협력사 의견 상충',
+ ctx:'오후 1시입니다. 내일 오전 외벽 타설을 앞두고 강우 예보가 나왔으나, 협력사 소장은 예정대로 진행하기를 원합니다. 최종 결정은 보고 대상이 내려야 합니다.',
+ facts:['외벽 타설은 내일 오전 예정입니다','기상 예보: 내일 오전 강수확률 60%입니다','협력사 소장 의견: "하늘 상태가 괜찮으니 그대로 진행하자"','레미콘 취소는 오늘 오후 3시까지 무료이며, 이후에는 취소비가 발생합니다(금액은 미확인)','타설을 연기하면 후속 거푸집 작업이 하루 지연됩니다','현재 시각은 오후 1시입니다'],
+ pol:'unnecessary', mk:[],
+ kp:{P1:[['연기','미루','결정'],['3시']], R:[['60%','강수','비'],['취소비','취소']], E:[['협력사'],['거푸집','하루'],['모름','미확인','확인하지','확인 중','아직']]},
+ m:{P1:'내일 오전 외벽 타설을 연기할지 오늘 오후 3시까지 결정해 주십시오. 저는 연기를 제안드립니다.',
+    R:'강수확률이 60%라 품질 위험이 있고, 3시 이후에는 레미콘 취소비가 생기기 때문입니다.',
+    E:'협력사 소장님은 진행을 원하시지만 예보는 60%입니다. 연기하면 후속 거푸집 작업이 하루 늦어지고, 취소비 금액은 아직 확인하지 못했습니다.',
+    P2:'3시 전에 결정이 필요하니 말씀 주시면 협력사와 레미콘사에 바로 연락드리겠습니다. 취소비 금액은 지금 확인하겠습니다.'},
+ mat:{kind:'',content:''}},
+
+{id:'a-weekly', lv:'applied', ty:'weekly', title:'공정률 5%p 차이와 원인 분석',
+ ctx:'3동 골조 공사 주간 회의를 앞두고 있습니다. 계획과 실적에 차이가 발생한 사유를 팀장에게 정리하여 보고해야 합니다.',
+ facts:['금주 공정률은 계획 45%, 실적 40%로 5%p 차이가 발생했습니다','원인 1: 수요일 강우로 작업이 하루 중단되었습니다','원인 2: 협력사 인력 3명이 이틀간 결근했습니다(결근 사유는 협력사가 확인 중입니다)','만회 방안: 차주 토요일 특근을 협력사와 협의 중입니다','철근 5층분은 월요일 입고가 확정되었습니다','금주 안전사고는 없었습니다'],
+ pol:'recommended', mk:[['45'],['40'],['비','인력'],['특근']],
+ kp:{P1:[['45%','40%','5%p'],['특근','만회','승인']], R:[['비','수요일'],['인력','3명']], E:[['확인 중','아직','협의 중'],['월요일','입고','철근'],['안전','사고']]},
+ m:{P1:'이번 주 공정률은 계획 45% 대비 실적 40%로 5%p 늦었습니다. 다음 주 토요일 특근으로 만회하는 방안의 승인을 부탁드립니다.',
+    R:'수요일 비로 작업이 하루 멈춘 데다, 협력사 인력 3명이 이틀 빠진 영향이 겹쳤기 때문입니다.',
+    E:'인력 결근 이유는 협력사가 아직 확인 중입니다. 철근 5층분은 월요일 입고가 확정되었고, 이번 주 안전사고는 없었습니다.',
+    P2:'토요일 특근 가능 여부를 협력사와 협의 중이니, 결과가 나오는 대로 다시 보고드리겠습니다.'},
+ mat:{kind:'표',content:'계획 45% / 실적 40% / 차이 5%p 요약 표. 원인란에 "수요일 비 1일", "협력사 인력 3명 이틀 결근(사유 확인 중)". 만회 방안란에 "다음 주 토요일 특근 협의 중".'}},
+
+{id:'a-interim', lv:'applied', ty:'interim', title:'철근 단가 8% 상승의 예산 영향',
+ ctx:'철근 단가가 상승했다는 소식이 있습니다. 원가 담당자로서 영향 범위를 분석하여 팀장에게 중간 보고를 해야 합니다.',
+ facts:['철근 단가가 3개월 전 대비 8% 상승했습니다(공식 자료 기준)','기계약한 100톤은 단가가 고정되어 영향이 없습니다','공사 후반 추가 발주 예정 물량은 20톤이며, 이 물량만 영향을 받습니다','톤당 단가 100만원 기준 8% 상승 시 20톤에서 약 160만원이 증가합니다','현재 예산 여유는 400만원입니다','이후 추가 상승 여부는 아직 알 수 없습니다','단가 동향은 월 1회 확인할 수 있습니다'],
+ pol:'required', mk:[['8%'],['100톤','고정'],['20톤'],['160만','400만']],
+ kp:{P1:[['8%'],['160만'],['400만','예산','여유']], R:[['100톤','고정','계약'],['20톤','추가']], E:[['100만원','톤당'],['160만','400만'],['모름','알 수 없','아직','미확인']]},
+ m:{P1:'철근 단가 8% 상승은 추가 물량 기준 약 160만원 증가에 그칩니다. 예산 여유 400만원 안에서 감당할 수 있습니다.',
+    R:'이미 계약한 100톤은 단가가 고정이라, 영향을 받는 물량은 추가 발주 20톤뿐이기 때문입니다.',
+    E:'톤당 단가 100만원 기준으로 8%가 오르면 20톤에서 약 160만원이 늘고, 현재 예산 여유는 400만원입니다. 다만 이후 추가 상승이 있을지는 아직 알 수 없습니다.',
+    P2:'지금은 예산 조정이 필요 없다고 판단합니다. 단가 동향을 월 1회 확인하고, 추가 상승이 있으면 다시 보고드리겠습니다.'},
+ mat:{kind:'표',content:'영향 범위 표. 계약 100톤(단가 고정, 영향 없음) / 추가 20톤(8% 상승, 약 160만원 증가) / 예산 여유 400만원. 아래에 "추가 상승은 월 1회 확인" 한 줄.'}},
+
+{id:'a-result', lv:'applied', ty:'result', title:'협력사 하자 보수 결과',
+ ctx:'협력사가 수행한 하자 보수 작업의 결과를 팀장에게 보고합니다. 일부 건은 아직 완료되지 않았습니다.',
+ facts:['접수된 하자는 12건입니다','10건은 보수를 완료했고 2건이 남았습니다','잔여 2건은 자재 입고 대기 중이며 차주 수요일 완료 예정입니다','완료된 10건 중 8건은 발주처 확인 서명을 받았고 2건은 확인 대기 중입니다','재발 방지를 위해 협력사에 시공 전 자체 점검표 제출을 요청했습니다'],
+ pol:'recommended', mk:[['12건'],['10건'],['2건'],['서명']],
+ kp:{P1:[['12건','10건'],['2건','수요일','남']], R:[['자재','입고'],['2건','남']], E:[['8건','서명'],['점검표','재발']]},
+ m:{P1:'접수된 하자 12건 중 10건을 보수 완료했습니다. 남은 2건은 자재 입고 후 다음 주 수요일까지 마무리하겠습니다.',
+    R:'남은 2건은 자재 입고를 기다리고 있기 때문입니다.',
+    E:'완료한 10건 중 8건은 발주처 확인 서명을 받았고 2건은 확인 대기 중입니다. 재발 방지를 위해 협력사에 시공 전 자체 점검표 제출을 요청했습니다.',
+    P2:'수요일에 마무리한 뒤 최종 결과와 서명 현황을 다시 정리해 보고드리겠습니다.'},
+ mat:{kind:'표',content:'하자 보수 현황 표. 접수 12건 / 완료 10건(서명 8건, 확인 대기 2건) / 남은 2건(자재 대기, 다음 주 수요일 예정).'}},
+
+/* ===================== 심화 ===================== */
+{id:'d-urgent', lv:'advanced', ty:'urgent', title:'검수 전일 방수층 누수 발견',
+ ctx:'발주처 검수를 하루 앞두고 불리한 소식이 발생했습니다. 해당 사안을 숨기지 않고 해결 방안과 함께 전달해야 합니다.',
+ facts:['오늘 오전 지하 2층 방수층에서 누수 3곳을 발견했습니다','누수량은 소량이며 안전상 문제는 없습니다','내일 오전 10시 발주처 중간 검수가 예정되어 있습니다','보수에는 경화 시간을 포함해 최소 2일이 소요됩니다','협력사는 오늘 오후 즉시 보수에 착수할 수 있습니다','원인은 시공 불량으로 추정되나 아직 확정되지 않았습니다'],
+ pol:'recommended', mk:[['누수'],['3곳','위치'],['보수','일정']],
+ kp:{P1:[['누수'],['연기','검수'],['오늘','결정']], R:[['2일','경화'],['검수','내일']], E:[['3곳'],['안전','적어','소량'],['협력사','오늘 오후'],['확정','추정','보이지만','아직']]},
+ m:{P1:'지하 2층 방수 누수 3곳이 확인되어 내일 10시 발주처 검수를 연기해야 합니다. 오늘 안에 연기 요청 여부를 결정해 주십시오.',
+    R:'보수에 경화 시간을 포함해 최소 2일이 걸려 내일 검수 기준을 맞출 수 없기 때문입니다.',
+    E:'오늘 오전 누수 3곳을 발견했고 양이 적어 안전 문제는 없습니다. 협력사는 오늘 오후 바로 보수를 시작할 수 있으며, 원인은 시공 불량으로 보이지만 아직 확정되지 않았습니다.',
+    P2:'연기를 승인해 주시면 사유와 보수 일정을 정리해 발주처에 먼저 연락드리고, 원인이 확인되는 대로 보고드리겠습니다.'},
+ mat:{kind:'사진',content:'누수 3곳의 위치를 표시한 도면 1장과 현장 사진 3장. 각 사진 아래에 위치(예: 지하 2층 ○구역)와 누수 정도 한 줄.'}},
+
+{id:'d-weekly', lv:'advanced', ty:'weekly', title:'복수 이슈의 우선순위 보고',
+ ctx:'팀장이 한 장 분량으로 요약하여 올려 달라고 요청했습니다. 이슈가 여러 건이므로 우선순위를 정하여 보고해야 합니다.',
+ facts:['레미콘 수급이 불안정하여 차주 타설 2회가 최대 5일 지연될 우려가 있습니다','발주처 안전 지적이 2건 있으며, 금주 금요일까지 조치 회신을 요청받았습니다','원가가 3% 초과할 가능성이 있습니다(월말 확정 전 추정치입니다)','공정 만회를 위해 야간 작업을 하면 소음 민원 우려가 있습니다(인근 단지 민원이 이미 1건 접수되었습니다)','팀장은 한 장 분량의 요약 보고를 원합니다'],
+ pol:'required', mk:[['안전'],['레미콘','타설'],['원가','3%'],['금요일','기한']],
+ kp:{P1:[['안전','2건'],['금요일','기한','회신'],['레미콘','5일','타설']], R:[['회신','기한','금요일'],['민원','야간','소음']], E:[['2회','5일'],['3%'],['추정','확정 전']]},
+ m:{P1:'이번 주는 금요일까지 회신해야 하는 발주처 안전 지적 2건을 최우선으로 조치하겠습니다. 다음 주 타설 2회가 최대 5일 늦어질 위험은 야간 작업 없는 대안을 찾아 보고드리겠습니다.',
+    R:'안전 지적은 회신 기한이 정해져 있고, 야간 작업은 이미 접수된 소음 민원 1건을 키울 수 있기 때문입니다.',
+    E:'레미콘 수급이 불안정해 타설 2회가 늦어질 수 있습니다. 원가는 3% 초과 가능성이 있지만 월말 확정 전 추정치입니다.',
+    P2:'금요일 회신을 마친 뒤, 레미콘 대안과 원가 확정 결과를 함께 정리해 다시 보고드리겠습니다.'},
+ mat:{kind:'표',content:'이슈 3개를 한 장에 정리한 표. 열: 이슈 / 기한 / 영향 / 조치. 1행 안전 지적 2건(금요일, 최우선), 2행 레미콘 수급(다음 주, 타설 최대 5일 지연 위험), 3행 원가(월말 확정, 3% 초과 가능).'}},
+
+{id:'d-interim', lv:'advanced', ty:'interim', title:'설계변경 대안 비교 및 추천',
+ ctx:'발주처가 내부 마감재 설계변경을 요청했습니다. 대안을 비교하여 방향을 제안해야 합니다.',
+ facts:['A안(전면 수용): 공기 7일 연장, 비용 약 2천만원 증가(추정, ±20%)','B안(일부 수용): 공기 3일 연장, 비용 1천만원 증가','C안(거절): 계약상 근거 확인이 필요하며, 아직 확인이 끝나지 않았습니다','발주처 회신 기한은 차주 화요일입니다','계약 근거 확인은 금주 내 완료할 수 있습니다'],
+ pol:'required', mk:[['A안','7일'],['B안','3일'],['C안','계약']],
+ kp:{P1:[['B안','일부 수용'],['3일','1천만'],['화요일','결정','회신']], R:[['7일','2천만','A안'],['C안','계약','근거']], E:[['3일','1천만'],['±20%','추정'],['확인']]},
+ m:{P1:'발주처 설계변경은 공기 3일, 비용 1천만원이 드는 일부 수용안(B안)을 추천드립니다. 다음 주 화요일 회신 전에 방향 결정이 필요합니다.',
+    R:'전면 수용(A안)은 공기 7일에 약 2천만원이 늘고, 거절(C안)은 계약상 근거 확인이 끝나지 않아 위험하기 때문입니다.',
+    E:'A안은 7일 연장에 약 2천만원(±20% 추정), B안은 3일 연장에 1천만원이 들고, C안은 계약 근거를 확인해야 합니다.',
+    P2:'이번 주 안에 계약 근거 확인을 끝내고 그 결과를 더해 최종안을 다시 보고드리겠습니다. 방향 결정을 부탁드립니다.'},
+ mat:{kind:'표',content:'대안 비교표. 열: 안 / 공기 / 비용 / 남은 확인. A안 7일·약 2천만원(±20%)·없음, B안 3일·1천만원·없음, C안 미정·미정·계약 근거 확인 필요. B안 행에 "추천" 표시.'}},
+
+{id:'d-result', lv:'advanced', ty:'result', title:'준공 전 품질점검 부적합 8건',
+ ctx:'준공 전 품질점검이 종료되었습니다. 불리한 결과가 포함되어 있으나 보수가 가능하며 재발 방지 대책도 마련되어 있습니다.',
+ facts:['점검 항목은 120개였으며 부적합이 8건 확인되었습니다','부적합 8건 중 방수·균열 중대 3건, 경미 5건입니다','중대 3건 보수는 10일, 경미 5건 보수는 3일이면 완료됩니다','준공 검사까지 20일이 남아 있습니다','원인은 야간 작업 시 감독이 비어 있던 시간이 있었던 점입니다','재발 방지안: 야간 작업에도 감독 1명을 배치하는 방안입니다'],
+ pol:'recommended', mk:[['120','8건'],['중대','3건'],['경미','5건'],['20일']],
+ kp:{P1:[['8건','부적합'],['준공','검사','마칠','완료']], R:[['10일','3일'],['20일']], E:[['중대','3건'],['야간','감독']]},
+ m:{P1:'준공 전 품질점검에서 120개 항목 중 8건이 부적합이었고, 보수는 준공 검사일 안에 모두 마칠 수 있습니다.',
+    R:'중대 3건은 10일, 경미 5건은 3일이면 끝나고, 준공 검사까지 20일이 남았기 때문입니다.',
+    E:'부적합 8건 중에는 방수·균열 중대 3건이 있습니다. 원인은 야간 작업 때 감독이 비어 있던 시간이 있었던 점입니다.',
+    P2:'재발 방지로 야간 작업에도 감독 1명을 배치하는 방안의 승인을 부탁드립니다. 승인해 주시면 바로 적용하겠습니다.'},
+ mat:{kind:'표',content:'점검 결과 요약 표. 점검 120개 / 부적합 8건(중대 3건: 보수 10일, 경미 5건: 보수 3일) / 준공 검사까지 20일. 아래에 원인 한 줄과 재발 방지안(야간 감독 1명 배치).'}}
+];
+
+</script>
+<script>
+/* ===== PREP LAB 앱: 단계 이동 · 규칙 기반 채점 · 성장 코칭 ===== */
+(function(){
+'use strict';
+var $ = function(s, r){ return (r || document).querySelector(s); };
+var $$ = function(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function nl(s){ return esc(s).replace(/\n/g, '<br>'); }
+
+/* ---- 저장 (실패해도 앱은 그대로 동작) ---- */
+function sget(k){ try { return JSON.parse(localStorage.getItem(k)); } catch(e){ return null; } }
+function sset(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+
+var STEPS = ['난이도', '스타일·대상', '상황', '작성', '결과'];
+var MATKINDS = ['표', '그래프', '사진', '도면', '체크리스트', '기타'];
+var TYPECUES = {
+  urgent:  ['긴급','지연','발생','즉시','우선','오늘','내일','결정','연기','확인','조치','승인'],
+  weekly:  ['이번 주','금주','다음 주','차주','이슈','계획','완료','순연','실적','공정률','월요일'],
+  interim: ['진척','진행','계획','대비','차이','%','남은','현재','대응','예정'],
+  result:  ['결과','완료','달성','이수','재발','방지','원인','마무리','남은','부적합','건']
+};
+var S = {
+  step: 0, max: 0, lv: null, ty: null, au: null, sid: null,
+  ans: {P1:'', R:'', E:'', P2:''},
+  mat: {inc:false, items:[]},
+  res: null, force: false,
+  self: {voice:null, eye:null, emph:[], pair:{a:false,b:false,c:false}, time:null}
+};
+var tick = null;
+
+function scenario(){
+  for (var i = 0; i < SC.length; i++) if (SC[i].lv === S.lv && SC[i].ty === S.ty) return SC[i];
+  return null;
+}
+function scById(id){ for (var i = 0; i < SC.length; i++) if (SC[i].id === id) return SC[i]; return null; }
+function draftKey(){ return 'preplab.d.' + S.sid + '.' + S.au; }
+function saveDraft(){ if (S.sid && S.au) sset(draftKey(), {ans:S.ans, mat:S.mat}); }
+function loadDraft(){
+  var d = sget(draftKey());
+  S.ans = {P1:'', R:'', E:'', P2:''}; S.mat = {inc:false, items:[]};
+  if (d && d.ans) { S.ans = d.ans; S.mat = d.mat || S.mat; }
+}
+
+/* ---- 문자열 도구 ---- */
+function norm(s){ return String(s).replace(/\s+/g, '').toLowerCase(); }
+function has(text, term){ return text.indexOf(term) >= 0 || norm(text).indexOf(norm(term)) >= 0; }
+function hitGroup(text, g){ for (var i = 0; i < g.length; i++) if (has(text, g[i])) return true; return false; }
+function cov(text, groups){
+  var n = 0, miss = [];
+  for (var i = 0; i < groups.length; i++) { if (hitGroup(text, groups[i])) n++; else miss.push(groups[i]); }
+  return {n:n, total:groups.length, ratio: groups.length ? n / groups.length : 1, missing:miss};
+}
+function nums(text){ return String(text).match(/\d+(?:\.\d+)?/g) || []; }
+function firstSentence(t){ var m = String(t).trim().split(/[.!?。\n]/); return (m[0] || '').trim(); }
+function countRe(text, re){ var m = String(text).match(re); return m ? m.length : 0; }
+
+/* ---- 규칙 기반 채점 ---- */
+function score(sc){
+  var au = AU[S.au], ty = TY[sc.ty];
+  var A = {}; ['P1','R','E','P2'].forEach(function(k){ A[k] = (S.ans[k] || '').trim(); });
+  var all = [A.P1, A.R, A.E, A.P2].join(' ');
+  var items = [], x;
+
+  /* P1 결론 */
+  var c1 = cov(A.P1, sc.kp.P1), fs = firstSentence(A.P1);
+  x = (A.P1.length >= 15 ? 6 : 0) + Math.round(c1.ratio * 10) + (!A.P1 ? 0 : (fs.length <= 60 ? 4 : (fs.length <= 90 ? 2 : 0)));
+  items.push({key:'P1', label:'결론 (P)', got:Math.min(20, x), max:20, miss:c1.missing, fsLen:fs.length});
+
+  /* R 이유 */
+  var c2 = cov(A.R, sc.kp.R);
+  var conn = /(때문|왜냐하면|이유는|따라서|그래서|첫째|둘째|영향|겹쳐|탓)/.test(A.R);
+  x = (A.R.length >= 15 ? 6 : 0) + Math.round(c2.ratio * 10) + (conn ? 4 : 0);
+  items.push({key:'R', label:'이유 (R)', got:Math.min(20, x), max:20, miss:c2.missing, conn:conn});
+
+  /* E 근거 */
+  var allowed = {};
+  nums(sc.facts.join(' ')).forEach(function(n){ allowed[n] = 1; });
+  var modelNums = {};
+  nums([sc.m.P1, sc.m.R, sc.m.E, sc.m.P2].join(' ')).forEach(function(n){ modelNums[n] = 1; });
+  var seen = {}, matched = 0, unknown = [];
+  nums(A.E + ' ' + A.R + ' ' + A.P1 + ' ' + A.P2).forEach(function(n){
+    if (seen[n]) return; seen[n] = 1;
+    if (allowed[n] || modelNums[n]) return;
+    if (parseFloat(n) <= 3) return;
+    unknown.push(n);
+  });
+  var seenE = {};
+  nums(A.E).forEach(function(n){ if (!seenE[n] && allowed[n]) { seenE[n] = 1; matched++; } });
+  var c3 = cov(A.E, sc.kp.E);
+  x = (A.E.length >= 20 ? 5 : 0) + Math.round(Math.min(matched, 2) / 2 * 8) + Math.round(c3.ratio * 7) - Math.min(4, unknown.length * 2);
+  items.push({key:'E', label:'근거 (E)', got:Math.max(0, Math.min(20, x)), max:20, miss:c3.missing, matched:matched, unknown:unknown});
+
+  /* P2 마무리 */
+  var req = /(요청|부탁|승인|결재|지시|말씀|검토|결정해)/.test(A.P2);
+  var act = /(드리겠습니다|하겠습니다|공유|보고|연락)/.test(A.P2);
+  var ov = cov(A.P2, sc.kp.P1).n >= 1;
+  x = (A.P2.length >= 10 ? 3 : 0) + (req ? 4 : (act ? 3 : 0)) + (ov ? 3 : 0);
+  items.push({key:'P2', label:'마무리 (P)', got:Math.min(10, x), max:10, req:req, act:act, ov:ov});
+
+  /* 유형·대상 적합성 */
+  var total = A.P1.length + A.R.length + A.E.length + A.P2.length;
+  var lenS = total === 0 ? 0 : (total < 60 ? 2 : (total <= ty.limit ? 5 : (total <= ty.limit * 1.3 ? 3 : 1)));
+  var tc = 0; TYPECUES[sc.ty].forEach(function(w){ if (has(all, w)) tc++; });
+  var typeS = tc >= 3 ? 5 : (tc === 2 ? 4 : (tc === 1 ? 2 : 0));
+  var ac = 0; au.cues.forEach(function(w){ if (has(all, w)) ac++; });
+  var audS = total === 0 ? 0 : (ac >= 2 ? 5 : (ac === 1 ? 4 : 2));
+  items.push({key:'fit', label:'유형·대상 맞춤', got:lenS + typeS + audS, max:15, lenS:lenS, typeS:typeS, audS:audS, total:total});
+
+  /* 보고자료 */
+  var pol = sc.pol, inc = S.mat.inc;
+  var jd = pol === 'required' ? (inc ? 5 : 0) : (pol === 'recommended' ? (inc ? 5 : 3) : (inc ? 2 : 5));
+  var contentApplicable = inc || pol === 'required';
+  var mtxt = S.mat.items.map(function(i){ return i.text || ''; }).join(' ').trim();
+  var ct = 0;
+  if (contentApplicable && inc && mtxt.length >= 10) {
+    var mc = cov(mtxt, sc.mk);
+    ct = 4 + Math.round(mc.ratio * 6);
+    if (pol === 'unnecessary') ct = Math.min(ct, 5);
+  }
+  var mmax = 5 + (contentApplicable ? 10 : 0);
+  items.push({key:'mat', label:'보고자료', got:jd + ct, max:mmax, pol:pol, inc:inc, jd:jd, ct:ct, applicable:contentApplicable, mtxtLen:mtxt.length, miss: mtxt ? cov(mtxt, sc.mk).missing : sc.mk});
+
+  var earned = 0, appl = 0;
+  items.forEach(function(i){ earned += i.got; appl += i.max; });
+  var totalPct = appl ? Math.round(earned / appl * 100) : 0;
+  if (!total) totalPct = 0;
+  return {items:items, total:totalPct, earned:earned, appl:appl, A:A};
+}
+
+function gradeOf(t){
+  if (t >= 90) return {k:'탄탄합니다', cheer:'구조와 근거가 안정적인 보고입니다. 이 흐름을 현장에 그대로 적용하셔도 좋습니다.'};
+  if (t >= 75) return {k:'양호합니다', cheer:'전반적인 흐름이 양호합니다. 한 가지만 보완하면 완성도가 한층 높아집니다.'};
+  if (t >= 60) return {k:'보완 단계입니다', cheer:'핵심 구조는 갖추어졌습니다. 항목별 제안을 반영하면 다음 보고에서 뚜렷한 향상을 기대할 수 있습니다.'};
+  return {k:'재작성을 권장합니다', cheer:'모범 답안의 구성을 먼저 확인하신 뒤 다시 작성해 보시기 바랍니다. 두 번째 시도에서 개선 폭이 가장 큽니다.'};
+}
+
+/* ---- 피드백 문구 (강점 먼저, 제안은 한 가지, 전문적이고 정중한 어조) ---- */
+function msgGood(it){
+  var m = {
+    P1: '첫 문장에 상황과 결론이 명확히 담겨 있습니다.',
+    R:  '이유가 결론과 논리적으로 연결되어 있습니다.',
+    E:  '주어진 사실과 수치를 근거로 적절히 활용하셨습니다.',
+    P2: '마무리에서 요청 사항과 다음 행동을 분명히 제시하셨습니다.',
+    fit:'보고 유형과 대상에 적합한 어조와 분량입니다.',
+    mat:'이 상황에 맞게 보고자료 필요 여부를 판단하셨습니다.'
+  };
+  return m[it.key];
+}
+function msgNext(it, sc){
+  var au = AU[S.au], ty = TY[sc.ty], first;
+  switch (it.key) {
+    case 'P1':
+      if (!S.ans.P1.trim()) return '결론 칸이 비어 있습니다. 결론을 한 문장으로 먼저 작성해 보시기 바랍니다.';
+      if (it.miss && it.miss.length) return '결론에 ‘' + it.miss[0][0] + '’ 내용을 함께 제시하면 좋습니다. 한 문장 안에 상황과 요청이 함께 담기면 상대가 즉시 상황을 파악할 수 있습니다.';
+      if (it.fsLen > 60) return '첫 문장이 다소 깁니다. 60자 내외로 압축하면 전달력이 높아집니다.';
+      return '첫 문장에 요청 사항(결정·승인·확인) 한 가지를 추가해 보시기 바랍니다.';
+    case 'R':
+      if (!S.ans.R.trim()) return '이유 칸이 비어 있습니다. “~ 때문입니다” 형식으로 한 문장을 작성해 보시기 바랍니다.';
+      if (!it.conn) return '이유는 “~ 때문입니다”로 연결해 보시기 바랍니다. 결론과 이유의 인과가 명확해집니다.';
+      if (it.miss && it.miss.length) return '‘' + it.miss[0][0] + '’ 내용이 이유에 반영되면 설득력이 높아집니다.';
+      return '이유를 한두 가지로 압축하면 논점이 더 선명해집니다.';
+    case 'E':
+      if (!S.ans.E.trim()) return '근거 칸이 비어 있습니다. 주어진 사실 중 수치 하나를 먼저 제시해 보시기 바랍니다.';
+      if (it.unknown && it.unknown.length) return '시나리오에 없는 수치(' + it.unknown.join(', ') + ')가 포함되어 있습니다. 사실관계를 한 번 더 확인해 보시기 바랍니다.';
+      if (it.matched < 2) return '근거에 수치를 하나 더 제시하면 신뢰도가 높아집니다. ' + (it.miss && it.miss.length ? '예를 들어 ‘' + it.miss[0][0] + '’ 관련 내용이 있습니다.' : '');
+      if (it.miss && it.miss.length) return '‘' + it.miss[0][0] + '’ 사실도 근거에 포함하시기를 권장합니다.';
+      return '근거를 두세 개로 정리하면 청취자가 따라가기 수월합니다.';
+    case 'P2':
+      if (!S.ans.P2.trim()) return '마무리 칸이 비어 있습니다. 결론을 다시 짚고 요청 사항 한 가지를 작성해 보시기 바랍니다.';
+      if (!it.req && !it.act) return '마지막 문장에서 상대에게 요청할 사항(결정·승인·확인)을 한 가지 제시해 보시기 바랍니다.';
+      if (!it.ov) return '결론의 핵심 표현을 마무리에서 한 번 더 언급하면 기억에 오래 남습니다.';
+      return '마지막 문장을 한 줄로 간결하게 다듬어 보시기 바랍니다.';
+    case 'fit':
+      if (it.lenS <= 3 && it.total > ty.limit) return '전체 분량이 다소 깁니다. 이 보고는 ' + ty.size + ' 정도가 적정합니다. 이유와 근거를 하나씩만 남겨 보시기 바랍니다.';
+      if (it.lenS <= 3 && it.total < 60) return '조금 더 구체적으로 작성하시기를 권장합니다. 칸마다 한두 문장이면 충분합니다.';
+      if (it.audS <= 4) return au.name + '께서는 다음과 같은 점을 중시하십니다. “' + au.care + '” 이에 맞추어 ‘' + au.cues[0] + '’ 등의 표현을 활용해 보시기 바랍니다.';
+      return ty.name + '에서는 “' + ty.tips[0] + '” 점을 유념하시기 바랍니다.';
+    case 'mat':
+      if (it.pol === 'required' && !it.inc) return '이 상황은 수치가 많아 보고자료를 함께 제시하면 이해도가 크게 높아집니다. 다음에는 표 한 장을 구상하여 ‘보고자료 포함’을 체크해 보시기 바랍니다.';
+      if (it.pol === 'recommended' && !it.inc) return '이 상황에서는 자료를 함께 제시하면 효과적입니다. 표나 그래프 한 장을 구상해 보시기 바랍니다.';
+      if (it.pol === 'unnecessary' && it.inc) return '이 보고는 신속성이 우선이므로 구두 보고로 충분합니다. 긴급할수록 자료보다 결론 한 문장이 효과적입니다.';
+      if (it.inc && it.mtxtLen < 10) return '자료 칸에 담을 내용을 구체적으로 작성해 보시기 바랍니다. 항목명만 기재하셔도 충분합니다.';
+      if (it.miss && it.miss.length) return '자료에 ‘' + it.miss[0][0] + '’ 항목이 포함되면 가독성이 높아집니다.';
+      return '자료에 제목을 한 줄 붙이면 더욱 좋습니다.';
+  }
+  return '';
+}
+
+/* ---- 성장 코칭 신호 (글에서 읽어낼 수 있는 것만, 감점 없음) ---- */
+function signals(sc, res){
+  var A = res.A, list = [];
+  var p1 = res.items[0], all = [A.P1, A.R, A.E, A.P2].join(' ');
+  list.push(p1.fsLen > 0 && p1.fsLen <= 60
+    ? {ok:true,  t:'첫 문장이 간결하여 청취자가 즉시 핵심을 파악할 수 있습니다.'}
+    : {ok:false, t:'첫 문장이 다소 깁니다. 60자 내외가 전달력 측면에서 적정합니다.'});
+  var hedge = countRe(all, /(것 같|듯합니다|듯하|아마|일지도|않을까)/g);
+  list.push(hedge <= 1
+    ? {ok:true,  t:'확정된 사항을 명확하게 표현하여 신뢰감을 줍니다.', hedge:hedge}
+    : {ok:false, t:'“~것 같습니다” 표현이 ' + hedge + '회 사용되었습니다. 확인된 내용은 단정적으로, 미확인 사항은 “현재 확인 중입니다”로 구분하면 신뢰도가 높아집니다.', hedge:hedge});
+  list.push(nums(all).length > 0
+    ? {ok:true,  t:'수치가 포함되어 있어 설득력이 있습니다.'}
+    : {ok:false, t:'수치를 하나만 추가해도 설득력이 크게 높아집니다.'});
+  var last = firstSentence(A.P2.split(/\n/).pop() || '');
+  var lastAll = A.P2.trim().split(/[.!?。\n]/).filter(function(s){ return s.trim(); }).pop() || '';
+  list.push(/(요청|부탁|승인|결재|지시|말씀|검토|확인|드리겠습니다|하겠습니다)/.test(lastAll)
+    ? {ok:true,  t:'마지막 문장에 요청 사항 또는 다음 행동이 제시되어 있어, 상대가 취할 조치가 분명합니다.'}
+    : {ok:false, t:'마지막 문장에 요청 사항이나 다음 행동을 명시하면 보고가 명확하게 마무리됩니다.'});
+  var unk = res.items[2].unknown || [];
+  if (unk.length) list.push({ok:false, t:'시나리오에 없는 수치(' + unk.join(', ') + ')가 포함되어 있습니다. 사실관계를 한 번 더 확인해 보시기 바랍니다.'});
+  var apology = /^(죄송|송구|면목)/.test(A.P1.trim());
+  list.push(!apology
+    ? {ok:true,  t:'결론으로 시작하셨습니다. 사과보다 해결 방안을 먼저 제시하면 신뢰감이 높아집니다.'}
+    : {ok:false, t:'사과는 한 문장이면 충분합니다. 결론과 해결 방안을 먼저 보고해 보시기 바랍니다.'});
+  return {list:list, hedge:hedge, apology:apology};
+}
+
+function onePractice(sc, res, sg){
+  if (sg.hedge >= 2) return '다음 보고에서는 “~것 같습니다” 표현을 1회 이하로 줄여 보시기 바랍니다.';
+  if (res.items[0].fsLen > 60) return '다음 보고에서는 첫 문장을 60자 내외로 압축해 보시기 바랍니다.';
+  if (!res.items[3].req && !res.items[3].act) return '다음 보고에서는 마지막 문장에 요청 사항 한 가지를 반드시 포함해 보시기 바랍니다.';
+  var low = res.items.slice().sort(function(a, b){ return a.got / a.max - b.got / b.max; })[0];
+  if (low.got / low.max < .8) return '다음에는 “' + low.label + '” 항목을 우선 보완해 보시기 바랍니다. 한 단계 높은 완성도를 기대할 수 있습니다.';
+  return '첫 문장은 평소보다 천천히, 문장 끝은 낮추어 발화해 보시기 바랍니다.';
+}
+
+/* ---- 화면 ---- */
+var app, rail, railWrap;
+function go(n){
+  S.step = n; if (n > S.max) S.max = n;
+  stopTimer();
+  render();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function render(){
+  rail.hidden = S.step === 0;
+  railWrap.innerHTML = STEPS.map(function(n, i){
+    var cls = (i + 1 === S.step) ? 'cur' : '';
+    var dis = (i + 1 > S.max) ? ' disabled' : '';
+    return '<a href="#" role="button" data-go="' + (i + 1) + '" class="' + cls + '"' + (dis ? ' aria-disabled="true"' : '') + '>' + (i + 1) + ' · ' + n + '</a>';
+  }).join('');
+  [intro, stepLevel, stepStyle, stepScene, stepWrite, stepResult][S.step]();
+}
+
+function histHtml(){
+  var h = sget('preplab.hist') || [];
+  if (!h.length) return '';
+  var last = h.slice(-5).reverse();
+  return '<div class="hist">최근 연습 ' + last.map(function(r){
+    var s = scById(r.sid); return '<span>' + esc(s ? s.title : r.sid) + ' · <b>' + r.total + '</b></span>';
+  }).join('') + '</div>';
+}
+
+function intro(){
+  app.innerHTML =
+  '<section class="hero one"><div>' +
+    '<div class="presents">PREP LAB PRESENTS</div>' +
+    '<div class="kicker">PREP · 보고 연습장</div>' +
+    '<h1>결론부터,<br><span class="g">이유와 근거로</span></h1>' +
+    '<p class="lead"><b>상황을 선택하고 PREP 구조로 직접 작성해 보십시오.</b> 모범 답안과 항목별 피드백을 통해 다음 보고의 완성도를 높일 수 있습니다.</p>' +
+    '<div class="ctas"><button type="button" class="btn" data-act="start">▶ 연습 시작하기</button></div>' +
+  '</div></section>' +
+  '<div class="kpis">' +
+    '<div class="kpi"><b class="acc">12</b><span>현장 보고 상황 (기본·응용·심화 × 4가지 보고)</span></div>' +
+    '<div class="kpi"><b>4칸</b><span>P · R · E · P 를 항목별로 직접 작성</span></div>' +
+    '<div class="kpi"><b>10분</b><span>한 상황의 작성과 리뷰에 소요되는 시간</span></div>' +
+  '</div>' + histHtml() +
+  '<p class="dim" style="margin-top:28px;font-size:14px">모든 상황은 연습용 가상 사례입니다. 점수는 비교 목적이 아니라 자기 점검을 위한 참고 지표입니다.</p>';
+}
+
+function stepLevel(){
+  app.innerHTML = '<section class="stage-s"><div class="cell"><i>STEP 01</i>LEVEL</div>' +
+    '<h2>난이도를 선택해 주십시오</h2><p class="sub">처음이라면 기본 단계부터, 숙련되셨다면 심화 단계로 바로 진행하셔도 좋습니다. 언제든 변경할 수 있습니다.</p>' +
+    '<div class="opts">' + Object.keys(LV).map(function(k){
+      var v = LV[k];
+      return '<button type="button" class="opt' + (S.lv === k ? ' sel' : '') + '" data-lv="' + k + '"><div class="k">' + v.en + '</div><h3>' + v.name + '</h3><p>' + esc(v.desc) + '</p><div class="tags">' + v.feat.map(function(f){ return '<span class="tag">' + esc(f) + '</span>'; }).join('') + '</div></button>';
+    }).join('') + '</div>' +
+    '<div class="actions"><button type="button" class="btn" data-act="to2"' + (S.lv ? '' : ' disabled') + '>다음 · 보고 유형 선택</button></div>' + histHtml() + '</section>';
+}
+
+function stepStyle(){
+  var au = S.au ? AU[S.au] : null;
+  app.innerHTML = '<section class="stage-s"><div class="cell"><i>STEP 02</i>STYLE &amp; AUDIENCE</div>' +
+    '<h2>보고 대상과 유형을 선택해 주십시오</h2><p class="sub">동일한 사실이라도 보고 유형과 대상에 따라 전달 순서와 강조점이 달라집니다.</p>' +
+    '<div class="sect"><i>A</i>보고 스타일</div><div class="opts">' + Object.keys(TY).map(function(k){
+      var v = TY[k];
+      return '<button type="button" class="opt' + (S.ty === k ? ' sel' : '') + '" data-ty="' + k + '"><div class="k">' + v.en + '</div><h3>' + v.name + '</h3><p>' + esc(v.desc) + '</p><div class="tags"><span class="tag">' + esc(v.size) + '</span></div></button>';
+    }).join('') + '</div>' +
+    '<div class="sect"><i>B</i>보고 대상</div><div class="chips">' + Object.keys(AU).map(function(k){
+      return '<button type="button" class="chip' + (S.au === k ? ' sel' : '') + '" data-au="' + k + '">' + esc(AU[k].name) + '<small>' + esc(AU[k].desc) + '</small></button>';
+    }).join('') + '</div>' +
+    (au ? '<div class="hint"><b>' + esc(au.name) + '</b>' + esc(au.eun) + ' ' + esc(au.care) + '</div>' : '') +
+    '<div class="actions"><button type="button" class="btn ghost" data-go="1">이전</button><button type="button" class="btn" data-act="to3"' + (S.ty && S.au ? '' : ' disabled') + '>다음 · 상황 확인</button></div></section>';
+}
+
+function stepScene(){
+  var sc = scenario(); S.sid = sc.id;
+  var ty = TY[sc.ty], au = AU[S.au], lv = LV[sc.lv];
+  app.innerHTML = '<section class="stage-s"><div class="row">' +
+    '<div><div class="cell"><i>STEP 03</i>SCENE</div><h2>' + esc(sc.title) + '</h2>' +
+    '<div class="meta"><span class="tag">' + lv.name + '</span><span class="tag">' + ty.name + '</span><span class="tag">보고 대상 · ' + esc(au.name) + '</span></div>' +
+    '<p class="ctxbox">' + esc(sc.ctx) + '</p>' +
+    '<div class="hint"><b>' + esc(ty.name) + ' 팁</b> · ' + ty.tips.map(esc).join(' / ') + '</div>' +
+    '<div class="hint"><b>' + esc(au.name) + '</b>' + esc(au.eun) + ' ' + esc(au.care) + '</div>' +
+    '<div class="actions"><button type="button" class="btn ghost" data-go="2">이전</button><button type="button" class="btn" data-act="to4">▶ 보고 작성하기</button></div></div>' +
+    '<div class="vis fx"><h4>FACTS · 주어진 사실</h4><ul class="facts">' + sc.facts.map(function(f){ return '<li>' + esc(f) + '</li>'; }).join('') + '</ul>' +
+    '<div class="cap" style="position:static;margin-top:14px">제시된 사실만을 근거로 작성하십시오. 새로운 수치는 임의로 만들지 않습니다.</div></div>' +
+    '</div></section>';
+}
+
+var PL = {
+  P1:{t:'결론', en:'Point', h:'결론과 요청 사항을 한두 문장으로 먼저 제시합니다', ph:'예) 오늘 ○○ 일정이 ~로 바뀝니다. ~를 승인해 주십시오.'},
+  R: {t:'이유', en:'Reason', h:'그렇게 판단한 이유를 한두 가지로 제시합니다', ph:'예) ~ 때문입니다.'},
+  E: {t:'근거·사례', en:'Example', h:'주어진 사실과 수치로 뒷받침합니다', ph:'예) 현재 ~는 N명이고, ~는 N시까지입니다.'},
+  P2:{t:'마무리', en:'Point', h:'결론을 재확인하고 요청 사항 한 가지를 제시합니다', ph:'예) 따라서 ~하겠습니다. ~ 부탁드립니다.'}
+};
+var LET = {P1:'P', R:'R', E:'E', P2:'P'};
+
+function stepWrite(){
+  var sc = scenario(), ty = TY[sc.ty], au = AU[S.au];
+  loadDraftIfNeeded();
+  app.innerHTML = '<section class="stage-s"><div class="cell"><i>STEP 04</i>WRITE</div>' +
+    '<h2>PREP 구조로 보고를 작성해 주십시오</h2><p class="sub">' + esc(sc.title) + ' · ' + esc(ty.name) + ' · ' + esc(au.name) + '께 · ' + esc(ty.size) + '</p>' +
+    '<div class="write"><div class="vis fx"><h4>FACTS · 주어진 사실</h4><ul class="facts">' + sc.facts.map(function(f){ return '<li>' + esc(f) + '</li>'; }).join('') + '</ul>' +
+    '<div class="hint" style="margin-top:16px"><b>' + esc(au.name) + '</b>' + esc(au.eun) + ' ' + esc(au.care) + '</div></div>' +
+    '<div>' + ['P1','R','E','P2'].map(function(k){
+      var p = PL[k];
+      return '<div class="pbox"><label for="f-' + k + '"><i>' + LET[k] + '</i><b class="lt">' + p.t + '</b> <span>' + p.en + ' · ' + p.h + '</span></label>' +
+        '<textarea id="f-' + k + '" data-k="' + k + '" placeholder="' + esc(p.ph) + '">' + esc(S.ans[k]) + '</textarea>' +
+        '<div class="cnt"><span></span><span class="cn" data-for="' + k + '"></span></div></div>';
+    }).join('') +
+    '<div class="etc"><h5>기타 · ETC</h5><label class="chk"><input type="checkbox" id="mcheck"' + (S.mat.inc ? ' checked' : '') + '><span>보고자료를 함께 준비합니다<small>표·그래프·사진 등 구두 보고와 함께 제시할 자료가 있다면 체크해 주십시오. 담을 내용을 입력할 수 있습니다.</small></span></label><div id="mat"></div></div>' +
+    '<div id="warn"></div>' +
+    '<div class="actions"><button type="button" class="btn ghost" data-go="3">이전</button><button type="button" class="btn" data-act="done">완료 · 결과 확인</button><span class="dim" style="font-size:13px">작성 내용은 이 기기에만 임시 저장됩니다</span></div>' +
+    '</div></div></section>';
+  updCounts(); drawMat();
+}
+var lastDraftFor = '';
+function loadDraftIfNeeded(){
+  var key = S.sid + '|' + S.au;
+  if (lastDraftFor !== key) { loadDraft(); lastDraftFor = key; }
+}
+function updCounts(){
+  var sc = scenario(), lim = TY[sc.ty].limit, tot = 0;
+  ['P1','R','E','P2'].forEach(function(k){ tot += (S.ans[k] || '').length; var el = $('.cn[data-for="' + k + '"]'); if (el) el.textContent = (S.ans[k] || '').length + '자'; });
+  var first = $('.cn[data-for="P1"]'); if (first) first.parentNode.firstChild.innerHTML = '전체 <span class="' + (tot > lim ? 'over' : '') + '">' + tot + ' / ' + lim + '자</span>';
+}
+function drawMat(){
+  var box = $('#mat'); if (!box) return;
+  if (!S.mat.inc) { box.innerHTML = ''; return; }
+  if (!S.mat.items.length) S.mat.items.push({kind:'표', text:''});
+  box.innerHTML = S.mat.items.map(function(it, i){
+    return '<div class="mitem"><div class="rowtop"><select data-mk="' + i + '" aria-label="자료 종류">' + MATKINDS.map(function(k){ return '<option' + (k === it.kind ? ' selected' : '') + '>' + k + '</option>'; }).join('') + '</select>' +
+      '<button type="button" class="mini" data-mdel="' + i + '">삭제</button></div>' +
+      '<textarea data-mt="' + i + '" placeholder="이 자료에 담을 내용을 입력해 주십시오. 예) 계획 대비 실적을 비교한 표 · 위치를 표시한 사진 3장">' + esc(it.text) + '</textarea></div>';
+  }).join('') + (S.mat.items.length < 5 ? '<button type="button" class="mini" style="margin-top:12px" data-madd="1">+ 자료 항목 추가 (' + S.mat.items.length + '/5)</button>' : '');
+}
+
+function done(){
+  var empties = ['P1','R','E','P2'].filter(function(k){ return !(S.ans[k] || '').trim(); });
+  if (empties.length && !S.force) {
+    S.force = true;
+    $('#warn').innerHTML = '<div class="warn">비어 있는 항목이 있습니다(' + empties.map(function(k){ return PL[k].t; }).join(', ') + '). 보완 후 진행하셔도 되고, 현재 상태로 결과를 확인하셔도 됩니다. 버튼을 한 번 더 누르면 그대로 완료됩니다.</div>';
+    return;
+  }
+  S.force = false;
+  var sc = scenario();
+  S.res = score(sc);
+  S.self = {voice:null, eye:null, emph:[], pair:{a:false,b:false,c:false}, time:null};
+  var h = sget('preplab.hist') || [];
+  h.push({sid:sc.id, au:S.au, total:S.res.total, t:Date.now()});
+  sset('preplab.hist', h.slice(-30));
+  go(5);
+}
+
+/* ---- 결과 ---- */
+function modelBlock(sc){
+  var ty = sc.ty;
+  var why = {
+    P1:{urgent:'바쁜 상대가 즉시 판단할 수 있도록 결론과 요청을 첫 문장에 함께 제시했습니다.', weekly:'계획 대비 실적을 수치로 먼저 제시하여 전체 현황을 한눈에 전달했습니다.', interim:'진척률을 수치로 먼저 제시하여 현재 위치를 즉시 파악하게 했습니다.', result:'결과를 수치로 먼저 제시하고, 잔여 업무의 완료 시점까지 한 문장에 담았습니다.'},
+    R: {urgent:'이유는 핵심적인 한두 가지만 선별하여 간결하게 연결했습니다.', weekly:'차이가 발생한 원인을 한두 가지로 정리하여 이해를 도왔습니다.', interim:'현 상황의 핵심 원인을 한 가지로 압축했습니다.', result:'잔여 업무가 남은 사유를 간결히 설명하여 오해를 방지했습니다.'},
+    E: {urgent:'확인된 사실만 선별하고, 미확인 사항은 “아직 확인하지 못했다”고 명시했습니다.', weekly:'수치와 사실로 뒷받침하되, 확정되지 않은 사항은 별도로 구분했습니다.', interim:'수치로 근거를 제시하고, 미확인 부분도 투명하게 밝혔습니다.', result:'결과 수치와 재발 방지 조치까지 근거로 포함했습니다.'},
+    P2:{urgent:'결론을 재확인하고, 상대가 취할 조치를 한 가지로 명확히 했습니다.', weekly:'다음 보고 시점과 내용을 약속하며 마무리했습니다.', interim:'향후 계획과 변동 시 공유 약속으로 신뢰를 확보했습니다.', result:'향후 마무리 일정과 확인 약속으로 종결했습니다.'}
+  };
+  return ['P1','R','E','P2'].map(function(k){
+    return '<div class="pl"><b>' + LET[k] + '</b>' + PL[k].t + '<p>' + esc(sc.m[k]) + '</p><small>' + esc(why[k][ty]) + '</small></div>';
+  }).join('');
+}
+function mineBlock(){
+  return ['P1','R','E','P2'].map(function(k){
+    var v = (S.ans[k] || '').trim();
+    return '<div class="pl"><b>' + LET[k] + '</b>' + PL[k].t + '<p>' + (v ? esc(v) : '<span class="empty">작성하지 않으셨습니다</span>') + '</p></div>';
+  }).join('');
+}
+
+function stepResult(){
+  var sc = scenario(), res = S.res, au = AU[S.au], ty = TY[sc.ty];
+  if (!res) { go(4); return; }
+  var g = gradeOf(res.total);
+  var sorted = res.items.slice().sort(function(a, b){ return b.got / b.max - a.got / a.max; });
+  var best = sorted[0], low = sorted[sorted.length - 1];
+  var goodTxt = best.got / best.max > 0 ? '“' + best.label + '” 항목이 특히 우수합니다. ' + msgGood(best) : '작성을 시작하신 것만으로도 의미 있는 첫걸음입니다.';
+  var nextTxt = (low.got / low.max >= .9) ? '내용 구성이 우수합니다. 이번에는 소리 내어 읽으며 속도와 억양을 점검해 보시기 바랍니다.' : '“' + low.label + '”: ' + msgNext(low, sc);
+  var C = 534.07, off = C * (1 - res.total / 100);
+  var matMine = S.mat.inc ? S.mat.items.filter(function(i){ return (i.text || '').trim(); }).map(function(i){ return '<div class="pl"><b>' + esc(i.kind) + '</b><p>' + esc(i.text) + '</p></div>'; }).join('') || '<div class="pl"><p class="empty">체크하셨으나 내용이 입력되지 않았습니다</p></div>' : '<div class="pl"><p class="empty">보고자료 없이 구두로만 보고하셨습니다</p></div>';
+  var polTxt = {required:'이 상황에서는 보고자료가 필수적입니다', recommended:'이 상황에서는 보고자료를 함께 제시하면 효과적입니다', unnecessary:'이 상황에서는 구두 보고로 충분합니다'}[sc.pol];
+  var matModel = '<div class="pl"><b>' + (sc.mat.kind ? esc(sc.mat.kind) : '구두 보고로 충분') + '</b><p>' + (sc.mat.content ? esc(sc.mat.content) : '긴급 상황에서는 자료보다 결론 한 문장이 신속합니다. 필요 시 사후에 정리하여 송부합니다.') + '</p><small>' + polTxt + '</small></div>';
+  var sg = signals(sc, res);
+  var practice = onePractice(sc, res, sg);
+
+  app.innerHTML = '<section class="stage-s"><div class="cell"><i>STEP 05</i>RESULT</div>' +
+    '<h2>작성 결과와 피드백</h2><p class="sub">' + esc(sc.title) + ' · ' + esc(ty.name) + ' · ' + esc(au.name) + '께 보고</p>' +
+    '<div class="vis fx"><div class="score"><div class="ring"><svg viewBox="0 0 200 200" aria-hidden="true"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#b8ff5c"/><stop offset="1" stop-color="#8fd3ff"/></linearGradient></defs><circle class="tr" cx="100" cy="100" r="85"/><circle class="fg" id="rfg" cx="100" cy="100" r="85" stroke-dasharray="' + C + '" stroke-dashoffset="' + C + '"/></svg><div class="num"><b>' + res.total + '</b><span>참고 점수 / 100</span></div></div>' +
+    '<div><div class="grade"><span class="g">' + esc(g.k) + '</span></div><p class="dim" style="margin:0 0 4px">점수는 비교 목적이 아니라 자기 점검을 위한 참고 지표입니다.</p>' +
+    '<div class="two" style="margin-top:12px"><div class="say good"><h5>잘한 점</h5><p>' + esc(goodTxt) + '</p></div><div class="say next"><h5>다음 보고를 위한 제안</h5><p>' + esc(nextTxt) + '</p></div></div></div></div></div>' +
+    '<div class="sect"><i>1</i>항목별 점검</div><div class="vis fx"><div class="bars">' + res.items.map(function(it){
+      return '<div class="bar"><span>' + esc(it.label) + '</span><div class="tk"><i data-w="' + Math.round(it.got / it.max * 100) + '"></i></div><em>' + it.got + '/' + it.max + '</em></div>';
+    }).join('') + '</div></div>' +
+    '<div class="sect"><i>2</i>내 보고와 모범 답안 비교</div><div class="cmp"><div class="col"><h5>MY REPORT · 내 보고</h5>' + mineBlock() + '<h5 style="margin-top:14px">MY MATERIAL · 내 보고자료</h5>' + matMine + '</div>' +
+    '<div class="col model"><h5>MODEL · 모범 답안</h5>' + modelBlock(sc) + '<h5 style="margin-top:14px">MODEL MATERIAL · 모범 보고자료</h5>' + matModel + '</div></div>' +
+    '<div class="sect"><i>3</i>성장 코칭</div>' +
+    '<div class="vis fx"><h4>내 글에서 읽은 신호</h4><ul class="sig">' + sg.list.map(function(s){ return '<li class="' + (s.ok ? 'ok' : 'chkit') + '"><span class="dot"></span><span>' + (s.ok ? '' : '<b class="gold">점검 필요 · </b>') + esc(s.t) + '</span></li>'; }).join('') + '</ul>' +
+    '<p class="dim" style="font-size:13px;margin:12px 0 0">음성과 시선은 앱에서 측정하지 않습니다. 아래 카드를 활용하여 스스로 또는 동료와 함께 점검해 보시기 바랍니다.</p></div>' +
+    '<div id="coach"></div>' +
+    '<div class="sect"><i>4</i>' + esc(au.name) + '께 보고할 때</div>' +
+    '<div class="vis fx"><div class="two" style="margin-top:0"><div class="say good"><h5>시작 멘트 예시</h5><p>“' + esc(au.open) + '”</p></div><div class="say next"><h5>마무리 멘트 예시</h5><p>“' + esc(au.close) + '”</p></div></div>' +
+    '<div class="hint"><b>이번 실습의 핵심 과제</b> · ' + esc(practice) + '</div></div>' +
+    '<div class="cheer">' + esc(g.cheer) + '<small>이번 작성 경험은 다음 보고의 기반이 됩니다. 다른 대상이나 상황으로 재도전해 보시기 바랍니다.</small></div>' +
+    '<div class="sect"><i>5</i>다음에는?</div><div class="chips" style="margin-bottom:6px">' + Object.keys(AU).filter(function(k){ return k !== S.au; }).map(function(k){ return '<button type="button" class="chip" data-reau="' + k + '">' + esc(AU[k].name) + '께 재보고하기</button>'; }).join('') + '</div>' +
+    '<div class="actions"><button type="button" class="btn" data-act="redo">다시 작성</button><button type="button" class="btn ghost" data-act="copy">내 답안 복사</button><button type="button" class="btn ghost" data-go="1">다른 상황 고르기</button><span id="cpmsg" class="dim" style="font-size:13px"></span></div></section>';
+  renderCoach(sc);
+  setTimeout(function(){
+    var fg = $('#rfg'); if (fg) fg.style.strokeDashoffset = off;
+    $$('.bar .tk i').forEach(function(el){ el.style.width = el.getAttribute('data-w') + '%'; });
+  }, 80);
+}
+
+function renderCoach(sc){
+  var box = $('#coach'); if (!box) return;
+  sc = sc || scenario();
+  var ty = TY[sc.ty], P1 = (S.ans.P1 || '').trim();
+  var words = []; P1.split(/[\s,.!?()·]+/).forEach(function(w){ if (w.length >= 2 && words.indexOf(w) < 0 && words.length < 14) words.push(w); });
+  var seg = function(field, opts){
+    return '<div class="seg">' + opts.map(function(o){ return '<button type="button" data-sf="' + field + '" data-sv="' + o[0] + '" class="' + (S.self[field] === o[0] ? 'on' : '') + '">' + o[1] + '</button>'; }).join('') + '</div>';
+  };
+  var tmsg = '';
+  if (S.self.time != null) {
+    var t = S.self.time, tg = ty.target;
+    tmsg = t < tg * .6 ? '다소 빠르게 낭독하셨을 수 있습니다. 첫 문장은 천천히, 수치는 또렷하게 읽어 보시기 바랍니다.' : (t > tg * 1.5 ? '목표 시간보다 다소 깁니다. 이유와 근거를 하나씩만 남기고 다시 낭독해 보시기 바랍니다.' : '적정한 길이입니다. 이 속도를 기준으로 삼으시기 바랍니다.');
+  }
+  box.innerHTML = '<div class="coach">' +
+    '<div class="cc"><h5>목소리 <i>SELF</i></h5><p>첫 문장은 평소보다 약간 천천히, 또렷하게 발화합니다. 문장 끝을 낮추어 마무리하면 안정감 있게 전달됩니다. 긴급할수록 속도를 낮추는 것이 효과적입니다.</p>' +
+      '<div class="timer"><span class="t" id="tv">' + (S.self.time != null ? S.self.time + '초' : '0초') + '</span><button type="button" class="btn ghost" id="tbtn" data-act="timer" style="padding:8px 18px;font-size:14px">' + (tick ? '■ 멈추기' : '▶ 소리 내어 읽기') + '</button></div>' +
+      '<p style="margin-top:10px">목표 ' + ty.target + '초 안팎 · ' + esc(tmsg || '답안을 소리 내어 읽으며 소요 시간을 측정해 보시기 바랍니다.') + '</p>' +
+      '<p style="margin-bottom:6px">첫 문장을 또렷하고 천천히 발화하셨습니까?</p>' + seg('voice', [['y','그렇다'],['m','보통'],['n','보완 필요']]) + '</div>' +
+    '<div class="cc"><h5>시선 · 자세 <i>PAIR</i></h5><p>보고 시작과 결론·요청 시에는 상대와 눈을 맞추고, 자료를 가리킨 뒤에는 다시 상대를 향합니다. 원고만 보며 고개를 숙이는 것은 지양합니다.</p>' +
+      '<p style="margin-bottom:6px">시선을 맞추려 노력하셨습니까?</p>' + seg('eye', [['y','그렇다'],['m','보통'],['n','보완 필요']]) +
+      '<p style="margin:12px 0 6px"><b>동료 관찰</b> · 옆 동료에게 요청하여 점검해 보시기 바랍니다</p>' +
+      ['a:시작과 요청 시 상대와 눈을 맞추었다','b:고개와 자세가 안정적이었다','c:속도가 듣기에 적절했다'].map(function(s){ var p = s.split(':'); return '<label class="chk" style="font-weight:500;font-size:14px;margin-bottom:6px"><input type="checkbox" data-pair="' + p[0] + '"' + (S.self.pair[p[0]] ? ' checked' : '') + '><span>' + p[1] + '</span></label>'; }).join('') + '</div>' +
+    '<div class="cc"><h5>강조 <i>SELF</i></h5><p>강조는 핵심어 한두 개에 한정합니다. 앞뒤에 짧은 정적을 두면 전달력이 높아집니다.</p><p style="margin-bottom:6px">첫 문장에서 강조할 단어를 최대 2개 선택해 보시기 바랍니다.</p>' +
+      '<div class="words">' + (words.length ? words.map(function(w){ return '<button type="button" data-emph="' + esc(w) + '" class="' + (S.self.emph.indexOf(w) >= 0 ? 'on' : '') + '">' + esc(w) + '</button>'; }).join('') : '<span class="empty">결론 칸을 작성하면 단어가 표시됩니다</span>') + '</div>' +
+      '<p style="margin:0">' + (S.self.emph.length ? '“' + esc(S.self.emph.join(' · ')) + '” 앞뒤에서 짧게 쉬며 낭독해 보시기 바랍니다. 나머지는 차분하게 읽습니다.' : '') + '</p></div>' +
+    '<div class="cc"><h5>태도 <i>SELF</i></h5><p>미확인 사항은 “현재 확인 중입니다”라고 투명하게 밝히고, 부정적인 소식은 해결 방안과 함께 전달합니다. 변명보다 사실과 다음 행동이 신뢰를 형성합니다.</p>' +
+      '<p style="margin:0"><b class="acc">실천 목표</b> · 다음 보고에서는 결론을 먼저 제시하고, 마무리에 요청 사항 한 가지를 반드시 명시한다.</p></div></div>';
+}
+
+function stopTimer(){ if (tick) { clearInterval(tick); tick = null; } }
+
+/* ---- 이벤트 ---- */
+function init(){
+  app = $('#app'); rail = $('#rail'); railWrap = $('#railwrap');
+  document.addEventListener('click', function(e){
+    var t = e.target.closest('[data-go],[data-act],[data-lv],[data-ty],[data-au],[data-reau],[data-sf],[data-emph],[data-mdel],[data-madd]');
+    if (!t) return;
+    if (t.tagName === 'A') e.preventDefault();
+    if (t.hasAttribute('data-go')) { var n = +t.getAttribute('data-go'); if (n <= S.max) go(n); return; }
+    if (t.hasAttribute('data-lv')) { S.lv = t.getAttribute('data-lv'); render(); return; }
+    if (t.hasAttribute('data-ty')) { S.ty = t.getAttribute('data-ty'); render(); return; }
+    if (t.hasAttribute('data-au')) { S.au = t.getAttribute('data-au'); render(); return; }
+    if (t.hasAttribute('data-reau')) { S.au = t.getAttribute('data-reau'); S.res = null; lastDraftFor = S.sid + '|' + S.au; saveDraft(); go(4); return; }
+    if (t.hasAttribute('data-sf')) { S.self[t.getAttribute('data-sf')] = t.getAttribute('data-sv'); renderCoach(); return; }
+    if (t.hasAttribute('data-emph')) {
+      var w = t.getAttribute('data-emph'), i = S.self.emph.indexOf(w);
+      if (i >= 0) S.self.emph.splice(i, 1); else if (S.self.emph.length < 2) S.self.emph.push(w);
+      renderCoach(); return;
+    }
+    if (t.hasAttribute('data-mdel')) { S.mat.items.splice(+t.getAttribute('data-mdel'), 1); saveDraft(); drawMat(); return; }
+    if (t.hasAttribute('data-madd')) { if (S.mat.items.length < 5) S.mat.items.push({kind:'표', text:''}); saveDraft(); drawMat(); return; }
+    var a = t.getAttribute('data-act');
+    if (a === 'start') go(1);
+    else if (a === 'to2') { if (S.lv) go(2); }
+    else if (a === 'to3') { if (S.ty && S.au) { S.res = null; lastDraftFor = ''; go(3); } }
+    else if (a === 'to4') go(4);
+    else if (a === 'done') done();
+    else if (a === 'redo') { S.res = null; go(4); }
+    else if (a === 'copy') copyAns();
+    else if (a === 'timer') {
+      if (tick) { stopTimer(); S.self.time = Math.round((Date.now() - S._t0) / 1000); renderCoach(); }
+      else { S._t0 = Date.now(); renderCoach(); tick = setInterval(function(){ var tv = $('#tv'); if (tv) tv.textContent = Math.round((Date.now() - S._t0) / 1000) + '초'; }, 250); }
+    }
+  });
+  document.addEventListener('input', function(e){
+    var t = e.target;
+    if (t.matches('textarea[data-k]')) { S.ans[t.getAttribute('data-k')] = t.value; S.force = false; var w = $('#warn'); if (w) w.innerHTML = ''; updCounts(); saveDraft(); }
+    else if (t.matches('textarea[data-mt]')) { S.mat.items[+t.getAttribute('data-mt')].text = t.value; saveDraft(); }
+  });
+  document.addEventListener('change', function(e){
+    var t = e.target;
+    if (t.id === 'mcheck') { S.mat.inc = t.checked; saveDraft(); drawMat(); }
+    else if (t.matches('select[data-mk]')) { S.mat.items[+t.getAttribute('data-mk')].kind = t.value; saveDraft(); }
+    else if (t.matches('input[data-pair]')) { S.self.pair[t.getAttribute('data-pair')] = t.checked; }
+  });
+  var prog = $('#prog');
+  window.addEventListener('scroll', function(){
+    var h = document.documentElement; var m = h.scrollHeight - h.clientHeight;
+    prog.style.transform = 'scaleX(' + (m > 0 ? h.scrollTop / m : 0) + ')';
+  }, {passive:true});
+  render();
+}
+function copyAns(){
+  var sc = scenario(), txt = '[' + sc.title + ' · ' + TY[sc.ty].name + ' · ' + AU[S.au].name + '께]\n\n';
+  ['P1','R','E','P2'].forEach(function(k){ txt += '(' + LET[k] + ') ' + PL[k].t + '\n' + (S.ans[k] || '') + '\n\n'; });
+  if (S.mat.inc) S.mat.items.forEach(function(i){ if ((i.text || '').trim()) txt += '[보고자료: ' + i.kind + '] ' + i.text + '\n'; });
+  var m = $('#cpmsg');
+  try { navigator.clipboard.writeText(txt).then(function(){ m.textContent = '복사되었습니다'; }, function(){ m.textContent = '복사하지 못했습니다. 직접 선택하여 복사해 주십시오'; }); }
+  catch (e) { m.textContent = '복사하지 못했습니다. 직접 선택하여 복사해 주십시오'; }
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+})();
+
+</script>
+</body>
+</html>
