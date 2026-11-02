@@ -1,9 +1,107 @@
 {
   "meta": {
-    "note": "매주 자동 수집 결과입니다. 직접 고치지 마세요(승격 표시 promoted만 예외).",
-    "lastRunAt": "2026-10-26T04:16:06.469Z"
+    "lastRunAt": "2026-11-02T02:18:39.982Z",
+    "note": "매주 자동 수집 결과입니다. 직접 고치지 마세요(승격 표시 promoted만 예외)."
   },
   "items": [
+    {
+      "id": "f-f0b892691654",
+      "sourceId": "mois",
+      "sourceType": "gov",
+      "issuer": "행정안전부",
+      "date": "2026-11-02",
+      "title": "「온AI」 기능 확대… 업무망서 AI로 웹 검색하고 보고서 작성한다",
+      "url": "https://www.mois.go.kr/frt/bbs/type010/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000008&nttId=130669",
+      "summaryAi": "공무원이 정부 업무망에서 AI로 웹 검색하고 보고서 초안을 작성하는 온AI 기능이 확대된다.",
+      "stageGuess": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "collectedAt": "2026-11-02T02:18:39.982Z",
+      "promoted": false
+    },
+    {
+      "id": "f-78ba5759b100",
+      "sourceId": "mois",
+      "sourceType": "gov",
+      "issuer": "행정안전부",
+      "date": "2026-10-29",
+      "title": "기후위기·AI 시대, 국민 생명지키는 「2027년 국가안전관리 집행계획」 확정",
+      "url": "https://www.mois.go.kr/frt/bbs/type010/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000008&nttId=130604",
+      "summaryAi": "기후위기 및 AI 시대에 국민 생명과 안전을 지키기 위한 2027년 국가안전관리 집행계획이 확정되었다.",
+      "stageGuess": [
+        6,
+        9
+      ],
+      "collectedAt": "2026-11-02T02:18:39.982Z",
+      "promoted": false
+    },
+    {
+      "id": "f-7c158735466b",
+      "sourceId": "mois",
+      "sourceType": "gov",
+      "issuer": "행정안전부",
+      "date": "2026-10-29",
+      "title": "인공지능(AI) 시대 개인정보, 안전한 활용의 길을 국민과 함께 찾는다",
+      "url": "https://www.mois.go.kr/frt/bbs/type010/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000008&nttId=130600",
+      "summaryAi": "행안부와 개인정보위가 AI 시대 개인정보의 안전한 활용 방안을 논의하는 토론회를 개최한다.",
+      "stageGuess": [
+        9
+      ],
+      "collectedAt": "2026-11-02T02:18:39.982Z",
+      "promoted": false
+    },
+    {
+      "id": "f-d249d8ff9591",
+      "sourceId": "mois",
+      "sourceType": "gov",
+      "issuer": "행정안전부",
+      "date": "2026-10-29",
+      "title": "인공지능(AI) 행정부터 과학수사, 햇빛소득마을까지, 강원에서 행정안전부 우수정책 세계와 나눈다",
+      "url": "https://www.mois.go.kr/frt/bbs/type010/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000008&nttId=130571",
+      "summaryAi": "행정안전부가 주한 외교사절에게 AI 행정 및 공공서비스 혁신 등 한국의 우수 정책 사례를 공유한다.",
+      "stageGuess": [
+        1,
+        4
+      ],
+      "collectedAt": "2026-11-02T02:18:39.982Z",
+      "promoted": false
+    },
+    {
+      "id": "f-0cb5b0603602",
+      "sourceId": "mpm",
+      "sourceType": "gov",
+      "issuer": "인사혁신처",
+      "date": "2026-10-27",
+      "title": "인공지능 인재 추천·육아기 출근제 등 인사혁신 우수 선정",
+      "url": "https://www.mpm.go.kr/board/board.do?boardId=bbs_0000000000000029&mode=view&cntId=4349",
+      "summaryAi": "인사혁신처가 인공지능을 활용한 인사관리 등 공직사회 변화를 이끈 인사혁신 우수사례를 선정한다.",
+      "stageGuess": [
+        1,
+        4,
+        5
+      ],
+      "collectedAt": "2026-11-02T02:18:39.982Z",
+      "promoted": false
+    },
+    {
+      "id": "f-9f5243f77942",
+      "sourceId": "mpm",
+      "sourceType": "gov",
+      "issuer": "인사혁신처",
+      "date": "2026-10-27",
+      "title": "반복 업무 줄이고 효율 높이고 \"일하는 방식 바꿔요\"",
+      "url": "https://www.mpm.go.kr/board/board.do?boardId=bbs_0000000000000029&mode=view&cntId=4348",
+      "summaryAi": "인사혁신처가 지능형 업무관리 체계 활용 등 공무원의 일하는 방식 혁신 안내자료를 배포한다.",
+      "stageGuess": [
+        1,
+        4
+      ],
+      "collectedAt": "2026-11-02T02:18:39.982Z",
+      "promoted": false
+    },
     {
       "id": "f-a73585293f8d",
       "sourceId": "mckinsey-mail",
