@@ -5,6 +5,7 @@ const levels = [
 ];
 
 const personas = [
+  { id: "teacher", label: "교사·마을교육활동가" },
   { id: "public", label: "공무원" },
   { id: "office", label: "직장인" },
   { id: "student", label: "학생" },
@@ -393,6 +394,231 @@ const missionGuide = {
   },
 };
 
+/* ===== 교사·마을교육활동가 버전 (대상별 단계 연습) ===== */
+const teacherTargets = [
+  {
+    id: "lower",
+    label: "초등 저학년 (1~3학년)",
+    tip: "저학년은 짧은 문장, 10~15분 단위 활동, 보호자 안심이 핵심입니다.",
+    conditionWhy:
+      "저학년은 읽기 수준과 집중 시간이 다릅니다. 문장 길이·활동 시간·안전을 조건으로 걸어야 '진짜 저학년용' 결과가 나옵니다.",
+    followUps: [
+      "네가 초등 2학년이라면 이 결과에서 어려운 낱말 3개를 골라 쉬운 말로 바꿔줘.",
+      "네가 보호자라면 이 글을 읽고 무엇이 궁금할까? 질문 3개를 뽑고 그 답을 반영해줘.",
+      "활동 시간이 20분 줄었어. 가장 중요한 활동만 남기고 다시 구성해줘.",
+    ],
+  },
+  {
+    id: "upper",
+    label: "초등 고학년 (4~6학년)",
+    tip: "고학년은 모둠 역할, 스스로 고르는 선택권, '왜·어떻게' 질문에 몰입합니다.",
+    conditionWhy:
+      "고학년은 스스로 선택하고 역할을 나눌 때 몰입합니다. 모둠 역할·열린 질문·선택권을 조건으로 넣어주세요.",
+    followUps: [
+      "네가 5학년이라면 이 활동에서 지루할 부분은 어디야? 더 재미있게 바꿔줘.",
+      "모둠마다 속도가 달라. 빨리 끝난 모둠을 위한 도전 과제를 1개 추가해줘.",
+      "비가 오면 실내에서 할 수 있게 바꿔줘.",
+    ],
+  },
+  {
+    id: "teen",
+    label: "중학생·청소년",
+    tip: "청소년은 가르치는 말투를 싫어합니다. 주인공이 되는 표현과 선택권이 핵심입니다.",
+    conditionWhy:
+      "청소년은 '어른이 시키는 활동'에 거리를 둡니다. 훈계조 금지, 열린 질문, 동의 절차를 조건으로 걸어주세요.",
+    followUps: [
+      "중학생이 이 글을 읽고 '오글거린다'고 느낄 표현을 찾아서 고쳐줘.",
+      "청소년이 직접 고를 수 있게 선택지 3개 버전으로 다시 만들어줘.",
+      "이 활동에서 어른이 너무 많이 개입하는 부분이 있다면 짚어줘.",
+    ],
+  },
+  {
+    id: "parent",
+    label: "학부모·마을 주민",
+    tip: "어른 대상은 1분 안에 읽히는 글, 핵심 먼저, 참여 부담 낮추기가 핵심입니다.",
+    conditionWhy:
+      "바쁜 어른은 끝까지 읽지 않습니다. 핵심을 맨 앞에, 쉬운 말로, 참여 부담을 낮추는 조건을 넣어주세요.",
+    followUps: [
+      "바쁜 보호자 입장에서 읽어보고, 꼭 필요 없는 문장을 빼서 더 짧게 만들어줘.",
+      "어르신 주민도 읽기 쉽게 글자 수를 줄이고 쉬운 말로 바꿔줘.",
+      "참여를 망설이는 주민이 할 법한 질문 3개와 답을 추가해줘.",
+    ],
+  },
+];
+
+const teacherContent = {
+  lower: {
+    short: {
+      title: "텃밭 활동 보호자 안내문 만들기",
+      bad: "텃밭 활동 안내문 써줘.",
+      role: "초등 저학년 마을교실을 10년째 운영한 마을교사",
+      context: "세종시 ○○아파트 마을교실에서 초등 1~3학년 12명과 11월 마지막 주 토요일 10:00~11:30에 단지 텃밭에서 배추 수확 활동을 해.",
+      request: "보호자에게 보낼 안내문을 써줘. 준비물(장갑·여벌옷), 안전 주의사항, 비 올 때 대체 일정을 꼭 넣어줘.",
+      format: "카카오톡으로 보낼 10줄 이내 글, 이모지 2개 이하",
+      constraint: "날짜·시간·장소를 맨 앞에 두고, 저학년 보호자가 걱정할 화장실·간식·귀가 방법도 한 줄씩 안내해줘. 아이 이름 같은 개인정보는 넣지 마.",
+    },
+    medium: {
+      title: "하천 산책 활동지 만들기",
+      bad: "환경 활동지 만들어줘.",
+      role: "초등 저학년 눈높이를 잘 아는 교육자료 개발자",
+      context: "초등 2학년 10명이 동네 하천을 15분 동안 산책한 뒤, 마을교실에서 20분 동안 쓰는 활동지야.",
+      request: "'하천에서 만난 것' 활동지를 만들어줘. 본 것 그리기 칸 1개, 빈칸 채우기 3문항, 느낀 점 한 줄을 넣어줘.",
+      format: "A4 한 장 활동지 (제목-그리기 칸-문항-느낀 점 순서)",
+      constraint: "2학년이 혼자 읽을 수 있게 한 문장은 15자 안팎으로 쓰고, 어려운 한자어는 쉬운 말로 바꿔줘. 정답이 하나뿐인 문제는 1개만 넣어줘.",
+    },
+    expanded: {
+      title: "동네 자원으로 저학년 프로그램 구상하기",
+      bad: "마을교육 프로그램 아이디어 알려줘.",
+      role: "마을교육 프로그램 기획 전문가",
+      context: "우리 동네(세종시 ○○동)에는 하천 산책로, 작은도서관, 전통시장, 목공을 하셨던 은퇴 주민 2명이 있어. 대상은 방과후 마을교실에 오는 초등 1~3학년 12명이야.",
+      request: "이 동네 자원을 활용한 4회차 프로그램 주제를 5개 제안해줘.",
+      format: "표 (주제 / 활용하는 동네 자원 / 아이들이 배우는 것 / 회차별 활동 한 줄 / 예산 부담 상·중·하)",
+      constraint: "저학년은 집중 시간이 짧으니 한 활동을 10~15분 단위로 쪼개고, 칼·불 같은 위험 도구는 쓰지 않게 해줘. 동네 정보 중 사실 확인이 필요한 건 '확인 필요'로 표시해줘.",
+    },
+  },
+  upper: {
+    short: {
+      title: "전통시장 탐방 보호자 안내문 만들기",
+      bad: "마을 탐방 안내문 써줘.",
+      role: "초등 고학년 마을학교를 운영하는 마을교사",
+      context: "세종시 ○○마을학교에서 초등 4~6학년 15명과 다음 주 토요일 13:00~16:00에 전통시장 탐방 활동을 해. 모둠별로 가게 사장님 인터뷰를 할 예정이야.",
+      request: "보호자에게 보낼 안내문을 써줘. 모이는 곳, 준비물(필기도구·용돈 3,000원), 모둠 활동 안전 수칙, 귀가 시간을 꼭 넣어줘.",
+      format: "카카오톡으로 보낼 12줄 이내 글",
+      constraint: "'모둠별 이동 시 지도교사 동행' 원칙을 분명히 적고, 활동 사진 촬영·게시 동의 여부를 묻는 문장도 한 줄 넣어줘.",
+    },
+    medium: {
+      title: "모둠 인터뷰 활동지 만들기",
+      bad: "인터뷰 활동지 만들어줘.",
+      role: "초등 고학년 프로젝트 수업을 잘 아는 교육자료 개발자",
+      context: "초등 5학년 15명이 4명씩 모둠을 지어 전통시장 가게 사장님을 30분 동안 인터뷰하는 활동이야.",
+      request: "인터뷰 활동지를 만들어줘. 인사말 예시, 질문 5개(그중 2개는 모둠이 직접 만드는 빈칸), 들은 내용 정리 칸, 새로 알게 된 점을 넣어줘.",
+      format: "A4 앞뒤 한 장 (앞: 인터뷰 준비, 뒤: 정리)",
+      constraint: "한 문장은 25자 안팎으로 쓰고, 예/아니오로 끝나는 질문은 빼고 '왜'·'어떻게' 질문을 넣어줘. 모둠 역할(질문자·기록자·사진·시간지킴이)도 표시해줘.",
+    },
+    expanded: {
+      title: "'우리 동네 가이드북' 프로젝트 설계하기",
+      bad: "고학년 프로그램 짜줘.",
+      role: "마을교육 프로그램 기획 전문가",
+      context: "우리 동네(세종시 ○○동)에는 전통시장, 마을 도서관, 하천 생태공원, 마을 기록을 모아온 주민 모임이 있어. 대상은 초등 4~6학년 15명이고, 토요일 2시간씩 4회 운영해.",
+      request: "아이들이 '우리 동네 가이드북'을 만드는 4회차 프로젝트를 설계해줘.",
+      format: "표 (회차 / 목표 / 활동 / 활용 동네 자원 / 결과물)",
+      constraint: "매 회차에 모둠이 스스로 고르는 선택권을 넣고, 동네 정보 중 사실 확인이 필요한 건 '확인 필요'로 표시해줘.",
+    },
+  },
+  teen: {
+    short: {
+      title: "청소년 동아리 모집 글 만들기",
+      bad: "동아리 모집 글 써줘.",
+      role: "청소년 동아리(동네방네 프로젝트)를 돕는 마을교육 코디네이터",
+      context: "중학생·학교 밖 청소년 10명을 모아 '우리 동네 영상 기록' 동아리를 시작하려고 해. 12월 매주 수요일 17:00~19:00에 모여.",
+      request: "청소년이 직접 읽고 신청하고 싶어지는 모집 글을 써줘. 무엇을 하는지, 언제·어디서, 신청 방법을 넣어줘.",
+      format: "인스타그램 게시글 (첫 줄 한 문장 + 본문 8줄 이내 + 해시태그 5개)",
+      constraint: "어른이 가르치는 말투나 '유익한 시간' 같은 뻔한 표현은 빼고, 청소년이 주인공이 되는 표현으로 써줘. 보호자 동의가 필요하다는 안내도 한 줄 넣어줘.",
+    },
+    medium: {
+      title: "'바꾸고 싶은 우리 동네' 워크시트 만들기",
+      bad: "청소년 활동지 만들어줘.",
+      role: "청소년 프로젝트 학습을 돕는 퍼실리테이터",
+      context: "중학생 10명이 동아리 첫 모임에서 40분 동안 '우리 동네에서 바꾸고 싶은 것'을 찾는 활동이야.",
+      request: "문제 발견 워크시트를 만들어줘. 동네에서 불편했던 경험 쓰기, 그 문제로 불편한 사람 떠올리기, 우리가 해볼 수 있는 작은 행동 3개 고르기를 넣어줘.",
+      format: "A4 한 장, 3단계 칸 구성",
+      constraint: "정답을 유도하는 질문은 빼고 열린 질문으로 써줘. 다른 사람 실명이나 학교 이름은 쓰지 않도록 안내 문구를 넣어줘.",
+    },
+    expanded: {
+      title: "6주 청소년 주도 프로젝트 설계하기",
+      bad: "청소년 프로젝트 기획해줘.",
+      role: "청소년 주도 프로젝트 설계 전문가",
+      context: "동네방네 프로젝트 팀(중학생 6명)이 우리 동네 놀이터 안전 문제를 다루고 싶어 해. 동네에는 주민자치회, 작은도서관, 마을 신문이 있어. 기간은 6주, 주 1회 2시간이야.",
+      request: "청소년이 스스로 기획·실행·성찰하는 6주 프로젝트 흐름을 설계해줘. 활동가가 언제 돕고 언제 물러날지도 함께 제안해줘.",
+      format: "표 (주차 / 청소년이 하는 일 / 활동가 역할 / 활용 동네 자원 / 성찰 질문)",
+      constraint: "결정은 청소년이 하도록 선택지를 주는 방식으로 쓰고, 주민 인터뷰·사진 촬영 때 동의 받는 단계를 꼭 넣어줘.",
+    },
+  },
+  parent: {
+    short: {
+      title: "겨울방학 프로그램 설명회 안내문 만들기",
+      bad: "설명회 안내문 써줘.",
+      role: "마을교육지원센터의 주민 소통 담당자",
+      context: "○○권역 마을교육지원센터가 12월 둘째 주 목요일 19:00에 주민센터 2층에서 '우리 마을 겨울방학 프로그램 설명회'를 열어. 대상은 초등 자녀를 둔 보호자와 마을 주민이야.",
+      request: "보호자와 주민에게 보낼 안내문을 써줘. 무엇을 듣게 되는지, 참석 신청 방법, 자녀 동반 가능 여부를 넣어줘.",
+      format: "카카오톡 10줄 이내 글 + 끝에 [신청 링크] 자리 표시",
+      constraint: "퇴근하고 오는 바쁜 어른이 1분 안에 읽을 수 있게 날짜·시간·장소를 맨 앞에 두고, 행정 용어 대신 쉬운 말로 써줘.",
+    },
+    medium: {
+      title: "보호자 의견 설문지 만들기",
+      bad: "설문지 만들어줘.",
+      role: "마을교육 프로그램 만족도 조사를 설계하는 평생교육사",
+      context: "가을 마을학교 프로그램(초등 대상, 8회)이 끝났어. 보호자 20명에게 다음 프로그램을 위한 의견을 묻고 싶어.",
+      request: "보호자용 짧은 설문지를 만들어줘. 아이가 즐거워한 점, 아쉬웠던 점, 다음에 바라는 주제, 참여 가능한 요일·시간을 물어줘.",
+      format: "네이버폼에 옮길 수 있는 문항 목록 (객관식 4개 + 주관식 2개)",
+      constraint: "3분 안에 끝낼 수 있게 문항을 짧게 쓰고, 아이 이름·연락처는 묻지 마. 칭찬만 나오지 않게 아쉬운 점을 묻는 문항도 꼭 넣어줘.",
+    },
+    expanded: {
+      title: "주민 재능기부 강사 과정 설계하기",
+      bad: "주민 참여 프로그램 짜줘.",
+      role: "주민과 함께 마을교육을 설계해 온 마을교육 코디네이터",
+      context: "우리 마을에는 텃밭 동아리, 은퇴한 목공·요리 재능 주민, 작은도서관 독서 모임이 있어. 마을학교에 '주민 재능기부 강사'를 새로 모시고 싶어.",
+      request: "주민이 마을학교 일일 강사로 참여하는 3단계 과정(발굴-준비-첫 수업)을 설계해줘.",
+      format: "표 (단계 / 할 일 / 담당 / 필요한 것 / 주의할 점) + 주민에게 보낼 첫 제안 문자 1개",
+      constraint: "주민이 부담 느끼지 않게 '1회 1시간 체험'부터 시작하게 하고, 아동 대상 활동이니 안전 교육·보험 확인 단계를 꼭 넣어줘.",
+    },
+  },
+};
+
+const teacherTemplate = [
+  "너는 ",
+  { key: "role", placeholder: "누가: 어떤 경험의 사람인가요?" },
+  "야. ",
+  { key: "context", placeholder: "어디서: 대상(학년·인원)·장소·날짜" },
+  " ",
+  { key: "request", placeholder: "무엇을: 만들 것 + 꼭 넣을 내용" },
+  " 결과는 ",
+  { key: "format", placeholder: "어떻게: 어디에 쓸지·길이" },
+  " 형태로 만들어줘. ",
+  { key: "constraint", placeholder: "대상 맞춤 조건" },
+];
+
+const stepDefs = [
+  { key: "bad", label: "나쁜 질문", title: "STEP 0. 짧은 질문부터 넣어보기" },
+  { key: "role", label: "누가", title: "STEP 1. 누가 — AI에게 역할 주기", prefix: "너는 ", suffix: "야.",
+    why: "AI에게 어떤 사람이 되어 답할지 정해줍니다. 경력·전문 분야를 붙이면 말투와 깊이가 달라집니다." },
+  { key: "context", label: "어디서", title: "STEP 2. 어디서 — 대상과 상황 알려주기", prefix: "", suffix: "",
+    why: "AI는 우리 마을과 우리 아이들을 모릅니다. 대상(학년·인원), 장소, 날짜를 직접 알려줘야 '우리 활동'의 결과가 나옵니다." },
+  { key: "request", label: "무엇을", title: "STEP 3. 무엇을 — 만들 것과 꼭 넣을 내용", prefix: "", suffix: "",
+    why: "결과물의 종류와 반드시 들어갈 내용을 분명히 말합니다. 빠지면 안 되는 항목은 '꼭'이라고 적어주세요." },
+  { key: "format", label: "어떻게", title: "STEP 4. 어떻게 — 형식과 길이 정하기", prefix: "결과는 ", suffix: " 형태로 만들어줘.",
+    why: "어디에 쓸지(카톡·A4·표·폼)와 길이를 정하면 고칠 필요 없이 바로 쓸 수 있는 모양으로 나옵니다." },
+  { key: "constraint", label: "대상 맞춤", title: "STEP 5. 대상 맞춤 조건 걸기", prefix: "", suffix: "" },
+  { key: "followup", label: "이어 묻기", title: "STEP 6. 한 번 더 — 대상의 눈으로 이어 묻기",
+    why: "한 번에 끝내지 마세요. 같은 대화창에서 대상의 눈으로 다시 보게 하면 결과가 한 단계 좋아집니다." },
+];
+
+function getTeacherTarget() {
+  return teacherTargets.find((t) => t.id === elements.target.value) || teacherTargets[0];
+}
+
+function assembleTeacherPrompt(parts) {
+  return stepDefs
+    .filter((s) => s.prefix !== undefined && parts[s.key])
+    .map((s) => `${s.prefix}${parts[s.key]}${s.suffix}`)
+    .join(" ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function buildTeacherGuide(lengthId) {
+  const target = getTeacherTarget();
+  const c = teacherContent[target.id][lengthId];
+  return {
+    title: c.title,
+    detail: `[${target.label}] ${c.context}`,
+    clues: `누가: ${c.role} / 어디서: ${target.label} / 무엇을: ${c.request.split(".")[0]} / 어떻게: ${c.format} / 대상 맞춤: ${target.tip}`,
+    sample: assembleTeacherPrompt(c),
+    hint: `${target.tip} 처음 질문 "${c.bad}"에서 무엇이 빠졌는지 떠올려 보세요.`,
+    criteria: "누가·어디서·무엇을·어떻게 + 대상 맞춤 조건이 모두 들어가면 성공입니다.",
+  };
+}
+
 const checklistRules = [
   { key: "role", label: "역할 부여", help: "AI가 어떤 전문가로 답해야 하는지 정합니다." },
   { key: "context", label: "맥락·배경", help: "누구의 어떤 상황인지 알려줍니다." },
@@ -437,6 +663,23 @@ const advancedTasks = [
 const elements = {
   level: document.querySelector("#levelSelect"),
   persona: document.querySelector("#personaSelect"),
+  target: document.querySelector("#targetSelect"),
+  targetField: document.querySelector("#targetField"),
+  targetTip: document.querySelector("#targetTip"),
+  stepPanel: document.querySelector("#stepPanel"),
+  stepNav: document.querySelector("#stepNav"),
+  stepCounter: document.querySelector("#stepCounter"),
+  stepChip: document.querySelector("#stepChip"),
+  stepTitle: document.querySelector("#stepTitle"),
+  stepWhy: document.querySelector("#stepWhy"),
+  stepInputArea: document.querySelector("#stepInputArea"),
+  stepPreview: document.querySelector("#stepPreview"),
+  stepPrev: document.querySelector("#stepPrev"),
+  stepNext: document.querySelector("#stepNext"),
+  stepCopy: document.querySelector("#stepCopy"),
+  stepCompare: document.querySelector("#stepCompare"),
+  compareBad: document.querySelector("#compareBad"),
+  compareGood: document.querySelector("#compareGood"),
   length: document.querySelector("#lengthSelect"),
   scenarioMeta: document.querySelector("#scenarioMeta"),
   goalTitle: document.querySelector("#goalTitle"),
@@ -466,6 +709,9 @@ const elements = {
 let state = {
   scenario: null,
   answers: {},
+  stepIndex: 0,
+  stepAnswers: {},
+  showExample: false,
 };
 
 function fillSelect(select, options) {
@@ -480,12 +726,27 @@ function getScenario() {
   const levelId = elements.level.value;
   const personaId = elements.persona.value;
   const lengthId = elements.length.value;
-  const base = getBaseScenario(personaId, lengthId);
-  const scenario = structuredClone(base);
-  const guide = missionGuide[personaId][lengthId];
-  scenario.detail = guide.detail;
-  scenario.clues = guide.clues;
-  scenario.sample = guide.sample;
+  let scenario;
+  if (personaId === "teacher") {
+    const guide = buildTeacherGuide(lengthId);
+    scenario = {
+      title: guide.title,
+      goal: guide.detail,
+      criteria: guide.criteria,
+      hint: guide.hint,
+      template: structuredClone(teacherTemplate),
+      detail: guide.detail,
+      clues: guide.clues,
+      sample: guide.sample,
+    };
+  } else {
+    const base = getBaseScenario(personaId, lengthId);
+    scenario = structuredClone(base);
+    const guide = missionGuide[personaId][lengthId];
+    scenario.detail = guide.detail;
+    scenario.clues = guide.clues;
+    scenario.sample = guide.sample;
+  }
 
   if (levelId === "applied") {
     scenario.title = `${appliedAddOns.titlePrefix}${scenario.title}`;
@@ -508,9 +769,13 @@ function renderScenario() {
   const level = levels.find((item) => item.id === elements.level.value);
   const persona = personas.find((item) => item.id === elements.persona.value);
   const length = lengths.find((item) => item.id === elements.length.value);
-  state = { scenario: getScenario(), answers: {} };
+  const isTeacher = persona.id === "teacher";
+  state = { scenario: getScenario(), answers: {}, stepIndex: 0, stepAnswers: {}, showExample: false };
 
-  elements.scenarioMeta.textContent = `${level.label} · ${persona.label} · ${length.label}`;
+  elements.targetField.hidden = !isTeacher;
+  const targetLabel = isTeacher ? ` · ${getTeacherTarget().label}` : "";
+  if (isTeacher) elements.targetTip.textContent = getTeacherTarget().tip;
+  elements.scenarioMeta.textContent = `${level.label} · ${persona.label}${targetLabel} · ${length.label}`;
   elements.goalTitle.textContent = state.scenario.title;
   elements.goalDescription.textContent = `${state.scenario.detail} ${level.tagline}`;
   elements.successCriteria.textContent = state.scenario.criteria;
@@ -524,6 +789,8 @@ function renderScenario() {
   renderPromptBuilder();
   renderAdvancedPanel();
   updateReview();
+  elements.stepPanel.hidden = !isTeacher;
+  if (isTeacher) renderStepPanel();
 }
 
 function renderPromptBuilder() {
@@ -639,16 +906,28 @@ function renderAdvancedPanel() {
     .join("");
 }
 
+function readStats() {
+  try {
+    return JSON.parse(localStorage.getItem("promptPracticeStats") || '{"count":0,"best":0}');
+  } catch (error) {
+    return { count: 0, best: 0 };
+  }
+}
+
 function updateStats(score) {
-  const stats = JSON.parse(localStorage.getItem("promptPracticeStats") || '{"count":0,"best":0}');
+  const stats = readStats();
   stats.count += 1;
   stats.best = Math.max(stats.best, score);
-  localStorage.setItem("promptPracticeStats", JSON.stringify(stats));
+  try {
+    localStorage.setItem("promptPracticeStats", JSON.stringify(stats));
+  } catch (error) {
+    /* 저장이 막힌 환경에서는 기록만 생략 */
+  }
   renderStats();
 }
 
 function renderStats() {
-  const stats = JSON.parse(localStorage.getItem("promptPracticeStats") || '{"count":0,"best":0}');
+  const stats = readStats();
   elements.sessionCount.textContent = stats.count;
   elements.bestScore.textContent = stats.best;
 }
@@ -657,14 +936,215 @@ function currentScore() {
   return checklistRules.reduce((sum, rule) => sum + (getFilledKeys().has(rule.key) ? 20 : 0), 0);
 }
 
+/* ===== 단계별 연습 패널 ===== */
+async function copyText(text, button) {
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch (error) {
+    const temp = document.createElement("textarea");
+    temp.value = text;
+    document.body.append(temp);
+    temp.select();
+    try {
+      document.execCommand("copy");
+    } catch (e) {
+      /* 복사 불가 환경 */
+    }
+    temp.remove();
+  }
+  if (button) {
+    const original = button.textContent;
+    button.textContent = "복사됨";
+    setTimeout(() => {
+      button.textContent = original;
+    }, 1400);
+  }
+}
+
+function currentTeacherContent() {
+  return teacherContent[getTeacherTarget().id][elements.length.value];
+}
+
+function currentStepPrompt() {
+  const prompt = assembleTeacherPrompt(state.stepAnswers);
+  return prompt || currentTeacherContent().bad;
+}
+
+function goStep(index) {
+  const next = Math.max(0, Math.min(stepDefs.length - 1, index));
+  state.stepIndex = next;
+  state.showExample = false;
+  renderStepPanel();
+}
+
+function el(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+
+function renderStepNav() {
+  elements.stepNav.innerHTML = "";
+  stepDefs.forEach((step, index) => {
+    const li = document.createElement("li");
+    const button = el("button", "step-dot", `${index}. ${step.label}`);
+    button.type = "button";
+    const done =
+      step.key === "bad"
+        ? state.stepIndex > 0
+        : step.key === "followup"
+          ? false
+          : (state.stepAnswers[step.key] || "").length >= 2;
+    if (done) button.classList.add("done");
+    if (index === state.stepIndex) {
+      button.classList.add("current");
+      button.setAttribute("aria-current", "step");
+    }
+    button.addEventListener("click", () => goStep(index));
+    li.append(button);
+    elements.stepNav.append(li);
+  });
+}
+
+function renderStepInput(step, content, target) {
+  const area = elements.stepInputArea;
+  area.innerHTML = "";
+
+  if (step.key === "bad") {
+    const quote = el("blockquote", "bad-quote", content.bad);
+    const copyBtn = el("button", "secondary-button", "이 질문 복사해서 AI에 넣어보기");
+    copyBtn.type = "button";
+    copyBtn.addEventListener("click", () => copyText(content.bad, copyBtn));
+    const ask = el("p", "step-ask", "결과를 보고, 무엇이 빠져서 '아무 데나 쓸 수 있는 글'이 나왔는지 체크해 보세요.");
+    const checks = el("div", "reflect-checks");
+    ["누가 쓰는 글인지", "어떤 대상·상황인지", "꼭 들어갈 내용", "길이·형식", `${target.label}에 맞는 배려`].forEach((label) => {
+      const lab = el("label", "reflect-check");
+      const box = document.createElement("input");
+      box.type = "checkbox";
+      lab.append(box, document.createTextNode(` ${label}`));
+      checks.append(lab);
+    });
+    area.append(quote, copyBtn, ask, checks);
+    return;
+  }
+
+  if (step.key === "followup") {
+    const list = el("div", "followup-list");
+    target.followUps.forEach((text) => {
+      const card = el("div", "followup-card");
+      const p = el("p", "", text);
+      const btn = el("button", "secondary-button", "복사");
+      btn.type = "button";
+      btn.addEventListener("click", () => copyText(text, btn));
+      card.append(p, btn);
+      list.append(card);
+    });
+    const own = el("label", "field-label dark", "나만의 이어 묻기");
+    const ta = document.createElement("textarea");
+    ta.className = "step-textarea";
+    ta.placeholder = `예: 네가 ${target.label.split(" ")[0]} 입장이라면 이 결과에서 무엇을 바꾸고 싶을까?`;
+    ta.value = state.stepAnswers.followup || "";
+    ta.addEventListener("input", (e) => {
+      state.stepAnswers.followup = e.target.value;
+    });
+    area.append(list, own, ta);
+    return;
+  }
+
+  const ta = document.createElement("textarea");
+  ta.className = "step-textarea";
+  ta.placeholder = "여기에 직접 써보세요. 막히면 아래 '예시 보기'를 누르세요.";
+  ta.value = state.stepAnswers[step.key] || "";
+  ta.addEventListener("input", (e) => {
+    state.stepAnswers[step.key] = e.target.value.trim();
+    renderStepPreview();
+    renderStepNav();
+  });
+
+  const row = el("div", "example-row");
+  const showBtn = el("button", "secondary-button", state.showExample ? "예시 숨기기" : "예시 보기");
+  showBtn.type = "button";
+  showBtn.addEventListener("click", () => {
+    state.showExample = !state.showExample;
+    renderStepPanel();
+  });
+  row.append(showBtn);
+
+  area.append(ta, row);
+
+  if (state.showExample) {
+    const ex = el("div", "example-box");
+    ex.append(el("span", "chip", `${target.label} 예시`), el("p", "", content[step.key]));
+    const useBtn = el("button", "secondary-button", "예시로 채우고 내 상황에 맞게 고치기");
+    useBtn.type = "button";
+    useBtn.addEventListener("click", () => {
+      state.stepAnswers[step.key] = content[step.key];
+      state.showExample = false;
+      renderStepPanel();
+    });
+    ex.append(useBtn);
+    area.append(ex);
+  }
+}
+
+function renderStepPreview() {
+  const step = stepDefs[state.stepIndex];
+  const content = currentTeacherContent();
+  const preview = elements.stepPreview;
+  preview.innerHTML = "";
+  const filled = stepDefs.filter((s) => s.prefix !== undefined && state.stepAnswers[s.key]);
+
+  if (!filled.length) {
+    preview.append(el("span", "preview-bad", content.bad));
+    preview.append(el("p", "preview-note", "아직 처음 질문 그대로입니다. 단계를 하나씩 채우면 여기서 프롬프트가 자라납니다."));
+  } else {
+    filled.forEach((s) => {
+      const part = el(s.key === step.key ? "mark" : "span", "preview-part", `${s.prefix}${state.stepAnswers[s.key]}${s.suffix} `);
+      part.title = s.label;
+      preview.append(part);
+    });
+  }
+
+  const isLast = step.key === "followup";
+  elements.stepCompare.hidden = !(isLast || step.key === "constraint") || !filled.length;
+  elements.compareBad.textContent = content.bad;
+  elements.compareGood.textContent = assembleTeacherPrompt(state.stepAnswers);
+}
+
+function renderStepPanel() {
+  const step = stepDefs[state.stepIndex];
+  const content = currentTeacherContent();
+  const target = getTeacherTarget();
+
+  elements.stepCounter.textContent = `${state.stepIndex} / ${stepDefs.length - 1}`;
+  elements.stepChip.textContent = `STEP ${state.stepIndex} · ${target.label}`;
+  elements.stepTitle.textContent = step.title;
+  elements.stepWhy.textContent =
+    step.key === "bad"
+      ? `미션: ${content.title}. 먼저 많은 분들이 처음 쓰는 짧은 질문을 그대로 AI에 넣어보세요.`
+      : step.key === "constraint"
+        ? target.conditionWhy
+        : step.why;
+
+  elements.stepPrev.disabled = state.stepIndex === 0;
+  elements.stepNext.disabled = state.stepIndex === stepDefs.length - 1;
+  elements.stepNext.textContent = state.stepIndex === stepDefs.length - 2 ? "마지막: 이어 묻기" : "다음 단계";
+
+  renderStepNav();
+  renderStepInput(step, content, target);
+  renderStepPreview();
+}
+
 function initialize() {
   fillSelect(elements.level, levels);
   fillSelect(elements.persona, personas);
+  fillSelect(elements.target, teacherTargets);
   fillSelect(elements.length, lengths);
   renderStats();
   renderScenario();
 
-  [elements.level, elements.persona, elements.length].forEach((select) => {
+  [elements.level, elements.persona, elements.length, elements.target].forEach((select) => {
     select.addEventListener("change", renderScenario);
   });
 
@@ -674,8 +1154,14 @@ function initialize() {
 
   elements.newScenarioButton.addEventListener("click", renderScenario);
 
+  elements.stepPrev.addEventListener("click", () => goStep(state.stepIndex - 1));
+  elements.stepNext.addEventListener("click", () => goStep(state.stepIndex + 1));
+  elements.stepCopy.addEventListener("click", () => {
+    copyText(currentStepPrompt(), elements.stepCopy);
+  });
+
   elements.copyButton.addEventListener("click", async () => {
-    await navigator.clipboard.writeText(elements.finalPrompt.value);
+    await copyText(elements.finalPrompt.value);
     updateStats(currentScore());
     elements.copyButton.textContent = "복사됨";
     setTimeout(() => {

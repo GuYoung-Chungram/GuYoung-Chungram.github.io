@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>CHUNGRAM — 프롬프트 연습</title>
-    <link rel="stylesheet" href="./chungram-prompt-practice.css" />
+    <title>프롬프트 플레이잉 | 프롬프트 연습</title>
+    <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
     <main class="app-shell">
@@ -25,6 +25,12 @@
 
             <label class="field-label" for="personaSelect">사용자 버전</label>
             <select id="personaSelect"></select>
+
+            <div id="targetField" hidden>
+              <label class="field-label" for="targetSelect">수업 대상 <span class="new-tag">NEW</span></label>
+              <select id="targetSelect"></select>
+              <p class="target-tip" id="targetTip"></p>
+            </div>
 
             <label class="field-label" for="lengthSelect">프롬프트 길이</label>
             <select id="lengthSelect"></select>
@@ -79,6 +85,44 @@
             <div>
               <span class="chip">빈칸 단서</span>
               <p id="missionClues"></p>
+            </div>
+          </section>
+
+          <section id="stepPanel" class="step-panel" aria-label="단계별 프롬프트 연습" hidden>
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Step by Step</p>
+                <h2>대상에 맞춰 한 단계씩 프롬프트 키우기</h2>
+              </div>
+              <span id="stepCounter" class="step-counter">0 / 6</span>
+            </div>
+            <ol id="stepNav" class="step-nav"></ol>
+            <div class="step-body">
+              <div class="step-guide">
+                <span class="chip" id="stepChip">STEP 0</span>
+                <h3 id="stepTitle"></h3>
+                <p id="stepWhy" class="step-why"></p>
+                <div id="stepInputArea" class="step-input-area"></div>
+              </div>
+              <div class="step-preview">
+                <p class="eyebrow">지금까지 만든 프롬프트</p>
+                <div id="stepPreview" class="step-preview-text" aria-live="polite"></div>
+                <div class="step-actions">
+                  <button id="stepPrev" type="button" class="secondary-button">이전</button>
+                  <button id="stepCopy" type="button" class="secondary-button">복사</button>
+                  <button id="stepNext" type="button" class="primary-button">다음 단계</button>
+                </div>
+              </div>
+            </div>
+            <div id="stepCompare" class="step-compare" hidden>
+              <div class="compare-col bad">
+                <span class="chip">처음 질문</span>
+                <p id="compareBad"></p>
+              </div>
+              <div class="compare-col good">
+                <span class="chip">완성한 질문</span>
+                <p id="compareGood"></p>
+              </div>
             </div>
           </section>
 
@@ -140,6 +184,6 @@
       </section>
     </main>
 
-    <script src="./chungram-prompt-practice.js"></script>
+    <script src="./app.js"></script>
   </body>
 </html>

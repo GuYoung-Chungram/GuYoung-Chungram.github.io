@@ -537,3 +537,290 @@ textarea {
     width: 100%;
   }
 }
+
+/* ===== 교사 버전 · 단계별 연습 ===== */
+.new-tag {
+  margin-left: 6px;
+  padding: 1px 6px;
+  color: #111820;
+  background: #f3c969;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.target-tip {
+  margin: 10px 0 0;
+  color: #8bdad6;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.step-panel {
+  padding: 22px;
+  border: 2px solid var(--accent);
+  border-radius: var(--radius);
+  background: #f4fbfa;
+}
+
+.step-counter {
+  padding: 6px 12px;
+  color: #ffffff;
+  background: var(--accent);
+  border-radius: 999px;
+  font-weight: 900;
+}
+
+.step-nav {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0 0 18px;
+  padding: 0;
+  list-style: none;
+}
+
+.step-dot {
+  width: 100%;
+  min-height: 40px;
+  padding: 4px 6px;
+  color: var(--muted);
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.step-dot.done {
+  color: var(--accent-strong);
+  border-color: var(--accent);
+  background: #dff3f1;
+}
+
+.step-dot.current {
+  color: #ffffff;
+  border-color: var(--accent-strong);
+  background: var(--accent);
+}
+
+.step-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 18px;
+}
+
+.step-guide,
+.step-preview {
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #ffffff;
+}
+
+.step-guide h3 {
+  margin: 12px 0 8px;
+  font-size: 20px;
+}
+
+.step-why {
+  margin: 0 0 14px;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.step-input-area {
+  display: grid;
+  gap: 12px;
+}
+
+.step-textarea {
+  min-height: 110px;
+  background: #ffffff;
+  border: 2px solid #aeb8c4;
+}
+
+.step-textarea:focus {
+  outline: 3px solid rgba(12, 122, 117, 0.18);
+  border-color: var(--accent);
+}
+
+.example-row {
+  display: flex;
+  gap: 8px;
+}
+
+.example-box {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid #e5cf91;
+  border-radius: var(--radius);
+  background: #fffdf7;
+}
+
+.example-box p {
+  margin: 0;
+  line-height: 1.65;
+}
+
+.example-box .chip {
+  justify-self: start;
+  background: var(--amber);
+}
+
+.bad-quote {
+  margin: 0;
+  padding: 14px 16px;
+  color: #8a2c2c;
+  background: #fff1f1;
+  border-left: 4px solid #d35b5b;
+  border-radius: var(--radius);
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.step-ask {
+  margin: 0;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.reflect-checks {
+  display: grid;
+  gap: 6px;
+}
+
+.reflect-check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+}
+
+.followup-list {
+  display: grid;
+  gap: 8px;
+}
+
+.followup-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--field);
+}
+
+.followup-card p {
+  margin: 0;
+  line-height: 1.55;
+}
+
+.field-label.dark {
+  color: var(--ink);
+}
+
+.step-preview {
+  display: flex;
+  flex-direction: column;
+}
+
+.step-preview-text {
+  flex: 1;
+  min-height: 180px;
+  padding: 14px;
+  background: var(--field);
+  border: 1px dashed #aeb8c4;
+  border-radius: var(--radius);
+  font-size: 16px;
+  line-height: 1.85;
+}
+
+.step-preview-text mark {
+  padding: 2px 0;
+  background: #fbe3a3;
+  border-radius: 3px;
+}
+
+.preview-bad {
+  color: #8a2c2c;
+  font-weight: 800;
+}
+
+.preview-note {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.step-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.step-actions button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.step-compare {
+  display: grid;
+  grid-template-columns: 0.6fr 1.4fr;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.compare-col {
+  padding: 14px;
+  border-radius: var(--radius);
+}
+
+.compare-col p {
+  margin: 10px 0 0;
+  line-height: 1.7;
+}
+
+.compare-col.bad {
+  background: #fff1f1;
+  border: 1px solid #f0c4c4;
+}
+
+.compare-col.bad .chip {
+  background: #d35b5b;
+}
+
+.compare-col.good {
+  background: #e9f7f5;
+  border: 1px solid #a9dcd7;
+}
+
+.compare-col.good .chip {
+  background: var(--accent);
+}
+
+@media (max-width: 980px) {
+  .step-body,
+  .step-compare {
+    grid-template-columns: 1fr;
+  }
+
+  .step-nav {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .step-nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .followup-card {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
