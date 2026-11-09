@@ -1,9 +1,138 @@
 {
   "meta": {
-    "lastRunAt": "2026-11-02T02:18:39.982Z",
+    "lastRunAt": "2026-11-09T02:32:48.608Z",
     "note": "매주 자동 수집 결과입니다. 직접 고치지 마세요(승격 표시 promoted만 예외)."
   },
   "items": [
+    {
+      "id": "f-97f685d5044d",
+      "sourceId": "msit",
+      "sourceType": "gov",
+      "issuer": "과학기술정보통신부",
+      "date": "2026-11-05",
+      "title": "과기정통부, 자율형 인공지능 이용 환경에서 철통 인증을 적용할 수 있는 안내서 발간",
+      "url": "https://www.msit.go.kr/bbs/view.do?sCode=user&bbsSeqNo=94&nttSeqNo=3187929",
+      "summaryAi": "과기정통부가 자율형 인공지능 이용 환경에서 철통 인증을 적용할 안내서를 발간한다.",
+      "stageGuess": [
+        9
+      ],
+      "collectedAt": "2026-11-09T02:32:48.608Z",
+      "promoted": false
+    },
+    {
+      "id": "f-14a13771a55b",
+      "sourceId": "msit",
+      "sourceType": "gov",
+      "issuer": "과학기술정보통신부",
+      "date": "2026-11-04",
+      "title": "[관계부처 합동] 이 땅에 집 지을 수 있나요? 복잡한 토지개발 인허가, 인공지능으로 쉽게",
+      "url": "https://www.msit.go.kr/bbs/view.do?sCode=user&bbsSeqNo=94&nttSeqNo=3187925",
+      "summaryAi": "인공지능이 복잡한 토지개발 인허가를 사전 진단하여 민원인의 편의를 높이는 서비스가 시범 운영된다.",
+      "stageGuess": [
+        1,
+        4
+      ],
+      "collectedAt": "2026-11-09T02:32:48.608Z",
+      "promoted": false
+    },
+    {
+      "id": "f-93f71793563b",
+      "sourceId": "mois",
+      "sourceType": "gov",
+      "issuer": "행정안전부",
+      "date": "2026-11-03",
+      "title": "동아시아 기록관리 전문가, 한 자리에 모여 기록관리의 미래를 논하다",
+      "url": "https://www.mois.go.kr/frt/bbs/type010/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000008&nttId=130728",
+      "summaryAi": "국가기록원이 동아시아 기록관리 전문가들과 인공지능이 바꿀 기록관리의 미래와 통합 관리 체계를 논의한다.",
+      "stageGuess": [
+        1,
+        4,
+        9
+      ],
+      "collectedAt": "2026-11-09T02:32:48.608Z",
+      "promoted": false
+    },
+    {
+      "id": "f-057776db5ddc",
+      "sourceId": "mois",
+      "sourceType": "gov",
+      "issuer": "행정안전부",
+      "date": "2026-11-03",
+      "title": "디지털네이션스 · OECD 무대에서 인공지능(AI) 정부의 미래 논의 선도",
+      "url": "https://www.mois.go.kr/frt/bbs/type010/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000008&nttId=130726",
+      "summaryAi": "행정안전부가 디지털네이션스 및 OECD에서 인공지능 정부와 에이전트형 정부의 미래를 논의한다.",
+      "stageGuess": [
+        2,
+        9
+      ],
+      "collectedAt": "2026-11-09T02:32:48.608Z",
+      "promoted": false
+    },
+    {
+      "id": "f-a276e51e72db",
+      "sourceId": "mpm",
+      "sourceType": "gov",
+      "issuer": "인사혁신처",
+      "date": "2026-11-03",
+      "title": "정부 인사업무 특화된 인공지능 업무시스템 첫 개발",
+      "url": "https://www.mpm.go.kr/board/board.do?boardId=bbs_0000000000000029&mode=view&cntId=4357",
+      "summaryAi": "인사혁신처가 인사업무에 특화된 인공지능 총괄 업무시스템을 개발하여 업무 전반의 AX 전환을 추진한다.",
+      "stageGuess": [
+        1,
+        4,
+        6,
+        10
+      ],
+      "collectedAt": "2026-11-09T02:32:48.608Z",
+      "promoted": false
+    },
+    {
+      "id": "f-c2a08031d36a",
+      "sourceId": "msit",
+      "sourceType": "gov",
+      "issuer": "과학기술정보통신부",
+      "date": "2026-11-03",
+      "title": "말하기 어려웠던 연구 현장의 목소리, 익명의 문자 한 통(1551-1441)으로 듣는다",
+      "url": "https://www.msit.go.kr/bbs/view.do?sCode=user&bbsSeqNo=94&nttSeqNo=3187917",
+      "summaryAi": "과기정통부가 R&D 연구 현장의 익명 의견을 AI로 분석하여 정책·제도 개선에 활용하는 플랫폼을 운영한다.",
+      "stageGuess": [
+        1,
+        9
+      ],
+      "collectedAt": "2026-11-09T02:32:48.608Z",
+      "promoted": false
+    },
+    {
+      "id": "f-e34e42c6c7a9",
+      "sourceId": "msit",
+      "sourceType": "gov",
+      "issuer": "과학기술정보통신부",
+      "date": "2026-11-02",
+      "title": "표준과 지식재산(특허)으로 여는 물리적 인공지능 시대, 국제적 주도권 확보 나선다",
+      "url": "https://www.msit.go.kr/bbs/view.do?sCode=user&bbsSeqNo=94&nttSeqNo=3187912",
+      "summaryAi": "과기정통부와 지식재산처가 인공지능·AI 전환 표준 및 특허 연계 전략을 논의하는 국제 학술회의를 개최한다.",
+      "stageGuess": [
+        9
+      ],
+      "collectedAt": "2026-11-09T02:32:48.608Z",
+      "promoted": false
+    },
+    {
+      "id": "f-25bd73831fe4",
+      "sourceId": "nia",
+      "sourceType": "gov",
+      "issuer": "한국지능정보사회진흥원(NIA)",
+      "date": "2026-11-04",
+      "title": "NIA, 공공부문 AI 서비스 지원사업 중간보고회 개최",
+      "url": "https://www.nia.or.kr/site/nia_kor/ex/bbs/View.do?cbIdx=90549&bcIdx=30161&parentSeq=30161",
+      "summaryAi": "한국지능정보사회진흥원이 공공부문 AI 서비스 지원사업의 중간보고회를 개최한다.",
+      "stageGuess": [
+        1,
+        10
+      ],
+      "collectedAt": "2026-11-09T02:32:48.608Z",
+      "promoted": false
+    },
     {
       "id": "f-f0b892691654",
       "sourceId": "mois",
