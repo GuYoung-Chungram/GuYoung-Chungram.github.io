@@ -5,6 +5,68 @@
   },
   "items": [
     {
+      "id": "f-52f87ba4e13b",
+      "sourceId": "mckinsey-mail",
+      "sourceType": "consulting",
+      "issuer": "McKinsey & Company",
+      "date": "2026-11-08",
+      "title": "The judgment bottleneck: Balancing AI and human speeds in strategy",
+      "url": "https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights/the-judgment-bottleneck-balancing-ai-and-human-speeds-in-strategy",
+      "summaryAi": "AI로 분석은 빨라졌지만 좋은 결정은 사람의 판단 시간에 달려 있어, 둘의 속도를 맞추는 세 가지 방법을 제시합니다.",
+      "stageGuess": [
+        3,
+        7
+      ],
+      "collectedAt": "2026-11-09T04:01:07.000Z",
+      "promoted": false
+    },
+    {
+      "id": "f-e1ad7689c59e",
+      "sourceId": "mckinsey-mail",
+      "sourceType": "consulting",
+      "issuer": "McKinsey & Company",
+      "date": "2026-11-07",
+      "title": "How frontier AI is rewriting software security rules",
+      "url": "https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/how-frontier-ai-is-rewriting-software-security-rules",
+      "summaryAi": "AI로 해킹이 쉬워진 만큼 기관의 소프트웨어 보안도 AI를 활용해 더 빠르고 상시적으로 바꿔야 한다는 분석입니다.",
+      "stageGuess": [
+        9
+      ],
+      "collectedAt": "2026-11-09T04:01:07.000Z",
+      "promoted": false
+    },
+    {
+      "id": "f-c9e18307744b",
+      "sourceId": "deloitte-kr-ai",
+      "sourceType": "consulting",
+      "issuer": "Deloitte Korea",
+      "date": "2026-11-05",
+      "title": "AI 토크노믹스: 토큰 기반의 TCO 분석과 경영진을 위한 AI 비용 최적화 전략",
+      "url": "https://www.deloitte.com/kr/ko/services/consulting/perspectives/ai-tokenomics-report.html",
+      "summaryAi": "AI 비용을 토큰 단위로 따져 도입 방식별 총비용을 비교하고, 모델·설계·운영 단계에서 비용을 줄이는 방법을 정리했습니다.",
+      "stageGuess": [
+        10
+      ],
+      "collectedAt": "2026-11-09T04:01:07.000Z",
+      "promoted": false
+    },
+    {
+      "id": "f-97ce0e8cc2e6",
+      "sourceId": "deloitte-kr-ai",
+      "sourceType": "consulting",
+      "issuer": "Deloitte Korea",
+      "date": "2026-08-18",
+      "title": "불확실성 속에서 CFO들이 주목한 변화: AI 도입과 회복탄력성 강화에 나서는 CFO",
+      "url": "https://www.deloitte.com/kr/ko/Industries/financial-services/perspectives/asia-pacific-cfo-pulse.html",
+      "summaryAi": "아태 재무책임자 다수가 AI 투자 효과를 체감하기 시작했고, 불확실성에 대비해 조직의 회복력에 투자한다는 조사입니다.",
+      "stageGuess": [
+        1,
+        10
+      ],
+      "collectedAt": "2026-11-09T04:01:07.000Z",
+      "promoted": false
+    },
+    {
       "id": "f-97f685d5044d",
       "sourceId": "msit",
       "sourceType": "gov",
