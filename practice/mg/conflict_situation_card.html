@@ -344,6 +344,19 @@ body{font-family:'Noto Sans KR',Pretendard,-apple-system,system-ui,sans-serif}
 .pick button:hover{border-color:var(--acc)}
 .pick button[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:#06080b;box-shadow:0 0 22px rgba(184,255,92,.35)}
 .pick button[aria-pressed="true"] small{color:#06080b}
+/* 럭키드로우: 모드를 돌려서 랜덤으로 뽑기 */
+.modehead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px}
+.modehead .lbl{margin-bottom:0}
+.draw{flex:none;white-space:nowrap;font:inherit;font-size:13px;font-weight:800;cursor:pointer;border:1px solid rgba(255,212,71,.55);background:rgba(255,212,71,.08);color:var(--gold);border-radius:999px;padding:6px 14px;transition:background .15s,box-shadow .15s,transform .15s}
+.draw:hover{background:rgba(255,212,71,.16);box-shadow:0 0 22px -6px var(--gold)}
+.draw:active{transform:scale(.96)}
+.draw:disabled{cursor:wait;opacity:.7}
+.pick.spinning button{pointer-events:none}
+.pick button.roll{border-color:var(--gold);background:rgba(255,212,71,.18);color:var(--gold);transform:scale(1.06)}
+.pick button.won{animation:won .7s ease-out}
+@keyframes won{0%{transform:scale(1.25);box-shadow:0 0 0 0 rgba(255,212,71,.8)}100%{transform:scale(1);box-shadow:0 0 22px rgba(184,255,92,.35)}}
+.drawmsg{display:block;min-height:1.4em;margin-top:6px;font-size:13px;color:var(--gold);font-weight:700}
+@media (prefers-reduced-motion:reduce){.pick button.won{animation:none}.pick button.roll{transform:none}}
 .fields{display:grid;gap:8px}
 .fields input{width:100%;box-sizing:border-box;font:inherit;font-size:14px;color:var(--fg);background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:9px 12px}
 .fields input:focus{outline:none;border-color:var(--acc)}
@@ -526,9 +539,10 @@ body{font-family:'Noto Sans KR',Pretendard,-apple-system,system-ui,sans-serif}
               '<div><span>이해관계자</span>' + esc(c.cast.side) + '</div>' +
               '<div><span>관찰자</span>2명 · 모드가 드러난 대사를 기록</div>' +
             '</div>' +
-            '<div><span class="lbl">OUR MODE · 우리 조 대응 모드</span><div class="pick" role="group" aria-label="' + n + '조 대응 모드">' +
+            '<div><div class="modehead"><span class="lbl">OUR MODE · 우리 조 대응 모드</span><button type="button" class="draw" aria-label="' + n + '조 대응 모드 랜덤 뽑기">🎲 럭키드로우</button></div>' +
+              '<div class="pick" role="group" aria-label="' + n + '조 대응 모드">' +
               MODES.map((m, k) => '<button type="button" aria-pressed="false" data-m="' + m + '"><small>' + (k + 1) + '</small>' + m + '</button>').join('') +
-            '</div></div>' +
+            '</div><span class="drawmsg" aria-live="polite"></span></div>' +
             '<div class="fields"><span class="lbl">STRATEGY · 이유와 핵심 대사</span>' +
               '<input id="why' + n + '" data-k="why" placeholder="이 모드를 고른 이유" aria-label="선택 이유">' +
               '<input id="l1-' + n + '" data-k="l1" placeholder="핵심 대사 ①" aria-label="핵심 대사 1">' +
@@ -544,13 +558,50 @@ body{font-family:'Noto Sans KR',Pretendard,-apple-system,system-ui,sans-serif}
         const codeEl = sec.querySelector('details.code code');
         const sync = () => { codeEl.textContent = prompt(c, st); };
 
-        el.querySelectorAll('.pick button').forEach((b) => b.addEventListener('click', () => {
-          const on = b.getAttribute('aria-pressed') !== 'true';
-          el.querySelectorAll('.pick button').forEach((x) => x.setAttribute('aria-pressed', 'false'));
-          b.setAttribute('aria-pressed', on ? 'true' : 'false');
-          st.mode = on ? b.dataset.m : '';
+        const pick = el.querySelector('.pick');
+        const modeBtns = Array.from(pick.querySelectorAll('button'));
+        const drawMsg = el.querySelector('.drawmsg');
+        const setMode = (b) => {
+          modeBtns.forEach((x) => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+          st.mode = b ? b.dataset.m : '';
           sync();
+        };
+        modeBtns.forEach((b) => b.addEventListener('click', () => {
+          setMode(b.getAttribute('aria-pressed') === 'true' ? null : b);
+          drawMsg.textContent = '';
         }));
+
+        // 럭키드로우: 모드 버튼을 차례로 밝히다 점점 느려지며 무작위 모드에 멈춤
+        const drawBtn = el.querySelector('.draw');
+        const SPIN_STEPS = 14, SPIN_START_MS = 40, SPIN_GROWTH = 1.13;
+        const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const finish = (winner) => {
+          modeBtns.forEach((x) => x.classList.remove('roll'));
+          setMode(winner);
+          winner.classList.remove('won'); void winner.offsetWidth; winner.classList.add('won');
+          drawMsg.textContent = '🎉 ' + n + '조의 모드는 「' + winner.dataset.m + '」! 이 모드로 대응 전략을 짜 보세요';
+          pick.classList.remove('spinning');
+          drawBtn.disabled = false;
+        };
+        drawBtn.addEventListener('click', () => {
+          const target = Math.floor(Math.random() * modeBtns.length);
+          drawBtn.disabled = true;
+          pick.classList.add('spinning');
+          drawMsg.textContent = '두구두구…';
+          if (reduceMotion) { finish(modeBtns[target]); return; }
+          const start = Math.floor(Math.random() * modeBtns.length);
+          // 마지막 칸이 target이 되도록 총 이동 칸 수를 맞춤
+          const total = SPIN_STEPS + ((target - start - SPIN_STEPS) % modeBtns.length + modeBtns.length) % modeBtns.length;
+          let i = 0, delay = SPIN_START_MS;
+          const tick = () => {
+            const idx = (start + i) % modeBtns.length;
+            modeBtns.forEach((x, k) => x.classList.toggle('roll', k === idx));
+            if (i >= total) { setTimeout(() => finish(modeBtns[idx]), 260); return; }
+            i += 1; delay *= SPIN_GROWTH;
+            setTimeout(tick, delay);
+          };
+          tick();
+        });
         el.querySelectorAll('.fields input').forEach((inp) => inp.addEventListener('input', () => { st[inp.dataset.k] = inp.value; sync(); }));
 
         const msg = el.querySelector('.msg'), ta = el.querySelector('.ta');
