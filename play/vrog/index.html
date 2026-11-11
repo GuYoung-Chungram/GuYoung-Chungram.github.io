@@ -1,1 +1,586 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  <meta name="theme-color" content="#1E3A5F" />
+  <title>하루 브이로그</title>
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body data-font-size="larger">
+  <div class="app-shell">
+
+    <!-- 상단 알림 배너 (M-7 자정 이메일 발송 완료 알림 / S-4 촬영 알림 시뮬레이션) -->
+    <div id="top-notice-banner" class="top-notice-banner" role="alert">
+      <div id="top-notice-text" style="font-weight: 900;"></div>
+      <div style="display: flex; gap: 12px;">
+        <button type="button" id="btn-top-notice-action" class="btn-primary" style="flex: 1; display: none;">
+          📷 지금 촬영하기
+        </button>
+        <button type="button" id="btn-top-notice-close" class="btn-secondary" style="flex: 1;">
+          ✖ 닫기
+        </button>
+      </div>
+    </div>
+
+    <!-- =========================================================
+         화면 1: 달력 (첫 화면) - 날짜 고르기, 웃음 표시 확인
+         ========================================================= -->
+    <section id="screen-calendar" class="screen active" aria-label="달력 첫 화면">
+      <header class="calendar-header">
+        <div class="profile-row">
+          <div class="greeting-box">
+            <h1 id="calendar-greeting">정구영님의 하루</h1>
+            <!-- C-8: 달력 위쪽에 이번 달에 기록한 날 수를 보여 준다 -->
+            <p id="calendar-month-summary" class="month-record-count">11월에 0일을 남겼어요.</p>
+          </div>
+          <!-- S-1: 원형으로 달력 화면 위쪽에 보이며 누르면 내 설정으로 진입 -->
+          <button type="button" id="btn-open-settings" class="profile-trigger-btn" aria-label="내 설정 열기">
+            <div id="calendar-profile-avatar" class="profile-avatar-circle">정</div>
+            <span class="profile-trigger-label">⚙️ 내 설정</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- C-1: 달력은 한 달 단위로 보이고, 좌우의 큰 화살표 버튼으로 달을 넘긴다 -->
+      <div class="month-nav">
+        <button type="button" id="btn-prev-month" class="month-arrow-btn">
+          ◀ 이전 달
+        </button>
+        <h2 id="calendar-month-title" class="month-title">2026년 11월</h2>
+        <button type="button" id="btn-next-month" class="month-arrow-btn">
+          다음 달 ▶
+        </button>
+      </div>
+
+      <div class="calendar-weekdays" aria-hidden="true">
+        <span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span>
+      </div>
+
+      <div id="calendar-grid" class="calendar-grid" role="grid" aria-label="날짜 선택 달력"></div>
+
+      <!-- 선택된 날짜 행동 영역: 첫 화면에서 바로 '오늘의 브이로그 시작하기' 제공 -->
+      <div class="calendar-action-panel">
+        <div class="selected-date-banner">
+          <h3 id="cal-selected-date-label" class="selected-date-title">오늘의 브이로그 시작하기</h3>
+          <span id="cal-selected-cut-count" class="selected-date-count">0장 기록됨</span>
+        </div>
+
+        <p id="cal-empty-hint" class="empty-guide-msg">
+          오늘 눈에 띄는 순간을 한 컷씩 찍어 오늘의 브이로그를 시작해 보세요.
+        </p>
+
+        <div class="action-stack">
+          <!-- C-4: 첫 화면 가장 큰 메인 시작/촬영 버튼 -->
+          <button type="button" id="btn-cal-shoot" class="btn-camera-giant">
+            📷 오늘의 브이로그 시작하기 (촬영)
+          </button>
+
+          <button type="button" id="btn-cal-make-vlog" class="btn-primary">
+            🎬 오늘의 브이로그 만들기
+          </button>
+
+          <button type="button" id="btn-cal-open-day" class="btn-secondary">
+            🖼️ 오늘 찍은 사진 보기 · 삭제 · 가져오기
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         화면 2: 오늘 화면 (날짜별 컷 목록, 촬영하기, 브이로그 만들기)
+         ========================================================= -->
+    <section id="screen-day" class="screen" aria-label="오늘 화면">
+      <header class="top-bar">
+        <button type="button" id="btn-day-back" class="btn-back">
+          ◀ 뒤로
+        </button>
+        <h1 id="day-screen-title" class="top-bar-title">11월 12일 목요일</h1>
+      </header>
+
+      <div class="day-screen-body">
+        <div class="day-controls-card">
+          <!-- C-4: 촬영하기 가장 큰 버튼 -->
+          <button type="button" id="btn-day-shoot" class="btn-camera-giant">
+            📷 촬영하기
+          </button>
+
+          <!-- C-5: 0장이면 흐리게 보이고 "먼저 한 컷 찍어 보세요" 안내 -->
+          <p id="day-empty-notice" class="empty-guide-msg" style="display: none;">
+            먼저 한 컷 찍어 보세요
+          </p>
+
+          <button type="button" id="btn-day-make-vlog" class="btn-primary" style="width: 100%;">
+            🎬 오늘의 브이로그 만들기
+          </button>
+
+          <div class="day-secondary-row">
+            <!-- P-1: 내 사진 가져오기 버튼으로 폰 사진첩 열기 -->
+            <button type="button" id="btn-import-photos" class="btn-secondary">
+              🖼️ 내 사진 가져오기
+            </button>
+            <button type="button" id="btn-add-demo-cuts" class="btn-secondary">
+              ✨ 예시 3컷 넣기
+            </button>
+          </div>
+          <input type="file" id="input-import-photos" accept="image/*" multiple style="display: none;" />
+        </div>
+
+        <div class="cuts-section-header" style="flex-wrap: wrap;">
+          <h2 id="day-cuts-heading">남긴 사진 (0장 / 최대 60장)</h2>
+          <button type="button" id="btn-delete-all-day-cuts" class="btn-danger" style="display: none; padding: 10px 16px; min-height: 56px;">
+            🗑️ 전체 삭제
+          </button>
+        </div>
+
+        <!-- 오늘 찍은 사진 전체 삭제 확인 창 (U-10: 지우기는 확인을 한 번 거친다) -->
+        <div id="day-delete-all-confirm-box" class="export-options-box" style="display: none; background-color: #FEE2E2;">
+          <p id="day-delete-all-confirm-text" style="margin: 0; font-weight: 900; text-align: center; color: #111111;">
+            오늘 찍은 사진을 모두 지울까요?
+          </p>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <button type="button" id="btn-delete-all-cancel" class="btn-secondary">
+              아니오 (유지)
+            </button>
+            <button type="button" id="btn-delete-all-confirm" class="btn-danger">
+              예, 모두 지웁니다
+            </button>
+          </div>
+        </div>
+
+        <div id="day-cuts-list" class="cuts-list"></div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         화면 3: 촬영 카메라 (K-1 ~ K-7)
+         ========================================================= -->
+    <section id="screen-camera" class="screen" aria-label="촬영 카메라 화면">
+      <div id="camera-viewport" class="camera-viewport">
+        <video id="camera-video" autoplay playsinline muted style="display: none;"></video>
+        <canvas id="camera-sim-canvas"></canvas>
+
+        <!-- 위쪽 가운데 현재 시각 (투명도 40% 안팎) -->
+        <div id="camera-clock" class="camera-clock-overlay">오전 10:00</div>
+
+        <!-- 마이크 켜짐 상시 안내 (맹점 점검 302행) -->
+        <div id="camera-mic-pill" class="camera-mic-status-pill" style="display: none;">
+          🎙️ 소리 켜짐 (셔터 후 2초 녹음)
+        </div>
+
+        <!-- K-1: 초점 네모 표시 (1초간) -->
+        <div id="camera-focus-box" class="focus-box" style="display: none;"></div>
+
+        <!-- 타이머 카운트다운 -->
+        <div id="camera-timer-overlay" class="timer-countdown-overlay" style="display: none;">3</div>
+
+        <!-- 플래시 효과 -->
+        <div id="camera-flash-overlay" class="camera-flash-effect" style="display: none;"></div>
+
+        <!-- 옆쪽 세로 줄 버튼 (K-2: 그림과 함께 한글 이름) -->
+        <div class="camera-side-controls" aria-label="카메라 설정 버튼">
+          <button type="button" id="btn-cam-flip" class="cam-side-btn">
+            <span class="cam-side-icon">🔄</span>
+            <span id="label-cam-flip">뒤집기</span>
+          </button>
+          <button type="button" id="btn-cam-timer" class="cam-side-btn">
+            <span class="cam-side-icon">⏱️</span>
+            <span id="label-cam-timer">타이머 끔</span>
+          </button>
+          <button type="button" id="btn-cam-flash" class="cam-side-btn">
+            <span class="cam-side-icon">⚡</span>
+            <span id="label-cam-flash">불빛 끔</span>
+          </button>
+          <button type="button" id="btn-cam-zoom" class="cam-side-btn">
+            <span class="cam-side-icon">🔍</span>
+            <span id="label-cam-zoom">확대 1배</span>
+          </button>
+          <button type="button" id="btn-cam-mic" class="cam-side-btn">
+            <span class="cam-side-icon">🎙️</span>
+            <span id="label-cam-mic">소리 끔</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 아래쪽 바: 닫기(찍은 컷 수 표시) + 가운데 가장 큰 원형 셔터 + 우측 방금 찍은 사진 취소/다시찍기 -->
+      <div class="camera-bottom-bar">
+        <button type="button" id="btn-cam-close" class="btn-camera-close">
+          ◀ 닫기 (0장)
+        </button>
+
+        <button type="button" id="btn-cam-shutter" class="btn-shutter" aria-label="사진 찍기 셔터">
+          <span style="font-size: 30px;">📸</span>
+          <span>찍기</span>
+        </button>
+
+        <button type="button" id="btn-cam-retake" class="btn-danger btn-disabled" disabled style="min-height: 72px; padding: 12px 14px; font-size: 20px;">
+          ↩️ 취소·다시찍기
+        </button>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         화면 4: 브이로그 보기 (V-1 ~ V-10, E-1 ~ E-4)
+         ========================================================= -->
+    <section id="screen-vlog" class="screen" aria-label="브이로그 보기 화면">
+      <header class="top-bar">
+        <button type="button" id="btn-vlog-back" class="btn-back">
+          ◀ 뒤로
+        </button>
+        <h1 id="vlog-screen-title" class="top-bar-title">오늘의 브이로그</h1>
+      </header>
+
+      <div class="vlog-screen-body">
+        <!-- V-9: 만드는 동안 "브이로그를 만들고 있어요"와 진행 막대 표시 -->
+        <div id="vlog-progress-box" class="vlog-progress-box">
+          <h2 id="vlog-status-heading" style="margin: 0; font-size: var(--font-subtitle);">
+            브이로그를 만들고 있어요
+          </h2>
+          <div class="progress-track">
+            <div id="vlog-progress-fill" class="progress-fill"></div>
+          </div>
+          <p id="vlog-progress-text" style="margin: 0; font-weight: 900;">0%</p>
+        </div>
+
+        <!-- 16:9 1280x720 캔버스 플레이어 -->
+        <div id="vlog-player-container" class="vlog-player-container">
+          <canvas id="vlog-canvas" width="1280" height="720"></canvas>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+          <button type="button" id="btn-vlog-replay" class="btn-secondary">
+            ▶️ 다시 재생
+          </button>
+          <!-- U-4: 크게 보기 버튼 -->
+          <button type="button" id="btn-vlog-zoom" class="btn-secondary">
+            🔍 크게 보기
+          </button>
+        </div>
+
+        <!-- E-1: 내보내기 버튼은 브이로그가 만들어진 뒤에만 나타난다 -->
+        <button type="button" id="btn-vlog-export-toggle" class="btn-primary" style="display: none; width: 100%;">
+          📤 내보내기 (가족에게 공유·저장)
+        </button>
+
+        <!-- E-2: 내보내기를 누르면 "내 폰에 저장"과 "보내기" 두 가지만 보여 준다 -->
+        <div id="vlog-export-options" class="export-options-box" style="display: none;">
+          <p style="margin: 0; font-weight: 900; text-align: center;">
+            어떻게 내보낼까요?
+          </p>
+          <button type="button" id="btn-export-save" class="btn-primary" style="width: 100%;">
+            💾 내 폰에 저장
+          </button>
+          <button type="button" id="btn-export-share" class="btn-secondary" style="width: 100%;">
+            💌 보내기 (카카오톡·문자·이메일)
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         화면 5: 내 설정 (S-1 ~ S-8, 처음 연결 시 먼저 표시되며 완료 시 '오늘의 브이로그 시작하기'로 연결)
+         ========================================================= -->
+    <section id="screen-settings" class="screen" aria-label="내 설정 화면">
+      <header class="top-bar">
+        <button type="button" id="btn-settings-back" class="btn-back">
+          ◀ 뒤로
+        </button>
+        <h1 id="settings-top-title" class="top-bar-title">내 설정</h1>
+      </header>
+
+      <div class="settings-list">
+        <!-- 처음 연결했을 때 보이는 환영 및 안내 카드 -->
+        <div id="settings-first-welcome-box" class="setting-card" style="background-color: #FFF9DB; border-width: 4px;">
+          <h2 class="setting-title" style="margin: 0;">👋 처음 오셨군요! 내 설정을 먼저 해 보세요</h2>
+          <p class="setting-desc" style="margin: 0; font-weight: 800;">
+            이름과 바탕색, 글씨 크기를 먼저 고르시면 바꾸는 즉시 자동 저장됩니다. 설정을 마친 뒤 아래 버튼을 누르면 <strong>오늘의 브이로그 시작하기</strong>로 이동합니다.
+          </p>
+          <button type="button" id="btn-complete-settings-top" class="btn-camera-giant">
+            🎬 설정 완료 · 오늘의 브이로그 시작하기
+          </button>
+        </div>
+
+        <div class="empty-guide-msg" style="background-color: #E0F2FE; border-color: #0369A1;">
+          모든 설정은 바꾸는 즉시 자동으로 저장됩니다.
+        </div>
+
+        <!-- S-1: 프로필 사진 -->
+        <div class="setting-card">
+          <h2 class="setting-title">1. 프로필 사진</h2>
+          <p class="setting-desc">달력 위쪽과 브이로그 첫 장면에 동그랗게 나옵니다.</p>
+          <div style="display: flex; align-items: center; gap: 18px;">
+            <div id="settings-profile-preview" class="profile-avatar-circle" style="width: 84px; height: 84px; font-size: 36px;">
+              정
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 12px;">
+              <button type="button" id="btn-settings-profile-photo" class="btn-secondary">
+                📷 사진 바꾸기 (촬영·사진첩)
+              </button>
+              <input type="file" id="input-profile-photo" accept="image/*" style="display: none;" />
+            </div>
+          </div>
+        </div>
+
+        <!-- S-2: 이름 (한글 기준 10자 이내) -->
+        <div class="setting-card">
+          <label for="input-setting-name" class="setting-title">2. 이름 (10자 이내)</label>
+          <p class="setting-desc">달력 인사말과 브이로그 첫 장면에 쓰입니다.</p>
+          <input
+            type="text"
+            id="input-setting-name"
+            class="setting-input"
+            maxlength="10"
+            placeholder="이름을 입력해 주세요"
+          />
+        </div>
+
+        <!-- S-3: 프로필 바탕색 (미리 정한 8색) -->
+        <div class="setting-card">
+          <h2 class="setting-title">3. 프로필 바탕색 (8색)</h2>
+          <p class="setting-desc">달력 머리 부분, 브이로그 첫 장면, 세로 사진의 양옆 여백에 같은 색이 쓰입니다.</p>
+          <div id="settings-color-grid" class="color-palette-grid"></div>
+        </div>
+
+        <!-- S-7: 글씨 크기 (크게 / 더 크게 / 가장 크게) -->
+        <div class="setting-card">
+          <h2 class="setting-title">4. 글씨 크기</h2>
+          <p class="setting-desc">돋보기 없이 편하게 읽히도록 글씨 크기를 고르세요.</p>
+          <div class="radio-group-vertical">
+            <button type="button" class="option-choice-btn" data-fontsize="large">
+              <span>크게 (기본 큰 글씨)</span>
+              <span>가나다</span>
+            </button>
+            <button type="button" class="option-choice-btn selected" data-fontsize="larger">
+              <span>더 크게 (권장 기본값)</span>
+              <span>가나다</span>
+            </button>
+            <button type="button" class="option-choice-btn" data-fontsize="largest">
+              <span>가장 크게 (특대 글씨)</span>
+              <span>가나다</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- S-4: 로그 알림 시간 (매 시간 / 3시간마다 / 끔) -->
+        <div class="setting-card">
+          <h2 class="setting-title">5. 촬영 알림 시간</h2>
+          <p class="setting-desc">오전 8시부터 오후 9시 사이에만 알림을 보냅니다. 알림을 누르면 카메라가 바로 열립니다.</p>
+          <div class="radio-group-vertical">
+            <button type="button" class="option-choice-btn" data-notify="1h">
+              <span>매 시간 알리기</span>
+              <span>🔔</span>
+            </button>
+            <button type="button" class="option-choice-btn selected" data-notify="3h">
+              <span>3시간마다 알리기 (기본)</span>
+              <span>🔔</span>
+            </button>
+            <button type="button" class="option-choice-btn" data-notify="off">
+              <span>알림 끔</span>
+              <span>🔕</span>
+            </button>
+          </div>
+          <button type="button" id="btn-test-notification" class="btn-secondary">
+            🔔 지금 알림 테스트하기 (카메라 바로 열림 검증)
+          </button>
+        </div>
+
+        <!-- S-5: 현지 시간 연동 -->
+        <div class="setting-card">
+          <h2 class="setting-title">6. 현지 시간 자동 연동</h2>
+          <p class="setting-desc">여행 중에도 현지 시각으로 알림, 촬영 시각, 자정 기준이 자동으로 바뀝니다.</p>
+          <p id="settings-tz-display" class="setting-desc" style="font-weight: 900;"></p>
+          <div class="radio-group-vertical">
+            <button type="button" class="option-choice-btn selected" data-tz="on">
+              <span>켬 (폰의 시간대 자동 연동)</span>
+              <span>🌐</span>
+            </button>
+            <button type="button" class="option-choice-btn" data-tz="off">
+              <span>끔 (처음 설정한 시간대 고정)</span>
+              <span>🔒</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- S-6: 백업용 이메일 & M-1~M-7 자정 자동 전달 -->
+        <div class="setting-card">
+          <label for="input-setting-email" class="setting-title">7. 백업용 이메일 주소</label>
+          <p class="setting-desc">자정이 되면 그날의 브이로그가 이 주소로 자동 전달됩니다. 주소 입력 후 확인 메일 검증을 완료해 주세요.</p>
+          <input
+            type="email"
+            id="input-setting-email"
+            class="setting-input"
+            placeholder="예: family@example.com"
+          />
+          <div id="email-verify-status" class="empty-guide-msg">
+            이메일 주소를 입력하면 확인 메일을 보냅니다.
+          </div>
+          <button type="button" id="btn-verify-email" class="btn-primary">
+            ✉️ 확인 메일 보내기 · 주소 검증
+          </button>
+          <button type="button" id="btn-simulate-midnight-email" class="btn-secondary">
+            🌙 자정 이메일 자동 전달 지금 실행 (테스트)
+          </button>
+          <div id="email-logs-container" style="display: flex; flex-direction: column; gap: 8px;"></div>
+        </div>
+
+        <!-- S-8: 사용법 보기 (9장의 활용 예시 다시 보기) -->
+        <div class="setting-card">
+          <h2 class="setting-title">8. 사용법 안내 다시 보기</h2>
+          <p class="setting-desc">무엇을 찍으면 좋은지 9장의 안내 카드로 다시 확인합니다.</p>
+          <button type="button" id="btn-open-guide-from-settings" class="btn-primary">
+            📖 이렇게 남겨 보세요 (9장 카드 보기)
+          </button>
+        </div>
+
+        <!-- 10장: 용량 관리 -->
+        <div class="setting-card">
+          <h2 class="setting-title">9. 폰 저장 공간 안내</h2>
+          <p id="settings-storage-info" class="setting-desc">현재 저장된 사진: 0장 (사용 용량: 0.00 MB)</p>
+        </div>
+
+        <!-- 내 설정 완료 후 '오늘의 브이로그 시작하기'로 이동하는 하단 대형 버튼 -->
+        <div class="setting-card" style="background-color: #FFF9DB; border-width: 4px;">
+          <button type="button" id="btn-complete-settings-bottom" class="btn-camera-giant">
+            🎬 내 설정 완료 · 오늘의 브이로그 시작하기
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         모달 1: 9장의 사용법 안내 카드 (9장: 이렇게 남겨 보세요)
+         ========================================================= -->
+    <div id="modal-guide" class="modal-backdrop" role="dialog" aria-modal="true" aria-label="사용법 안내">
+      <div class="modal-sheet">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <span id="guide-step-indicator" class="guide-step-badge">1 / 9</span>
+          <button type="button" id="btn-guide-skip" class="btn-back">
+            ✖ 건너뛰기
+          </button>
+        </div>
+
+        <div class="guide-card-visual">
+          <div id="guide-card-emoji" class="guide-emoji">🎬</div>
+          <h2 id="guide-card-title" class="guide-card-title">오늘의 브이로그 시작하기</h2>
+          <p id="guide-card-desc" class="guide-card-desc">
+            오늘 눈에 띄는 순간을 한 컷씩 찍으면,
+            그날의 브이로그 영상으로 자동 완성됩니다.
+          </p>
+        </div>
+
+        <div style="display: flex; gap: 12px;">
+          <button type="button" id="btn-guide-prev" class="btn-secondary" style="flex: 1;">
+            ◀ 이전
+          </button>
+          <button type="button" id="btn-guide-next" class="btn-primary" style="flex: 2;">
+            다음 ▶
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================================================
+         모달 2: 컷 크게 보기 · 글 넣기 · 지우기 (T-1 ~ T-5, U-4, U-10)
+         ========================================================= -->
+    <div id="modal-cut-detail" class="modal-backdrop" role="dialog" aria-modal="true" aria-label="사진 크게 보기 및 글 넣기">
+      <div class="modal-sheet">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+          <button type="button" id="btn-cut-modal-close" class="btn-back">
+            ◀ 뒤로
+          </button>
+          <strong id="cut-modal-time" style="font-size: var(--font-subtitle);">오전 10:32</strong>
+          <!-- U-4: 컷을 크게 본 화면에는 "크게 보기" 버튼을 따로 둔다 -->
+          <button type="button" id="btn-cut-zoom-toggle" class="btn-secondary" style="width: auto; padding: 10px 16px;">
+            🔍 크게 보기
+          </button>
+        </div>
+
+        <div id="cut-viewer-stage" class="viewer-image-stage" title="두 번 두드리면 확대됩니다">
+          <img id="cut-modal-img" src="" alt="선택한 사진" />
+        </div>
+
+        <!-- 현장음 재생 버튼 (현장음이 있는 컷일 때 표시) -->
+        <button type="button" id="btn-cut-play-audio" class="btn-secondary" style="display: none;">
+          🔊 녹음된 현장 소리 듣기 (2초)
+        </button>
+
+        <!-- T-1 ~ T-5: 컷에 글 넣기 (40자 이내, 두 줄까지, 말로 쓰기 지원) -->
+        <div class="setting-card" style="padding: 16px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+            <label for="input-cut-caption" class="setting-title">✍️ 사진에 글 넣기 (40자 이내)</label>
+            <span id="cut-caption-counter" style="font-weight: 900;">0 / 40자</span>
+          </div>
+
+          <textarea
+            id="input-cut-caption"
+            class="setting-input"
+            rows="2"
+            maxlength="40"
+            placeholder="여기에 짧은 글을 적거나 '말로 쓰기'를 눌러 말씀해 보세요."
+          ></textarea>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <!-- T-3: 자판 대신 말로 입력할 수 있도록 "말로 쓰기" 버튼을 입력창 옆에 둔다 -->
+            <button type="button" id="btn-voice-dictate" class="btn-secondary">
+              🎤 말로 쓰기
+            </button>
+            <button type="button" id="btn-save-caption" class="btn-primary">
+              💾 글 저장하기
+            </button>
+          </div>
+          <button type="button" id="btn-clear-caption" class="btn-secondary" style="min-height: 56px;">
+            🧹 글 지우기
+          </button>
+        </div>
+
+        <!-- U-10: 지우기는 "이 사진을 지울까요?" 확인을 한 번 거친다 -->
+        <button type="button" id="btn-cut-delete-ask" class="btn-danger" style="width: 100%;">
+          🗑️ 이 사진 지우기
+        </button>
+
+        <div id="cut-delete-confirm-box" class="export-options-box" style="display: none; background-color: #FEE2E2;">
+          <p style="margin: 0; font-weight: 900; text-align: center; color: #111111;">
+            이 사진을 지울까요?
+          </p>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <button type="button" id="btn-cut-delete-cancel" class="btn-secondary">
+              아니오 (유지)
+            </button>
+            <button type="button" id="btn-cut-delete-confirm" class="btn-danger">
+              예, 지웁니다
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================================================
+         모달 3: 카메라·마이크 권한 안내 창 (K-7: 처음 쓸 때 큰 글씨로 설명)
+         ========================================================= -->
+    <div id="modal-permission" class="modal-backdrop" role="dialog" aria-modal="true" aria-label="카메라 권한 안내">
+      <div class="modal-sheet">
+        <h2 class="guide-card-title" style="text-align: center;">📷 카메라와 소리 권한 안내</h2>
+        <p class="guide-card-desc" style="text-align: center;">
+          오늘의 순간을 사진으로 찍고, 원하실 때 2초 현장 소리를 함께 담기 위해 카메라와 마이크 사용 허용이 필요합니다.
+        </p>
+        <p class="empty-guide-msg">
+          찍은 사진과 영상은 이 폰 안에만 안전하게 보관됩니다.
+        </p>
+        <button type="button" id="btn-permission-confirm" class="btn-camera-giant">
+          ✅ 확인하고 카메라 열기
+        </button>
+      </div>
+    </div>
+
+    <!-- U-11: 최소 4초간 보이는 안내 토스트 -->
+    <div id="toast-banner" class="toast-banner" role="status" aria-live="polite"></div>
+
+  </div>
+
+  <script src="./db.js"></script>
+  <script src="./vlog-engine.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
 
