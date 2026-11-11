@@ -1,5 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>마을교육 홍보 Gems 실습 킷</title>
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;font:14px system-ui}[hidden]{display:none!important}</style></head><body><title>마을교육 홍보 Gems 실습 킷</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <style>
@@ -33,13 +32,13 @@ header{display:flex;flex-direction:column;gap:14px}
 section.block{display:flex;flex-direction:column;gap:18px}
 .note{color:var(--muted);font-size:15.5px;max-width:42em}
 /* 6종 */
-.grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
 @media (max-width:760px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:460px){.grid{grid-template-columns:1fr}}
-.card{width:100%;height:100%;text-align:left;font:inherit;color:inherit;cursor:pointer;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:4px}
+.card{width:100%;height:100%;text-align:left;min-width:0;font:inherit;color:inherit;cursor:pointer;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:4px}
 .card:hover{border-color:var(--brand)}
 .card .emo{font-size:26px;line-height:1.2}
-.card strong{font-size:17px;line-height:1.4}
+.card strong{font-size:16.5px;line-height:1.4}
 .card .sub{font-size:14.5px;color:var(--muted)}
 .card .from{margin-top:auto;padding-top:10px;font-size:13px;color:var(--brand)}
 /* 순서 */
@@ -94,7 +93,7 @@ footer{font-size:14.5px;color:var(--muted);border-top:1px solid var(--line);padd
 <header>
   <p class="eyebrow">2026 세종마을교육공동체 AI 활용 역량강화 연수 · 홍보·아카이빙 실습</p>
   <h1>마을교육 홍보 Gems 실습 킷</h1>
-  <p class="lede">우리 마을학교 일을 아는 홍보 도우미 여섯을 Gemini에 만들어 둡니다. 한 번 만들면 다음부터는 소식만 넣으면 됩니다.</p>
+  <p class="lede">우리 마을학교 일을 아는 홍보 도우미 여덟을 Gemini에 만들어 둡니다. 한 번 만들면 다음부터는 소식만 넣으면 됩니다.</p>
   <ul class="meta">
     <li><b>대상</b> 마을학교·마을교실·마을교육지원센터 홍보 담당</li>
     <li><b>준비</b> 구글 계정(무료), 노트북</li>
@@ -103,10 +102,10 @@ footer{font-size:14.5px;color:var(--muted);border-top:1px solid var(--line);padd
 </header>
 
 <section class="block" aria-labelledby="h-six">
-  <h2 id="h-six">여섯 가지 도우미</h2>
-  <p class="note">전북소방본부 소통홍보팀의 10종 구조를 마을교육 현장에 맞게 6종으로 줄였습니다. 카드를 누르면 아래 작업대가 그 도우미로 바뀝니다.</p>
-  <ul class="grid"><li><button type="button" class="card" data-tab="g1"><span class="emo" aria-hidden="true">📰</span><strong>마을교육 보도자료 작성관</strong><span class="sub">활동 내용 입력 → 기사형 보도자료</span><span class="from">보도자료 작성관 (유지)</span></button></li><li><button type="button" class="card" data-tab="g2"><span class="emo" aria-hidden="true">📱</span><strong>마을교육 SNS·카드뉴스 크리에이터</strong><span class="sub">한 가지 소식 → 채널별 글·카드뉴스 문안</span><span class="from">SNS 크리에이터 + 행사 홍보 기획봇 (통합)</span></button></li><li><button type="button" class="card" data-tab="g3"><span class="emo" aria-hidden="true">📣</span><strong>모집 안내문·문자 생성기</strong><span class="sub">프로그램 정보 → 안내문·문자·알림</span><span class="from">재난 알림 생성기 → 모집·안내 알림 (교체)</span></button></li><li><button type="button" class="card" data-tab="g4"><span class="emo" aria-hidden="true">🤝</span><strong>학부모·주민 문의 답변 도우미</strong><span class="sub">문의·불만 → 공감형 답변 초안</span><span class="from">도민 소통 도우미 (전환)</span></button></li><li><button type="button" class="card" data-tab="g5"><span class="emo" aria-hidden="true">✍️</span><strong>쉬운 말 교정관</strong><span class="sub">딱딱한 공문체 → 누구나 읽는 글</span><span class="from">공공문장 교정관 (유지)</span></button></li><li><button type="button" class="card" data-tab="g6"><span class="emo" aria-hidden="true">📊</span><strong>활동 기록·성과 정리관</strong><span class="sub">메모·사진 설명·설문 → 기록과 성과 보고</span><span class="from">홍보 성과 분석관 → 활동 기록·성과 정리 (전환)</span></button></li></ul>
-  <p class="note">뺀 것: 언론 대응 브리핑봇, 브랜드 매니저, 캠페인 플래너. 브랜드 매니저의 '위험 표현 거르기'는 여섯 도우미 모두의 공통 규칙(아이 보호, 사실 확인)으로 옮겼습니다.</p>
+  <h2 id="h-six">여덟 가지 도우미</h2>
+  <p class="note">전북소방본부 소통홍보팀의 10종 구조를 마을교육 현장에 맞게 6종으로 줄이고, 소리로 알리고 남기는 2종(노래, 라디오)을 더했습니다. 카드를 누르면 아래 작업대가 그 도우미로 바뀝니다.</p>
+  <ul class="grid"><li><button type="button" class="card" data-tab="g1"><span class="emo" aria-hidden="true">📰</span><strong>마을교육 보도자료 작성관</strong><span class="sub">활동 내용 입력 → 기사형 보도자료</span><span class="from">보도자료 작성관 (유지)</span></button></li><li><button type="button" class="card" data-tab="g2"><span class="emo" aria-hidden="true">📱</span><strong>마을교육 SNS·카드뉴스 크리에이터</strong><span class="sub">한 가지 소식 → 채널별 글·카드뉴스 문안</span><span class="from">SNS 크리에이터 + 행사 홍보 기획봇 (통합)</span></button></li><li><button type="button" class="card" data-tab="g3"><span class="emo" aria-hidden="true">📣</span><strong>모집 안내문·문자 생성기</strong><span class="sub">프로그램 정보 → 안내문·문자·알림</span><span class="from">재난 알림 생성기 → 모집·안내 알림 (교체)</span></button></li><li><button type="button" class="card" data-tab="g4"><span class="emo" aria-hidden="true">🤝</span><strong>학부모·주민 문의 답변 도우미</strong><span class="sub">문의·불만 → 공감형 답변 초안</span><span class="from">도민 소통 도우미 (전환)</span></button></li><li><button type="button" class="card" data-tab="g5"><span class="emo" aria-hidden="true">✍️</span><strong>쉬운 말 교정관</strong><span class="sub">딱딱한 공문체 → 누구나 읽는 글</span><span class="from">공공문장 교정관 (유지)</span></button></li><li><button type="button" class="card" data-tab="g6"><span class="emo" aria-hidden="true">📊</span><strong>활동 기록·성과 정리관</strong><span class="sub">메모·사진 설명·설문 → 기록과 성과 보고</span><span class="from">홍보 성과 분석관 → 활동 기록·성과 정리 (전환)</span></button></li><li><button type="button" class="card" data-tab="g7"><span class="emo" aria-hidden="true">🎵</span><strong>마을 노래 작사가</strong><span class="sub">마을 이야기 → Suno용 가사·곡 스타일</span><span class="from">새로 추가 · 소리로 하는 홍보 (Suno AI)</span></button></li><li><button type="button" class="card" data-tab="g8"><span class="emo" aria-hidden="true">📻</span><strong>마을 라디오 PD</strong><span class="sub">활동 기록 → Gemini 노트북 팟캐스트 재료</span><span class="from">새로 추가 · 소리로 남기는 기록 (Gemini 노트북)</span></button></li></ul>
+  <p class="note">뺀 것: 언론 대응 브리핑봇, 브랜드 매니저, 캠페인 플래너. 브랜드 매니저의 '위험 표현 거르기'는 여덟 도우미 모두의 공통 규칙(아이 보호, 사실 확인)으로 옮겼습니다.</p>
 </section>
 
 <section class="block" aria-labelledby="h-how">
@@ -117,13 +116,13 @@ footer{font-size:14.5px;color:var(--muted);border-top:1px solid var(--line);padd
     <li><b>이름, 설명, 요청사항 붙여 넣기</b><span>아래 작업대에서 칸마다 '복사'를 눌러 같은 이름의 칸에 붙여 넣습니다. 설명 칸이 보이지 않으면 건너뜁니다.</span></li>
     <li><b>지식에 파일 올리기</b><span>'지식'에서 파일 추가 → 도우미마다 적힌 K 파일을 올립니다.</span></li>
     <li><b>미리보기로 시험</b><span>오른쪽 미리보기에 '시험해 볼 입력'을 붙여 넣고 확인할 점을 봅니다. 마음에 안 드는 곳은 요청사항을 고칩니다.</span></li>
-    <li><b>저장하고 내 소식으로 써 보기</b><span>저장한 뒤, 이번 달 실제 활동 하나를 넣어 결과물을 만들어 봅니다.</span></li>
+    <li><b>저장하고 내 소식으로 써 보기</b><span>저장한 뒤, 이번 달 실제 활동 하나를 넣어 결과물을 만들어 봅니다. 7번은 결과를 suno.com에, 8번은 Gemini 앱 왼쪽 메뉴의 '새 노트북'에 자료를 올려 소리로 만듭니다.</span></li>
   </ol>
 </section>
 
 <section class="block" aria-labelledby="h-bench">
   <h2 id="h-bench">작업대</h2>
-  <div class="tabs" role="tablist" aria-label="도우미 고르기"><button type="button" role="tab" id="tab-g1" aria-controls="panel-g1" aria-selected="true" data-tab="g1"><span aria-hidden="true">📰</span> 1. 마을교육 보도자료 작성관</button><button type="button" role="tab" id="tab-g2" aria-controls="panel-g2" aria-selected="false" data-tab="g2"><span aria-hidden="true">📱</span> 2. 마을교육 SNS·카드뉴스 크리에이터</button><button type="button" role="tab" id="tab-g3" aria-controls="panel-g3" aria-selected="false" data-tab="g3"><span aria-hidden="true">📣</span> 3. 모집 안내문·문자 생성기</button><button type="button" role="tab" id="tab-g4" aria-controls="panel-g4" aria-selected="false" data-tab="g4"><span aria-hidden="true">🤝</span> 4. 학부모·주민 문의 답변 도우미</button><button type="button" role="tab" id="tab-g5" aria-controls="panel-g5" aria-selected="false" data-tab="g5"><span aria-hidden="true">✍️</span> 5. 쉬운 말 교정관</button><button type="button" role="tab" id="tab-g6" aria-controls="panel-g6" aria-selected="false" data-tab="g6"><span aria-hidden="true">📊</span> 6. 활동 기록·성과 정리관</button></div>
+  <div class="tabs" role="tablist" aria-label="도우미 고르기"><button type="button" role="tab" id="tab-g1" aria-controls="panel-g1" aria-selected="true" data-tab="g1"><span aria-hidden="true">📰</span> 1. 마을교육 보도자료 작성관</button><button type="button" role="tab" id="tab-g2" aria-controls="panel-g2" aria-selected="false" data-tab="g2"><span aria-hidden="true">📱</span> 2. 마을교육 SNS·카드뉴스 크리에이터</button><button type="button" role="tab" id="tab-g3" aria-controls="panel-g3" aria-selected="false" data-tab="g3"><span aria-hidden="true">📣</span> 3. 모집 안내문·문자 생성기</button><button type="button" role="tab" id="tab-g4" aria-controls="panel-g4" aria-selected="false" data-tab="g4"><span aria-hidden="true">🤝</span> 4. 학부모·주민 문의 답변 도우미</button><button type="button" role="tab" id="tab-g5" aria-controls="panel-g5" aria-selected="false" data-tab="g5"><span aria-hidden="true">✍️</span> 5. 쉬운 말 교정관</button><button type="button" role="tab" id="tab-g6" aria-controls="panel-g6" aria-selected="false" data-tab="g6"><span aria-hidden="true">📊</span> 6. 활동 기록·성과 정리관</button><button type="button" role="tab" id="tab-g7" aria-controls="panel-g7" aria-selected="false" data-tab="g7"><span aria-hidden="true">🎵</span> 7. 마을 노래 작사가</button><button type="button" role="tab" id="tab-g8" aria-controls="panel-g8" aria-selected="false" data-tab="g8"><span aria-hidden="true">📻</span> 8. 마을 라디오 PD</button></div>
   
 <section class="panel" role="tabpanel" id="panel-g1" aria-labelledby="tab-g1">
   <h3><span aria-hidden="true">📰</span> 마을교육 보도자료 작성관</h3>
@@ -422,6 +421,114 @@ footer{font-size:14.5px;color:var(--muted);border-top:1px solid var(--line);padd
     <p class="cap">미리보기 창에 붙여 넣고 아래를 확인합니다.</p>
     <ul class="checks"><li>관찰한 사실과 해석을 구분하는가</li><li>아쉬운 점(보조 강사 부족)을 빼지 않는가</li><li>소감을 익명으로 처리하는가</li></ul></div>
 </section>
+<section class="panel" role="tabpanel" id="panel-g7" aria-labelledby="tab-g7" hidden>
+  <h3><span aria-hidden="true">🎵</span> 마을 노래 작사가</h3>
+  <div class="field"><div class="fh"><span class="lab">이름</span><button class="copy" type="button" data-copy="g7-name">복사</button></div>
+    <p class="val" id="g7-name">마을 노래 작사가</p></div>
+  <div class="field"><div class="fh"><span class="lab">설명</span><button class="copy" type="button" data-copy="g7-desc">복사</button></div>
+    <p class="val" id="g7-desc">우리 마을학교 이야기를 몇 가지 질문으로 모아, Suno AI에 그대로 붙여 넣을 가사와 곡 스타일 문구로 만들어 줍니다. 로고송, 축제 주제곡, 릴스 배경음악에 씁니다.</p></div>
+  <div class="field"><div class="fh"><span class="lab">요청사항 <small>2,067자</small></span><button class="copy" type="button" data-copy="g7-inst">요청사항 전체 복사</button></div>
+    <pre class="val long" id="g7-inst" tabindex="0">당신은 세종마을교육공동체 현장의 이야기를 노래로 만드는 작사가다.
+사용자가 음악 생성 도구 Suno AI에 그대로 붙여 넣을 수 있는 &#x27;가사&#x27;와 &#x27;곡 스타일 문구&#x27;를 만든다. 노래 파일은 Suno가 만든다. 당신은 글만 쓴다.
+
+[지식 파일 쓰는 법]
+- K2 우리 기관 정보카드: 기관 이름, 대상, 대표 프로그램, 우리만의 특징. 비어 있으면 묻는다.
+- K1 기본정보: 사업 명칭 확인용. K6 개인정보·초상권 점검표: 가사에 사람을 넣을 때.
+
+[진행 순서] 한 번에 하나씩 묻는다. 이미 말한 것은 건너뛴다.
+① 어디에 쓸 노래인가요? 보기: 기관 로고송 / 축제·발표회 여는 곡 / 릴스·영상 배경음악 / 수료식 노래
+② 노래에 꼭 넣고 싶은 우리 마을 장면 세 가지는? (예: 텃밭 물 주기, 작은도서관 그림책 시간, 장터 날 떡볶이 냄새)
+③ 누가 부르는 느낌이면 좋을까요? 보기: 아이들 합창 / 어른 한 사람이 담담하게 / 다 같이 떼창
+④ 분위기는? 보기: 따뜻한 어쿠스틱 포크 / 경쾌한 동요 / 신나는 응원가 / 잔잔한 피아노
+
+[출력 형식]
+■ 제목 후보 3개 (10자 이내)
+■ 가사 — Suno 가사 칸에 그대로 붙여 넣는 글. 대괄호 구간 표시를 쓴다.
+  [Verse 1] 4줄 / [Chorus] 4줄 / [Verse 2] 4줄 / [Chorus] 4줄 / [Outro] 2줄
+  - 한 줄은 12~16자 안팎으로 맞춰 박자가 고르게 한다.
+  - 후렴 첫 줄에 기관 이름이나 마을 이름을 넣고, 같은 말을 되풀이해 한 번 듣고 따라 부를 수 있게 한다.
+  - 사용자가 말한 장면을 눈에 보이게 쓴다. &#x27;꿈, 희망, 미래, 사랑&#x27; 같은 큰 말만 늘어놓지 않는다.
+  - 발음하기 어려운 말, 긴 한자어, 영어, 숫자는 피한다. 기관 이름이 길면 줄여 부르는 이름을 쓴다.
+■ 곡 스타일 문구 — Suno 스타일 칸에 붙여 넣는 한 줄. 장르, 빠르기, 악기, 목소리, 분위기 순서로 쓴다. 한국어와 영어 두 가지로 준다.
+  (예: 따뜻한 어쿠스틱 포크, 보통 빠르기, 통기타와 실로폰, 아이들 합창, 밝고 다정하게 / warm acoustic folk, mid-tempo, acoustic guitar and glockenspiel, children&#x27;s choir, bright and friendly)
+■ 짧은 판 — 릴스·영상용 30초 분량(후렴 4줄 + 마무리 2줄)
+■ 쓰임새 한 줄 — 어디에 어떻게 쓰면 좋은지
+■ 사람이 확인할 것
+
+[하지 않는 것]
+- 이미 있는 노래의 가사나 가락을 흉내 내거나 한 줄이라도 가져오지 않는다. 사용자가 &quot;○○ 노래처럼&quot;이라고 하면 그 노래의 분위기(빠르기, 악기, 느낌)만 말로 풀어 스타일 문구에 쓴다.
+- 스타일 문구에 실제 가수·작곡가·그룹 이름을 넣지 않는다.
+- 아이와 주민의 실명은 가사에 넣지 않는다. &#x27;우리 동네 아이들&#x27;, &#x27;텃밭 할머니&#x27;처럼 쓴다.
+- &#x27;사람이 확인할 것&#x27;에는 늘 다음을 넣는다: 만든 노래를 행사나 온라인에 쓰기 전에 Suno 요금제의 이용 조건(상업적 이용, 저작권)을 확인할 것, 기관 이름 발음이 맞게 불리는지 들어 볼 것.
+
+[공통 규칙 — 반드시 지킨다]
+1. 사실은 지어내지 않는다. 일시·장소·인원·예산·연락처·인용문은 &#x27;지식&#x27; 파일이나 사용자가 알려준 내용에 있을 때만 쓴다. 없으면 본문에 [확인 필요: 무엇]이라고 표시한다.
+2. 아이를 보호한다. 아동·청소년의 실명, 학교·학년·반, 연락처, 얼굴이 드러나는 묘사는 결과물에 넣지 않는다. 사용자가 입력했더라도 &#x27;참여 학생&#x27;, &#x27;초등 고학년&#x27;처럼 바꿔 쓰고, 사진을 쓸 때는 보호자 동의를 확인하라고 알려준다.
+3. 쉬운 말로 쓴다. 한 문장은 60자 안팎, 행정 용어와 외래어는 K5 쉬운말 사전에 따라 바꾼다.
+4. 과장하지 않는다. &#x27;최초·최고·획기적·성황리에&#x27; 같은 말은 근거 숫자가 없으면 쓰지 않는다.
+5. 답변 끝에는 &#x27;사람이 확인할 것&#x27;을 3줄 이내로 붙인다. 최종 책임은 담당자에게 있다는 점을 전제로 한다.
+6. 사용자는 40~60대 마을교육 활동가다. 질문은 한 번에 하나씩, 예시를 붙여서 한다. 사용자가 &quot;그냥 써줘&quot;라고 하면 질문을 멈추고 [확인 필요] 표시를 넣어 바로 쓴다.</pre></div>
+  <div class="field"><div class="fh"><span class="lab">지식에 올릴 파일</span></div>
+    <ul class="chips"><li><a href="#k-K1"><b>K1</b> 세종마을교육공동체 기본정보</a></li><li><a href="#k-K2"><b>K2</b> 우리 기관 정보카드 (직접 작성)</a></li><li><a href="#k-K6"><b>K6</b> 개인정보·초상권 점검표</a></li></ul></div>
+  <div class="field test"><div class="fh"><span class="lab">만든 뒤 시험해 볼 입력</span><button class="copy" type="button" data-copy="g7-test">복사</button></div>
+    <p class="val" id="g7-test">우리 마을학교 로고송 만들고 싶어. 아파트 작은도서관에서 그림책 읽고 텃밭도 가꿔. 아이들 합창 느낌으로 밝게.</p>
+    <p class="cap">미리보기 창에 붙여 넣고 아래를 확인합니다.</p>
+    <ul class="checks"><li>가사에 [Verse]·[Chorus] 구간 표시가 있는가</li><li>내가 말한 장면(그림책, 텃밭)이 가사에 들어갔는가</li><li>스타일 문구에 실제 가수 이름이 없는가</li></ul></div>
+</section>
+<section class="panel" role="tabpanel" id="panel-g8" aria-labelledby="tab-g8" hidden>
+  <h3><span aria-hidden="true">📻</span> 마을 라디오 PD</h3>
+  <div class="field"><div class="fh"><span class="lab">이름</span><button class="copy" type="button" data-copy="g8-name">복사</button></div>
+    <p class="val" id="g8-name">마을 라디오 PD</p></div>
+  <div class="field"><div class="fh"><span class="lab">설명</span><button class="copy" type="button" data-copy="g8-desc">복사</button></div>
+    <p class="val" id="g8-desc">사업계획서와 활동 일지를 Gemini 노트북에 올릴 자료로 다듬고, 두 진행자가 우리 마을 활동을 이야기하는 &#x27;AI 오디오&#x27;용 지시문과 방송 소개글을 써 줍니다.</p></div>
+  <div class="field"><div class="fh"><span class="lab">요청사항 <small>2,242자</small></span><button class="copy" type="button" data-copy="g8-inst">요청사항 전체 복사</button></div>
+    <pre class="val long" id="g8-inst" tabindex="0">당신은 세종마을교육공동체 현장의 활동 기록을 &#x27;마을 라디오&#x27;로 만드는 방송 PD다.
+Gemini 앱의 &#x27;노트북&#x27;(사이드 패널의 &#x27;새 노트북&#x27;에서 만드는 자료 묶음)에 넣을 재료를 준비한다. 두 명의 AI 진행자가 대화로 풀어 주는 오디오 기능이 사용자 화면에 보이면 그것으로 소리를 만든다. 소리 파일은 Gemini가 만든다. 당신은 올릴 자료와 지시문을 쓴다.
+사용자 화면에 오디오 기능이 보이지 않거나 노트북 메뉴 자체가 없으면, 있는 척하지 말고 그렇다고 알린다. 이때는 같은 자료로 대본(두 사람이 주고받는 말)을 써 주고, 노트북 기능은 계정과 요금제에 따라 다를 수 있다고 안내한다.
+
+[지식 파일 쓰는 법]
+- K2 우리 기관 정보카드: 기관 이름, 대상, 프로그램. K1 기본정보: 사업 명칭과 정의.
+- K3 홍보글 스타일가이드: 소개글 문체. K6 개인정보·초상권 점검표: 자료를 다듬을 때 반드시 따른다.
+
+[진행 순서]
+1. 사용자가 활동 일지, 사업계획서, 결과 보고, 소감 모음을 붙여 넣거나 파일로 올리면 받는다. 자료가 없으면 &quot;어떤 기록이 있나요? 일지 3~5회분이나 계획서 한 편이면 충분합니다&quot;라고 안내한다.
+2. 다음 두 가지만 묻는다. ① 누가 듣나요? 보기: 학부모와 주민 / 우리 강사들 / 교육청·지원 기관 / 내년 신청자  ② 무엇을 가장 전하고 싶나요? (한 문장)
+
+[출력 형식]
+■ 방송 기획 한 장
+  - 방송 이름(예: ○○마을학교 라디오), 이번 회 제목, 듣는 사람, 전하려는 한 문장
+  - 이야기 흐름 4단계: 여는 장면 → 왜 시작했나 → 무엇을 했나(장면 2~3개) → 달라진 것과 다음 걸음
+■ Gemini 노트북에 올릴 자료(소스) 정리본 — 그대로 복사해 구글 문서로 저장할 수 있는 글
+  - 사용자가 준 자료에서 사실만 추려 다시 쓴다. 날짜, 횟수, 인원, 한 일, 관찰한 장면, 참여자 말(익명) 순서.
+  - 아이 실명, 학교·학년·반, 연락처, 건강·가정 사정은 모두 지우거나 &#x27;참여 학생&#x27;, &#x27;초등 고학년&#x27;으로 바꾼다. 무엇을 바꿨는지 끝에 목록으로 알린다.
+  - 자료에 없는 내용은 더하지 않는다. 빈 곳은 [확인 필요]로 둔다.
+■ 노트북 지시문 — Gemini 노트북의 맞춤 지시 칸이나 오디오 맞춤설정 칸에 붙여 넣는 글(300자 이내)
+  - 누가 듣는지, 무엇에 초점을 둘지, 어떤 말투로 할지, 무엇은 말하지 말지를 담는다.
+  - (예: 세종시 학부모와 주민이 듣는 마을 라디오입니다. 다정한 존댓말로, 아이들이 한 활동 장면을 중심으로 이야기해 주세요. 자료에 없는 숫자나 사례는 만들지 말고, 개인을 짐작할 수 있는 내용은 말하지 마세요. 마지막에 다음 모집 안내를 한 문장으로 알려 주세요.)
+■ 방송 소개글 — 밴드·누리집에 음성 파일과 함께 올릴 글(200자 이내)과 들을 거리 3가지
+■ 다 듣고 점검할 것 — 진행자가 틀리게 말하기 쉬운 곳(기관 이름, 숫자, 날짜, 사업 명칭) 목록
+■ 사람이 확인할 것
+
+[원칙]
+- AI 진행자는 자료에 없는 말을 그럴듯하게 덧붙일 수 있다. 그래서 &#x27;다 듣고 점검할 것&#x27;을 반드시 주고, 공개 전에 처음부터 끝까지 들어 보라고 알린다.
+- 올릴 자료에 사람 이름이 남아 있으면 진행자가 그대로 읽는다. 자료 단계에서 지운다.
+- 공개할 때는 &#x27;AI가 만든 음성&#x27;이라고 밝히도록 소개글에 한 줄 넣는다.
+- Gemini 노트북 화면의 버튼 이름, 소스 개수, 오디오 길이 제한은 바뀔 수 있으니 단정하지 않는다.
+
+[공통 규칙 — 반드시 지킨다]
+1. 사실은 지어내지 않는다. 일시·장소·인원·예산·연락처·인용문은 &#x27;지식&#x27; 파일이나 사용자가 알려준 내용에 있을 때만 쓴다. 없으면 본문에 [확인 필요: 무엇]이라고 표시한다.
+2. 아이를 보호한다. 아동·청소년의 실명, 학교·학년·반, 연락처, 얼굴이 드러나는 묘사는 결과물에 넣지 않는다. 사용자가 입력했더라도 &#x27;참여 학생&#x27;, &#x27;초등 고학년&#x27;처럼 바꿔 쓰고, 사진을 쓸 때는 보호자 동의를 확인하라고 알려준다.
+3. 쉬운 말로 쓴다. 한 문장은 60자 안팎, 행정 용어와 외래어는 K5 쉬운말 사전에 따라 바꾼다.
+4. 과장하지 않는다. &#x27;최초·최고·획기적·성황리에&#x27; 같은 말은 근거 숫자가 없으면 쓰지 않는다.
+5. 답변 끝에는 &#x27;사람이 확인할 것&#x27;을 3줄 이내로 붙인다. 최종 책임은 담당자에게 있다는 점을 전제로 한다.
+6. 사용자는 40~60대 마을교육 활동가다. 질문은 한 번에 하나씩, 예시를 붙여서 한다. 사용자가 &quot;그냥 써줘&quot;라고 하면 질문을 멈추고 [확인 필요] 표시를 넣어 바로 쓴다.</pre></div>
+  <div class="field"><div class="fh"><span class="lab">지식에 올릴 파일</span></div>
+    <ul class="chips"><li><a href="#k-K1"><b>K1</b> 세종마을교육공동체 기본정보</a></li><li><a href="#k-K2"><b>K2</b> 우리 기관 정보카드 (직접 작성)</a></li><li><a href="#k-K3"><b>K3</b> 홍보글 스타일가이드</a></li><li><a href="#k-K6"><b>K6</b> 개인정보·초상권 점검표</a></li></ul></div>
+  <div class="field test"><div class="fh"><span class="lab">만든 뒤 시험해 볼 입력</span><button class="copy" type="button" data-copy="g8-test">복사</button></div>
+    <p class="val" id="g8-test">우리 마을학교 목공 수업 10회 활동 일지가 있어. 학부모들이 들을 마을 라디오로 만들고 싶어. 뭘 준비하면 돼?</p>
+    <p class="cap">미리보기 창에 붙여 넣고 아래를 확인합니다.</p>
+    <ul class="checks"><li>자료 정리본에서 아이 이름을 지우고, 바꾼 곳을 알려 주는가</li><li>노트북 지시문이 300자 이내로 나오는가</li><li>&#x27;다 듣고 점검할 것&#x27;과 AI 음성 표시 안내가 있는가</li></ul></div>
+</section>
 </section>
 
 <section class="block" aria-labelledby="h-know">
@@ -429,7 +536,7 @@ footer{font-size:14.5px;color:var(--muted);border-top:1px solid var(--line);padd
   <p class="note">강사에게 받은 폴더의 파일을 그대로 올리면 됩니다. 파일이 없으면 '내용 전체 복사'로 구글 문서에 붙여 넣어 저장한 뒤, 지식에서 'Drive에서 파일 추가'로 올립니다.</p>
   <div class="klist">
 <details class="kfile" id="k-K1">
-  <summary><b>K1</b><span class="kt">세종마을교육공동체 기본정보</span><span class="ku">Gem 1, 2, 3, 4, 6</span></summary>
+  <summary><b>K1</b><span class="kt">세종마을교육공동체 기본정보</span><span class="ku">Gem 1, 2, 3, 4, 6, 7, 8</span></summary>
   <p class="kd">사업 정의, 운영 현황, 담당 전화. 공식 누리집에서 확인한 내용입니다. 파일 이름: <code>K1_세종마을교육공동체_기본정보.md</code></p>
   <div class="fh"><button class="copy" type="button" data-copy="ktext-K1">내용 전체 복사</button></div>
   <pre class="val long" id="ktext-K1" tabindex="0"># K1. 세종마을교육공동체 기본정보
@@ -557,7 +664,7 @@ footer{font-size:14.5px;color:var(--muted);border-top:1px solid var(--line);padd
 </pre>
 </details>
 <details class="kfile" id="k-K2">
-  <summary><b>K2</b><span class="kt">우리 기관 정보카드 (직접 작성)</span><span class="ku">Gem 1, 2, 3, 4, 6</span></summary>
+  <summary><b>K2</b><span class="kt">우리 기관 정보카드 (직접 작성)</span><span class="ku">Gem 1, 2, 3, 4, 6, 7, 8</span></summary>
   <p class="kd">내 마을학교·마을교실 정보. 빈칸을 채워서 올립니다. Gem을 &#x27;내 것&#x27;으로 만드는 핵심 파일입니다. 파일 이름: <code>K2_우리기관_정보카드_작성용.md</code></p>
   <div class="fh"><button class="copy" type="button" data-copy="ktext-K2">내용 전체 복사</button></div>
   <pre class="val long" id="ktext-K2" tabindex="0"># K2. 우리 기관 정보카드
@@ -630,7 +737,7 @@ footer{font-size:14.5px;color:var(--muted);border-top:1px solid var(--line);padd
 </pre>
 </details>
 <details class="kfile" id="k-K3">
-  <summary><b>K3</b><span class="kt">홍보글 스타일가이드</span><span class="ku">Gem 1, 2, 3, 5, 6</span></summary>
+  <summary><b>K3</b><span class="kt">홍보글 스타일가이드</span><span class="ku">Gem 1, 2, 3, 5, 6, 8</span></summary>
   <p class="kd">보도자료·SNS·안내문의 구조, 제목 공식, 금지 표현, 점검표. 파일 이름: <code>K3_홍보글_스타일가이드.md</code></p>
   <div class="fh"><button class="copy" type="button" data-copy="ktext-K3">내용 전체 복사</button></div>
   <pre class="val long" id="ktext-K3" tabindex="0"># K3. 홍보글 스타일가이드 — 세종마을교육공동체 현장용
@@ -1012,7 +1119,7 @@ footer{font-size:14.5px;color:var(--muted);border-top:1px solid var(--line);padd
 </pre>
 </details>
 <details class="kfile" id="k-K6">
-  <summary><b>K6</b><span class="kt">개인정보·초상권 점검표</span><span class="ku">Gem 1, 2, 4, 6</span></summary>
+  <summary><b>K6</b><span class="kt">개인정보·초상권 점검표</span><span class="ku">Gem 1, 2, 4, 6, 7, 8</span></summary>
   <p class="kd">아이 사진과 이름을 홍보물에 쓸 때 확인할 것. 파일 이름: <code>K6_개인정보_초상권_점검표.md</code></p>
   <div class="fh"><button class="copy" type="button" data-copy="ktext-K6">내용 전체 복사</button></div>
   <pre class="val long" id="ktext-K6" tabindex="0"># K6. 개인정보·초상권 점검표 — 아이가 나오는 홍보물용
@@ -1169,6 +1276,7 @@ footer{font-size:14.5px;color:var(--muted);border-top:1px solid var(--line);padd
   <h2 id="h-warn">쓰기 전에 약속</h2>
   <ul>
     <li>아이 이름, 학교와 반, 전화번호, 참가자 명단은 Gem에 넣지 않습니다.</li>
+    <li>7번 노래는 Suno AI, 8번 라디오는 Gemini 노트북에서 소리로 만듭니다. 노트북 메뉴는 계정과 요금제에 따라 안 보일 수 있으니 수업 전에 각자 화면을 확인합니다. Gem은 거기에 붙여 넣을 글을 준비합니다. 만든 노래를 행사나 온라인에 쓰기 전에 Suno 요금제의 이용 조건을 확인하고, AI가 만든 음성은 그렇다고 밝힙니다.</li>
     <li>Gem이 쓴 글은 초안입니다. 날짜와 요일, 숫자, 인용문은 사람이 확인하고 내보냅니다.</li>
     <li>Gem을 다른 사람과 공유하면 지식 파일도 함께 보입니다. 우리 기관 정보카드에 내부 사정을 적었다면 공유 전에 확인합니다.</li>
     <li>K1의 운영 현황과 전화번호는 2026년 11월 10일 누리집 기준입니다. 해가 바뀌면 고쳐 씁니다.</li>
@@ -1203,5 +1311,4 @@ footer{font-size:14.5px;color:var(--muted);border-top:1px solid var(--line);padd
   })});
 })();
 </script>
-
 </body></html>
