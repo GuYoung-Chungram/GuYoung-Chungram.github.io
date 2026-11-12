@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>직장인 업무자동화 진단 & 실행 로드맵 코치</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: "Pretendard", "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+  .fade-up { animation: fadeUp .6s ease both; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+  #gaugeArc { transition: stroke-dashoffset 1.4s cubic-bezier(.2,.8,.2,1), stroke .6s; }
+  .chip input:checked + span { background: #4f46e5; color: #fff; border-color: #4f46e5; }
+  .dot { transition: transform .2s; }
+  .dot:hover { transform: translate(-50%, -50%) scale(1.25); z-index: 20; }
+  #toast { transition: opacity .3s, transform .3s; }
+</style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+<!-- 1. 헤더 -->
+<header class="bg-gradient-to-br from-indigo-600 via-indigo-600 to-violet-600 text-white">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
+      <div>
+        <span class="inline-block text-xs font-semibold bg-white/15 rounded-full px-3 py-1 mb-4">⚡ AI 업무 프로세스 진단</span>
+        <h1 class="text-2xl sm:text-4xl font-extrabold leading-tight">직장인 업무자동화 진단 &amp;<br class="hidden sm:block"> 실행 로드맵 코치</h1>
+        <p class="mt-3 text-indigo-100 text-sm sm:text-base">내 일상 업무 중 AI와 도구로 칼퇴할 수 있는 일을 찾아드립니다</p>
+      </div>
+      <button id="btnSample" class="shrink-0 bg-white text-indigo-700 font-semibold rounded-xl px-5 py-3 shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition">
+        🎯 예시 데이터 채우기
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-5xl mx-auto px-4 sm:px-6 -mt-6 pb-20 space-y-8">
+
+  <!-- 2. 업무 입력 -->
+  <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-8">
+    <h2 class="text-lg font-bold flex items-center gap-2">📝 내 업무 입력하기</h2>
+    <p class="text-sm text-slate-500 mt-1">3가지만 알려주시면 됩니다. 1분이면 충분해요.</p>
+
+    <div class="mt-6 space-y-6">
+      <div>
+        <label for="job" class="block text-sm font-semibold mb-2">① 직무 선택</label>
+        <select id="job" class="w-full sm:w-72 rounded-xl border border-slate-300 bg-white px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"></select>
+      </div>
+
+      <div>
+        <p class="text-sm font-semibold mb-2">② 자주 하는 반복 업무 <span class="font-normal text-slate-400">(여러 개 선택)</span></p>
+        <div id="taskChips" class="flex flex-wrap gap-2"></div>
+        <textarea id="custom" rows="2" placeholder="목록에 없는 업무는 직접 입력하세요 (줄바꿈 또는 쉼표로 구분)&#10;예: 주간 업무보고 취합, 출장비 정산"
+          class="mt-3 w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+      </div>
+
+      <div>
+        <label for="bottleneck" class="block text-sm font-semibold mb-2">③ 가장 많은 시간을 뺏기는 병목 작업</label>
+        <input id="bottleneck" type="text" placeholder="예: 각 부서에서 받은 엑셀 자료를 하나로 취합해 보고서 만들기"
+          class="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      </div>
+
+      <p id="formMsg" class="hidden text-sm text-rose-600 font-medium"></p>
+
+      <div class="flex flex-col sm:flex-row gap-3">
+        <button id="btnDiagnose" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl px-8 py-4 shadow-md hover:shadow-lg transition">
+          🔍 내 업무 자동화 진단하기
+        </button>
+        <button id="btnReset" type="button" class="w-full sm:w-auto bg-white hover:bg-slate-100 text-slate-600 font-semibold rounded-xl px-6 py-4 border border-slate-300 transition">
+          🔄 초기화
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. 결과 대시보드 -->
+  <div id="result" class="hidden space-y-8">
+
+    <!-- 게이지 -->
+    <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-8">
+      <h2 class="text-lg font-bold">📊 자동화 가능 지수</h2>
+      <div class="mt-4 grid sm:grid-cols-2 gap-6 items-center">
+        <div class="relative mx-auto w-full max-w-xs">
+          <svg viewBox="0 0 220 125" class="w-full">
+            <path d="M 20 110 A 90 90 0 0 1 200 110" fill="none" stroke="#e2e8f0" stroke-width="18" stroke-linecap="round"/>
+            <path id="gaugeArc" d="M 20 110 A 90 90 0 0 1 200 110" fill="none" stroke="#4f46e5" stroke-width="18" stroke-linecap="round"
+              stroke-dasharray="282.74" stroke-dashoffset="282.74"/>
+          </svg>
+          <div class="absolute inset-x-0 bottom-1 text-center">
+            <span id="scoreNum" class="text-5xl font-extrabold text-slate-900">0</span><span class="text-xl font-bold text-slate-500">%</span>
+          </div>
+        </div>
+        <div>
+          <p id="scoreTitle" class="text-xl font-bold"></p>
+          <p id="scoreComment" class="mt-2 text-sm text-slate-600 leading-relaxed"></p>
+          <div class="mt-4 grid grid-cols-3 gap-2 text-center">
+            <div class="rounded-xl bg-emerald-50 py-3"><p id="cntQ" class="text-xl font-extrabold text-emerald-600">0</p><p class="text-xs text-slate-500">즉시 자동화</p></div>
+            <div class="rounded-xl bg-amber-50 py-3"><p id="cntS" class="text-xl font-extrabold text-amber-600">0</p><p class="text-xs text-slate-500">단계적 자동화</p></div>
+            <div class="rounded-xl bg-sky-50 py-3"><p id="cntH" class="text-xl font-extrabold text-sky-600">0</p><p class="text-xs text-slate-500">사람 유지</p></div>
+          </div>
+          <p class="mt-3 text-xs text-slate-400">※ 예상 절감 잠재력: 주당 약 <b id="hours" class="text-slate-600">0</b>시간 (일반적인 업무 패턴 기준 추정치)</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3단계 분류 -->
+    <section>
+      <h2 class="text-lg font-bold mb-4">🗂️ 업무 3단계 분류</h2>
+      <div class="grid md:grid-cols-3 gap-4">
+        <div class="bg-white rounded-2xl border border-slate-200 border-t-4 border-t-emerald-500 shadow-sm p-5">
+          <p class="text-xs font-bold text-emerald-600">① QUICK-WIN</p>
+          <h3 class="font-bold mt-1">⚡ 즉시 자동화</h3>
+          <p class="text-xs text-slate-500 mt-1">오늘 바로 AI로 끝낼 수 있는 일</p>
+          <ul id="listQ" class="mt-4 space-y-2 text-sm"></ul>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200 border-t-4 border-t-amber-500 shadow-sm p-5">
+          <p class="text-xs font-bold text-amber-600">② STEP-BY-STEP</p>
+          <h3 class="font-bold mt-1">🔧 단계적 자동화</h3>
+          <p class="text-xs text-slate-500 mt-1">엑셀/노코드 툴 연계가 필요한 일</p>
+          <ul id="listS" class="mt-4 space-y-2 text-sm"></ul>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200 border-t-4 border-t-sky-500 shadow-sm p-5">
+          <p class="text-xs font-bold text-sky-600">③ KEEP HUMAN</p>
+          <h3 class="font-bold mt-1">🤝 사람 유지</h3>
+          <p class="text-xs text-slate-500 mt-1">대면 소통과 최종 결정</p>
+          <ul id="listH" class="mt-4 space-y-2 text-sm"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 매트릭스 -->
+    <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-8">
+      <h2 class="text-lg font-bold">🎯 2x2 우선순위 매트릭스</h2>
+      <p class="text-sm text-slate-500 mt-1">왼쪽 위에 있을수록 "적은 노력으로 큰 시간을 아끼는" 일입니다. 여기부터 시작하세요.</p>
+      <div class="mt-6 grid lg:grid-cols-5 gap-6">
+        <div class="lg:col-span-3 flex gap-2">
+          <div class="flex items-center"><span class="text-xs text-slate-500 font-semibold" style="writing-mode:vertical-rl;transform:rotate(180deg)">시간 절감 효과 ↑</span></div>
+          <div class="flex-1">
+            <div id="matrix" class="relative w-full aspect-square sm:aspect-[4/3] rounded-xl overflow-hidden border border-slate-200">
+              <div class="absolute inset-0 grid grid-cols-2 grid-rows-2">
+                <div class="bg-emerald-50 p-2 text-xs font-bold text-emerald-700 border-r border-b border-white">🚀 지금 당장 (Quick-Win)</div>
+                <div class="bg-amber-50 p-2 text-xs font-bold text-amber-700 text-right border-b border-white">📅 계획 세워 도전</div>
+                <div class="bg-slate-50 p-2 text-xs font-bold text-slate-500 flex items-end border-r border-white">☕ 틈날 때 개선</div>
+                <div class="bg-rose-50 p-2 text-xs font-bold text-rose-500 flex items-end justify-end">⏸️ 일단 보류</div>
+              </div>
+              <div id="dots"></div>
+            </div>
+            <p class="text-center text-xs text-slate-500 font-semibold mt-2">필요한 노력(난이도) →</p>
+          </div>
+        </div>
+        <ol id="matrixLegend" class="lg:col-span-2 space-y-2 text-sm"></ol>
+      </div>
+    </section>
+
+    <!-- 도구 사다리 -->
+    <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-8">
+      <h2 class="text-lg font-bold">🪜 수준별 추천 도구 사다리</h2>
+      <p class="text-sm text-slate-500 mt-1">1단계부터 한 칸씩 올라가세요. 처음부터 3단계에 도전하면 지칩니다.</p>
+      <div id="ladder" class="mt-6 space-y-3"></div>
+    </section>
+
+    <!-- 4. 프롬프트 생성기 -->
+    <section class="bg-slate-900 text-white rounded-2xl shadow-lg p-5 sm:p-8">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <h2 class="text-lg font-bold">✨ 내일 바로 쓰는 맞춤 프롬프트</h2>
+          <p class="text-sm text-slate-400 mt-1">1순위 과제: <b id="topTask" class="text-indigo-300"></b></p>
+        </div>
+        <select id="promptPick" class="rounded-lg bg-slate-800 border border-slate-700 text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400 max-w-full"></select>
+      </div>
+      <pre id="promptBox" class="mt-5 bg-slate-800/70 border border-slate-700 rounded-xl p-4 sm:p-5 text-sm leading-relaxed whitespace-pre-wrap break-words font-mono text-slate-100 max-h-[28rem] overflow-auto"></pre>
+      <div class="mt-4 flex flex-col sm:flex-row sm:items-center gap-3">
+        <button id="btnCopy" class="bg-indigo-500 hover:bg-indigo-400 font-bold rounded-xl px-6 py-3 transition">📋 원클릭 프롬프트 복사</button>
+        <p class="text-xs text-slate-400">복사 후 ChatGPT · Claude · Gemini 어디든 붙여넣고, [대괄호] 부분만 내 자료로 바꾸세요.</p>
+      </div>
+    </section>
+
+    <p class="text-xs text-slate-400 text-center">본 진단은 일반적인 업무 유형에 기반한 참고용 분석입니다. 개인정보·대외비 자료는 AI에 입력하기 전 조직의 보안 지침을 먼저 확인하세요.</p>
+  </div>
+</main>
+
+<div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 translate-y-4 opacity-0 pointer-events-none bg-emerald-600 text-white text-sm font-semibold rounded-full px-6 py-3 shadow-xl z-50">
+  ✅ 프롬프트가 복사되었습니다!
+</div>
+
+<script>
+// ───────── 데이터 ─────────
+// [업무명, 유형(q:즉시 / s:단계적 / h:사람), 노력(1~10), 절감효과(1~10), 추천도구, 사다리단계, 원하는 결과물]
+const JOBS = {
+  "행정/기획": [
+    ["회의록 작성·정리", "q", 2, 7, "ChatGPT·Claude에 메모/녹취 붙여넣기", 1, "결정사항·담당자·기한이 표로 정리된 회의록"],
+    ["보고서·기획안 초안 작성", "q", 3, 8, "AI로 목차→초안→다듬기 3단계", 1, "두괄식 1페이지 보고서 초안(배경-현황-제안-기대효과)"],
+    ["공문·이메일 작성", "q", 1, 6, "AI 프롬프트 템플릿", 1, "바로 발송 가능한 공문/이메일 본문"],
+    ["자료 조사·요약", "q", 2, 7, "AI 검색·문서 요약", 1, "핵심 5줄 요약 + 출처 목록"],
+    ["부서별 자료 취합(엑셀)", "s", 6, 8, "파워쿼리 / 구글시트 IMPORTRANGE", 2, ""],
+    ["일정·회의실 조율", "s", 5, 4, "구글폼+캘린더 연동, 예약 자동화", 3, ""],
+    ["상급자 보고·의사결정 지원", "h", 8, 2, "AI는 예상 질문 준비까지만", 0, ""]
+  ],
+  "마케팅": [
+    ["SNS 콘텐츠·카피 작성", "q", 2, 8, "AI 카피 초안 + 톤 가이드", 1, "채널별 카피 3가지 버전(해시태그 포함)"],
+    ["경쟁사·트렌드 리서치", "q", 3, 7, "AI 검색·요약", 1, "경쟁사 비교표 + 시사점 3가지"],
+    ["고객 리뷰·댓글 분석", "q", 3, 6, "AI 분류·감성 분석", 1, "긍정/부정 주제별 분류표 + 개선 아이디어"],
+    ["광고 성과 리포트 작성", "s", 6, 8, "구글시트 대시보드 / 루커 스튜디오", 2, ""],
+    ["뉴스레터·이메일 발송", "s", 5, 6, "스티비·메일침프 예약 발송", 3, ""],
+    ["캠페인 방향·브랜드 판단", "h", 8, 2, "AI는 대안 비교표까지만", 0, ""],
+    ["협력사·인플루언서 미팅", "h", 8, 2, "AI는 미팅 사전 브리핑까지만", 0, ""]
+  ],
+  "인사/총무": [
+    ["채용공고 작성", "q", 2, 5, "AI 프롬프트 템플릿", 1, "직무 소개·자격요건·우대사항이 담긴 채용공고"],
+    ["이력서 1차 요약 정리", "q", 3, 7, "AI 요약 (최종 판단은 사람)", 1, "지원자별 경력 요약표와 면접 질문 후보"],
+    ["사내 공지·안내문 작성", "q", 1, 5, "AI 프롬프트 템플릿", 1, "한눈에 읽히는 사내 공지문"],
+    ["근태·연차 집계", "s", 6, 7, "엑셀 피벗·함수 자동 집계", 2, ""],
+    ["비품·자산 대장 관리", "s", 5, 5, "구글시트 + 구글폼 신청 접수", 2, ""],
+    ["입퇴사 서류·안내 발송", "s", 6, 6, "Make·Zapier로 메일 자동 발송", 3, ""],
+    ["직원 면담·고충 상담", "h", 9, 1, "AI는 면담 질문 준비까지만", 0, ""]
+  ],
+  "재무/회계": [
+    ["엑셀 함수·매크로 작성", "q", 2, 7, "AI에게 수식·VBA 요청", 1, "바로 붙여넣을 수 있는 수식/매크로와 사용 설명"],
+    ["미수금 독촉 메일 작성", "q", 1, 5, "AI 프롬프트 템플릿", 1, "정중하지만 단호한 단계별 독촉 메일 3종"],
+    ["규정·계정 질의 답변 초안", "q", 3, 5, "AI + 사내 규정 문서 첨부", 1, "근거 조항이 표시된 답변 초안"],
+    ["영수증·증빙 정리 입력", "s", 6, 8, "OCR 앱 + 엑셀 자동 분류", 2, ""],
+    ["월 마감 보고서 작성", "s", 7, 8, "피벗·파워쿼리 템플릿화", 2, ""],
+    ["거래처 대금 지급 안내", "s", 5, 5, "시트 → 메일 자동 발송 연동", 3, ""],
+    ["예산 승인·자금 집행 결정", "h", 9, 1, "AI는 검토 체크리스트까지만", 0, ""]
+  ],
+  "고객응대": [
+    ["반복 문의 답변 작성", "q", 2, 8, "AI 답변 템플릿 라이브러리", 1, "문의 유형별 표준 답변 템플릿"],
+    ["상담 내용 요약·기록", "q", 2, 7, "AI 요약", 1, "문의내용·조치·후속과제 3줄 상담 기록"],
+    ["FAQ·매뉴얼 업데이트", "q", 3, 6, "AI로 문의 이력 → FAQ 변환", 1, "질문-답변 형식의 FAQ 10선"],
+    ["문의 유형 분류·통계", "s", 5, 7, "엑셀 피벗 / 구글시트 대시보드", 2, ""],
+    ["접수 → 담당자 배정 알림", "s", 6, 6, "구글폼 + Make·Zapier 알림", 3, ""],
+    ["불만 고객 직접 응대", "h", 9, 1, "AI는 응대 스크립트 연습까지만", 0, ""],
+    ["보상·예외 처리 결정", "h", 8, 2, "AI는 유사 사례 정리까지만", 0, ""]
+  ],
+  "영업": [
+    ["제안서·견적서 초안 작성", "q", 3, 8, "AI 초안 + 자사 템플릿", 1, "고객 과제-해결방안-기대효과 구조의 제안서 초안"],
+    ["고객사 사전 조사", "q", 2, 7, "AI 검색·요약", 1, "고객사 1페이지 브리핑(현황·이슈·대화 포인트)"],
+    ["미팅 후 팔로업 메일", "q", 1, 6, "AI 프롬프트 템플릿", 1, "논의사항과 다음 단계가 정리된 팔로업 메일"],
+    ["영업 실적 집계·보고", "s", 6, 7, "엑셀 피벗 / 구글시트 대시보드", 2, ""],
+    ["CRM 고객정보 입력", "s", 6, 6, "명함 스캔 + 시트·CRM 연동", 3, ""],
+    ["고객 미팅·협상", "h", 9, 1, "AI는 협상 시나리오 연습까지만", 0, ""],
+    ["가격·계약 조건 결정", "h", 8, 2, "AI는 조건 비교표까지만", 0, ""]
+  ]
+};
+
+const KW = {
+  h: ["상담", "면담", "협상", "결정", "결재", "미팅", "대면", "평가", "코칭", "설득", "면접", "승인", "응대"],
+  s3: ["발송", "알림", "예약", "일정", "연동", "crm", "배정", "접수"],
+  s: ["엑셀", "취합", "집계", "데이터", "입력", "정산", "통계", "대장", "관리", "전표", "급여", "재고", "마감", "시트", "증빙"],
+  q: ["메일", "회의록", "요약", "번역", "초안", "문서", "공문", "기안", "카피", "문구", "답변", "검색", "조사", "정리", "보고서", "작성", "공지"]
+};
+
+const SAMPLE = {
+  job: "행정/기획",
+  checks: ["회의록 작성·정리", "보고서·기획안 초안 작성", "공문·이메일 작성", "일정·회의실 조율", "상급자 보고·의사결정 지원"],
+  custom: "출장비 정산\n민원 전화 응대",
+  bottleneck: "각 부서에서 받은 엑셀 자료를 하나로 취합해 주간 보고서 만들기"
+};
+
+// ───────── 유틸 ─────────
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const has = (text, list) => list.some(k => text.toLowerCase().includes(k));
+
+function classify(text) {
+  // 직접 입력한 업무를 키워드로 분류
+  if (has(text, KW.s)) return { type: "s", effort: 6, saving: 7, tool: "엑셀 함수·피벗·파워쿼리로 템플릿화", level: 2, out: "" };
+  if (has(text, KW.s3)) return { type: "s", effort: 6, saving: 6, tool: "구글폼·시트 + Make·Zapier 연동", level: 3, out: "" };
+  if (has(text, KW.h)) return { type: "h", effort: 8, saving: 2, tool: "AI는 사전 준비·정리까지만", level: 0, out: "" };
+  if (has(text, KW.q)) return { type: "q", effort: 2, saving: 6, tool: "AI 프롬프트로 초안 작성", level: 1, out: "바로 사용할 수 있는 완성본" };
+  return { type: "s", effort: 5, saving: 5, tool: "먼저 AI와 업무 단계를 분해해 보기", level: 2, out: "" };
+}
+
+// ───────── 입력 UI ─────────
+function renderJobs() {
+  $("job").innerHTML = Object.keys(JOBS).map(j => `<option value="${j}">${j}</option>`).join("");
+}
+function renderChips(checked = []) {
+  $("taskChips").innerHTML = JOBS[$("job").value].map(t => `
+    <label class="chip cursor-pointer">
+      <input type="checkbox" class="sr-only" value="${esc(t[0])}" ${checked.includes(t[0]) ? "checked" : ""}>
+      <span class="inline-block rounded-full border border-slate-300 bg-white px-4 py-2 text-sm hover:border-indigo-400 transition select-none">${esc(t[0])}</span>
+    </label>`).join("");
+}
+
+// ───────── 진단 ─────────
+let TASKS = [], CTX = {};
+
+function collect() {
+  const job = $("job").value;
+  const tasks = [];
+  document.querySelectorAll("#taskChips input:checked").forEach(c => {
+    const t = JOBS[job].find(x => x[0] === c.value);
+    tasks.push({ name: t[0], type: t[1], effort: t[2], saving: t[3], tool: t[4], level: t[5], out: t[6], bottleneck: false });
+  });
+  $("custom").value.split(/[\n,]/).map(s => s.trim()).filter(Boolean).forEach(name => {
+    if (!tasks.some(t => t.name === name)) tasks.push({ name, ...classify(name), bottleneck: false });
+  });
+  const bn = $("bottleneck").value.trim();
+  if (bn) {
+    const c = classify(bn);
+    tasks.push({ name: bn, ...c, saving: Math.min(10, c.saving + 2), bottleneck: true });
+  }
+  return { job, bn, tasks };
+}
+
+function diagnose() {
+  const { job, bn, tasks } = collect();
+  const msg = $("formMsg");
+  if (!tasks.length) {
+    msg.textContent = "반복 업무를 1개 이상 선택하거나 직접 입력해 주세요. (상단의 '예시 데이터 채우기'로 바로 체험할 수 있어요)";
+    msg.classList.remove("hidden");
+    return;
+  }
+  msg.classList.add("hidden");
+
+  // 우선순위: 절감효과는 크게, 노력은 작게, 병목은 가산점
+  tasks.forEach(t => t.priority = t.type === "h" ? -99 : t.saving * 1.5 - t.effort + (t.bottleneck ? 3 : 0));
+  tasks.sort((a, b) => b.priority - a.priority);
+  tasks.forEach((t, i) => t.no = i + 1);
+  TASKS = tasks; CTX = { job, bn };
+
+  const Q = tasks.filter(t => t.type === "q"), S = tasks.filter(t => t.type === "s"), H = tasks.filter(t => t.type === "h");
+  const score = Math.round((Q.length * 100 + S.length * 60 + H.length * 10) / tasks.length);
+  const hours = Math.round([...Q, ...S].reduce((a, t) => a + t.saving * 0.3, 0) * 10) / 10;
+
+  renderGauge(score, hours, Q.length, S.length, H.length);
+  renderLists(Q, S, H);
+  renderMatrix(tasks);
+  renderLadder(tasks);
+  renderPrompt(tasks);
+
+  const r = $("result");
+  r.classList.remove("hidden");
+  r.querySelectorAll("section").forEach((s, i) => { s.classList.remove("fade-up"); void s.offsetWidth; s.style.animationDelay = i * 0.08 + "s"; s.classList.add("fade-up"); });
+  r.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function renderGauge(score, hours, q, s, h) {
+  const levels = [
+    [75, "#10b981", "🚀 자동화 황금밭입니다!", "업무 대부분이 AI와 도구로 줄일 수 있는 일입니다. 아래 Quick-Win부터 오늘 하나만 실행해 보세요. 한 달 뒤 퇴근 시간이 달라집니다."],
+    [50, "#4f46e5", "💪 절반 이상 덜어낼 수 있어요", "반복 업무의 상당 부분이 자동화 대상입니다. 즉시 자동화로 성공 경험을 만든 뒤, 단계적 자동화로 넘어가는 순서를 추천합니다."],
+    [30, "#f59e0b", "🌱 부분 자동화부터 시작하세요", "사람의 판단이 필요한 일이 많지만, 그 일을 준비하는 과정(자료 정리·초안 작성)은 AI에 맡길 수 있습니다."],
+    [0, "#0ea5e9", "🤝 사람의 가치가 큰 업무입니다", "대면 소통과 결정 중심의 업무입니다. 자동화보다는 AI를 '준비 비서'로 활용해 본업에 쓸 시간을 확보하세요."]
+  ];
+  const [, color, title, comment] = levels.find(l => score >= l[0]);
+  const arc = $("gaugeArc");
+  arc.style.stroke = color;
+  arc.style.strokeDashoffset = 282.74;
+  requestAnimationFrame(() => requestAnimationFrame(() => arc.style.strokeDashoffset = 282.74 * (1 - score / 100)));
+  // 숫자 카운트업
+  const start = performance.now();
+  (function tick(now) {
+    const p = Math.min(1, (now - start) / 1200);
+    $("scoreNum").textContent = Math.round(score * p);
+    if (p < 1) requestAnimationFrame(tick);
+  })(start);
+  $("scoreTitle").textContent = title;
+  $("scoreComment").textContent = comment;
+  $("cntQ").textContent = q; $("cntS").textContent = s; $("cntH").textContent = h;
+  $("hours").textContent = hours;
+}
+
+function renderLists(Q, S, H) {
+  const item = (t, cls) => `
+    <li class="rounded-xl ${cls} px-3 py-2">
+      <p class="font-semibold">${esc(t.name)} ${t.bottleneck ? '<span class="ml-1 text-[10px] font-bold bg-rose-500 text-white rounded px-1.5 py-0.5 align-middle">병목</span>' : ""}</p>
+      <p class="text-xs text-slate-500 mt-0.5">→ ${esc(t.tool)}</p>
+    </li>`;
+  const empty = '<li class="text-slate-400 text-sm">해당 업무 없음</li>';
+  $("listQ").innerHTML = Q.map(t => item(t, "bg-emerald-50")).join("") || empty;
+  $("listS").innerHTML = S.map(t => item(t, "bg-amber-50")).join("") || empty;
+  $("listH").innerHTML = H.map(t => item(t, "bg-sky-50")).join("") || empty;
+}
+
+const COLOR = { q: "bg-emerald-500", s: "bg-amber-500", h: "bg-sky-500" };
+
+function renderMatrix(tasks) {
+  const used = {};
+  $("dots").innerHTML = tasks.map(t => {
+    // 같은 좌표에 겹치는 점은 살짝 옆으로 밀기
+    const key = t.effort + "-" + t.saving;
+    const n = used[key] = (used[key] || 0) + 1;
+    const x = Math.min(94, Math.max(6, t.effort * 10 - 5 + (n - 1) * 7));
+    const y = Math.min(92, Math.max(10, 100 - (t.saving * 10 - 5)));
+    return `<div class="dot absolute w-7 h-7 rounded-full ${COLOR[t.type]} text-white text-xs font-bold flex items-center justify-center shadow-md ring-2 ring-white cursor-default"
+      style="left:${x}%;top:${y}%;transform:translate(-50%,-50%)" title="${esc(t.name)}">${t.no}</div>`;
+  }).join("");
+  $("matrixLegend").innerHTML = tasks.map(t => `
+    <li class="flex items-start gap-2">
+      <span class="shrink-0 w-6 h-6 rounded-full ${COLOR[t.type]} text-white text-xs font-bold flex items-center justify-center">${t.no}</span>
+      <span class="leading-6">${esc(t.name)}${t.no === 1 && t.type !== "h" ? ' <span class="text-[10px] font-bold bg-indigo-600 text-white rounded px-1.5 py-0.5">1순위</span>' : ""}</span>
+    </li>`).join("");
+}
+
+function renderLadder(tasks) {
+  const steps = [
+    [1, "1단계 · AI 프롬프트", "💬", "ChatGPT · Claude · Gemini", "설치 없이 오늘 바로. 초안 작성, 요약, 메일, 수식 질문", "bg-emerald-50 border-emerald-200", "sm:ml-0"],
+    [2, "2단계 · 오피스 자동화", "📊", "엑셀 함수·피벗·파워쿼리 · 구글시트 · Apps Script/VBA", "반복되는 집계·취합을 템플릿으로. AI에게 수식과 코드를 받아 적용", "bg-amber-50 border-amber-200", "sm:ml-10"],
+    [3, "3단계 · 연동 툴", "🔗", "Make · Zapier · Power Automate · 구글폼+시트+메일", "여러 도구를 이어 '접수→기록→알림'이 사람 손 없이 흐르게", "bg-violet-50 border-violet-200", "sm:ml-20"]
+  ];
+  $("ladder").innerHTML = steps.map(([lv, title, icon, tools, desc, cls, indent]) => {
+    const mine = tasks.filter(t => t.level === lv);
+    return `
+    <div class="${indent} rounded-2xl border ${cls} p-4 sm:p-5">
+      <div class="flex items-start gap-3">
+        <span class="text-2xl">${icon}</span>
+        <div class="min-w-0">
+          <p class="font-bold">${title}</p>
+          <p class="text-sm text-slate-700 mt-0.5">${tools}</p>
+          <p class="text-xs text-slate-500 mt-1">${desc}</p>
+          <div class="mt-3 flex flex-wrap gap-1.5">
+            ${mine.map(t => `<span class="text-xs bg-white border border-slate-200 rounded-full px-2.5 py-1">${esc(t.name)}</span>`).join("") || '<span class="text-xs text-slate-400">이 단계에 해당하는 내 업무 없음</span>'}
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+// ───────── 프롬프트 생성 ─────────
+function buildPrompt(t) {
+  const bn = CTX.bn || "(입력 없음)";
+  if (t.type === "q") return `# 역할
+당신은 ${CTX.job} 분야 10년차 실무 전문가이자 업무 문서 코치입니다.
+
+# 과제
+'${t.name}' 업무를 지금 바로 끝낼 수 있도록 도와주세요.
+
+# 내 상황
+- 직무: ${CTX.job}
+- 평소 가장 시간을 뺏기는 일: ${bn}
+- 원하는 결과물: ${t.out || "바로 사용할 수 있는 완성본"}
+
+# 입력 자료
+[여기에 원본 자료(메모, 데이터, 이전 문서 등)를 붙여넣으세요]
+
+# 작업 지침
+1. 자료에서 부족하거나 모호한 부분이 있으면, 작성 전에 질문 3개 이내로 먼저 확인하세요.
+2. 결과물은 바로 복사해서 쓸 수 있는 완성본으로 작성하세요.
+3. 수치와 고유명사는 입력 자료 그대로 쓰고, 자료에 없는 사실은 지어내지 말고 [확인 필요]로 표시하세요.
+4. 마지막에 '사람이 최종 확인할 체크포인트 3가지'를 덧붙이세요.
+
+# 출력 형식
+한국어, 간결한 업무 문체, 핵심이 먼저 보이는 두괄식`;
+
+  if (t.type === "s") return `# 역할
+당신은 엑셀·구글시트·노코드 도구에 능숙한 업무 자동화 컨설턴트입니다. 저는 코딩을 모르는 ${CTX.job} 실무자입니다.
+
+# 과제
+'${t.name}' 업무를 단계적으로 자동화하는 방법을 설계해 주세요.
+
+# 현재 방식
+- 지금 하는 순서: [예: 메일로 파일 받기 → 복사·붙여넣기 → 합계 계산 → 보고서 작성]
+- 사용하는 도구: [엑셀 / 구글시트 / 기타]
+- 반복 주기와 소요 시간: [예: 매주 금요일, 약 2시간]
+
+# 작업 지침
+1. 현재 과정을 단계별로 나누고, 각 단계가 자동화 가능한지 표로 표시하세요.
+2. 가장 쉬운 방법부터 3단계로 제안하세요.
+   (1단계: 함수·서식 템플릿 → 2단계: 매크로/Apps Script → 3단계: 도구 간 연동)
+3. 1단계는 제가 그대로 따라 할 수 있도록 수식이나 코드를 직접 써 주고, 어디에 붙여넣는지 순서대로 설명하세요.
+4. 각 단계의 예상 절감 시간과 주의할 점(오류·보안)을 알려 주세요.
+5. 설명에 필요한 정보가 부족하면 먼저 질문하세요.
+
+# 출력 형식
+한국어, 초보자도 따라 할 수 있는 번호 매긴 순서`;
+
+  return `# 역할
+당신은 ${CTX.job} 분야의 노련한 선배이자 커뮤니케이션 코치입니다.
+
+# 과제
+'${t.name}'은(는) 제가 직접 해야 하는 일입니다. 준비 시간을 줄일 수 있도록 도와주세요.
+
+# 상황
+[상대방, 목적, 배경을 간단히 적어주세요]
+
+# 작업 지침
+1. 사전에 확인해야 할 체크리스트 5가지를 만들어 주세요.
+2. 상대방이 할 만한 예상 질문 5가지와 답변 방향을 정리해 주세요.
+3. 대화를 여는 첫 문장 예시 2가지를 제안해 주세요.
+4. 최종 판단은 제가 합니다. 선택지와 장단점만 제시하고 결론을 단정하지 마세요.
+
+# 출력 형식
+한국어, 한 페이지 분량의 준비 노트`;
+}
+
+function renderPrompt(tasks) {
+  const pick = $("promptPick");
+  pick.innerHTML = tasks.map((t, i) => `<option value="${i}">${t.no}순위 · ${esc(t.name.length > 22 ? t.name.slice(0, 22) + "…" : t.name)}</option>`).join("");
+  pick.value = 0;
+  $("topTask").textContent = tasks[0].name;
+  $("promptBox").textContent = buildPrompt(tasks[0]);
+}
+
+async function copyPrompt() {
+  const text = $("promptBox").textContent;
+  let ok = false;
+  try { await navigator.clipboard.writeText(text); ok = true; } catch (e) {
+    // 클립보드 API가 막힌 환경(일부 미리보기 창)용 예비 방식
+    const ta = document.createElement("textarea");
+    ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    try { ok = document.execCommand("copy"); } catch (e2) {}
+    ta.remove();
+  }
+  const toast = $("toast");
+  toast.textContent = ok ? "✅ 프롬프트가 복사되었습니다!" : "⚠️ 자동 복사가 막혀 있어요. 박스를 직접 드래그해 복사하세요.";
+  toast.classList.toggle("bg-emerald-600", ok);
+  toast.classList.toggle("bg-amber-600", !ok);
+  toast.classList.remove("opacity-0", "translate-y-4");
+  $("btnCopy").textContent = ok ? "✅ 복사 완료!" : "📋 원클릭 프롬프트 복사";
+  setTimeout(() => {
+    toast.classList.add("opacity-0", "translate-y-4");
+    $("btnCopy").textContent = "📋 원클릭 프롬프트 복사";
+  }, 2200);
+}
+
+// ───────── 이벤트 ─────────
+renderJobs();
+renderChips();
+$("job").addEventListener("change", () => renderChips());
+$("btnDiagnose").addEventListener("click", diagnose);
+$("btnCopy").addEventListener("click", copyPrompt);
+$("btnReset").addEventListener("click", () => {
+  $("job").selectedIndex = 0;
+  renderChips();
+  $("custom").value = "";
+  $("bottleneck").value = "";
+  $("formMsg").classList.add("hidden");
+  $("result").classList.add("hidden");
+  TASKS = []; CTX = {};
+  $("promptBox").textContent = "";
+  $("gaugeArc").style.strokeDashoffset = 282.74;
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+$("promptPick").addEventListener("change", e => { $("promptBox").textContent = buildPrompt(TASKS[e.target.value]); });
+$("btnSample").addEventListener("click", () => {
+  $("job").value = SAMPLE.job;
+  renderChips(SAMPLE.checks);
+  $("custom").value = SAMPLE.custom;
+  $("bottleneck").value = SAMPLE.bottleneck;
+  diagnose();
+});
+</script>
+</body>
+</html>
