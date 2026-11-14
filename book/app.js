@@ -107,6 +107,9 @@ function progress(book, chs) {
   return { statusPct, chars, charPct, weeks, perWeek, dday };
 }
 const sorted = chs => [...chs].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+const NAMED = /^(\d+\s*장|제\s*\d+\s*장|서론|서문|프롤로그|에필로그|들어가며|나가며|맺음말|부록|W\d+|Part|\d+부)/i;
+const chLabel = (c, i) => NAMED.test((c.title || '').trim()) ? (c.title || '').trim() : `${i + 1}장 · ${c.title || '제목 없음'}`;
+const chShort = (c, i) => NAMED.test((c.title || '').trim()) ? (c.title || '').trim().split(/[\s.·—-]/)[0] : `${i + 1}장`;
 function autoNext(book, chs) {
   const id = book.id;
   if (!book.confirmed?.plan) return { text: '기획서(독자·약속) 쓰고 확정하기', href: `#/book/${id}/plan` };
@@ -117,7 +120,7 @@ function autoNext(book, chs) {
   if (i < 0) return { text: '모든 장 확정! 전체 검수는 다음 버전에서', href: `#/book/${id}` };
   const c = list[i], n = i + 1;
   const verb = { 설계: '초고 쓰기', 초고: '퇴고하기', 퇴고: '확정하기' }[c.status] || '초고 쓰기';
-  return { text: `${n}장 「${c.title || '제목 없음'}」 ${verb}`, href: `#/book/${id}/write/${c.id}` };
+  return { text: `「${chLabel(c, i)}」 ${verb}`, href: `#/book/${id}/write/${c.id}` };
 }
 function nextAction(book, chs) {
   if (book.nextAction) return { text: book.nextAction, href: `#/book/${book.id}`, manual: true };
@@ -397,7 +400,7 @@ function reviewItems(book, chs) {
   const items = [];
   if (book.review?.title) items.push({ k: 'title', label: '가제', reason: book.review.title });
   if (book.review?.toc) items.push({ k: 'toc', label: '목차', reason: book.review.toc });
-  chs.filter(c => c.needsReview).forEach(c => items.push({ k: 'ch:' + c.id, label: `${(sorted(chs).indexOf(c) + 1)}장 ${c.title || ''}`, reason: c.reviewReason || '' }));
+  chs.filter(c => c.needsReview).forEach(c => items.push({ k: 'ch:' + c.id, label: chLabel(c, sorted(chs).indexOf(c)), reason: c.reviewReason || '' }));
   return items;
 }
 async function clearReviews(book, keys) {
@@ -440,7 +443,7 @@ function vBook(r) {
       <div class="card">
         <div class="row"><h3 class="grow" style="margin:0">장별 상태</h3>${chs.length ? `<span class="small muted">${STATUSES.map(s => `<span class="st-${s}"><span class="sdot"></span>${s} ${chs.filter(c => c.status === s).length}</span>`).join(' ')}</span>` : ''}</div>
         ${chs.length ? `<div class="chgrid" style="margin-top:12px">${chs.map((c, i) => `<a class="chtile st-${c.status || '설계'}" href="${book.confirmed?.toc ? `#/book/${book.id}/write/${c.id}` : `#/book/${book.id}/toc`}">
-          <div class="n">${i + 1}장 ${c.needsReview ? '<span class="badge warn">재검토</span>' : ''}</div><div class="tt">${esc(c.title || '제목 없음')}</div>
+          <div class="n">${i + 1} ${c.needsReview ? '<span class="badge warn">재검토</span>' : ''}</div><div class="tt">${esc(chLabel(c, i).replace(/^\d+장 · /, ''))}</div>
           <div class="small"><span class="badge stbadge">${c.status || '설계'}</span> <span class="muted">${num(c.chars)}자</span></div></a>`).join('')}</div>`
       : `<p class="muted small">목차를 확정하면 장이 여기에 깔립니다. <a href="#/book/${book.id}/toc">목차로 →</a></p>`}
       </div>
@@ -708,7 +711,7 @@ function vWrite(r) {
   const ch = chs.find(c => c.id === r.chId) || chs[0];
   if (ch.id !== r.chId) { location.replace(`#/book/${book.id}/write/${ch.id}`); return; }
   const idx = chs.indexOf(ch);
-  setTop(`<a href="#/">책장</a> › <a href="#/book/${book.id}">${esc(titleOf(book))}</a> › ${idx + 1}장`, `${fsBadge()}<a class="btn sm" href="#/ideas" title="글감 서랍">💡</a>`);
+  setTop(`<a href="#/">책장</a> › <a href="#/book/${book.id}">${esc(titleOf(book))}</a> › ${esc(chShort(ch, idx))}`, `${fsBadge()}<a class="btn sm" href="#/ideas" title="글감 서랍">💡</a>`);
   bindFsBadge();
   const W_ = S.w = { bookId: book.id, chId: ch.id, dirty: false, loaded: false };
   view.innerHTML = `
@@ -717,7 +720,7 @@ function vWrite(r) {
     <aside class="wpane wleft" id="wl"></aside>
     <section class="wpane wcenter st-${ch.status || '설계'}" id="wc">
       <div class="whead">
-        <div class="row"><span class="ttl grow">${idx + 1}장 · ${esc(ch.title || '제목 없음')}</span><span class="savestate" id="ss">불러오는 중…</span></div>
+        <div class="row"><span class="ttl grow">${esc(chLabel(ch, idx))}</span><span class="savestate" id="ss">불러오는 중…</span></div>
         <div class="q">${ch.question ? `<b>Q.</b> ${esc(ch.question)}` : ''} ${ch.message ? ` <span class="muted">→ ${esc(ch.message)}</span>` : ''}</div>
         <div class="row"><div class="seg" id="seg">${STATUSES.map(s => `<button class="st-${s} ${ch.status === s ? 'on' : ''}" data-st="${s}">${s}</button>`).join('')}</div><span class="grow"></span><span class="small"><b id="cc">${num(ch.chars)}</b><span class="muted">자</span></span></div>
         <div id="revBox">${ch.needsReview ? `<div class="review"><b>재검토 필요</b><span class="grow">${esc(ch.reviewReason || '')}</span><button class="btn sm" id="wRev">확인함</button></div>` : ''}</div>
@@ -782,7 +785,7 @@ function vWrite(r) {
     $('#wc').className = `wpane wcenter st-${st}` + (S.mtab === 'ed' ? ' mon' : '');
     $$('#seg button').forEach(x => x.classList.toggle('on', x.dataset.st === st));
     queueSync(book.id);
-    toast(st === '확정' ? `${idx + 1}장 확정! 사본을 버전으로 남겼어요.` : `${idx + 1}장 → ${st}`);
+    toast(st === '확정' ? `${chShort(ch, idx)} 확정! 사본을 버전으로 남겼어요.` : `${chShort(ch, idx)} → ${st}`);
   });
   $('#wRev') && ($('#wRev').onclick = () => { clearReviews(book, ['ch:' + ch.id]); $('#revBox').innerHTML = ''; });
   S.ctxDrawn = false; writeSideRefresh();
@@ -793,7 +796,7 @@ function writeSideRefresh(kind) {
   if (!book) return;
   const wl = $('#wl'); if (!wl) return;
   if (kind === 'chapters' || !kind) wl.innerHTML = `<div class="small muted" style="padding:0 6px 8px"><b style="color:var(--ink)">${esc(titleOf(book))}</b><br>${progress(book, chs).statusPct}% · ${num(progress(book, chs).chars)}자</div>` +
-    chs.map((c, i) => `<a class="chi st-${c.status || '설계'} ${c.id === S.w.chId ? 'on' : ''}" href="#/book/${book.id}/write/${c.id}"><span class="sdot"></span>${i + 1}. ${esc(c.title || '제목 없음')}${c.needsReview ? ' <span class="badge warn">재검토</span>' : ''}<div class="c">${c.status} · ${num(c.chars)}자</div></a>`).join('') +
+    chs.map((c, i) => `<a class="chi st-${c.status || '설계'} ${c.id === S.w.chId ? 'on' : ''}" href="#/book/${book.id}/write/${c.id}"><span class="sdot"></span>${esc(chLabel(c, i))}${c.needsReview ? ' <span class="badge warn">재검토</span>' : ''}<div class="c">${c.status} · ${num(c.chars)}자</div></a>`).join('') +
     `<div style="padding:10px 6px"><a class="small" href="#/book/${book.id}/toc">목차 고치기 →</a></div>`;
   if (kind === 'chapters' && S.ctxDrawn) return;
   const a = document.activeElement;
@@ -809,19 +812,19 @@ function ctxItems() {
   const book = bookById(S.w.bookId), chs = sorted(chaptersOf(S.w.bookId)), ch = chs.find(c => c.id === S.w.chId);
   const i = chs.indexOf(ch), prev = chs[i - 1];
   const decs = (S.decisions[book.id] || []).filter(d => !d.chapterId || d.chapterId === ch.id);
-  const cp = book.confirmed?.plan || {};
+  const cp = book.confirmed?.plan || book.plan || {};
   const link = [
-    { k: 'plan', h: '기획서 핵심 (확정본)', t: `독자: ${cp.reader || '-'}\n약속: ${cp.promise || '-'}` },
-    { k: 'chq', h: `이 장의 질문·메시지 — ${i + 1}장`, t: `질문: ${ch.question || '-'}\n메시지: ${ch.message || '-'}` },
+    { k: 'plan', h: book.confirmed?.plan ? '기획서 핵심 (확정본)' : '기획서 핵심 (미확정 초안)', t: `독자: ${cp.reader || '-'}\n약속: ${cp.promise || '-'}` },
+    { k: 'chq', h: `이 장의 질문·메시지 — ${chShort(ch, i)}`, t: `질문: ${ch.question || '-'}\n메시지: ${ch.message || '-'}` },
     { k: 'dec', h: `지난 결정 ${decs.length}`, t: decs.length ? decs.map(d => `• ${d.text}`).join('\n') : '(아직 없음 — AI 결과의 [결정으로 기록])', decs },
-    { k: 'prev', h: '앞 장 핵심 메시지', t: prev ? `${i}장 「${prev.title}」: ${prev.message || '-'}` : '(첫 장)' },
+    { k: 'prev', h: '앞 장 핵심 메시지', t: prev ? `「${chLabel(prev, i - 1)}」: ${prev.message || '-'}` : '(첫 장)' },
     { k: 'around', h: '커서 앞뒤 문단', t: '(요청할 때 커서 위치에서 자동으로 잘라 보냅니다)' },
   ];
   const drawer = S.ideas.filter(x => (x.status || 'drawer') === 'drawer').slice(0, 12);
   const sent = S.ideas.filter(x => x.status === 'sent' && x.linkedBookId === book.id);
   const others = S.books.filter(b => b.id !== book.id);
   const spread = [
-    { k: 'chq', h: `이 장의 질문 — ${i + 1}장`, t: `질문: ${ch.question || '-'}\n메시지: ${ch.message || '-'}` },
+    { k: 'chq', h: `이 장의 질문 — ${chShort(ch, i)}`, t: `질문: ${ch.question || '-'}\n메시지: ${ch.message || '-'}` },
     { k: 'sent', h: `이 책 자료 ${sent.length}`, t: sent.length ? sent.map(x => `• ${x.text}${x.note ? ' — ' + x.note.slice(0, 100) : ''}`).join('\n') : '(서랍에서 보낸 글감 없음)' },
     { k: 'drawer', h: `글감 서랍 ${drawer.length}`, t: drawer.length ? drawer.map(x => `• ${x.text}`).join('\n') : '(비어 있음)' },
     { k: 'other', h: `다른 책의 글감 ${others.length}`, t: others.length ? others.map(b => `• ${titleOf(b)}: ${(b.seeds || b.topic || '').slice(0, 120)}`).join('\n') : '(다른 책 없음)' },
@@ -940,12 +943,12 @@ function bindResults() {
 /* ───────── 파일 내용 만들기 (내려받기·폴더 공통) ───────── */
 const safeName = s => (s || '').replace(/[\\/:*?"<>|\n\r\t]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 60) || '제목없음';
 const chFile = (c, i) => `${String(i + 1).padStart(2, '0')}-${safeName(c.title).slice(0, 40)}.md`;
-const chMd = (c, i) => `# ${i + 1}장. ${c.title || ''}\n\n${c.body || ''}\n`;
+const chMd = (c, i) => `# ${chLabel(c, i).replace(' · ', '. ')}\n\n${c.body || ''}\n`;
 function planMd(book) {
   const p = book.plan || {};
   return `# ${titleOf(book)} — 기획서\n\n- 주제: ${book.topic}\n- 목적: ${book.purpose || ''}\n- 완성선: ${book.goal?.chapters}장 / ${num(book.goal?.chars)}자 / ${book.goal?.dueDate || ''}\n\n## 글감\n${book.seeds || ''}\n\n## 대표 독자\n${p.reader || ''}\n\n## 독자의 문제\n${p.problem || ''}\n\n## 책의 핵심 약속\n${p.promise || ''}\n\n## 다룰 범위\n${p.inScope || ''}\n\n## 다루지 않을 것\n${p.outScope || ''}\n\n## 제목 후보\n${(book.titleCandidates || []).map(c => `- ${c.star ? '★ ' : ''}${c.text}`).join('\n')}\n\n## 경험 메모\n${book.memo || ''}\n`;
 }
-const tocMd = (book, chs) => `# ${titleOf(book)} — 목차\n\n` + sorted(chs).map((c, i) => `## ${i + 1}장. ${c.title}\n- 질문: ${c.question || ''}\n- 메시지: ${c.message || ''}\n- 상태: ${c.status} · ${num(c.chars)}자\n`).join('\n');
+const tocMd = (book, chs) => `# ${titleOf(book)} — 목차\n\n` + sorted(chs).map((c, i) => `## ${chLabel(c, i).replace(' · ', '. ')}\n- 질문: ${c.question || ''}\n- 메시지: ${c.message || ''}\n- 상태: ${c.status} · ${num(c.chars)}자\n`).join('\n');
 const decMd = (decs, chs) => '# 결정 기록\n\n' + decs.map(d => `- ${d.chapterId ? (sorted(chs).findIndex(c => c.id === d.chapterId) + 1) + '장: ' : ''}${d.text}`).join('\n') + '\n';
 async function chaptersWithBodies(bookId) {
   const [cs, bs] = await Promise.all([getDocs(query(P.chapters(bookId), orderBy('order'))), getDocs(P.bodies(bookId))]);
