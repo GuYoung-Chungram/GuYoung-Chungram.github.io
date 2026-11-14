@@ -37,6 +37,8 @@ const P = {
   book: b => doc(db, 'users', uid(), 'books', b),
   chapters: b => collection(db, 'users', uid(), 'books', b, 'chapters'),
   chapter: (b, c) => doc(db, 'users', uid(), 'books', b, 'chapters', c),
+  body: (b, c) => doc(db, 'users', uid(), 'books', b, 'bodies', c),
+  bodies: b => collection(db, 'users', uid(), 'books', b, 'bodies'),
   decisions: b => collection(db, 'users', uid(), 'books', b, 'decisions'),
   decision: (b, d) => doc(db, 'users', uid(), 'books', b, 'decisions', d),
   versions: b => collection(db, 'users', uid(), 'books', b, 'versions'),
@@ -127,7 +129,9 @@ let unsubBooks, unsubIdeas;
 function startSubs() {
   unsubBooks = onSnapshot(query(P.books(), orderBy('updatedAt', 'desc')), snap => {
     S.books = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    S.booksReady = true; S.books.forEach(b => watchBook(b.id)); soft();
+    S.booksReady = true; S.books.forEach(b => watchBook(b.id));
+    if (!snap.metadata.hasPendingWrites) snap.docChanges().forEach(c => c.type !== 'removed' && S.chapters[c.doc.id] && queueSync(c.doc.id));
+    soft();
   }, denied);
   unsubIdeas = onSnapshot(query(P.ideas(), orderBy('createdAt', 'desc')), snap => {
     S.ideas = snap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -137,10 +141,12 @@ function startSubs() {
 function watchBook(id) {
   if (S.chUnsub[id]) return;
   S.chUnsub[id] = onSnapshot(query(P.chapters(id), orderBy('order')), snap => {
-    S.chapters[id] = snap.docs.map(d => ({ id: d.id, ...d.data() })); soft('chapters', id);
+    S.chapters[id] = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    if (snap.docChanges().length) queueSync(id);
+    soft('chapters', id);
   }, e => console.warn(e));
   S.decUnsub[id] = onSnapshot(query(P.decisions(id), orderBy('createdAt')), snap => {
-    S.decisions[id] = snap.docs.map(d => ({ id: d.id, ...d.data() })); soft('decisions', id);
+    S.decisions[id] = snap.docs.map(d => ({ id: d.id, ...d.data() })); if (S.chapters[id]) queueSync(id); soft('decisions', id);
   }, e => console.warn(e));
   onSnapshot(P.archive(id), snap => { S.archive[id] = snap.docs.map(d => ({ id: d.id, ...d.data() })); soft('archive', id); }, e => console.warn(e));
 }
@@ -204,8 +210,8 @@ function render() {
 
 /* ───────── 1. 책장 ───────── */
 function vShelf() {
-  setTop('', `<a class="btn sm" href="#/ideas">💡 글감 서랍</a><a class="btn sm primary" href="#/new">+ 새 책</a><button class="btn sm ghost" id="logout" title="로그아웃">⎋</button>`);
-  $('#logout').onclick = () => signOut(auth);
+  setTop('', `${fsBadge()}<a class="btn sm" href="#/ideas">💡 글감 서랍</a><a class="btn sm primary" href="#/new">+ 새 책</a><button class="btn sm ghost" id="logout" title="로그아웃">⎋</button>`);
+  $('#logout').onclick = () => signOut(auth); bindFsBadge();
   const books = S.books;
   if (!books.length) {
     view.innerHTML = `<div class="empty card"><h1>첫 책을 꽂아 볼까요?</h1><p>주제와 완성선(장 수·분량·목표일)만 정하면, 어디까지 왔는지와 다음 할 일을 책동무가 챙깁니다.</p>
@@ -331,7 +337,15 @@ function vNew(r) {
       <div class="grow"><label class="label">목표일</label><input id="nDue" type="date" value="${due.toISOString().slice(0, 10)}"></div>
     </div>
     <div class="row end" style="margin-top:22px"><a class="btn" href="#/">취소</a><button class="btn primary lg" id="nGo">책장에 꽂기 →</button></div>
+  </div>
+  <div class="card" style="max-width:720px;margin:16px auto 0">
+    <h3>이미 쓰던 원고로 시작하기</h3>
+    <p class="small muted" style="margin:0 0 10px">txt·md 파일 하나 = 한 장. 파일 하나에 여러 장이 들어 있으면 '1장', '# 제목' 같은 구분으로 나눕니다.</p>
+    <div class="row">${FS.perm !== 'unsupported' ? `<button class="btn" id="impFolder">📂 작업중_books 폴더에서</button>` : ''}
+      <label class="btn">📄 파일 올리기<input type="file" id="impFiles" accept=".txt,.md,.markdown,text/plain" multiple hidden></label></div>
+    <div id="impBox" style="margin-top:10px"></div>
   </div>`;
+  importUI();
   $('#nTopic').focus();
   $('#nGo').onclick = async () => {
     const topic = $('#nTopic').value.trim(); if (!topic) { toast('주제를 한 줄이라도 적어 주세요.', true); return; }
@@ -399,7 +413,7 @@ function vBook(r) {
   const chs = sorted(chaptersOf(book.id)), p = progress(book, chs), n = nextAction(book, chs), auto = autoNext(book, chs);
   const revs = reviewItems(book, chs);
   const sent = S.ideas.filter(i => i.status === 'sent' && i.linkedBookId === book.id);
-  setTop(`<a href="#/">책장</a> › ${esc(titleOf(book))}`, `<button class="btn sm" id="dl">⬇ Markdown 내려받기</button>`);
+  setTop(`<a href="#/">책장</a> › ${esc(titleOf(book))}`, `${fsBadge()}<button class="btn sm" id="dl">⬇ Markdown 내려받기</button>`);
   view.innerHTML = `
   <div class="row" style="align-items:flex-end">
     <div class="grow"><div class="muted small">${book.focus ? '<span class="badge accent">집중하는 책</span> ' : ''}진척판</div><h1>${esc(titleOf(book))}</h1><div class="muted small">${esc(book.topic)}</div></div>
@@ -444,10 +458,12 @@ function vBook(r) {
       <div class="card"><h3>경험 메모 <span class="muted small">(집필 '펼치기'에 함께 보여요)</span></h3><textarea id="memo" rows="5" placeholder="강의 현장 일화, 코칭 장면, 떠오른 비유…">${esc(book.memo || '')}</textarea></div>
       <div class="card"><h3>이 책 자료 <span class="muted small">(서랍에서 보낸 글감 ${sent.length})</span></h3>
         ${sent.length ? sent.map(i => `<div class="small" style="padding:6px 0;border-bottom:1px solid var(--line2)">• ${esc(i.text)}${i.note ? `<div class="muted">${esc(i.note.slice(0, 120))}</div>` : ''}</div>`).join('') : '<p class="muted small" style="margin:0">글감 서랍에서 [이 책 자료로 보내기]를 누르면 여기로 옵니다.</p>'}</div>
-      <div class="card small muted">주제: ${esc(book.topic)}<br>목적: ${esc(book.purpose || '—')}<br><a href="#/book/${book.id}/plan">주제·글감·목적 고치기 →</a></div>
+      ${FS.perm !== 'unsupported' ? publishCardHTML(book, chs) : ''}
+      <div class="card small muted">주제: ${esc(book.topic)}<br>목적: ${esc(book.purpose || '—')}<br><a href="#/book/${book.id}/plan">주제·글감·목적 고치기 →</a>
+        ${book.folder ? `<br>📁 ${WORK}/${esc(book.folder)}` : ''}${book.published ? `<br>📚 books/${esc(book.published.name)}` : ''}</div>
     </div>
   </div>`;
-  $('#dl').onclick = () => exportMarkdown(book);
+  $('#dl').onclick = () => exportMarkdown(book); bindFsBadge(); bindPublish(book);
   $('#mkFocus') && ($('#mkFocus').onclick = () => setFocus(book.id));
   $('#naSave').onclick = () => { updateDoc(P.book(book.id), { nextAction: $('#naIn').value.trim() }); toast('다음 할 일을 정했어요.'); };
   $('#naAuto') && ($('#naAuto').onclick = () => updateDoc(P.book(book.id), { nextAction: '' }));
@@ -483,7 +499,7 @@ async function confirmStage(book, target) {
       const pm = Object.fromEntries((prev || []).map(x => [x.id, x]));
       snap.forEach(x => {
         const o = pm[x.id]; const c = chs.find(y => y.id === x.id);
-        if (!o || !c || !(c.body || '').trim()) return;
+        if (!o || !c || !c.chars) return;
         const diffs = [];
         if (o.title !== x.title) diffs.push(`제목 「${o.title}」→「${x.title}」`);
         if (o.question !== x.question) diffs.push(`질문 「${o.question}」→「${x.question}」`);
@@ -494,7 +510,7 @@ async function confirmStage(book, target) {
     }
   }
   b.update(P.book(book.id), up);
-  await b.commit();
+  await b.commit(); queueSync(book.id);
   toast(`${{ plan: '기획서', title: '가제', toc: '목차' }[target]} v${number} 확정! ${prev ? '영향받는 곳에 재검토 표시를 붙였어요.' : '다음 단계가 열렸어요.'}`, false, 3500);
 }
 function markModified(book, target) {
@@ -625,7 +641,7 @@ function vToc(r) {
           <input data-k="question" value="${esc(c.question || '')}" placeholder="핵심 질문 — 이 장이 답하는 질문">
           <input data-k="message" value="${esc(c.message || '')}" placeholder="핵심 메시지 — 독자가 가져갈 한 문장">
           ${c.needsReview ? `<div class="review small"><b>재검토</b> ${esc(c.reviewReason || '')}</div>` : ''}
-          ${(c.body || '').trim() ? `<div class="small muted">원고 ${num(c.chars)}자 · ${c.status}</div>` : ''}
+          ${c.chars ? `<div class="small muted">원고 ${num(c.chars)}자 · ${c.status}</div>` : ''}
         </div>
         <div class="ops"><button class="btn sm ghost" data-up="${i}" ${i ? '' : 'disabled'}>↑</button><button class="btn sm ghost" data-down="${i}" ${i < chs.length - 1 ? '' : 'disabled'}>↓</button><button class="btn sm ghost" data-out="${c.id}" title="목차에서 빼기(보관함)">✕</button></div>
       </div>`).join('') : '<p class="muted small">AI 목차 제안을 받거나 장을 하나씩 추가하세요.</p>'}
@@ -648,14 +664,15 @@ function vToc(r) {
   $('#oAdd').onclick = async () => { await addDoc(P.chapters(book.id), newCh(chs.length, {})); markModified(book, 'toc'); };
   $$('[data-out]').forEach(b => b.onclick = async () => {
     const c = chs.find(x => x.id === b.dataset.out); const bt = writeBatch(db);
-    if ((c.body || '').trim()) bt.set(P.archived(book.id, c.id), { ...c, archivedAt: serverTimestamp() });
-    bt.delete(P.chapter(book.id, c.id)); await bt.commit();
-    await renumber(chs.filter(x => x.id !== c.id)); markModified(book, 'toc');
-    toast((c.body || '').trim() ? '보관함으로 옮겼어요. 언제든 되돌릴 수 있어요.' : '빈 장을 뺐어요.');
+    const bsnap = await getDoc(P.body(book.id, c.id)); const text = bsnap.exists() ? bsnap.data().text || '' : '';
+    if (text.trim()) bt.set(P.archived(book.id, c.id), { ...c, body: text, archivedAt: serverTimestamp() });
+    bt.delete(P.chapter(book.id, c.id)); bt.delete(P.body(book.id, c.id)); await bt.commit();
+    await renumber(chs.filter(x => x.id !== c.id)); markModified(book, 'toc'); queueSync(book.id);
+    toast(text.trim() ? '보관함으로 옮겼어요. 언제든 되돌릴 수 있어요.' : '빈 장을 뺐어요.');
   });
   $$('[data-restore]').forEach(b => b.onclick = async () => {
-    const a = arch.find(x => x.id === b.dataset.restore); const { archivedAt, id, ...rest } = a;
-    const bt = writeBatch(db); bt.set(P.chapter(book.id, a.id), { ...rest, order: chs.length, needsReview: true, reviewReason: '보관함에서 되돌림 — 자리와 흐름 확인' }); bt.delete(P.archived(book.id, a.id)); await bt.commit(); markModified(book, 'toc');
+    const a = arch.find(x => x.id === b.dataset.restore); const { archivedAt, id, body, ...rest } = a;
+    const bt = writeBatch(db); bt.set(P.chapter(book.id, a.id), { ...rest, order: chs.length, needsReview: true, reviewReason: '보관함에서 되돌림 — 자리와 흐름 확인', updatedAt: serverTimestamp() }); bt.set(P.body(book.id, a.id), { text: body || '', updatedAt: serverTimestamp() }); bt.delete(P.archived(book.id, a.id)); await bt.commit(); markModified(book, 'toc'); queueSync(book.id);
   });
   $('#ocRev') && ($('#ocRev').onclick = () => clearReviews(book, ['toc']));
   $('#oCopy').onclick = () => copy(prompt());
@@ -678,7 +695,7 @@ function vToc(r) {
   };
 }
 function newCh(order, x) {
-  return { order, title: x.title || '', question: x.question || '', message: x.message || '', status: '설계', body: '', chars: 0, needsReview: false, reviewReason: '', cursor: 0, updatedAt: serverTimestamp() };
+  return { order, title: x.title || '', question: x.question || '', message: x.message || '', status: '설계', chars: 0, needsReview: false, reviewReason: '', cursor: 0, updatedAt: serverTimestamp() };
 }
 
 /* ───────── 8. 집필 화면 + 맥락 패널 + AI ───────── */
@@ -690,52 +707,65 @@ function vWrite(r) {
   const ch = chs.find(c => c.id === r.chId) || chs[0];
   if (ch.id !== r.chId) { location.replace(`#/book/${book.id}/write/${ch.id}`); return; }
   const idx = chs.indexOf(ch);
-  setTop(`<a href="#/">책장</a> › <a href="#/book/${book.id}">${esc(titleOf(book))}</a> › ${idx + 1}장`, `<a class="btn sm" href="#/ideas" title="글감 서랍">💡</a>`);
-  const W_ = S.w = { bookId: book.id, chId: ch.id, dirty: false, base: ch.body || '' };
+  setTop(`<a href="#/">책장</a> › <a href="#/book/${book.id}">${esc(titleOf(book))}</a> › ${idx + 1}장`, `${fsBadge()}<a class="btn sm" href="#/ideas" title="글감 서랍">💡</a>`);
+  bindFsBadge();
+  const W_ = S.w = { bookId: book.id, chId: ch.id, dirty: false, loaded: false };
   view.innerHTML = `
   <div class="mtabs" id="mtabs"><button data-m="list">목차</button><button data-m="ed">원고</button><button data-m="ctx">맥락·AI</button></div>
   <div class="write">
     <aside class="wpane wleft" id="wl"></aside>
     <section class="wpane wcenter st-${ch.status || '설계'}" id="wc">
       <div class="whead">
-        <div class="row"><span class="ttl grow">${idx + 1}장 · ${esc(ch.title || '제목 없음')}</span><span class="savestate" id="ss">저장됨 ${fmt(ch.updatedAt)}</span></div>
+        <div class="row"><span class="ttl grow">${idx + 1}장 · ${esc(ch.title || '제목 없음')}</span><span class="savestate" id="ss">불러오는 중…</span></div>
         <div class="q">${ch.question ? `<b>Q.</b> ${esc(ch.question)}` : ''} ${ch.message ? ` <span class="muted">→ ${esc(ch.message)}</span>` : ''}</div>
         <div class="row"><div class="seg" id="seg">${STATUSES.map(s => `<button class="st-${s} ${ch.status === s ? 'on' : ''}" data-st="${s}">${s}</button>`).join('')}</div><span class="grow"></span><span class="small"><b id="cc">${num(ch.chars)}</b><span class="muted">자</span></span></div>
         <div id="revBox">${ch.needsReview ? `<div class="review"><b>재검토 필요</b><span class="grow">${esc(ch.reviewReason || '')}</span><button class="btn sm" id="wRev">확인함</button></div>` : ''}</div>
       </div>
-      <textarea id="ed" spellcheck="false" placeholder="여기에 씁니다. Markdown 그대로 저장돼요. (# 소제목, **굵게**)\n막히면 오른쪽 '맥락·AI'에 방향 메모 몇 줄 → 카미가 초안을 씁니다.">${esc(ch.body || '')}</textarea>
+      <textarea id="ed" spellcheck="false" disabled placeholder="여기에 씁니다. Markdown 그대로 저장돼요. (# 소제목, **굵게**)\n막히면 오른쪽 '맥락·AI'에 방향 메모 몇 줄 → 카미가 초안을 씁니다."></textarea>
     </section>
     <aside class="wpane wright" id="wr"></aside>
   </div>`;
   const ed = $('#ed');
-  // 마지막 위치
-  requestAnimationFrame(() => {
+  const ss = $('#ss');
+  const setSS = (t, err) => { ss.textContent = t; ss.classList.toggle('err', !!err); };
+  // 이 장 본문만 읽는다 (책장·진척판은 본문을 읽지 않음)
+  getDoc(P.body(book.id, ch.id)).then(snap => {
+    if (S.w !== W_) return;
+    ed.value = snap.exists() ? (snap.data().text || '') : '';
+    ed.disabled = false; W_.loaded = true;
+    setSS('저장됨 ' + fmt(ch.updatedAt));
     const pos = Math.min(ch.cursor || 0, ed.value.length);
     if (!matchMedia('(max-width:860px)').matches) ed.focus();
     ed.setSelectionRange(pos, pos);
-    if (ch.scrollTop) ed.scrollTop = ch.scrollTop;
-    else { const ratio = ed.value.length ? pos / ed.value.length : 0; ed.scrollTop = Math.max(0, ed.scrollHeight * ratio - 160); }
-  });
-  updateDoc(P.book(book.id), { lastChapterId: ch.id });
+    requestAnimationFrame(() => {
+      if (ch.scrollTop) ed.scrollTop = ch.scrollTop;
+      else { const ratio = ed.value.length ? pos / ed.value.length : 0; ed.scrollTop = Math.max(0, ed.scrollHeight * ratio - 160); }
+    });
+  }).catch(e => { console.error(e); setSS('본문을 불러오지 못했어요 — 새로고침해 주세요', true); });
+  if (book.lastChapterId !== ch.id) updateDoc(P.book(book.id), { lastChapterId: ch.id });
   localStorage.setItem('cdm_last', JSON.stringify({ bookId: book.id, chId: ch.id }));
   // 모바일 탭
   const setM = m => { S.mtab = m; $$('#mtabs button').forEach(b => b.classList.toggle('on', b.dataset.m === m)); $('#wl').classList.toggle('mon', m === 'list'); $('#wc').classList.toggle('mon', m === 'ed'); $('#wr').classList.toggle('mon', m === 'ctx'); };
   $$('#mtabs button').forEach(b => b.onclick = () => setM(b.dataset.m)); setM('ed');
-  // 자동저장
-  const ss = $('#ss');
-  const setSS = (t, err) => { ss.textContent = t; ss.classList.toggle('err', !!err); };
+  // 자동저장: 본문 문서 1개 + 장 정보(글자 수·커서) 1개, 책 '마지막 작업'은 1분에 한 번
   const save = async () => {
-    if (!W_.dirty) return; W_.dirty = false;
-    const body = ed.value, chars = countChars(body);
+    if (!W_.dirty || !W_.loaded) return; W_.dirty = false;
+    const text = ed.value, chars = countChars(text);
     setSS(navigator.onLine ? '저장 중…' : '기기에 저장됨 · 연결되면 올림');
-    const p1 = updateDoc(P.chapter(book.id, ch.id), { body, chars, cursor: ed.selectionStart, scrollTop: ed.scrollTop, updatedAt: serverTimestamp() });
-    updateDoc(P.book(book.id), { updatedAt: serverTimestamp(), lastChapterId: ch.id });
+    const b = writeBatch(db);
+    b.set(P.body(book.id, ch.id), { text, updatedAt: serverTimestamp() });
+    b.update(P.chapter(book.id, ch.id), { chars, cursor: ed.selectionStart, scrollTop: ed.scrollTop, updatedAt: serverTimestamp() });
+    if (Date.now() - (S.bookTouch?.[book.id] || 0) > 60000) { (S.bookTouch ||= {})[book.id] = Date.now(); b.update(P.book(book.id), { updatedAt: serverTimestamp(), lastChapterId: ch.id }); }
+    const p1 = b.commit();
+    S.bodyCache = { key: book.id + '/' + ch.id, text };
+    queueSync(book.id, ch.id, text);
     try { await p1; if (S.w === W_) setSS('저장됨 ' + hhmm()); }
     catch (e) { console.error(e); W_.dirty = true; if (S.w === W_) { setSS('저장 실패 — 다시 시도 중', true); debounce('save', save, 4000); } }
   };
-  const saveCursor = () => debounce('cursor', () => { if (!W_.dirty) updateDoc(P.chapter(book.id, ch.id), { cursor: ed.selectionStart, scrollTop: ed.scrollTop }); }, 1500);
+  const saveCursor = () => debounce('cursor', () => { if (!W_.dirty && W_.loaded) updateDoc(P.chapter(book.id, ch.id), { cursor: ed.selectionStart, scrollTop: ed.scrollTop }); }, 4000);
   ed.addEventListener('input', () => { W_.dirty = true; $('#cc').textContent = num(countChars(ed.value)); setSS('입력 중…'); debounce('save', save, 2000); });
-  ed.addEventListener('keyup', saveCursor); ed.addEventListener('click', saveCursor);
+  ed.addEventListener('keyup', e => { if (!e.key.startsWith('Arrow') && e.key !== 'PageUp' && e.key !== 'PageDown') return; saveCursor(); });
+  ed.addEventListener('click', saveCursor);
   S.flush = () => { clearTimeout(debouncers.save); return save(); };
   S.leave = async () => { clearTimeout(debouncers.save); await Promise.race([save(), new Promise(r => setTimeout(r, 1200))]); S.flush = null; };
   // 장 상태
@@ -747,8 +777,10 @@ function vWrite(r) {
       addDoc(P.versions(book.id), { target: 'chapter', targetId: ch.id, number: n, snapshot: { title: ch.title, body: ed.value, chars: countChars(ed.value) }, createdAt: serverTimestamp() });
     }
     await updateDoc(P.chapter(book.id, ch.id), up);
+    updateDoc(P.book(book.id), { updatedAt: serverTimestamp() });
     $('#wc').className = `wpane wcenter st-${st}` + (S.mtab === 'ed' ? ' mon' : '');
     $$('#seg button').forEach(x => x.classList.toggle('on', x.dataset.st === st));
+    queueSync(book.id);
     toast(st === '확정' ? `${idx + 1}장 확정! 사본을 버전으로 남겼어요.` : `${idx + 1}장 → ${st}`);
   });
   $('#wRev') && ($('#wRev').onclick = () => { clearReviews(book, ['ch:' + ch.id]); $('#revBox').innerHTML = ''; });
@@ -904,21 +936,273 @@ function bindResults() {
   });
 }
 
+/* ───────── 파일 내용 만들기 (내려받기·폴더 공통) ───────── */
+const safeName = s => (s || '').replace(/[\\/:*?"<>|\n\r\t]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 60) || '제목없음';
+const chFile = (c, i) => `${String(i + 1).padStart(2, '0')}-${safeName(c.title).slice(0, 40)}.md`;
+const chMd = (c, i) => `# ${i + 1}장. ${c.title || ''}\n\n${c.body || ''}\n`;
+function planMd(book) {
+  const p = book.plan || {};
+  return `# ${titleOf(book)} — 기획서\n\n- 주제: ${book.topic}\n- 목적: ${book.purpose || ''}\n- 완성선: ${book.goal?.chapters}장 / ${num(book.goal?.chars)}자 / ${book.goal?.dueDate || ''}\n\n## 글감\n${book.seeds || ''}\n\n## 대표 독자\n${p.reader || ''}\n\n## 독자의 문제\n${p.problem || ''}\n\n## 책의 핵심 약속\n${p.promise || ''}\n\n## 다룰 범위\n${p.inScope || ''}\n\n## 다루지 않을 것\n${p.outScope || ''}\n\n## 제목 후보\n${(book.titleCandidates || []).map(c => `- ${c.star ? '★ ' : ''}${c.text}`).join('\n')}\n\n## 경험 메모\n${book.memo || ''}\n`;
+}
+const tocMd = (book, chs) => `# ${titleOf(book)} — 목차\n\n` + sorted(chs).map((c, i) => `## ${i + 1}장. ${c.title}\n- 질문: ${c.question || ''}\n- 메시지: ${c.message || ''}\n- 상태: ${c.status} · ${num(c.chars)}자\n`).join('\n');
+const decMd = (decs, chs) => '# 결정 기록\n\n' + decs.map(d => `- ${d.chapterId ? (sorted(chs).findIndex(c => c.id === d.chapterId) + 1) + '장: ' : ''}${d.text}`).join('\n') + '\n';
+async function chaptersWithBodies(bookId) {
+  const [cs, bs] = await Promise.all([getDocs(query(P.chapters(bookId), orderBy('order'))), getDocs(P.bodies(bookId))]);
+  const bm = Object.fromEntries(bs.docs.map(d => [d.id, d.data().text || '']));
+  return cs.docs.map(d => ({ id: d.id, ...d.data(), body: bm[d.id] || '' }));
+}
+
+/* ───────── 로컬 폴더 연동 (맥 Chrome, 앱 → 폴더 한 방향) ─────────
+   연결 폴더 = '전자책 관리'  ·  작업 중: 작업중_books/<책 폴더>/  ·  출간: books/<책이름>/ (book.json·preview.md·원고/) */
+const WORK = '작업중_books', DONE = 'books', MANIFEST = '책동무.json';
+const FS = { root: null, perm: 'none', busy: false };
+const idb = (() => {
+  const open = () => new Promise((res, rej) => { const r = indexedDB.open('chaekdongmu', 1); r.onupgradeneeded = () => r.result.createObjectStore('kv'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
+  return {
+    get: async k => { const d = await open(); return new Promise(res => { const q = d.transaction('kv').objectStore('kv').get(k); q.onsuccess = () => res(q.result); q.onerror = () => res(null); }); },
+    set: async (k, v) => { const d = await open(); return new Promise(res => { const t = d.transaction('kv', 'readwrite'); t.objectStore('kv').put(v, k); t.oncomplete = res; t.onerror = res; }); },
+  };
+})();
+async function fsInit() {
+  if (!window.showDirectoryPicker) { FS.perm = 'unsupported'; return; }
+  const h = await idb.get('root'); if (!h) return;
+  FS.root = h; FS.perm = await h.queryPermission({ mode: 'readwrite' });
+}
+async function fsConnect() {
+  try {
+    const h = await window.showDirectoryPicker({ id: 'cdm-root', mode: 'readwrite' });
+    const names = []; for await (const [n] of h.entries()) names.push(n.normalize('NFC'));
+    if (!names.includes(WORK) && !names.includes(DONE)) toast(`이 폴더엔 '${WORK}'·'${DONE}'가 없어서 새로 만들게요. '전자책 관리' 폴더가 맞는지 확인해 주세요.`, true, 6000);
+    await h.getDirectoryHandle(WORK, { create: true }); await h.getDirectoryHandle(DONE, { create: true });
+    FS.root = h; FS.perm = 'granted'; await idb.set('root', h);
+    toast(`📁 「${h.name.normalize('NFC')}」 연결됨. 이제 앱에서 쓴 내용이 폴더로 내려갑니다.`, false, 4000);
+    syncAll(); render();
+  } catch (e) { if (e.name !== 'AbortError') toast('폴더 연결 실패: ' + e.message, true); }
+}
+async function fsRegrant() { if (!FS.root) return fsConnect(); FS.perm = await FS.root.requestPermission({ mode: 'readwrite' }); if (FS.perm === 'granted') { toast('폴더 저장을 다시 켰어요.'); syncAll(); } render(); }
+function fsBadge() {
+  if (FS.perm === 'unsupported') return '';
+  if (FS.perm === 'granted') return `<button class="btn sm ghost" id="fsBtn" title="${esc(FS.root?.name?.normalize('NFC'))} 폴더로 자동 저장 중 — 눌러서 지금 동기화">📁 ${FS.busy ? '<span class="spin"></span>' : '폴더 저장 중'}</button>`;
+  if (FS.root) return `<button class="btn sm" id="fsBtn" title="브라우저를 다시 열면 한 번 허용이 필요해요">📁 폴더 저장 다시 켜기</button>`;
+  return `<button class="btn sm" id="fsBtn" title="'전자책 관리' 폴더를 연결하면 책마다 작업중_books에 자동 저장">📁 폴더 연결</button>`;
+}
+function bindFsBadge() { const b = $('#fsBtn'); if (b) b.onclick = () => FS.perm === 'granted' ? syncAll(true) : (FS.root ? fsRegrant() : fsConnect()); }
+const getDir = async (dir, name, create = true) => dir.getDirectoryHandle(name, { create });
+async function writeText(dir, name, text) { const fh = await dir.getFileHandle(name, { create: true }); const w = await fh.createWritable(); await w.write(text); await w.close(); }
+async function readText(dir, name) { try { const fh = await dir.getFileHandle(name); return await (await fh.getFile()).text(); } catch { return null; } }
+async function bookDir(book) {
+  const work = await getDir(FS.root, WORK);
+  let folder = book.folder;
+  if (!folder) { folder = safeName(titleOf(book)); updateDoc(P.book(book.id), { folder }); book.folder = folder; }
+  return getDir(work, folder);
+}
+const syncQ = {};
+function queueSync(bookId, chId, text) {
+  if (FS.perm !== 'granted') return;
+  const q = syncQ[bookId] ||= { full: false, ch: {} };
+  if (chId) q.ch[chId] = text ?? null; else q.full = true;
+  debounce('sync' + bookId, () => { const job = syncQ[bookId]; delete syncQ[bookId]; syncBook(bookId, job).catch(e => console.warn('[sync]', e)); }, chId ? 6000 : 2500);
+}
+// 바뀐 것만 쓴다: 장 파일은 (updatedAt, 파일명)이 마지막 동기화와 다를 때만 본문을 읽어 씀
+async function syncBook(bookId, job = { full: true, ch: {} }) {
+  const book = bookById(bookId); if (!book || FS.perm !== 'granted' || book.published?.lock) return;
+  const chs = sorted(chaptersOf(bookId));
+  const dir = await bookDir(book), wdir = await getDir(dir, '원고');
+  const man = JSON.parse(await readText(dir, MANIFEST) || '{}'); man.files ||= {};
+  const files = {};
+  for (const [i, c] of chs.entries()) {
+    const fname = chFile(c, i), t = tsDate(c.updatedAt)?.getTime() || 0, prev = man.files[c.id];
+    files[c.id] = { name: fname, t };
+    const need = c.id in job.ch || !prev || prev.name !== fname || prev.t < t;
+    if (!need) continue;
+    let body = job.ch[c.id];
+    if (body == null) { const b = await getDoc(P.body(bookId, c.id)); body = b.exists() ? b.data().text || '' : ''; }
+    await writeText(wdir, fname, chMd({ ...c, body }, i));
+    if (prev && prev.name !== fname) { try { await wdir.removeEntry(prev.name); } catch { } }
+  }
+  for (const [id, f] of Object.entries(man.files)) if (!files[id]) { try { await wdir.removeEntry(f.name); } catch { } } // 목차에서 뺀 장(보관함에 남아 있음)
+  if (job.full || Object.keys(job.ch).length) {
+    await writeText(dir, '기획서.md', planMd(book));
+    await writeText(dir, '목차.md', tocMd(book, chs));
+    const decs = S.decisions[bookId] || []; if (decs.length) await writeText(dir, '결정기록.md', decMd(decs, chs));
+  }
+  await writeText(dir, MANIFEST, JSON.stringify({ app: '책동무', bookId, title: titleOf(book), syncedAt: new Date().toISOString(), files }, null, 2));
+}
+async function syncAll(manual) {
+  if (FS.perm !== 'granted' || FS.busy || !S.booksReady) return;
+  FS.busy = true; $('#fsBtn') && ($('#fsBtn').innerHTML = '📁 <span class="spin"></span>');
+  try {
+    for (const b of S.books) { if (!S.chapters[b.id]) await new Promise(r => setTimeout(r, 800)); await syncBook(b.id, { full: true, ch: {} }); }
+    if (manual) toast(`📁 ${S.books.length}권을 '${WORK}'에 동기화했어요.`);
+  } catch (e) { console.error(e); toast('폴더 저장 실패: ' + e.message, true, 5000); if (e.name === 'NotAllowedError') FS.perm = 'prompt'; }
+  FS.busy = false; $('#fsBtn') && ($('#fsBtn').outerHTML = fsBadge()); bindFsBadge();
+}
+
+/* ───────── 출간: books/<책이름>/ (ChungRam Library 형식) ───────── */
+const COLORS = ['blue', 'emerald', 'purple', 'slate', 'amber', 'rose', 'teal', 'indigo', 'orange', 'cyan'];
+async function publishBook(book, meta) {
+  if (FS.perm !== 'granted') { toast('먼저 📁 폴더 연결(또는 다시 켜기)을 해 주세요.', true); return false; }
+  const name = safeName(meta.name);
+  const done = await getDir(FS.root, DONE);
+  const dir = await getDir(done, name), wdir = await getDir(dir, '원고');
+  const chs = await chaptersWithBodies(book.id);
+  await writeText(dir, 'book.json', JSON.stringify({ description: meta.description, category: meta.category, author: '정구영', date: meta.date, color: meta.color, tags: meta.tags }, null, 2) + '\n');
+  await writeText(dir, 'preview.md', meta.preview.trim() + '\n');
+  for (const [i, c] of sorted(chs).entries()) await writeText(wdir, chFile(c, i), chMd(c, i));
+  // 작업 폴더는 지우지 않고 '✅완료_' 표시
+  let doneFolder = book.folder;
+  try {
+    await syncBook(book.id, { full: true, ch: {} });
+    const wd = await bookDir(book);
+    if (!book.folder.startsWith('✅완료_') && wd.move) { await wd.move('✅완료_' + book.folder); doneFolder = '✅완료_' + book.folder; }
+    else await writeText(wd, '✅완료.txt', `${meta.date} 출간 → books/${name}\n`);
+  } catch (e) { console.warn('[완료 표시]', e); try { await writeText(await bookDir(book), '✅완료.txt', `${meta.date} 출간 → books/${name}\n`); } catch { } }
+  await updateDoc(P.book(book.id), { published: { name, at: serverTimestamp(), meta }, folder: doneFolder, updatedAt: serverTimestamp() });
+  return name;
+}
+function publishCardHTML(book, chs) {
+  const pub = book.published, m = pub?.meta || {};
+  const allDone = chs.length && chs.every(c => c.status === '확정');
+  const d = new Date(), today = `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+  return `<div class="card" id="pubCard"><h3>📚 출간하기 <span class="muted small">(books/ 폴더 · ChungRam Library)</span></h3>
+    ${pub ? `<div class="next" style="margin-top:0"><b>출간됨</b>books/${esc(pub.name)} · ${fmt(pub.at, false)}</div>` : ''}
+    ${!allDone ? `<p class="small" style="color:var(--amber);margin:0 0 6px">아직 확정 안 된 장이 ${chs.filter(c => c.status !== '확정').length}개 있어요. 그래도 내보낼 수는 있어요.</p>` : ''}
+    <div id="pubForm" class="${S.pubOpen === book.id ? '' : 'hidden'}">
+      <label class="label" style="margin-top:0">책 이름 (= 폴더 이름)</label><input id="pbName" value="${esc(m.name || book.confirmed?.title || titleOf(book))}">
+      <label class="label">소개 한두 문장</label><input id="pbDesc" value="${esc(m.description || book.confirmed?.plan?.promise || '')}">
+      <div class="row" style="align-items:flex-start"><div class="grow"><label class="label">카테고리</label><input id="pbCat" value="${esc(m.category || '')}" placeholder="교육학 / 리더십 / 생산성…"></div>
+        <div class="grow"><label class="label">날짜</label><input id="pbDate" value="${esc(m.date || today)}"></div>
+        <div class="grow"><label class="label">색</label><select id="pbColor">${COLORS.map(c => `<option ${c === (m.color || 'blue') ? 'selected' : ''}>${c}</option>`).join('')}</select></div></div>
+      <label class="label">태그 (쉼표로)</label><input id="pbTags" value="${esc((m.tags || []).join(', '))}">
+      <label class="label">미리보기 (사이트엔 앞 600자) <span class="muted" id="pbCount"></span></label><textarea id="pbPrev" rows="6" placeholder="불러오는 중…">${esc(m.preview || '')}</textarea>
+      <div class="row end" style="margin-top:10px"><button class="btn primary" id="pbGo">books/ 폴더로 출간</button></div>
+    </div>
+    ${S.pubOpen === book.id ? '' : `<button class="btn" id="pbOpen">${pub ? '다시 내보내기' : '출간 정보 채우기'}</button>`}
+  </div>`;
+}
+async function bindPublish(book) {
+  $('#pbOpen') && ($('#pbOpen').onclick = () => { S.pubOpen = book.id; render(); });
+  if (S.pubOpen !== book.id) return;
+  const pv = $('#pbPrev'), cnt = () => $('#pbCount').textContent = `${pv.value.length}자`;
+  pv.oninput = cnt;
+  if (!pv.value) {
+    const c1 = sorted(chaptersOf(book.id))[0];
+    if (c1) { const b = await getDoc(P.body(book.id, c1.id)); pv.value = ((b.exists() && b.data().text) || '').replace(/^#.*\n+/, '').slice(0, 600); }
+  }
+  cnt();
+  $('#pbGo').onclick = async () => {
+    const meta = { name: $('#pbName').value.trim(), description: $('#pbDesc').value.trim(), category: $('#pbCat').value.trim() || '기타', date: $('#pbDate').value.trim(), color: $('#pbColor').value, tags: $('#pbTags').value.split(',').map(t => t.trim()).filter(Boolean), preview: pv.value };
+    if (!meta.name) return toast('책 이름을 적어 주세요.', true);
+    $('#pbGo').disabled = true; $('#pbGo').innerHTML = '<span class="spin"></span> 내보내는 중…';
+    try { const n = await publishBook(bookById(book.id), meta); if (n) { S.pubOpen = null; toast(`📚 books/${n} 에 출간했어요. 라이브러리에 바로 반영됩니다.`, false, 5000); render(); } }
+    catch (e) { console.error(e); toast('출간 실패: ' + e.message, true, 6000); $('#pbGo').disabled = false; $('#pbGo').textContent = 'books/ 폴더로 출간'; }
+  };
+}
+
+/* ───────── 가져오기: 폴더(작업중_books) 또는 파일(txt·md) ───────── */
+const SKIP = new Set(['기획서.md', '목차.md', '결정기록.md', MANIFEST, '✅완료.txt']);
+const CH_RE = /^(#{1,2}\s+.+|제\s*\d+\s*장.*|\d+\s*장[\s.:].*|chapter\s*\d+.*|프롤로그.*|에필로그.*|들어가며.*|나가며.*)$/im;
+function splitChapters(files) {
+  // 파일 하나 = 한 장. 단, 파일이 하나뿐이고 안에 장 구분이 여러 개면 나눈다.
+  const clean = t => t.replace(/\r\n/g, '\n').replace(/^﻿/, '');
+  if (files.length === 1) {
+    const t = clean(files[0].text), lines = t.split('\n');
+    const idx = lines.map((l, i) => CH_RE.test(l.trim()) && !/^###/.test(l) ? i : -1).filter(i => i >= 0);
+    if (idx.length >= 2) {
+      const out = []; if (idx[0] > 0 && lines.slice(0, idx[0]).join('').trim()) out.push({ title: '들어가며', body: lines.slice(0, idx[0]).join('\n').trim() });
+      idx.forEach((st, k) => { const en = idx[k + 1] ?? lines.length; out.push({ title: lines[st].replace(/^#+\s*/, '').trim(), body: lines.slice(st + 1, en).join('\n').trim() }); });
+      return out;
+    }
+  }
+  return files.sort((a, b) => a.name.localeCompare(b.name, 'ko', { numeric: true })).map(f => {
+    let t = clean(f.text).trim(); let title = f.name.replace(/\.(txt|md|markdown)$/i, '').replace(/^\d+[\s._-]*/, '').trim();
+    const m = t.match(/^#{1,2}\s+(.+)\n/); if (m) { title = m[1].replace(/^\d+장\.?\s*/, '').trim(); t = t.slice(m[0].length).trim(); }
+    return { title: title || f.name, body: t };
+  });
+}
+async function readFolderFiles(dir, prefix = '') {
+  const out = [];
+  for await (const [n, h] of dir.entries()) {
+    const name = n.normalize('NFC');
+    if (name.startsWith('.') || SKIP.has(name)) continue;
+    if (h.kind === 'directory') { if (['원고', 'manuscript', 'chapters'].includes(name)) out.push(...await readFolderFiles(h, name + '/')); continue; }
+    if (/\.(txt|md|markdown)$/i.test(name)) out.push({ name: prefix + name, text: await (await h.getFile()).text() });
+  }
+  return out;
+}
+async function importBook({ title, chapters, folder }) {
+  const hasFocus = S.books.some(b => b.focus);
+  const toc = chapters.map((c, i) => ({ title: c.title, question: '', message: '', order: i }));
+  const ref = await addDoc(P.books(), {
+    workingTitle: title, titleCandidates: [{ text: title, why: '기존 원고 제목', star: true, by: '대표님' }], topic: title, seeds: '', purpose: '',
+    goal: { chapters: Math.max(chapters.length, 1), chars: Math.max(100000, Math.ceil(chapters.reduce((a, c) => a + countChars(c.body), 0) / 10000) * 10000), dueDate: '' },
+    plan: { reader: '', problem: '', promise: '', inScope: '', outScope: '' },
+    stageStatus: { topic: 'confirmed', title: 'confirmed', toc: 'confirmed' }, confirmed: { title, toc: [] }, versionCount: { title: 1, toc: 1 }, review: {},
+    focus: !hasFocus, nextAction: '', memo: '', folder: folder || safeName(title), imported: true, createdAt: serverTimestamp(), updatedAt: serverTimestamp()
+  });
+  const ids = [];
+  for (let i = 0; i < chapters.length; i += 200) {
+    const bt = writeBatch(db);
+    chapters.slice(i, i + 200).forEach((c, k) => {
+      const cref = doc(P.chapters(ref.id)); ids.push(cref.id);
+      const chars = countChars(c.body);
+      bt.set(cref, { ...newCh(i + k, c), status: chars ? '초고' : '설계', chars });
+      bt.set(P.body(ref.id, cref.id), { text: c.body || '', updatedAt: serverTimestamp() });
+    });
+    await bt.commit();
+  }
+  await updateDoc(P.book(ref.id), { 'confirmed.toc': toc.map((x, i) => ({ ...x, id: ids[i] })) });
+  return ref.id;
+}
+async function importUI() {
+  const box = $('#impBox'); if (!box) return;
+  const showPreview = (title, chapters, folder) => {
+    box.innerHTML = `<div class="ai-box"><div class="who">가져올 원고 미리보기</div>
+      <label class="label">책 제목</label><input id="impTitle" value="${esc(title)}">
+      <div class="small" style="margin-top:8px">${chapters.length}장 · 총 ${num(chapters.reduce((a, c) => a + countChars(c.body), 0))}자</div>
+      ${chapters.map((c, i) => `<div class="small" style="padding:4px 0;border-bottom:1px solid var(--line2)"><b>${i + 1}.</b> ${esc(c.title)} <span class="muted">· ${num(countChars(c.body))}자</span></div>`).join('')}
+      <p class="hint">글이 있는 장은 '초고'로 들어갑니다. 기획서는 들어간 뒤 채우시면 돼요.</p>
+      <div class="row end"><button class="btn" id="impCancel">취소</button><button class="btn primary" id="impGo">책장에 꽂기</button></div></div>`;
+    $('#impCancel').onclick = () => render();
+    $('#impGo').onclick = async () => {
+      $('#impGo').disabled = true; $('#impGo').innerHTML = '<span class="spin"></span> 옮기는 중…';
+      const id = await importBook({ title: $('#impTitle').value.trim() || title, chapters, folder });
+      toast(`${chapters.length}장을 가져왔어요.`); location.hash = `#/book/${id}`;
+    };
+  };
+  $('#impFiles').onchange = async e => {
+    const fs = [...e.target.files]; if (!fs.length) return;
+    const files = await Promise.all(fs.map(async f => ({ name: f.name.normalize('NFC'), text: await f.text() })));
+    const chapters = splitChapters(files);
+    showPreview(files.length === 1 ? files[0].name.replace(/\.(txt|md)$/i, '') : '가져온 원고', chapters, null);
+  };
+  $('#impFolder') && ($('#impFolder').onclick = async () => {
+    if (FS.perm !== 'granted') { await (FS.root ? fsRegrant() : fsConnect()); if (FS.perm !== 'granted') return; }
+    const work = await getDir(FS.root, WORK); const linked = new Set(S.books.map(b => b.folder));
+    const dirs = []; for await (const [n, h] of work.entries()) if (h.kind === 'directory' && !n.startsWith('.') && !linked.has(n.normalize('NFC'))) dirs.push([n.normalize('NFC'), h]);
+    if (!dirs.length) { box.innerHTML = `<p class="small muted">'${WORK}' 안에 아직 책동무에 없는 폴더가 없어요.</p>`; return; }
+    box.innerHTML = `<div class="small" style="margin-bottom:6px">${WORK} 안의 폴더 — 고르면 txt·md 원고를 읽습니다</div>` + dirs.map(([n], i) => `<button class="btn sm" data-dir="${i}" style="margin:3px">📂 ${esc(n)}</button>`).join('');
+    $$('[data-dir]').forEach(b => b.onclick = async () => {
+      const [n, h] = dirs[+b.dataset.dir]; const files = await readFolderFiles(h);
+      if (!files.length) { toast('이 폴더엔 txt·md 원고가 없어요. (docx·pdf는 아직 못 읽어요)', true, 5000); return; }
+      showPreview(n, splitChapters(files), n);
+    });
+  });
+}
+
 /* ───────── Markdown 내려받기 ───────── */
 async function exportMarkdown(book) {
   toast('Markdown 묶는 중…');
   const { default: JSZip } = await import('https://cdn.jsdelivr.net/npm/jszip@3.10.1/+esm');
-  const chs = sorted((await getDocs(query(P.chapters(book.id), orderBy('order')))).docs.map(d => ({ id: d.id, ...d.data() })));
+  const chs = await chaptersWithBodies(book.id);
   const decs = (await getDocs(P.decisions(book.id))).docs.map(d => d.data());
-  const safe = s => (s || '').replace(/[\\/:*?"<>|]/g, '').trim().slice(0, 40) || '제목없음';
-  const root = safe(titleOf(book));
+  const root = safeName(titleOf(book));
   const zip = new JSZip(), f = zip.folder(root);
-  const p = book.plan || {};
-  f.file('기획서.md', `# ${titleOf(book)} — 기획서\n\n- 주제: ${book.topic}\n- 목적: ${book.purpose || ''}\n- 완성선: ${book.goal?.chapters}장 / ${num(book.goal?.chars)}자 / ${book.goal?.dueDate || ''}\n\n## 글감\n${book.seeds || ''}\n\n## 대표 독자\n${p.reader || ''}\n\n## 독자의 문제\n${p.problem || ''}\n\n## 책의 핵심 약속\n${p.promise || ''}\n\n## 다룰 범위\n${p.inScope || ''}\n\n## 다루지 않을 것\n${p.outScope || ''}\n\n## 제목 후보\n${(book.titleCandidates || []).map(c => `- ${c.star ? '★ ' : ''}${c.text}`).join('\n')}\n\n## 경험 메모\n${book.memo || ''}\n`);
-  f.file('목차.md', `# ${titleOf(book)} — 목차\n\n` + chs.map((c, i) => `## ${i + 1}장. ${c.title}\n- 질문: ${c.question || ''}\n- 메시지: ${c.message || ''}\n- 상태: ${c.status} · ${num(c.chars)}자\n`).join('\n'));
+  f.file('기획서.md', planMd(book));
+  f.file('목차.md', tocMd(book, chs));
+  if (decs.length) f.file('결정기록.md', decMd(decs, chs));
   const g = f.folder('원고');
-  chs.forEach((c, i) => g.file(`${String(i + 1).padStart(2, '0')}-${safe(c.title)}.md`, `# ${i + 1}장. ${c.title}\n\n${c.body || ''}\n`));
-  if (decs.length) f.file('결정기록.md', '# 결정 기록\n\n' + decs.map(d => `- ${d.chapterId ? (chs.findIndex(c => c.id === d.chapterId) + 1) + '장: ' : ''}${d.text}`).join('\n'));
+  chs.forEach((c, i) => g.file(chFile(c, i), chMd(c, i)));
   const blob = await zip.generateAsync({ type: 'blob' });
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
   const d = new Date(); a.download = `${root}_${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}.zip`;
@@ -944,6 +1228,6 @@ onAuthStateChanged(auth, u => {
   S.user = u; S.booksReady = S.ideasReady = false;
   if (!u) { vAuth(); return; }
   setDoc(P.user(), { email: u.email, name: u.displayName || '', lastSeen: serverTimestamp() }, { merge: true }).catch(denied);
-  startSubs(); render();
+  fsInit().catch(e => console.warn(e)).finally(() => { startSubs(); render(); });
 });
 window.__cdm = { S, MODEL }; // 디버그용
