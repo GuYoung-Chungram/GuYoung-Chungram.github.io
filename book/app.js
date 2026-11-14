@@ -1131,7 +1131,7 @@ async function readFolderFiles(dir, prefix = '') {
   }
   return out;
 }
-async function importBook({ title, chapters, folder }) {
+async function importBook({ title, chapters, folder, extra = {}, decisions = [] }) {
   const hasFocus = S.books.some(b => b.focus);
   const toc = chapters.map((c, i) => ({ title: c.title, question: '', message: '', order: i }));
   const ref = await addDoc(P.books(), {
@@ -1139,8 +1139,9 @@ async function importBook({ title, chapters, folder }) {
     goal: { chapters: Math.max(chapters.length, 1), chars: Math.max(100000, Math.ceil(chapters.reduce((a, c) => a + countChars(c.body), 0) / 10000) * 10000), dueDate: '' },
     plan: { reader: '', problem: '', promise: '', inScope: '', outScope: '' },
     stageStatus: { topic: 'confirmed', title: 'confirmed', toc: 'confirmed' }, confirmed: { title, toc: [] }, versionCount: { title: 1, toc: 1 }, review: {},
-    focus: !hasFocus, nextAction: '', memo: '', folder: folder || safeName(title), imported: true, createdAt: serverTimestamp(), updatedAt: serverTimestamp()
+    focus: !hasFocus, nextAction: '', memo: '', folder: folder || safeName(title), imported: true, createdAt: serverTimestamp(), updatedAt: serverTimestamp(), ...extra
   });
+  for (const d of decisions) await addDoc(P.decisions(ref.id), { chapterId: null, text: d, createdAt: serverTimestamp() });
   const ids = [];
   for (let i = 0; i < chapters.length; i += 200) {
     const bt = writeBatch(db);
