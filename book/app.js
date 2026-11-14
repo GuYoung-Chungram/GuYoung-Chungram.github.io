@@ -165,6 +165,7 @@ function soft(kind, id) {
   clearTimeout(softTimer);
   softTimer = setTimeout(() => {
     const a = document.activeElement;
+    if (a?.id === 'ideaIn') { const v = a.value; render(); const n = $('#ideaIn'); if (n) { n.value = v; n.focus(); } return; } // 서랍 입력 중에도 목록은 바로 갱신
     if (a && /INPUT|TEXTAREA|SELECT/.test(a.tagName) && view.contains(a)) { S.pending = true; return; }
     render();
   }, 60);
@@ -1230,4 +1231,4 @@ onAuthStateChanged(auth, u => {
   setDoc(P.user(), { email: u.email, name: u.displayName || '', lastSeen: serverTimestamp() }, { merge: true }).catch(denied);
   fsInit().catch(e => console.warn(e)).finally(() => { startSubs(); render(); });
 });
-window.__cdm = { S, MODEL }; // 디버그용
+window.__cdm = { S, MODEL, callAI, importBook, splitChapters }; // 디버그용
