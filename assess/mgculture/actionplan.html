@@ -1,0 +1,1591 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>심리적 안전감 전략카드 | MG새마을금고</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ===== PRINT-FIRST A4 CARD SYSTEM ===== */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --accent: #1652D8;
+  --accent-dark: #0F3D99;
+  --text: #1A1A1A;
+  --text-mid: #444444;
+  --text-light: #666666;
+  --surface: #F4F7FF;
+  --border: #C8D4F0;
+}
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: #e8e8e8;
+  color: var(--text);
+}
+
+/* ===== SCREEN NAV ===== */
+.screen-only {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 20px;
+  background: #333;
+  align-items: center;
+}
+.screen-only button {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 6px;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.screen-only button:hover { background: var(--accent-dark); }
+.screen-only span { color: #aaa; font-size: 12px; font-family: 'Noto Sans KR', sans-serif; }
+
+/* ===== A4 PAGE ===== */
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  margin: 16px auto;
+  background: #fff;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== CARD HEADER ===== */
+.card-header {
+  padding: 28px 32px 22px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.card-number-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+.card-num-badge {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  border: 2px solid var(--accent);
+  border-radius: 4px;
+  padding: 3px 10px;
+  line-height: 1;
+}
+.card-category {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-light);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.card-icon {
+  font-size: 32px;
+  margin-left: auto;
+  line-height: 1;
+}
+.card-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  word-break: keep-all;
+}
+.card-title-en {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-light);
+  margin-top: 4px;
+  letter-spacing: 0.01em;
+}
+.accent-line {
+  width: 40px;
+  height: 3px;
+  background: var(--accent);
+  margin: 14px 0 0;
+}
+
+/* ===== CARD BODY ===== */
+.card-body {
+  flex: 1;
+  padding: 22px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* ===== CONCEPT BOX ===== */
+.concept-box {
+  background: var(--surface);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  padding: 16px 18px;
+}
+.concept-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.concept-text {
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--text-mid);
+  line-height: 1.75;
+  word-break: keep-all;
+}
+
+/* ===== CHECKLIST SECTION ===== */
+.checklist-section {
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.checklist-header {
+  background: var(--accent);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 10px 18px;
+}
+.checklist-items {
+  padding: 6px 0;
+}
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 11px 18px;
+  border-bottom: 1px solid #f0f0f0;
+}
+.checklist-item:last-child { border-bottom: none; }
+.checkbox {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--accent);
+  border-radius: 3px;
+  flex-shrink: 0;
+  margin-top: 1px;
+  background: #fff;
+}
+.checklist-text {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.55;
+  word-break: keep-all;
+  flex: 1;
+}
+
+/* ===== RATE BOX ===== */
+.rate-section {
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.rate-header {
+  background: var(--text);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 10px 18px;
+}
+.rate-body {
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.rate-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.rate-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-mid);
+  width: 80px;
+  flex-shrink: 0;
+}
+.rate-boxes {
+  display: flex;
+  gap: 6px;
+  flex: 1;
+}
+.rate-box {
+  flex: 1;
+  height: 28px;
+  border: 1.5px solid var(--border);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-light);
+  background: #fff;
+}
+.rate-box.accent { background: var(--surface); border-color: var(--accent); color: var(--accent); }
+
+/* ===== TAG ROW ===== */
+.tag-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+.tag {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  border: 1.5px solid var(--accent);
+  border-radius: 20px;
+  padding: 3px 10px;
+  letter-spacing: 0.02em;
+}
+
+/* ===== FOOTER ===== */
+.card-footer {
+  padding: 12px 32px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fafafa;
+}
+.footer-brand {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+}
+.footer-source {
+  font-size: 11px;
+  color: var(--text-light);
+}
+.footer-page {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-light);
+}
+
+/* ===== HIGHLIGHT QUOTE ===== */
+.highlight-quote {
+  background: var(--text);
+  color: #fff;
+  border-radius: 8px;
+  padding: 14px 18px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.65;
+  word-break: keep-all;
+}
+.highlight-quote .hl { color: #7BA8FF; font-weight: 700; }
+
+/* ===== WORKSHEET SPECIFIC ===== */
+.ws-header {
+  background: var(--accent);
+  color: #fff;
+  padding: 24px 32px 20px;
+}
+.ws-title-small {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.75;
+  margin-bottom: 6px;
+}
+.ws-title {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-bottom: 6px;
+}
+.ws-subtitle {
+  font-size: 14px;
+  opacity: 0.8;
+  font-weight: 400;
+}
+.ws-body {
+  flex: 1;
+  padding: 18px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.ws-guide {
+  background: var(--surface);
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.ws-guide-icon { font-size: 18px; flex-shrink: 0; }
+.ws-guide-text { font-size: 13px; color: var(--text-mid); line-height: 1.6; word-break: keep-all; }
+
+.ws-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.ws-table th {
+  background: var(--text);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-align: center;
+  padding: 9px 8px;
+  border: 1px solid #333;
+}
+.ws-table th.left { text-align: left; padding-left: 12px; }
+.ws-table td {
+  border: 1px solid var(--border);
+  padding: 8px 10px;
+  vertical-align: middle;
+}
+.ws-table tr:nth-child(even) td { background: #fafbff; }
+.ws-table td.num-col {
+  text-align: center;
+  font-weight: 800;
+  color: var(--accent);
+  font-size: 14px;
+  width: 36px;
+}
+.ws-table td.strat-col {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text);
+  word-break: keep-all;
+  width: 90px;
+}
+.ws-table td.check-col {
+  text-align: center;
+  width: 50px;
+}
+.ws-check {
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--border);
+  border-radius: 3px;
+  margin: 0 auto;
+  background: #fff;
+}
+.ws-table td.note-col {
+  font-size: 12px;
+  color: var(--text-light);
+}
+.ws-table td.prio-col {
+  text-align: center;
+  width: 90px;
+}
+.prio-dots {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+.prio-dot {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  background: #fff;
+  flex-shrink: 0;
+}
+
+.ws-section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 4px;
+  margin-bottom: 8px;
+}
+
+.ws-vote-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.ws-vote-chip {
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  min-width: 60px;
+}
+.ws-vote-num {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--accent);
+}
+.ws-vote-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-light);
+  text-align: center;
+  line-height: 1.3;
+  word-break: keep-all;
+}
+.ws-vote-box {
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  background: #fff;
+}
+
+.ws-open-box {
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  min-height: 52px;
+  background: #fafbff;
+}
+.ws-open-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-light);
+  margin-bottom: 4px;
+}
+.ws-open-inner {
+  border-bottom: 1px solid var(--border);
+  height: 24px;
+}
+
+/* ===== PRINT ===== */
+@media print {
+  .screen-only { display: none !important; }
+  body { background: white; }
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    height: 297mm;
+    margin: 0;
+    page-break-after: always;
+    break-after: page;
+  }
+  .page:last-child { page-break-after: avoid; }
+}
+@media (max-width: 800px) {
+  .page { width: 100%; min-height: auto; margin: 8px; }
+  .card-title { font-size: 22px; }
+}
+</style>
+</head>
+<body>
+
+<div class="screen-only">
+  <button onclick="window.print()">🖨 전체 인쇄 (11장)</button>
+  <span>※ 브라우저 인쇄 → 용지: A4 / 여백: 최소 / 배경 그래픽 포함 권장</span>
+</div>
+
+<!-- ===================== CARD 01 ===================== -->
+<div class="page">
+  <div class="card-header">
+    <div class="card-number-row">
+      <span class="card-num-badge">STRATEGY 01</span>
+      <span class="card-category">Power Gradient</span>
+      <span class="card-icon">⚖️</span>
+    </div>
+    <h1 class="card-title">권력 격차 줄이기</h1>
+    <p class="card-title-en">Levelling Power Gradients</p>
+    <div class="accent-line"></div>
+  </div>
+
+  <div class="card-body">
+    <div class="concept-box">
+      <div class="concept-label">핵심 개념</div>
+      <p class="concept-text">조직 내 권력 격차가 클수록 구성원은 솔직하게 말하지 않습니다. 리더가 가진 공식 권한(직급), 비공식 권한(연공서열), 사회적 권한(성별·나이)을 인식하고 <strong>의도적으로 낮추는 행동</strong>이 심리적 안전감의 출발점입니다.</p>
+    </div>
+
+    <div class="highlight-quote">
+      1977년 테네리페 항공 참사 — 극단적 권력 격차로 인해 <span class="hl">부기장이 기장의 오류를 지적하지 못한 것</span>이 역사상 최악의 항공 사고를 만들었습니다.
+    </div>
+
+    <div class="checklist-section">
+      <div class="checklist-header">✅ 우리 금고에서 실천 가능한 방법</div>
+      <div class="checklist-items">
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">직급 대신 이름으로 부르는 문화 시도하기</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">회의 진행 역할을 팀원들에게 순번제로 배분하기</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">결정권을 현장 가까운 곳으로 위임하기</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">전 직급이 참여하는 열린 대화(타운홀) 정기 운영</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">리더가 먼저 "나는 틀릴 수 있다"고 말하기</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="rate-section">
+      <div class="rate-header">📊 우리 금고에서 평가해보세요</div>
+      <div class="rate-body">
+        <div class="rate-row">
+          <span class="rate-label">현실성</span>
+          <div class="rate-boxes">
+            <div class="rate-box">1<br>낮음</div>
+            <div class="rate-box">2</div>
+            <div class="rate-box">3</div>
+            <div class="rate-box">4</div>
+            <div class="rate-box accent">5<br>높음</div>
+          </div>
+        </div>
+        <div class="rate-row">
+          <span class="rate-label">효과성</span>
+          <div class="rate-boxes">
+            <div class="rate-box">1<br>낮음</div>
+            <div class="rate-box">2</div>
+            <div class="rate-box">3</div>
+            <div class="rate-box">4</div>
+            <div class="rate-box accent">5<br>높음</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tag-row">
+      <span class="tag">리더십</span>
+      <span class="tag">조직문화</span>
+      <span class="tag">우선순위 HIGH</span>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <span class="footer-brand">청람M&C</span>
+    <span class="footer-source">출처: PsychSafety.com · Amy Edmondson (Harvard)</span>
+    <span class="footer-page">01 / 10</span>
+  </div>
+</div>
+
+<!-- ===================== CARD 02 ===================== -->
+<div class="page">
+  <div class="card-header">
+    <div class="card-number-row">
+      <span class="card-num-badge">STRATEGY 02</span>
+      <span class="card-category">Shared Norms</span>
+      <span class="card-icon">📋</span>
+    </div>
+    <h1 class="card-title">공동 규범 만들기</h1>
+    <p class="card-title-en">Establishing Shared Norms</p>
+    <div class="accent-line"></div>
+  </div>
+
+  <div class="card-body">
+    <div class="concept-box">
+      <div class="concept-label">핵심 개념</div>
+      <p class="concept-text">팀에서 어떻게 행동해야 하는지 예측 가능할 때 사람들은 더 안전하게 느낍니다. 고성과 팀에는 반드시 <strong>팀이 함께 만든 '사회적 계약(Social Contract)'</strong>이 있습니다. 리더가 혼자 정해서 내려주면 효과가 절반입니다.</p>
+    </div>
+
+    <div class="highlight-quote">
+      규범은 <span class="hl">"우리 팀에서는 이렇게 한다"</span>는 공유된 약속입니다. — 팀원들이 함께 만들 때만 진짜 힘을 발휘합니다.
+    </div>
+
+    <div class="checklist-section">
+      <div class="checklist-header">✅ 우리 금고에서 실천 가능한 방법</div>
+      <div class="checklist-items">
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">팀 헌장 워크숍: "우리 팀에서 중요하게 여기는 것은?" 함께 작성</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">회의 규칙 공동 설정 (발언 기회 균등, 다른 의견 환영)</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">신규 입사자 온보딩 시 팀 규범 문서 공유</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">분기별 팀 규범 점검 및 업데이트</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">규범을 눈에 보이는 곳에 게시하여 일상에서 상기</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="rate-section">
+      <div class="rate-header">📊 우리 금고에서 평가해보세요</div>
+      <div class="rate-body">
+        <div class="rate-row">
+          <span class="rate-label">현실성</span>
+          <div class="rate-boxes">
+            <div class="rate-box">1<br>낮음</div>
+            <div class="rate-box">2</div>
+            <div class="rate-box">3</div>
+            <div class="rate-box">4</div>
+            <div class="rate-box accent">5<br>높음</div>
+          </div>
+        </div>
+        <div class="rate-row">
+          <span class="rate-label">효과성</span>
+          <div class="rate-boxes">
+            <div class="rate-box">1<br>낮음</div>
+            <div class="rate-box">2</div>
+            <div class="rate-box">3</div>
+            <div class="rate-box">4</div>
+            <div class="rate-box accent">5<br>높음</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tag-row">
+      <span class="tag">팀 빌딩</span>
+      <span class="tag">프로세스</span>
+      <span class="tag">합의</span>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <span class="footer-brand">청람M&C</span>
+    <span class="footer-source">출처: PsychSafety.com · Amy Edmondson (Harvard)</span>
+    <span class="footer-page">02 / 10</span>
+  </div>
+</div>
+
+<!-- ===================== CARD 03 ===================== -->
+<div class="page">
+  <div class="card-header">
+    <div class="card-number-row">
+      <span class="card-num-badge">STRATEGY 03</span>
+      <span class="card-category">Active Listening</span>
+      <span class="card-icon">👂</span>
+    </div>
+    <h1 class="card-title">경청과 공간 만들기</h1>
+    <p class="card-title-en">Effective Listening & Giving Space</p>
+    <div class="accent-line"></div>
+  </div>
+
+  <div class="card-body">
+    <div class="concept-box">
+      <div class="concept-label">핵심 개념</div>
+      <p class="concept-text">말해도 듣지 않는 조직에서는 곧 아무도 말하지 않습니다. 특히 <strong>나쁜 소식(프로젝트 지연, 실수, 나쁜 결정)을 들을 때 리더가 어떻게 반응하느냐</strong>가 팀 전체의 발언 문화를 결정합니다.</p>
+    </div>
+
+    <div class="highlight-quote">
+      경청은 <span class="hl">말하는 사람보다 듣는 사람이 더 많은 에너지를 쓰는 행위</span>입니다. 적극적 경청 훈련은 팀 성과를 유의미하게 높입니다.
+    </div>
+
+    <div class="checklist-section">
+      <div class="checklist-header">✅ 우리 금고에서 실천 가능한 방법</div>
+      <div class="checklist-items">
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">회의 중 노트북·핸드폰 내려놓기 — 발언자에 집중하는 환경</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">발언 후 즉각 반박 대신 2~3초 침묵으로 존중 표현</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">조용한 팀원에게 먼저 "OO씨는 어떻게 생각하세요?" 묻기</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">회의 전 잠깐의 '침묵 시간' — 생각 정리 기회 제공</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">발언 내용을 요약해 되묻기: "제가 제대로 이해했나요?"</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="rate-section">
+      <div class="rate-header">📊 우리 금고에서 평가해보세요</div>
+      <div class="rate-body">
+        <div class="rate-row">
+          <span class="rate-label">현실성</span>
+          <div class="rate-boxes">
+            <div class="rate-box">1<br>낮음</div>
+            <div class="rate-box">2</div>
+            <div class="rate-box">3</div>
+            <div class="rate-box">4</div>
+            <div class="rate-box accent">5<br>높음</div>
+          </div>
+        </div>
+        <div class="rate-row">
+          <span class="rate-label">효과성</span>
+          <div class="rate-boxes">
+            <div class="rate-box">1<br>낮음</div>
+            <div class="rate-box">2</div>
+            <div class="rate-box">3</div>
+            <div class="rate-box">4</div>
+            <div class="rate-box accent">5<br>높음</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tag-row">
+      <span class="tag">소통</span>
+      <span class="tag">리더십 스킬</span>
+      <span class="tag">회의문화</span>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <span class="footer-brand">청람M&C</span>
+    <span class="footer-source">출처: PsychSafety.com · Amy Edmondson (Harvard)</span>
+    <span class="footer-page">03 / 10</span>
+  </div>
+</div>
+
+<!-- ===================== CARD 04 ===================== -->
+<div class="page">
+  <div class="card-header">
+    <div class="card-number-row">
+      <span class="card-num-badge">STRATEGY 04</span>
+      <span class="card-category">Communication</span>
+      <span class="card-icon">💬</span>
+    </div>
+    <h1 class="card-title">명확하고 따뜻한 소통</h1>
+    <p class="card-title-en">Clear & Compassionate Communication</p>
+    <div class="accent-line"></div>
+  </div>
+
+  <div class="card-body">
+    <div class="concept-box">
+      <div class="concept-label">핵심 개념</div>
+      <p class="concept-text">바쁘고 스트레스받는 상황에서 우리는 자신도 모르게 퉁명스럽게 말합니다. <strong>의도가 없어도 받아들이는 쪽에서는 상처</strong>가 됩니다. 비폭력 대화(NVC), SBI 모델 같은 구체적 도구를 활용하면 효과가 높아집니다.</p>
+    </div>
+
+    <div class="highlight-quote">
+      <span class="hl">SBI 모델</span>: 상황(Situation) → 행동(Behavior) → 영향(Impact) 순서로 피드백하면 상대방이 방어적으로 받아들이지 않습니다.
+    </div>
+
+    <div class="checklist-section">
+      <div class="checklist-header">✅ 우리 금고에서 실천 가능한 방법</div>
+      <div class="checklist-items">
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">피드백 시 SBI 모델 활용: 상황→행동→영향 순서로</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">줄임말·전문용어 사용 시 반드시 설명 추가하기</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">메신저·메시지에서도 톤 의식하기 — 짧아도 따뜻하게</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">비판 전에 이해 먼저: "어떤 이유에서 그렇게 하셨나요?"</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">불만 표현 시 '나 전달법(I-message)' 사용하기</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="rate-section">
+      <div class="rate-header">📊 우리 금고에서 평가해보세요</div>
+      <div class="rate-body">
+        <div class="rate-row">
+          <span class="rate-label">현실성</span>
+          <div class="rate-boxes">
+            <div class="rate-box">1<br>낮음</div>
+            <div class="rate-box">2</div>
+            <div class="rate-box">3</div>
+            <div class="rate-box">4</div>
+            <div class="rate-box accent">5<br>높음</div>
+          </div>
+        </div>
+        <div class="rate-row">
+          <span class="rate-label">효과성</span>
+          <div class="rate-boxes">
+            <div class="rate-box">1<br>낮음</div>
+            <div class="rate-box">2</div>
+            <div class="rate-box">3</div>
+            <div class="rate-box">4</div>
+            <div class="rate-box accent">5<br>높음</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tag-row">
+      <span class="tag">소통 스킬</span>
+      <span class="tag">피드백</span>
+      <span class="tag">NVC</span>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <span class="footer-brand">청람M&C</span>
+    <span class="footer-source">출처: PsychSafety.com · Amy Edmondson (Harvard)</span>
+    <span class="footer-page">04 / 10</span>
+  </div>
+</div>
+
+<!-- ===================== CARD 05 ===================== -->
+<div class="page">
+  <div class="card-header">
+    <div class="card-number-row">
+      <span class="card-num-badge">STRATEGY 05</span>
+      <span class="card-category">Rewarding Voice</span>
+      <span class="card-icon">🏆</span>
+    </div>
+    <h1 class="card-title">발언에 보상하기</h1>
+    <p class="card-title-en">Rewarding Speaking Up</p>
+    <div class="accent-line"></div>
+  </div>
+
+  <div class="card-body">
+    <div class="concept-box">
+      <div class="concept-label">핵심 개념</div>
+      <p class="concept-text">안전한 환경을 만드는 것만으로는 부족합니다. <strong>발언 자체를 가치 있게 여기고, 칭찬하고, 권장</strong>해야 합니다. 사람들은 '말해도 괜찮다'는 것을 직접 경험으로 배웁니다.</p>
+    </div>
+
+    <div class="highlight-quote">
+      실수를 보고했을 때 <span class="hl">"어떻게 이런 일이!"</span> 대신 <span class="hl">"알려줘서 고마워요, 같이 봅시다"</span> — 이 한 마디가 팀 문화를 바꿉니다.
+    </div>
+
+    <div class="checklist-section">
+      <div class="checklist-header">✅ 우리 금고에서 실천 가능한 방법</div>
+      <div class="checklist-items">
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">회의에서 의견 낸 팀원에게 즉각적인 인정과 감사 표현</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">문제를 먼저 제기한 팀원을 공개적으로 칭찬하기</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">실수 보고 시 비난 대신 "알려줘서 고마워요" 먼저</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">1:1 미팅에서 "최근 걱정되는 부분이 있나요?" 정기 질문</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">반대 의견도 "좋은 관점이에요"로 수용하는 습관</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="rate-section">
+      <div class="rate-header">📊 우리 금고에서 평가해보세요</div>
+      <div class="rate-body">
+        <div class="rate-row">
+          <span class="rate-label">현실성</span>
+          <div class="rate-boxes">
+            <div class="rate-box">1<br>낮음</div>
+            <div class="rate-box">2</div>
+            <div class="rate-box">3</div>
+            <div class="rate-box">4</div>
+            <div class="rate-box accent">5<br>높음</div>
+          </div>
+        </div>
+        <div class="rate-row">
+          <span class="rate-label">효과성</span>
+          <div class="rate-boxes">
+            <div class="rate-box">1<br>낮음</div>
+            <div class="rate-box">2</div>
+            <div class="rate-box">3</div>
+            <div class="rate-box">4</div>
+            <div class="rate-box accent">5<br>높음</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tag-row">
+      <span class="tag">인정·칭찬</span>
+      <span class="tag">팀 문화</span>
+      <span class="tag">우선순위 HIGH</span>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <span class="footer-brand">청람M&C</span>
+    <span class="footer-source">출처: PsychSafety.com · Amy Edmondson (Harvard)</span>
+    <span class="footer-page">05 / 10</span>
+  </div>
+</div>
+
+<!-- ===================== CARD 06 ===================== -->
+<div class="page">
+  <div class="card-header">
+    <div class="card-number-row">
+      <span class="card-num-badge">STRATEGY 06</span>
+      <span class="card-category">Experimentation</span>
+      <span class="card-icon">🧪</span>
+    </div>
+    <h1 class="card-title">일을 실험으로 바라보기</h1>
+    <p class="card-title-en">Framing Work as Experiments</p>
+    <div class="accent-line"></div>
+  </div>
+
+  <div class="card-body">
+    <div class="concept-box">
+      <div class="concept-label">핵심 개념</div>
+      <p class="concept-text"><strong>언어가 문화를 만듭니다.</strong> "목표·마감·성과"만 이야기하면 달성/미달의 이분법이 됩니다. 일을 '실험'으로 프레이밍하면, 실패는 문제가 아니라 학습의 원천이 됩니다.</p>
+    </div>
+
+    <div class="highlight-quote">
+      고성과 팀은 항상 <span class="hl">"이번 시도에서 뭘 배울 수 있을까?"</span>를 묻습니다. — 실패한 실험도 성공입니다.
+    </div>
+
+    <div class="checklist-section">
+      <div class="checklist-header">✅ 우리 금고에서 실천 가능한 방법</div>
+      <div class="checklist-items">
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">새 프로젝트 시작 시 "성공 기준"과 "학습 기준" 함께 정의</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">실패한 시도를 팀 전체에 공유하고 "배운 점은?" 토론</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">파일럿(시범) 방식 도입: 작게 시작 → 빠른 학습 → 개선</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">"이걸 해봐도 될까요?" 질문에 "한번 해봐요"로 응답</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">월간 "우리가 배운 것들" 짧은 공유 시간 운영</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="rate-section">
+      <div class="rate-header">📊 우리 금고에서 평가해보세요</div>
+      <div class="rate-body">
+        <div class="rate-row">
+          <span class="rate-label">현실성</span>
+          <div class="rate-boxes">
+            <div class="rate-box">1<br>낮음</div>
+            <div class="rate-box">2</div>
+            <div class="rate-box">3</div>
+            <div class="rate-box">4</div>
+            <div class="rate-box accent">5<br>높음</div>
+          </div>
+        </div>
+        <div class="rate-row">
+          <span class="rate-label">효과성</span>
+          <div class="rate-boxes">
+            <div class="rate-box">1<br>낮음</div>
+            <div class="rate-box">2</div>
+            <div class="rate-box">3</div>
+            <div class="rate-box">4</div>
+            <div class="rate-box accent">5<br>높음</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tag-row">
+      <span class="tag">학습 문화</span>
+      <span class="tag">혁신</span>
+      <span class="tag">성장 마인드셋</span>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <span class="footer-brand">청람M&C</span>
+    <span class="footer-source">출처: PsychSafety.com · Amy Edmondson (Harvard)</span>
+    <span class="footer-page">06 / 10</span>
+  </div>
+</div>
+
+<!-- ===================== CARD 07 ===================== -->
+<div class="page">
+  <div class="card-header">
+    <div class="card-number-row">
+      <span class="card-num-badge">STRATEGY 07</span>
+      <span class="card-category">Retrospectives</span>
+      <span class="card-icon">🔄</span>
+    </div>
+    <h1 class="card-title">회고와 미래성찰</h1>
+    <p class="card-title-en">Retrospectives & Futurespectives</p>
+    <div class="accent-line"></div>
+  </div>
+
+  <div class="card-body">
+    <div class="concept-box">
+      <div class="concept-label">핵심 개념</div>
+      <p class="concept-text">고성과 팀은 의도적으로 '배움'을 일상에 내재화합니다. <strong>회고(지난 것 돌아보기)</strong>와 <strong>미래성찰(아직 일어나지 않은 실패를 미리 상상)</strong>이 반복될수록 팀은 실패를 자연스럽게 이야기하는 근육이 생깁니다.</p>
+    </div>
+
+    <div class="highlight-quote">
+      <span class="hl">프리모텀(Pre-mortem)</span>: "이 프로젝트가 실패한다면 이유는 무엇일까?" — 시작 전에 미리 실패를 상상하면 실제 실패 확률이 낮아집니다.
+    </div>
+
+    <div class="checklist-section">
+      <div class="checklist-header">✅ 우리 금고에서 실천 가능한 방법</div>
+      <div class="checklist-items">
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">월 1회 팀 회고: Keep(잘한 것) / Problem(아쉬운 것) / Try(다음 도전)</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">프리모텀 도입: "실패 시나리오" 미리 상상하고 대비</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">회고 결과를 문서화하고 팀 전체가 접근 가능하게 공유</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">비난 없는 회고 원칙 명시: "사람이 아닌 시스템을 봅니다"</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">회고에서 나온 개선사항 실제로 반영하고 결과 공유</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="rate-section">
+      <div class="rate-header">📊 우리 금고에서 평가해보세요</div>
+      <div class="rate-body">
+        <div class="rate-row">
+          <span class="rate-label">현실성</span>
+          <div class="rate-boxes">
+            <div class="rate-box">1<br>낮음</div>
+            <div class="rate-box">2</div>
+            <div class="rate-box">3</div>
+            <div class="rate-box">4</div>
+            <div class="rate-box accent">5<br>높음</div>
+          </div>
+        </div>
+        <div class="rate-row">
+          <span class="rate-label">효과성</span>
+          <div class="rate-boxes">
+            <div class="rate-box">1<br>낮음</div>
+            <div class="rate-box">2</div>
+            <div class="rate-box">3</div>
+            <div class="rate-box">4</div>
+            <div class="rate-box accent">5<br>높음</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tag-row">
+      <span class="tag">학습 조직</span>
+      <span class="tag">리스크 관리</span>
+      <span class="tag">KPT 회고</span>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <span class="footer-brand">청람M&C</span>
+    <span class="footer-source">출처: PsychSafety.com · Amy Edmondson (Harvard)</span>
+    <span class="footer-page">07 / 10</span>
+  </div>
+</div>
+
+<!-- ===================== CARD 08 ===================== -->
+<div class="page">
+  <div class="card-header">
+    <div class="card-number-row">
+      <span class="card-num-badge">STRATEGY 08</span>
+      <span class="card-category">Accountability</span>
+      <span class="card-icon">🛡️</span>
+    </div>
+    <h1 class="card-title">문제 행동에 단호하게 대응하기</h1>
+    <p class="card-title-en">Addressing Problematic Behaviour</p>
+    <div class="accent-line"></div>
+  </div>
+
+  <div class="card-body">
+    <div class="concept-box">
+      <div class="concept-label">핵심 개념</div>
+      <p class="concept-text">심리적 안전감은 <strong>"아무 말 해도 OK"가 아닙니다.</strong> 오히려 명확하고 강력한 행동 기준이 있어야 합니다. 한 번의 실수는 공감과 피드백으로, 반복적·해악적 행동(왕따·배제·폄하)에는 단호하게 대응합니다.</p>
+    </div>
+
+    <div class="highlight-quote">
+      심리적 안전감 = <span class="hl">높은 기준 + 높은 안전감</span>의 조합입니다. 기준 없는 안전감은 방종, 안전감 없는 기준은 공포입니다.
+    </div>
+
+    <div class="checklist-section">
+      <div class="checklist-header">✅ 우리 금고에서 실천 가능한 방법</div>
+      <div class="checklist-items">
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">팀 헌장에 '절대 안 되는 행동' 명시 — 모두 합의하에</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">발언 가로막기·비아냥·배제 발생 시 그 자리에서 즉시 언급</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">반복되는 문제 행동은 1:1 미팅에서 명확하게 피드백</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">"심리적 안전감 ≠ 아무 말 해도 OK" 팀 전체에 공유</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">고성과 기준을 명확히 하고 모두가 그 기준에 책임지기</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="rate-section">
+      <div class="rate-header">📊 우리 금고에서 평가해보세요</div>
+      <div class="rate-body">
+        <div class="rate-row">
+          <span class="rate-label">현실성</span>
+          <div class="rate-boxes">
+            <div class="rate-box">1<br>낮음</div>
+            <div class="rate-box">2</div>
+            <div class="rate-box">3</div>
+            <div class="rate-box">4</div>
+            <div class="rate-box accent">5<br>높음</div>
+          </div>
+        </div>
+        <div class="rate-row">
+          <span class="rate-label">효과성</span>
+          <div class="rate-boxes">
+            <div class="rate-box">1<br>낮음</div>
+            <div class="rate-box">2</div>
+            <div class="rate-box">3</div>
+            <div class="rate-box">4</div>
+            <div class="rate-box accent">5<br>높음</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tag-row">
+      <span class="tag">책임</span>
+      <span class="tag">경계 설정</span>
+      <span class="tag">팀 기준</span>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <span class="footer-brand">청람M&C</span>
+    <span class="footer-source">출처: PsychSafety.com · Amy Edmondson (Harvard)</span>
+    <span class="footer-page">08 / 10</span>
+  </div>
+</div>
+
+<!-- ===================== CARD 09 ===================== -->
+<div class="page">
+  <div class="card-header">
+    <div class="card-number-row">
+      <span class="card-num-badge">STRATEGY 09</span>
+      <span class="card-category">Inclusion</span>
+      <span class="card-icon">🌈</span>
+    </div>
+    <h1 class="card-title">다양성 존중하기</h1>
+    <p class="card-title-en">Embracing Differences</p>
+    <div class="accent-line"></div>
+  </div>
+
+  <div class="card-body">
+    <div class="concept-box">
+      <div class="concept-label">핵심 개념</div>
+      <p class="concept-text">심리적 안전감은 모든 사람에게 똑같이 보이지 않습니다. 문화적 배경, 성격, 경험 차이에 따라 각자가 '안전함'을 느끼는 방식은 다릅니다. <strong>획일적인 '모범 팀원' 이미지를 버리는 것</strong>이 핵심입니다.</p>
+    </div>
+
+    <div class="highlight-quote">
+      <span class="hl">"침묵 = 동의"가 아닙니다.</span> 조용한 팀원이 의견이 없는 게 아니라, 말할 공간을 찾지 못하고 있을 수 있습니다.
+    </div>
+
+    <div class="checklist-section">
+      <div class="checklist-header">✅ 우리 금고에서 실천 가능한 방법</div>
+      <div class="checklist-items">
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">회의 전 서면 의견 제출 옵션 제공 — 내성적인 팀원 배려</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">짧게 말하는 것, 돌아서 말하는 것 — 모든 발언 스타일 존중</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">나이·직급·성별 고정관념 없이 모든 의견을 동등하게</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">"침묵 = 동의 아님"을 회의 원칙으로 명시</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">신입/연차 무관하게 모든 구성원의 아이디어를 동등하게</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="rate-section">
+      <div class="rate-header">📊 우리 금고에서 평가해보세요</div>
+      <div class="rate-body">
+        <div class="rate-row">
+          <span class="rate-label">현실성</span>
+          <div class="rate-boxes">
+            <div class="rate-box">1<br>낮음</div>
+            <div class="rate-box">2</div>
+            <div class="rate-box">3</div>
+            <div class="rate-box">4</div>
+            <div class="rate-box accent">5<br>높음</div>
+          </div>
+        </div>
+        <div class="rate-row">
+          <span class="rate-label">효과성</span>
+          <div class="rate-boxes">
+            <div class="rate-box">1<br>낮음</div>
+            <div class="rate-box">2</div>
+            <div class="rate-box">3</div>
+            <div class="rate-box">4</div>
+            <div class="rate-box accent">5<br>높음</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tag-row">
+      <span class="tag">포용성</span>
+      <span class="tag">다양성</span>
+      <span class="tag">DEI</span>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <span class="footer-brand">청람M&C</span>
+    <span class="footer-source">출처: PsychSafety.com · Amy Edmondson (Harvard)</span>
+    <span class="footer-page">09 / 10</span>
+  </div>
+</div>
+
+<!-- ===================== CARD 10 ===================== -->
+<div class="page">
+  <div class="card-header">
+    <div class="card-number-row">
+      <span class="card-num-badge">STRATEGY 10</span>
+      <span class="card-category">Human Error</span>
+      <span class="card-icon">🧠</span>
+    </div>
+    <h1 class="card-title">실수는 인간의 당연한 속성</h1>
+    <p class="card-title-en">Accepting Human Error as Normal</p>
+    <div class="accent-line"></div>
+  </div>
+
+  <div class="card-body">
+    <div class="concept-box">
+      <div class="concept-label">핵심 개념</div>
+      <p class="concept-text">고성과 팀은 인간이 완벽할 수 없다는 사실을 받아들입니다. 실수를 개인 문제로 보지 않고, <strong>실수를 유발한 상황·시스템·맥락을 함께 분석(로컬 합리성 원칙)</strong>합니다. 시스템이 대비돼 있을 때 사람들은 더 자유롭게 도전합니다.</p>
+    </div>
+
+    <div class="highlight-quote">
+      <span class="hl">"누구의 잘못인가?"</span> 대신 <span class="hl">"어떤 시스템을 바꿀까?"</span>를 묻는 것 — 이것이 학습하는 조직의 언어입니다.
+    </div>
+
+    <div class="checklist-section">
+      <div class="checklist-header">✅ 우리 금고에서 실천 가능한 방법</div>
+      <div class="checklist-items">
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">실수 발생 시 첫 마디: "어떤 상황에서 이런 일이 생겼나요?"</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">체크리스트·이중 확인 등 실수 방지 시스템 팀이 함께 설계</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">"누구 잘못" 대신 "어떤 시스템을 바꿀까" 질문으로 전환</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">리더가 먼저 자신의 실수를 공개적으로 인정하고 학습 공유</span>
+        </div>
+        <div class="checklist-item">
+          <div class="checkbox"></div>
+          <span class="checklist-text">실수 사례를 팀 학습 자료로 활용 (블레임 없이)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="rate-section">
+      <div class="rate-header">📊 우리 금고에서 평가해보세요</div>
+      <div class="rate-body">
+        <div class="rate-row">
+          <span class="rate-label">현실성</span>
+          <div class="rate-boxes">
+            <div class="rate-box">1<br>낮음</div>
+            <div class="rate-box">2</div>
+            <div class="rate-box">3</div>
+            <div class="rate-box">4</div>
+            <div class="rate-box accent">5<br>높음</div>
+          </div>
+        </div>
+        <div class="rate-row">
+          <span class="rate-label">효과성</span>
+          <div class="rate-boxes">
+            <div class="rate-box">1<br>낮음</div>
+            <div class="rate-box">2</div>
+            <div class="rate-box">3</div>
+            <div class="rate-box">4</div>
+            <div class="rate-box accent">5<br>높음</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tag-row">
+      <span class="tag">심리적 안전감 핵심</span>
+      <span class="tag">시스템 사고</span>
+      <span class="tag">우선순위 HIGH</span>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <span class="footer-brand">청람M&C</span>
+    <span class="footer-source">출처: PsychSafety.com · Amy Edmondson (Harvard)</span>
+    <span class="footer-page">10 / 10</span>
+  </div>
+</div>
+
+<!-- ===================== WORKSHEET ===================== -->
+<div class="page">
+  <div class="ws-header">
+    <div class="ws-title-small">World Café Worksheet · MG새마을금고 조직문화 교육</div>
+    <div class="ws-title">심리적 안전감 전략 탐색 워크시트</div>
+    <div class="ws-subtitle">10개 카드를 돌아보며 우리 금고에 맞는 전략을 선택하세요</div>
+  </div>
+
+  <div class="ws-body">
+
+    <div class="ws-guide">
+      <div class="ws-guide-icon">📌</div>
+      <div class="ws-guide-text"><strong>활동 방법:</strong> ① 10개 카드를 자유롭게 돌아봅니다 → ② 각 전략의 현실성·효과성을 체크합니다 → ③ 최종 TOP 3를 선택하고 한 줄 이유를 적습니다 → ④ 그룹에서 공유합니다</div>
+    </div>
+
+    <!-- STEP 1: 전략별 평가표 -->
+    <div>
+      <div class="ws-section-title">STEP 1 · 전략별 탐색 체크</div>
+      <table class="ws-table">
+        <thead>
+          <tr>
+            <th style="width:32px;">#</th>
+            <th class="left">전략명</th>
+            <th style="width:52px;">읽었음</th>
+            <th style="width:120px;">현실성 (낮1 → 높5)</th>
+            <th style="width:120px;">효과성 (낮1 → 높5)</th>
+            <th style="width:48px;">TOP 3<br>선택</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="num-col">01</td>
+            <td class="strat-col">권력 격차 줄이기</td>
+            <td class="check-col"><div class="ws-check"></div></td>
+            <td style="text-align:center;">
+              <div style="display:flex;gap:3px;justify-content:center;">
+                <div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div>
+                <div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div>
+                <div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div>
+                <div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div>
+                <div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div>
+              </div>
+            </td>
+            <td style="text-align:center;">
+              <div style="display:flex;gap:3px;justify-content:center;">
+                <div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div>
+                <div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div>
+                <div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div>
+                <div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div>
+                <div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div>
+              </div>
+            </td>
+            <td class="check-col"><div class="ws-check"></div></td>
+          </tr>
+          <tr>
+            <td class="num-col">02</td>
+            <td class="strat-col">공동 규범 만들기</td>
+            <td class="check-col"><div class="ws-check"></div></td>
+            <td style="text-align:center;"><div style="display:flex;gap:3px;justify-content:center;"><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div></div></td>
+            <td style="text-align:center;"><div style="display:flex;gap:3px;justify-content:center;"><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div></div></td>
+            <td class="check-col"><div class="ws-check"></div></td>
+          </tr>
+          <tr>
+            <td class="num-col">03</td>
+            <td class="strat-col">경청과 공간 만들기</td>
+            <td class="check-col"><div class="ws-check"></div></td>
+            <td style="text-align:center;"><div style="display:flex;gap:3px;justify-content:center;"><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div></div></td>
+            <td style="text-align:center;"><div style="display:flex;gap:3px;justify-content:center;"><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div></div></td>
+            <td class="check-col"><div class="ws-check"></div></td>
+          </tr>
+          <tr>
+            <td class="num-col">04</td>
+            <td class="strat-col">명확하고 따뜻한 소통</td>
+            <td class="check-col"><div class="ws-check"></div></td>
+            <td style="text-align:center;"><div style="display:flex;gap:3px;justify-content:center;"><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div></div></td>
+            <td style="text-align:center;"><div style="display:flex;gap:3px;justify-content:center;"><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div></div></td>
+            <td class="check-col"><div class="ws-check"></div></td>
+          </tr>
+          <tr>
+            <td class="num-col">05</td>
+            <td class="strat-col">발언에 보상하기</td>
+            <td class="check-col"><div class="ws-check"></div></td>
+            <td style="text-align:center;"><div style="display:flex;gap:3px;justify-content:center;"><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div></div></td>
+            <td style="text-align:center;"><div style="display:flex;gap:3px;justify-content:center;"><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div></div></td>
+            <td class="check-col"><div class="ws-check"></div></td>
+          </tr>
+          <tr>
+            <td class="num-col">06</td>
+            <td class="strat-col">일을 실험으로 보기</td>
+            <td class="check-col"><div class="ws-check"></div></td>
+            <td style="text-align:center;"><div style="display:flex;gap:3px;justify-content:center;"><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div></div></td>
+            <td style="text-align:center;"><div style="display:flex;gap:3px;justify-content:center;"><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div></div></td>
+            <td class="check-col"><div class="ws-check"></div></td>
+          </tr>
+          <tr>
+            <td class="num-col">07</td>
+            <td class="strat-col">회고와 미래성찰</td>
+            <td class="check-col"><div class="ws-check"></div></td>
+            <td style="text-align:center;"><div style="display:flex;gap:3px;justify-content:center;"><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div></div></td>
+            <td style="text-align:center;"><div style="display:flex;gap:3px;justify-content:center;"><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div></div></td>
+            <td class="check-col"><div class="ws-check"></div></td>
+          </tr>
+          <tr>
+            <td class="num-col">08</td>
+            <td class="strat-col">문제 행동 대응하기</td>
+            <td class="check-col"><div class="ws-check"></div></td>
+            <td style="text-align:center;"><div style="display:flex;gap:3px;justify-content:center;"><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div></div></td>
+            <td style="text-align:center;"><div style="display:flex;gap:3px;justify-content:center;"><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div></div></td>
+            <td class="check-col"><div class="ws-check"></div></td>
+          </tr>
+          <tr>
+            <td class="num-col">09</td>
+            <td class="strat-col">다양성 존중하기</td>
+            <td class="check-col"><div class="ws-check"></div></td>
+            <td style="text-align:center;"><div style="display:flex;gap:3px;justify-content:center;"><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div></div></td>
+            <td style="text-align:center;"><div style="display:flex;gap:3px;justify-content:center;"><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div></div></td>
+            <td class="check-col"><div class="ws-check"></div></td>
+          </tr>
+          <tr>
+            <td class="num-col">10</td>
+            <td class="strat-col">실수는 당연한 속성</td>
+            <td class="check-col"><div class="ws-check"></div></td>
+            <td style="text-align:center;"><div style="display:flex;gap:3px;justify-content:center;"><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div></div></td>
+            <td style="text-align:center;"><div style="display:flex;gap:3px;justify-content:center;"><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div><div style="width:16px;height:16px;border:1.5px solid #C8D4F0;border-radius:50%;background:#fff;"></div></div></td>
+            <td class="check-col"><div class="ws-check"></div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- STEP 2: TOP 3 선택 -->
+    <div>
+      <div class="ws-section-title">STEP 2 · 우리 금고 TOP 3 전략 선택 & 이유</div>
+      <table class="ws-table">
+        <thead>
+          <tr>
+            <th style="width:36px;">순위</th>
+            <th class="left" style="width:100px;">선택한 전략</th>
+            <th class="left">이 전략을 선택한 이유 (한 줄로)</th>
+            <th style="width:90px;">첫 실천 시점</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="num-col" style="font-size:18px;">🥇</td>
+            <td class="strat-col">&nbsp;</td>
+            <td style="height:32px;">&nbsp;</td>
+            <td style="text-align:center; font-size:11px; color:#999;">이번 주 / 이번 달<br>/ 분기 내</td>
+          </tr>
+          <tr>
+            <td class="num-col" style="font-size:18px;">🥈</td>
+            <td class="strat-col">&nbsp;</td>
+            <td style="height:32px;">&nbsp;</td>
+            <td style="text-align:center; font-size:11px; color:#999;">이번 주 / 이번 달<br>/ 분기 내</td>
+          </tr>
+          <tr>
+            <td class="num-col" style="font-size:18px;">🥉</td>
+            <td class="strat-col">&nbsp;</td>
+            <td style="height:32px;">&nbsp;</td>
+            <td style="text-align:center; font-size:11px; color:#999;">이번 주 / 이번 달<br>/ 분기 내</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- STEP 3: 개인 실천 선언 -->
+    <div>
+      <div class="ws-section-title">STEP 3 · 나의 실천 선언</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+        <div class="ws-open-box">
+          <div class="ws-open-label">내일 당장 할 수 있는 한 가지 행동은?</div>
+          <div class="ws-open-inner"></div>
+          <div class="ws-open-inner" style="margin-top:8px;"></div>
+        </div>
+        <div class="ws-open-box">
+          <div class="ws-open-label">가장 어렵게 느껴지는 전략과 그 이유는?</div>
+          <div class="ws-open-inner"></div>
+          <div class="ws-open-inner" style="margin-top:8px;"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="card-footer">
+    <span class="footer-brand">청람M&C · MG새마을금고 조직문화 교육</span>
+    <span class="footer-source">출처: PsychSafety.com (Tom Geraghty) · 번역·재구성: 청람M&C</span>
+    <span class="footer-page">Worksheet</span>
+  </div>
+</div>
+
+</body>
+</html>
