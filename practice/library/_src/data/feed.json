@@ -1,9 +1,138 @@
 {
   "meta": {
-    "lastRunAt": "2026-11-09T02:32:48.608Z",
+    "lastRunAt": "2026-11-16T02:40:12.815Z",
     "note": "매주 자동 수집 결과입니다. 직접 고치지 마세요(승격 표시 promoted만 예외)."
   },
   "items": [
+    {
+      "id": "f-e430c6fca99b",
+      "sourceId": "mois",
+      "sourceType": "gov",
+      "issuer": "행정안전부",
+      "date": "2026-11-13",
+      "title": "행안부 장관, 가을철 산불 대비태세 점검… “과학적 재난 대응과 예방에 총력”",
+      "url": "https://www.mois.go.kr/frt/bbs/type010/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000008&nttId=130922",
+      "summaryAi": "행안부 장관이 AI 및 위치정보 기반 산악구조와 산불 대응 시스템을 점검하여 과학적 재난 대응을 강화한다.",
+      "stageGuess": [
+        1,
+        4
+      ],
+      "collectedAt": "2026-11-16T02:40:12.815Z",
+      "promoted": false
+    },
+    {
+      "id": "f-85f5f4320e60",
+      "sourceId": "mois",
+      "sourceType": "gov",
+      "issuer": "행정안전부",
+      "date": "2026-11-12",
+      "title": "행안부, ‘정부24’ 우수 성과 13개국에 공유… 세계가 주목하는 K-디지털정부",
+      "url": "https://www.mois.go.kr/frt/bbs/type010/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000008&nttId=130901",
+      "summaryAi": "행정안전부가 정부24의 AI 국민비서 등 디지털 행정 혁신 사례를 13개국에 공유한다.",
+      "stageGuess": [
+        1,
+        4,
+        10
+      ],
+      "collectedAt": "2026-11-16T02:40:12.815Z",
+      "promoted": false
+    },
+    {
+      "id": "f-a9aa7ed6bd38",
+      "sourceId": "msit",
+      "sourceType": "gov",
+      "issuer": "과학기술정보통신부",
+      "date": "2026-11-12",
+      "title": "인공지능 안전 국민 점검단 「인공지능 안전 지킴이」 출범",
+      "url": "https://www.msit.go.kr/bbs/view.do?sCode=user&bbsSeqNo=94&nttSeqNo=3187956",
+      "summaryAi": "과기정통부와 인공지능 안전연구소가 인공지능 안전 지킴이를 위촉하여 AI 오류 사례 상시 제보 체계를 구축한다.",
+      "stageGuess": [
+        9
+      ],
+      "collectedAt": "2026-11-16T02:40:12.815Z",
+      "promoted": false
+    },
+    {
+      "id": "f-16b7bb8cabbf",
+      "sourceId": "mois",
+      "sourceType": "gov",
+      "issuer": "행정안전부",
+      "date": "2026-11-11",
+      "title": "행안부·질병청, 정부24서 잠복결핵·감염병 등 질병 민원 서류 한 번에 발급",
+      "url": "https://www.mois.go.kr/frt/bbs/type010/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000008&nttId=130884",
+      "summaryAi": "행안부와 질병청이 정부24에서 질병 민원 서류를 온라인 발급하고, 향후 AI 국민비서를 활용하여 맞춤형 서비스로 발전시킨다.",
+      "stageGuess": [
+        1,
+        4
+      ],
+      "collectedAt": "2026-11-16T02:40:12.815Z",
+      "promoted": false
+    },
+    {
+      "id": "f-d15fb02e6c9b",
+      "sourceId": "msit",
+      "sourceType": "gov",
+      "issuer": "과학기술정보통신부",
+      "date": "2026-11-11",
+      "title": "인공지능 시대의 사회적 쟁점, 국민과 함께 해법 찾는다",
+      "url": "https://www.msit.go.kr/bbs/view.do?sCode=user&bbsSeqNo=94&nttSeqNo=3187950",
+      "summaryAi": "과학기술정보통신부가 인공지능 시대의 사회적 쟁점에 대한 해법을 국민과 함께 모색한다.",
+      "stageGuess": [
+        9
+      ],
+      "collectedAt": "2026-11-16T02:40:12.815Z",
+      "promoted": false
+    },
+    {
+      "id": "f-261031d40252",
+      "sourceId": "mois",
+      "sourceType": "gov",
+      "issuer": "행정안전부",
+      "date": "2026-11-09",
+      "title": "‘차세대 지방행정공통시스템 구축 통합사업 설명회’ 개최",
+      "url": "https://www.mois.go.kr/frt/bbs/type010/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000008&nttId=130822",
+      "summaryAi": "행정안전부가 차세대 지방행정공통시스템 구축 사업 설명회를 개최하여 AI 민주정부 구현을 위한 대규모 정보화 사업을 추진한다.",
+      "stageGuess": [
+        1,
+        4,
+        5
+      ],
+      "collectedAt": "2026-11-16T02:40:12.815Z",
+      "promoted": false
+    },
+    {
+      "id": "f-3e5a65324f45",
+      "sourceId": "msit",
+      "sourceType": "gov",
+      "issuer": "과학기술정보통신부",
+      "date": "2026-11-09",
+      "title": "과기정통부, 전직급 인공지능 대화형 코딩으로 행정혁신 앞당긴다",
+      "url": "https://www.msit.go.kr/bbs/view.do?sCode=user&bbsSeqNo=94&nttSeqNo=3187934",
+      "summaryAi": "과기정통부가 전직급 공무원 대상 인공지능 대화형 코딩 실습 교육으로 AI 활용 역량을 높여 행정혁신을 앞당긴다.",
+      "stageGuess": [
+        1,
+        4,
+        5
+      ],
+      "collectedAt": "2026-11-16T02:40:12.815Z",
+      "promoted": false
+    },
+    {
+      "id": "f-8711ee9a087f",
+      "sourceId": "msit",
+      "sourceType": "gov",
+      "issuer": "과학기술정보통신부",
+      "date": "2026-11-03",
+      "title": "국민인공지능서비스혁신추진단, 전문임기제공무원 2차 공개 모집",
+      "url": "https://www.msit.go.kr/bbs/view.do?sCode=user&bbsSeqNo=94&nttSeqNo=3187920",
+      "summaryAi": "국민인공지능서비스혁신추진단이 국민 AI 서비스 개발 역량 강화를 위해 전문임기제공무원을 공개 모집한다.",
+      "stageGuess": [
+        5,
+        6
+      ],
+      "collectedAt": "2026-11-16T02:40:12.815Z",
+      "promoted": false
+    },
     {
       "id": "f-52f87ba4e13b",
       "sourceId": "mckinsey-mail",
