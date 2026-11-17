@@ -9,60 +9,60 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html.theme-light {
-  --bg: #EEF3FD;
-  --surface: #FFFFFF;
-  --surface2: #F4F7FF;
-  --text: #1A1A1A;
-  --text-sec: #5A6480;
-  --border: rgba(22,82,216,0.13);
-  --accent: #1652D8;
-  --accent2: #0F3D99;
-  --blue-dice: #1652D8;
-  --blue-light: #4B7BF5;
-  --blue-dark: #0F3D99;
-  --green-dice: #1E8050;
-  --green-light: #2EA86A;
-  --green-dark: #155E3A;
+  --bg: #EFE0C2;
+  --surface: #FBF4E3;
+  --surface2: #F4E8CD;
+  --text: #33220F;
+  --text-sec: #7C6444;
+  --border: rgba(122,74,18,0.22);
+  --accent: #B7791F;
+  --accent2: #7A4A12;
+  --blue-dice: #C8921A;
+  --blue-light: #EDC050;
+  --blue-dark: #8C6410;
+  --green-dice: #B8582A;
+  --green-light: #DA8150;
+  --green-dark: #7E3A17;
   --shine: rgba(255,255,255,0.40);
-  --q-bg: linear-gradient(135deg, #1652D8 0%, #0F3D99 100%);
-  --q-card: #FFFFFF;
-  --shadow: 0 8px 36px rgba(22,82,216,0.13);
-  --shadow-sm: 0 2px 12px rgba(22,82,216,0.08);
-  --modal-bg: rgba(8,16,50,0.58);
-  --tag-bg: rgba(22,82,216,0.08);
-  --edit-bg: #F0F5FF;
-  --tbl-head: #1652D8;
-  --tbl-odd: #F4F7FF;
-  --tbl-even: #FFFFFF;
-  --tbl-border: rgba(22,82,216,0.14);
+  --q-bg: linear-gradient(135deg, #B7791F 0%, #7A4A12 100%);
+  --q-card: #FFFAEC;
+  --shadow: 0 8px 36px rgba(90,58,20,0.20);
+  --shadow-sm: 0 2px 12px rgba(90,58,20,0.13);
+  --modal-bg: rgba(35,20,8,0.62);
+  --tag-bg: rgba(183,121,31,0.12);
+  --edit-bg: #F7ECD3;
+  --tbl-head: #7A4A12;
+  --tbl-odd: #F7ECD3;
+  --tbl-even: #FFFAEC;
+  --tbl-border: rgba(122,74,18,0.18);
 }
 html.theme-dark {
-  --bg: #080D1C;
-  --surface: #101726;
-  --surface2: #161E30;
-  --text: #E8ECF8;
-  --text-sec: #8A9BBB;
-  --border: rgba(255,255,255,0.08);
-  --accent: #4B7BF5;
-  --accent2: #6B8FFF;
-  --blue-dice: #3B6EF0;
-  --blue-light: #7AA3FF;
-  --blue-dark: #2952C8;
-  --green-dice: #2A9E63;
-  --green-light: #3EC87A;
-  --green-dark: #1A6040;
+  --bg: #17100A;
+  --surface: #241810;
+  --surface2: #2D1F14;
+  --text: #F3E6CC;
+  --text-sec: #B79F7A;
+  --border: rgba(240,200,120,0.15);
+  --accent: #E0B040;
+  --accent2: #F0C860;
+  --blue-dice: #D9A52A;
+  --blue-light: #F2CB62;
+  --blue-dark: #9A6E10;
+  --green-dice: #C0612F;
+  --green-light: #E08A58;
+  --green-dark: #84401B;
   --shine: rgba(255,255,255,0.16);
-  --q-bg: linear-gradient(135deg, #1A2E6E 0%, #0A1230 100%);
-  --q-card: #131E38;
-  --shadow: 0 8px 36px rgba(0,0,0,0.48);
-  --shadow-sm: 0 2px 12px rgba(0,0,0,0.3);
-  --modal-bg: rgba(0,0,0,0.75);
-  --tag-bg: rgba(75,123,245,0.12);
-  --edit-bg: #151E35;
-  --tbl-head: #1A2E6E;
-  --tbl-odd: #131A2C;
-  --tbl-even: #0F1524;
-  --tbl-border: rgba(255,255,255,0.07);
+  --q-bg: linear-gradient(135deg, #6B4513 0%, #2E1C08 100%);
+  --q-card: #2A1C11;
+  --shadow: 0 8px 36px rgba(0,0,0,0.55);
+  --shadow-sm: 0 2px 12px rgba(0,0,0,0.35);
+  --modal-bg: rgba(0,0,0,0.78);
+  --tag-bg: rgba(224,176,64,0.13);
+  --edit-bg: #2D1F14;
+  --tbl-head: #6B4513;
+  --tbl-odd: #2A1C11;
+  --tbl-even: #221710;
+  --tbl-border: rgba(240,200,120,0.10);
 }
 
 body {
@@ -81,7 +81,7 @@ header {
   padding: 12px 16px 10px;
   display: flex; align-items: center; justify-content: space-between;
   position: sticky; top: 0; z-index: 300;
-  box-shadow: 0 2px 18px rgba(22,82,216,.32);
+  box-shadow: 0 2px 18px rgba(183,121,31,.32);
 }
 .hdr-left h1 { font-size: 1.05rem; font-weight: 700; letter-spacing: -.02em; }
 .hdr-left .sub { font-size: .68rem; opacity: .78; }
@@ -119,8 +119,8 @@ main {
 .dice-label.blue { color: var(--blue-dice); }
 .dice-label.green { color: var(--green-dice); }
 .axis-badge { font-size: .66rem; padding: 2px 7px; border-radius: 20px; font-weight: 700; }
-.dice-label.blue .axis-badge { background: rgba(22,82,216,.1); color: var(--blue-dice); }
-.dice-label.green .axis-badge { background: rgba(30,128,80,.12); color: var(--green-dice); }
+.dice-label.blue .axis-badge { background: rgba(183,121,31,.1); color: var(--blue-dice); }
+.dice-label.green .axis-badge { background: rgba(184,88,42,.12); color: var(--green-dice); }
 
 /* ── dice-scene: 스피너 / 결과 겹침 컨테이너 ── */
 .dice-scene {
@@ -211,8 +211,8 @@ main {
   display: flex; align-items: center; justify-content: center;
   letter-spacing: -.03em; transition: color .2s;
 }
-.dice-num.blue { background: rgba(22,82,216,.08); color: var(--blue-dice); border: 2px solid rgba(22,82,216,.2); }
-.dice-num.green { background: rgba(30,128,80,.08); color: var(--green-dice); border: 2px solid rgba(30,128,80,.2); }
+.dice-num.blue { background: rgba(183,121,31,.08); color: var(--blue-dice); border: 2px solid rgba(183,121,31,.2); }
+.dice-num.green { background: rgba(184,88,42,.08); color: var(--green-dice); border: 2px solid rgba(184,88,42,.2); }
 @keyframes numPop { from { transform: scale(.6); opacity: .3; } to { transform: scale(1); opacity: 1; } }
 .pop { animation: numPop .28s cubic-bezier(.34,1.56,.64,1); }
 
@@ -223,11 +223,11 @@ main {
   color: #fff; border: none; border-radius: 14px;
   font-family: 'Noto Sans KR',sans-serif;
   font-size: .98rem; font-weight: 700; cursor: pointer;
-  box-shadow: 0 5px 20px rgba(22,82,216,.3);
+  box-shadow: 0 5px 20px rgba(183,121,31,.3);
   transition: transform .12s, box-shadow .12s;
   display: flex; align-items: center; justify-content: center; gap: 8px;
 }
-.roll-btn:active { transform: scale(.95); box-shadow: 0 2px 8px rgba(22,82,216,.18); }
+.roll-btn:active { transform: scale(.95); box-shadow: 0 2px 8px rgba(183,121,31,.18); }
 .ind-btns { display: flex; gap: 8px; width: 100%; max-width: 310px; }
 .ind-btn {
   flex: 1; padding: 9px 5px; border: none; border-radius: 11px;
@@ -236,8 +236,8 @@ main {
   display: flex; align-items: center; justify-content: center; gap: 4px;
 }
 .ind-btn:active { transform: scale(.92); }
-.ind-btn.blue { background: rgba(22,82,216,.09); color: var(--blue-dice); border: 1.5px solid rgba(22,82,216,.2); }
-.ind-btn.green { background: rgba(30,128,80,.09); color: var(--green-dice); border: 1.5px solid rgba(30,128,80,.2); }
+.ind-btn.blue { background: rgba(183,121,31,.09); color: var(--blue-dice); border: 1.5px solid rgba(183,121,31,.2); }
+.ind-btn.green { background: rgba(184,88,42,.09); color: var(--green-dice); border: 1.5px solid rgba(184,88,42,.2); }
 
 
 /* ─ QUESTION CARD ─ */
@@ -256,7 +256,7 @@ main {
 /* 짜짠 — 화면 플래시 오버레이 */
 .tada-flash {
   position: fixed; inset: 0; z-index: 9000;
-  background: radial-gradient(ellipse at center, rgba(22,82,216,.22) 0%, rgba(22,82,216,0) 70%);
+  background: radial-gradient(ellipse at center, rgba(183,121,31,.22) 0%, rgba(183,121,31,0) 70%);
   pointer-events: none; opacity: 0;
   animation: flashPop .55s ease-out forwards;
 }
@@ -363,7 +363,7 @@ main {
 .q-table .row-head { background: var(--tbl-head); color: #fff; font-weight: 700; width: 36px; }
 .q-table tbody tr:nth-child(odd) td:not(.row-head) { background: var(--tbl-odd); }
 .q-table tbody tr:nth-child(even) td:not(.row-head) { background: var(--tbl-even); }
-.q-table td.hl { background: rgba(22,82,216,.18) !important; font-weight: 700; color: var(--accent); border: 2px solid var(--accent); }
+.q-table td.hl { background: rgba(183,121,31,.18) !important; font-weight: 700; color: var(--accent); border: 2px solid var(--accent); }
 
 /* ─ EDIT MODAL ─ */
 .edit-tabs {
@@ -397,7 +397,7 @@ main {
   resize: vertical; min-height: 70px;
   transition: border-color .16s;
 }
-.edit-cell textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(22,82,216,.1); }
+.edit-cell textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(183,121,31,.1); }
 .edit-footer {
   padding: 10px 14px 18px; border-top: 1px solid var(--border);
   display: flex; gap: 8px; flex-shrink: 0;
@@ -440,7 +440,7 @@ main {
   z-index: 200;
   display: flex; align-items: center; justify-content: center;
   padding: 6px 12px;
-  box-shadow: 0 -2px 10px rgba(22,82,216,.07);
+  box-shadow: 0 -2px 10px rgba(183,121,31,.07);
 }
 .site-footer a {
   font-size: .62rem; color: var(--text-sec);
@@ -481,15 +481,15 @@ html.theme-dark .site-footer {
 }
 .cat-tab small { font-size: .68rem; font-weight: 500; opacity: .85; }
 .cat-tab:active { transform: scale(.96); }
-.cat-tab.A.active { background: linear-gradient(135deg,#8E4BB0,#5B2C83); color: #fff; border-color: transparent; box-shadow: 0 5px 18px rgba(110,50,150,.34); }
-.cat-tab.E.active { background: linear-gradient(135deg,#1652D8,#0F3D99); color: #fff; border-color: transparent; box-shadow: 0 5px 18px rgba(22,82,216,.34); }
+.cat-tab.A.active { background: linear-gradient(135deg,#A8643A,#62351B); color: #fff; border-color: transparent; box-shadow: 0 5px 18px rgba(98,53,27,.38); }
+.cat-tab.E.active { background: linear-gradient(135deg,#7A9A45,#475F2B); color: #fff; border-color: transparent; box-shadow: 0 5px 18px rgba(71,95,43,.38); }
 
 /* ─ 카드: 카테고리별 색 ─ */
-.question-card.cat-A .q-hdr { background: linear-gradient(135deg,#8E4BB0 0%,#5B2C83 100%); }
-html.theme-dark .question-card.cat-A .q-hdr { background: linear-gradient(135deg,#4A2368 0%,#26103C 100%); }
-.question-card.cat-A .q-mark { color: #7B3FA0; }
-html.theme-dark .question-card.cat-A .q-mark { color: #C79BE6; }
-.question-card.cat-A .q-hint { border-left-color: #7B3FA0; background: rgba(123,63,160,.08); }
+.question-card.cat-A .q-hdr { background: linear-gradient(135deg,#A8643A 0%,#62351B 100%); }
+html.theme-dark .question-card.cat-A .q-hdr { background: linear-gradient(135deg,#5A3320 0%,#26140A 100%); }
+.question-card.cat-A .q-mark { color: #A8643A; }
+html.theme-dark .question-card.cat-A .q-mark { color: #E0A87C; }
+.question-card.cat-A .q-hint { border-left-color: #A8643A; background: rgba(168,100,58,.10); }
 .q-no { font-size: 1.15rem; font-weight: 800; letter-spacing: -.02em; display: flex; align-items: center; gap: 8px; }
 .q-no .chip { font-size: .7rem; font-weight: 700; padding: 3px 9px; border-radius: 20px; background: rgba(255,255,255,.22); }
 .q-lead-label { font-size: .72rem; font-weight: 800; letter-spacing: .04em; color: var(--text-sec); margin-bottom: 6px; }
@@ -505,7 +505,7 @@ html.theme-dark .question-card.cat-A .q-mark { color: #C79BE6; }
   background: var(--accent); color: #fff; font-size: .74rem; font-weight: 800;
   display: flex; align-items: center; justify-content: center;
 }
-.question-card.cat-A .q-sub li::before { background: #7B3FA0; }
+.question-card.cat-A .q-sub li::before { background: #A8643A; }
 .q-sub li.fade { animation: textSlide .45s cubic-bezier(.34,1.4,.64,1) both; }
 .orig-btn {
   margin-top: 14px; background: none; border: 1px dashed var(--border); border-radius: 9px;
@@ -524,7 +524,7 @@ html.theme-dark .question-card.cat-A .q-mark { color: #C79BE6; }
   background: none; border: none; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px;
   font-family: 'Noto Sans KR',sans-serif;
 }
-.lst-tab.active.A { color: #7B3FA0; border-bottom-color: #7B3FA0; }
+.lst-tab.active.A { color: #A8643A; border-bottom-color: #A8643A; }
 .lst-tab.active.E { color: var(--accent); border-bottom-color: var(--accent); }
 .lst-item { display: flex; gap: 11px; padding: 12px 15px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background .15s; }
 .lst-item:hover { background: var(--tag-bg); }
@@ -533,13 +533,62 @@ html.theme-dark .question-card.cat-A .q-mark { color: #C79BE6; }
   flex: 0 0 40px; height: 40px; border-radius: 11px; background: var(--accent); color: #fff;
   font-weight: 800; font-size: .86rem; display: flex; align-items: center; justify-content: center; position: relative;
 }
-.lst-item.cat-A .lst-no { background: #7B3FA0; }
+.lst-item.cat-A .lst-no { background: #A8643A; }
 .lst-no .ck { position: absolute; right: -5px; top: -5px; width: 17px; height: 17px; border-radius: 50%; background: #2EA86A; color: #fff; font-size: .6rem; display: flex; align-items: center; justify-content: center; border: 2px solid var(--surface); }
 .lst-lead { font-size: .86rem; font-weight: 700; line-height: 1.55; word-break: keep-all; }
 .lst-qs { font-size: .76rem; color: var(--text-sec); margin-top: 4px; line-height: 1.6; word-break: keep-all; }
 .lst-foot { padding: 10px 14px 16px; display: flex; gap: 8px; border-top: 1px solid var(--border); flex-shrink: 0; align-items: center; justify-content: space-between; font-size: .76rem; color: var(--text-sec); }
 .lst-foot button { padding: 8px 13px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--surface2); font-family: 'Noto Sans KR',sans-serif; font-size: .78rem; font-weight: 600; color: var(--text-sec); cursor: pointer; }
 .lst-foot button:hover { color: #e11d48; border-color: #e11d48; }
+
+/* ═══ 서부 금광 탐험가 테마 ═══ */
+body {
+  background:
+    radial-gradient(ellipse at 50% -10%, rgba(255,214,120,.38) 0%, rgba(255,214,120,0) 55%),
+    repeating-linear-gradient(0deg, rgba(122,74,18,.035) 0 2px, rgba(122,74,18,0) 2px 7px),
+    var(--bg);
+}
+html.theme-dark body {
+  background:
+    radial-gradient(ellipse at 50% -10%, rgba(224,150,40,.16) 0%, rgba(224,150,40,0) 55%),
+    var(--bg);
+}
+header {
+  background: linear-gradient(180deg,#5B3A1C 0%,#3E2511 100%);
+  color: #F7E4AE;
+  border-bottom: 3px solid #D9A52A;
+  box-shadow: 0 3px 18px rgba(40,22,6,.45);
+}
+html.theme-dark header { background: linear-gradient(180deg,#3A2410 0%,#22140A 100%); }
+.hdr-btn { background: rgba(247,228,174,.16); }
+.hdr-btn:hover { background: rgba(247,228,174,.30); }
+.guide-box, .question-card, .cat-tab { border-color: rgba(122,74,18,.28); }
+.guide-box { border-style: solid; background: linear-gradient(180deg,var(--surface),var(--surface2)); }
+.roll-btn { background: linear-gradient(135deg,#C8921A 0%,#7A4A12 100%); text-shadow: 0 1px 2px rgba(0,0,0,.3); box-shadow: 0 5px 20px rgba(122,74,18,.38); }
+.dice-label.blue, .dice-num.blue, .ind-btn.blue { color: #7A5208; }
+.dice-label.green, .dice-num.green, .ind-btn.green { color: #8A3D18; }
+html.theme-dark .dice-label.blue, html.theme-dark .dice-num.blue, html.theme-dark .ind-btn.blue { color: #F2CB62; }
+html.theme-dark .dice-label.green, html.theme-dark .dice-num.green, html.theme-dark .ind-btn.green { color: #E8A070; }
+.dice-label.blue .axis-badge { color: #7A5208; }
+.dice-label.green .axis-badge { color: #8A3D18; }
+.dice-num.blue { border-color: rgba(200,146,26,.4); background: rgba(200,146,26,.12); }
+.dice-num.green { border-color: rgba(184,88,42,.4); background: rgba(184,88,42,.10); }
+.toast { background: #3E2511; color: #F7E4AE; }
+.q-hdr-title, .q-no { text-shadow: 0 1px 2px rgba(0,0,0,.25); }
+
+/* 확장질문 = 선인장 초록 */
+.question-card.cat-E .q-hdr { background: linear-gradient(135deg,#7A9A45 0%,#475F2B 100%); }
+html.theme-dark .question-card.cat-E .q-hdr { background: linear-gradient(135deg,#3F5A24 0%,#1C2A0F 100%); }
+.question-card.cat-E .q-mark { color: #5F7D32; }
+html.theme-dark .question-card.cat-E .q-mark { color: #A9C97A; }
+.question-card.cat-E .q-hint { border-left-color: #5F7D32; background: rgba(95,125,50,.10); }
+.question-card.cat-E .q-sub li::before { background: #5F7D32; }
+.lst-tab.active.E { color: #5F7D32; border-bottom-color: #5F7D32; }
+html.theme-dark .lst-tab.active.E { color: #A9C97A; border-bottom-color: #A9C97A; }
+.lst-item.cat-E .lst-no { background: #5F7D32; }
+.lst-item.cat-A .lst-no, .question-card.cat-A .q-sub li::before { background: #A8643A; }
+.site-footer .footer-logo { color: var(--accent2); }
+html.theme-light .site-footer .footer-logo { color: #7A4A12; }
 </style>
 </head>
 <body>
@@ -564,15 +613,15 @@ html.theme-dark .question-card.cat-A .q-mark { color: #C79BE6; }
   </div>
 
   <div class="cat-tabs ani">
-    <button class="cat-tab A" id="tabA" onclick="setCat('A')">🟣 활동질문<small id="cntA"></small></button>
-    <button class="cat-tab E" id="tabE" onclick="setCat('E')">🔵 확장질문<small id="cntE"></small></button>
+    <button class="cat-tab A" id="tabA" onclick="setCat('A')">🟤 활동질문<small id="cntA"></small></button>
+    <button class="cat-tab E" id="tabE" onclick="setCat('E')">🟢 확장질문<small id="cntE"></small></button>
   </div>
 
   <div class="dice-section ani">
     <div class="dice-pair">
 
       <div class="dice-wrapper">
-        <div class="dice-label blue">파랑 <span class="axis-badge">첫째 눈</span></div>
+        <div class="dice-label blue">금빛 <span class="axis-badge">첫째 눈</span></div>
         <div class="dice-scene" onclick="rollSingle('blue')" title="탭해서 굴리기">
           <!-- 굴리는 중 보이는 3D 스피너 -->
           <div class="dice-spinner blue-dice" id="blueSpinner">
@@ -594,7 +643,7 @@ html.theme-dark .question-card.cat-A .q-mark { color: #C79BE6; }
       <div style="font-size:1.6rem;color:var(--text-sec);font-weight:200;margin-top:20px;">✕</div>
 
       <div class="dice-wrapper">
-        <div class="dice-label green">초록 <span class="axis-badge">둘째 눈</span></div>
+        <div class="dice-label green">구리빛 <span class="axis-badge">둘째 눈</span></div>
         <div class="dice-scene" onclick="rollSingle('green')" title="탭해서 굴리기">
           <div class="dice-spinner green-dice" id="greenSpinner">
             <div class="sp-face sp-front"></div>
@@ -618,8 +667,8 @@ html.theme-dark .question-card.cat-A .q-mark { color: #C79BE6; }
     </button>
 
     <div class="ind-btns">
-      <button class="ind-btn blue" onclick="rollSingle('blue')">🔵 파랑만</button>
-      <button class="ind-btn green" onclick="rollSingle('green')">🟢 초록만</button>
+      <button class="ind-btn blue" onclick="rollSingle('blue')">🟡 금빛만</button>
+      <button class="ind-btn green" onclick="rollSingle('green')">🟠 구리빛만</button>
     </div>
 
   </div>
@@ -1308,7 +1357,7 @@ function setNum(id, val) {
   var particles = [];
   var raf = null;
 
-  var COLORS = ["#1652D8","#4B7BF5","#FFD700","#FF6B6B","#2EC4B6","#A78BFA","#F472B6","#34D399"];
+  var COLORS = ["#FFD24A","#E8A317","#C8921A","#B8582A","#E9C98A","#8C5A2B","#F5E1A4","#7A9A45"];
 
   function resize(){ canvas.width=window.innerWidth; canvas.height=window.innerHeight; }
   window.addEventListener("resize", resize); resize();
@@ -1417,8 +1466,8 @@ function clearDots(dotGridId) {
 
 /* ━━━ 상태 ━━━ */
 var CATS = {
-  A: { name: "활동질문", icon: "🟣", title: "활동을 되짚어 보는 질문", text: "금광 활동 속 장면을 우리의 선택과 일터·삶에 비춰 보는 질문 10장입니다. 주사위 두 개를 굴려 보세요!" },
-  E: { name: "확장질문", icon: "🔵", title: "삶과 조직으로 넓혀 보는 질문", text: "활동에서 얻은 생각을 나의 삶과 조직으로 넓혀 보는 질문 30장입니다. 주사위 두 개를 굴려 보세요!" }
+  A: { name: "활동질문", icon: "🟤", title: "활동을 되짚어 보는 질문", text: "금광 활동 속 장면을 우리의 선택과 일터·삶에 비춰 보는 질문 10장입니다. 주사위 두 개를 굴려 보세요!" },
+  E: { name: "확장질문", icon: "🟢", title: "삶과 조직으로 넓혀 보는 질문", text: "활동에서 얻은 생각을 나의 삶과 조직으로 넓혀 보는 질문 30장입니다. 주사위 두 개를 굴려 보세요!" }
 };
 var cat = "A";
 var drawn = { A: {}, E: {} };
@@ -1453,7 +1502,7 @@ function showCard(card, b, g) {
   var qc = document.getElementById("questionCard");
   qc.className = "question-card cat-" + card.t;
   document.getElementById("qTitle").textContent = CATS[card.t].icon + " " + CATS[card.t].name;
-  var chip = (b && g) ? "<span class='chip'>🔵" + b + " × 🟢" + g + "</span>" : "<span class='chip'>✋ 직접 선택</span>";
+  var chip = (b && g) ? "<span class='chip'>🟡" + b + " × 🟠" + g + "</span>" : "<span class='chip'>✋ 직접 선택</span>";
   document.getElementById("qNo").innerHTML = "Q. " + pad(card.n) + chip;
   document.getElementById("leadLabel").textContent = card.s ? "📣 상황 한마디" : "🎯 핵심 질문";
   document.getElementById("questionText").textContent = card.l;
