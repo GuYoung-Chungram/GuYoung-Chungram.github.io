@@ -207,4 +207,6 @@ $('makeSurvey').onclick=()=>{set('surveyPrompt',surveyPrompt());toast('구글폼
 /*SV-END*/
 const AI_URL={gemini:['https://gemini.google.com/app','Gemini'],gpt:['https://chatgpt.com/','ChatGPT'],'gemini-forms':['https://forms.google.com/','구글폼']};
 document.querySelectorAll('[data-ai]').forEach(b=>b.onclick=async()=>{const text=$(b.dataset.target).value;if(!text){toast('먼저 프롬프트를 만들어 주세요.');return}const [url,name]=AI_URL[b.dataset.ai];window.open(url,'_blank','noopener');await copy(text);toast('프롬프트를 복사했어요. '+name+' 창에서 붙여넣기(Ctrl/⌘+V) 하세요.')});
-restore();syncLinkedFie
+restore();syncLinkedFields();if(!val('surveyPrompt'))set('surveyPrompt',surveyPrompt());if(!val('surveyScript'))set('surveyScript',surveyScript());if(!val('topicPrompt'))set('topicPrompt',topicPrompt());if(!val('goalPrompt'))set('goalPrompt',goalPrompt());if(!val('outlinePrompt'))set('outlinePrompt',outlinePrompt());
+})();
+</script></body></html>
