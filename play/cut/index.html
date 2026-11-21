@@ -406,6 +406,15 @@ input:focus,select:focus{outline:2px solid var(--brand);outline-offset:1px;borde
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 @media (max-width:860px){.hero{display:none}.aib{margin-top:4px}}
+
+.donehead{display:flex;align-items:center;gap:10px;font-size:1.125rem;color:var(--navy)}
+.donehead .okc{width:2rem;height:2rem;border-radius:50%;background:#DCF5E6;color:#15803D;display:grid;place-items:center}
+.donehead .okc .ic{width:1.2rem;height:1.2rem;stroke-width:2.4}
+.doneinfo{display:flex;flex-direction:column;gap:2px;margin:12px 0 14px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#F7F9FD;word-break:break-all}
+.doneinfo span{color:var(--sub);font-size:.875rem}.doneinfo .where{color:var(--navy);font-weight:600}
+#exDoneBtns{flex-wrap:wrap}
+#pvVid{width:100%;max-height:62vh;background:#000;border-radius:12px;display:block}
+#pvInfo{margin-top:8px;word-break:break-all}
 </style>
 </head>
 <body>
@@ -654,7 +663,21 @@ input:focus,select:focus{outline:2px solid var(--brand);outline-offset:1px;borde
       <div class="prog"><i id="exBar"></i></div>
       <div class="muted">탭을 닫거나 다른 창으로 가려 두면 결과가 끊길 수 있어요.</div>
     </div>
+    <div class="db" id="exDone" hidden>
+      <div class="donehead"><span class="okc"><svg class="ic"><use href="#i-check"/></svg></span><b>내보내기가 완료됐어요</b></div>
+      <div id="exDoneInfo" class="doneinfo"></div>
+      <div class="rowb" id="exDoneBtns"></div>
+      <div class="muted" id="exDoneNote"></div>
+    </div>
     <div class="df" id="exFoot"><button class="btn" value="cancel" id="exCancel">닫기</button><button class="btn primary" value="x" id="exGo">내보내기 시작</button></div>
+  </form>
+</dialog>
+
+<dialog id="dlgPreview" class="wide">
+  <form method="dialog">
+    <div class="dh">결과 확인</div>
+    <div class="db"><video id="pvVid" controls playsinline></video><div class="muted" id="pvInfo"></div></div>
+    <div class="df"><button class="btn primary" value="ok">닫기</button></div>
   </form>
 </dialog>
 
@@ -666,6 +689,11 @@ input:focus,select:focus{outline:2px solid var(--brand);outline-offset:1px;borde
         <div class="seg" id="fsSeg"></div>
       </div>
       <div class="sample">가나다라마바사 — 수업용 영상 편집 Abc 123<br><span class="muted">이 글자 크기로 화면 전체가 바뀌어요.</span></div>
+      <hr class="sp">
+      <div class="field" id="saveSec"><label>내보내기 저장 위치</label>
+        <div class="muted" id="saveInfo"></div>
+      </div>
+      <div class="rowb" id="saveBtns"><button type="button" class="btn sm" id="saveChoose">저장 폴더 선택</button><button type="button" class="btn sm" id="saveReset">기본(다운로드 폴더)으로</button></div>
       <hr class="sp">
       <div class="field" id="aiSec"><label>AI 연결 (선택)</label>
         <div class="muted">내 API 키로 편집 화면의 AI 도우미를 켜요. 영상·사진은 전송되지 않고, 파일 이름·길이 같은 편집 정보만 전송돼요.</div>
@@ -1473,7 +1501,7 @@ $('#btnExport').onclick=()=>{
   $('#exKind').innerHTML=kinds.map(k=>'<option value="'+k[0]+'">'+k[1]+'</option>').join('');
   const p=E.p;const opts=[[0,'프로젝트 크기 ('+p.w+'×'+p.h+')'],[1080,'1080p (짧은 변 1080)'],[720,'720p (짧은 변 720)'],[480,'480p (짧은 변 480)']];
   $('#exRes').innerHTML=opts.map(o=>'<option value="'+o[0]+'">'+o[1]+'</option>').join('');const mobDev=isMobile()||isCoarse();$('#exRes').value=mobDev?(Math.min(p.w,p.h)>720?'720':'0'):'0';
-  $('#exName').value=p.name;$('#exBody').hidden=false;$('#exProg').hidden=true;$('#exGo').hidden=false;$('#exCancel').textContent='닫기';$('#exBar').style.width='0';
+  $('#exName').value=p.name;$('#exBody').hidden=false;$('#exProg').hidden=true;$('#exDone').hidden=true;$('#exGo').hidden=false;$('#exCancel').textContent='닫기';$('#exBar').style.width='0';
   updEst();const d=$('#dlgExport');d.returnValue='';d.showModal();
 };
 ['exKind','exRes','exQ','exFps'].forEach(id=>$('#'+id).addEventListener('change',updEst));
@@ -1484,7 +1512,81 @@ $('#exForm').addEventListener('submit',e=>{
 });
 $('#dlgExport').addEventListener('cancel',e=>{if(E.exp)e.preventDefault();});
 function setProg(){if(!E.exp)return;const pc=E.total?clamp(E.T/E.total,0,1):0;$('#exBar').style.width=(pc*100).toFixed(1)+'%';$('#exStatus').textContent='내보내는 중… '+Math.round(pc*100)+'%';}
+/* ---- 저장 위치 ---- */
+const isIOS=()=>/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const isPhone=()=>isMobile()||isCoarse();
+const PREF={
+  db(){return new Promise((res,rej)=>{const r=indexedDB.open('chungramcut-prefs',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});},
+  async get(k){const d=await this.db();return new Promise((res,rej)=>{const q=d.transaction('kv').objectStore('kv').get(k);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error);});},
+  async set(k,v){const d=await this.db();return new Promise((res,rej)=>{const t=d.transaction('kv','readwrite');v===undefined?t.objectStore('kv').delete(k):t.objectStore('kv').put(v,k);t.oncomplete=()=>res();t.onerror=()=>rej(t.error);});}
+};
+async function getSaveDir(){if(isPhone())return null;try{return (await PREF.get('saveDir'))||null;}catch(e){return null;}}
+async function ensureDirPerm(h){
+  if(!h)return false;
+  try{let p=await h.queryPermission({mode:'readwrite'});if(p==='granted')return true;p=await h.requestPermission({mode:'readwrite'});return p==='granted';}catch(e){return false;}
+}
+async function renderSaveSec(){
+  const info=$('#saveInfo'),btns=$('#saveBtns');
+  if(isPhone()){btns.hidden=true;info.textContent=isIOS()
+    ?'내보내기가 끝나면 “사진 앱에 저장” 버튼이 나타나요. 누르고 “비디오 저장”을 고르면 사진 라이브러리에 들어가요.'
+    :'내보내기가 끝나면 자동으로 휴대폰의 다운로드 폴더에 저장돼요. 갤럭시 갤러리 앱의 “다운로드” 앨범에서 볼 수 있어요.';return;}
+  if(!window.showDirectoryPicker){btns.hidden=true;info.textContent='이 브라우저는 폴더 지정을 지원하지 않아 항상 다운로드 폴더에 저장돼요. (Chrome·Edge에서는 원하는 폴더를 지정할 수 있어요)';return;}
+  btns.hidden=false;const h=await getSaveDir();
+  info.textContent=h?'현재 저장 폴더: “'+h.name+'”  (내보낼 때 폴더 접근을 한 번 물어볼 수 있어요)':'지정한 폴더가 없어서 브라우저의 다운로드 폴더에 저장돼요.';
+  $('#saveReset').hidden=!h;
+}
+$('#saveChoose').onclick=async()=>{
+  try{const h=await window.showDirectoryPicker({id:'chungramcut',mode:'readwrite',startIn:'videos'});await PREF.set('saveDir',h);toast('저장 폴더를 “'+h.name+'”(으)로 정했어요.');}
+  catch(e){if(e&&e.name!=='AbortError')toast('폴더를 지정하지 못했어요: '+(e.message||e),5000);}
+  renderSaveSec();
+};
+$('#saveReset').onclick=async()=>{await PREF.set('saveDir',undefined);toast('다운로드 폴더로 되돌렸어요.');renderSaveSec();};
+function downloadBlob(blob,fileName){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fileName;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),60000);}
+async function uniqueFile(dir,fileName){
+  const dot=fileName.lastIndexOf('.'),base=dot>0?fileName.slice(0,dot):fileName,ext=dot>0?fileName.slice(dot):'';
+  let n=fileName,i=1;
+  for(;;){try{await dir.getFileHandle(n);i++;n=base+' ('+i+')'+ext;}catch(e){return n;}}
+}
+async function saveExported(blob,fileName,dir){
+  if(dir){
+    try{const n=await uniqueFile(dir,fileName);const fh=await dir.getFileHandle(n,{create:true});const w=await fh.createWritable();await w.write(blob);await w.close();
+      return {where:'“'+dir.name+'” 폴더',fileName:n,ok:true};}
+    catch(e){console.warn('폴더 저장 실패, 다운로드로 대체',e);}
+  }
+  if(isIOS())return {where:'',fileName,ok:false,needShare:true};
+  downloadBlob(blob,fileName);
+  return {where:isPhone()?'다운로드 폴더':'다운로드 폴더',fileName,ok:true,gallery:isPhone()};
+}
+async function shareFile(blob,fileName){
+  const f=new File([blob],fileName,{type:blob.type});
+  if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title:fileName});return true;}catch(e){if(e&&e.name==='AbortError')return true;}}
+  return false;
+}
+function showExportDone(blob,res,meta){
+  E.lastOut={blob,fileName:res.fileName};
+  $('#exProg').hidden=true;$('#exDone').hidden=false;
+  $('#exDoneInfo').innerHTML='<b>'+esc(res.fileName)+'</b><span>'+fmtSize(blob.size)+' · '+meta.w+'×'+meta.h+'</span>'
+    +(res.ok?'<span class="where">저장 위치: '+esc(res.where)+'</span>':'');
+  const b=$('#exDoneBtns');b.innerHTML='';
+  const add=(t,cls,fn)=>{const x=document.createElement('button');x.type='button';x.className='btn '+cls;x.innerHTML=t;x.onclick=fn;b.appendChild(x);return x;};
+  const phone=isPhone();
+  if(res.needShare)add(ic('image')+' 사진 앱에 저장','primary',async()=>{if(!await shareFile(blob,res.fileName)){downloadBlob(blob,res.fileName);toast('이 브라우저는 바로 저장을 지원하지 않아 파일 앱으로 내려받았어요.',5000);}});
+  add(ic('play')+' 바로 확인하기',res.needShare?'':'primary',()=>openPreview(blob,res.fileName,meta));
+  if(!res.needShare)add(ic('download')+' 다시 저장','',async()=>{const d=await getSaveDir();if(d&&await ensureDirPerm(d)){const r=await saveExported(blob,res.fileName,d);toast('저장했어요: '+r.where);}else{downloadBlob(blob,res.fileName);toast('다시 저장했어요.');}});
+  if(phone&&navigator.canShare&&!res.needShare)add(ic('send')+' 공유하기','',()=>shareFile(blob,res.fileName));
+  $('#exDoneNote').textContent=res.needShare?'아이폰은 보안상 앱이 사진 라이브러리에 바로 저장할 수 없어서, 위 버튼에서 “비디오 저장”을 한 번 눌러 주세요.'
+    :(res.gallery?'갤럭시 갤러리 앱을 열면 “다운로드” 앨범에 들어 있어요. 갤러리에 바로 안 보이면 잠시 후 새로고침해 보세요.':'');
+  try{navigator.vibrate&&navigator.vibrate([120,60,120]);}catch(e){}
+  $('#exStatus').textContent='완료';
+}
+function openPreview(blob,fileName,meta){
+  const d=$('#dlgPreview'),v=$('#pvVid');if(E.pvUrl)URL.revokeObjectURL(E.pvUrl);
+  E.pvUrl=URL.createObjectURL(blob);v.src=E.pvUrl;$('#pvInfo').textContent=fileName+' · '+fmtSize(blob.size)+(meta?' · '+meta.w+'×'+meta.h:'');
+  d.returnValue='';d.showModal();v.play().catch(()=>{});
+  d.addEventListener('close',()=>{v.pause();v.removeAttribute('src');v.load();},{once:true});
+}
 async function runExport(){
+  const saveDir=await getSaveDir();const dirOK=saveDir?await ensureDirPerm(saveDir):false;
   const kind=$('#exKind').value,short=+$('#exRes').value,q=$('#exQ').value,fps=+$('#exFps').value;
   const name=($('#exName').value.trim()||E.p.name).replace(/[\\/:*?"<>|]/g,'_');
   const mime=pickMime(kind);if(!mime){toast('이 형식은 지원되지 않아요.');return;}
@@ -1510,8 +1612,10 @@ async function runExport(){
     if(E.exp.cancel){toast('내보내기를 취소했어요.');}
     else{
       const blob=new Blob(chunks,{type:mime.split(';')[0]});
-      const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name+'.'+kind;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),60000);
-      $('#exBar').style.width='100%';$('#exStatus').textContent='완료! '+name+'.'+kind+' ('+fmtSize(blob.size)+') 파일이 다운로드 폴더에 저장됐어요.';
+      $('#exBar').style.width='100%';
+      const res=await saveExported(blob,name+'.'+kind,dirOK?saveDir:null);
+      showExportDone(blob,res,{w:ew,h:eh});
+      window.__lastSave=res;
       window.__lastExport={size:blob.size,type:blob.type,kind,w:ew,h:eh};
     }
   }catch(err){console.error(err);toast('내보내기에 실패했어요: '+(err&&err.message||err),6000);$('#exStatus').textContent='내보내기에 실패했어요.';}
@@ -1553,6 +1657,7 @@ function openSettings(toAi){
   renderFsSeg();
   const c=aiLoad();$('#aiProv').value=c.provider;$('#aiModel').value=c.model;$('#aiModel').placeholder=AI_DEF[c.provider].model;
   $('#aiKey').value=c.key;$('#aiKey').placeholder=AI_DEF[c.provider].keyHint;$('#aiRem').checked=c.remember;$('#aiMsg').textContent='';
+  renderSaveSec();
   $('#dlgSet').showModal();
   if(toAi)setTimeout(()=>$('#aiSec').scrollIntoView({block:'start'}),30);
 }
