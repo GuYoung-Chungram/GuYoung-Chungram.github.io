@@ -396,8 +396,9 @@ async function yt(path,params){
     const reason=j?.error?.errors?.[0]?.reason||'', msg=j?.error?.message||'';
     if(reason==='quotaExceeded'||reason==='rateLimitExceeded')throw new AppErr('QUOTA','오늘 검색 할당량을 다 썼어요. 링크 붙여넣기는 계속 쓸 수 있고, 내일 다시 검색할 수 있어요.');
     if(/API key not valid|keyInvalid/i.test(reason+msg))throw new AppErr('KEY','API 키가 올바르지 않아요. 설정에서 다시 확인해 주세요.');
-    if(/referer|ipRefererBlocked|blocked/i.test(reason+msg))throw new AppErr('REF','이 주소에서는 키 사용이 막혀 있어요. Google Cloud에서 허용 도메인을 확인해 주세요.');
-    throw new AppErr('API',`유튜브 응답 오류(${r.status}). 잠시 뒤 다시 시도해 주세요.`);
+    if(/accessNotConfigured|has not been used|is disabled/i.test(reason+msg))throw new AppErr('KEY','이 키의 프로젝트에서 YouTube Data API v3가 사용 설정되어 있지 않아요. Google Cloud › API 및 서비스 › 라이브러리에서 사용 설정해 주세요.');
+    if(/referer|ipRefererBlocked|blocked/i.test(reason+msg))throw new AppErr('REF',`이 주소에서는 키 사용이 막혀 있어요. 키의 웹사이트 제한을 https://www.crmc.co.kr/* 로 확인해 주세요. (${(msg||reason).slice(0,120)})`);
+    throw new AppErr('API',`유튜브 응답 오류(${r.status}${reason?' · '+reason:''}). ${msg?msg.slice(0,140):'잠시 뒤 다시 시도해 주세요.'}`);
   }
   return j;
 }
