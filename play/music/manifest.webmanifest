@@ -1,0 +1,16 @@
+{
+  "name": "청람 STUDIO",
+  "short_name": "청람",
+  "description": "유튜브 음악만 골라 오디오 플레이어처럼 듣는 개인용 앱",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#06080b",
+  "theme_color": "#06080b",
+  "lang": "ko",
+  "icons": [
+    {"src": "icon-180.png", "sizes": "180x180", "type": "image/png"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}
