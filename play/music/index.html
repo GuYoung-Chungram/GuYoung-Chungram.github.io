@@ -220,6 +220,7 @@ html.sleeping #np{background:#000}
 <symbol id="i-repeat" viewBox="0 0 24 24"><path d="M17 2l4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4M21 13v2a3 3 0 0 1-3 3H3"/></symbol>
 <symbol id="i-repeat1" viewBox="0 0 24 24"><path d="M17 2l4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4M21 13v2a3 3 0 0 1-3 3H3M11 10l1.5-1v6"/></symbol>
 <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></symbol>
+<symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></symbol>
 <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
 <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="19" cy="12" r="1.6" fill="currentColor"/></symbol>
 <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v5M14 11v5"/></symbol>
@@ -261,6 +262,7 @@ html.sleeping #np{background:#000}
   <div class="np-top">
     <button class="ib" data-act="np-close" aria-label="재생 화면 닫기"><svg class="i"><use href="#i-down"/></svg></button>
     <span class="np-act">
+      <button class="chip" id="btnFav" data-act="fav-now" aria-pressed="false"><svg class="i"><use href="#i-heart"/></svg>즐겨찾기</button>
       <button class="chip" data-act="dislike"><svg class="i"><use href="#i-thumbdown"/></svg>별로예요</button>
       <button class="chip" id="btnRadio" data-act="radio" aria-pressed="true"><svg class="i"><use href="#i-radio"/></svg>라디오</button>
     </span>
@@ -374,6 +376,9 @@ const S={
   apiReady:false, probing:false, refilling:false, errStreak:0, seeking:false, pendingId:null, pendingMix:null
 };
 S.radio=S.cfg.radio;
+const FAV_ID='fav';
+if(!S.pls.some(p=>p.id===FAV_ID))S.pls=[{id:FAV_ID,name:'즐겨찾기',tracks:[]},...S.pls];
+const isFav=id=>!!S.pls.find(p=>p.id===FAV_ID)?.tracks.some(x=>x.id===id);
 const REG=new Map(); const reg=t=>{REG.set(t.id,t);return t};
 [...S.recent,...S.pls.flatMap(p=>p.tracks)].forEach(reg);
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
@@ -677,6 +682,7 @@ function trackRow(t,{ctx='result'}={}){
     S.pls.map(p=>`<button class="chip" data-act="pl-pick" data-pid="${esc(p.id)}" data-id="${esc(t.id)}">${esc(p.name)}</button>`).join('')
   }<button class="chip" data-act="pl-new-add" data-id="${esc(t.id)}">${ico('plus')}새 재생목록</button></div></div>`:'';
   const more=open&&!S.addMode?`<div class="more">
+    <button class="chip" data-act="fav" data-id="${esc(t.id)}" aria-pressed="${isFav(t.id)}">${ico('heart')}즐겨찾기</button>
     <button class="chip" data-act="play-next" data-id="${esc(t.id)}">${ico('qnext')}다음에 듣기</button>
     <button class="chip" data-act="add-pl" data-id="${esc(t.id)}">${ico('plus')}재생목록에 추가</button>
     ${ctx==='result'?`<button class="chip" data-act="hide-ch" data-id="${esc(t.id)}">${ico('eyeoff')}이 채널 안 보기</button>`:''}</div>`:'';
@@ -728,11 +734,11 @@ function renderPlaylist(){
     <button class="ib" data-act="pl-rm" data-id="${esc(t.id)}" aria-label="목록에서 빼기: ${esc(t.title)}">${ico('trash')}</button></li>`}).join('');
   el.innerHTML=`${backBtn()}
     ${S.editName?`<form class="pl-ed" id="renameForm"><input id="renameIn" maxlength="40" value="${esc(p.name)}" aria-label="재생목록 이름"><button class="btn pri" type="submit">저장</button></form>`
-      :`<div class="sec-h" style="margin-top:4px"><h2>${esc(p.name)}</h2><button class="chip" data-act="pl-rename">이름 바꾸기</button></div>`}
+      :`<div class="sec-h" style="margin-top:4px"><h2>${esc(p.name)}</h2>${p.id===FAV_ID?'':'<button class="chip" data-act="pl-rename">이름 바꾸기</button>'}</div>`}
     <p class="dim small" style="margin:4px 0 0">${p.tracks.length}곡</p>
     <div class="acts"><button class="btn pri" data-act="pl-play" data-pid="${esc(p.id)}" ${p.tracks.length?'':'disabled'}>${ico('play','f')}전체 재생</button>
     <button class="btn" data-act="pl-shuffle" data-pid="${esc(p.id)}" ${p.tracks.length?'':'disabled'}>${ico('shuffle')}셔플 재생</button>
-    <button class="btn warn" data-act="pl-del" data-pid="${esc(p.id)}">${ico('trash')}삭제</button></div>
+    ${p.id===FAV_ID?'':`<button class="btn warn" data-act="pl-del" data-pid="${esc(p.id)}">${ico('trash')}삭제</button>`}</div>
     ${p.tracks.length?`<ul class="rows" id="plList">${rows}</ul>`:`<div class="empty">${ico('music')}<p>아직 곡이 없어요. 검색 결과에서 ‘재생목록에 추가’를 눌러 담아 보세요.</p></div>`}`;
   if(S.editName)$('#renameIn').focus();
 }
@@ -796,6 +802,7 @@ function renderSleep(){$('#sleepTitle').textContent=cur()?.title||'';updatePlayI
 function renderAll(){
   renderMeta();renderQueue();updatePlayIcons();
   $('#btnRadio').setAttribute('aria-pressed',String(S.radio));
+  $('#btnFav').setAttribute('aria-pressed',String(!!cur()&&isFav(cur().id)));
   $('#btnShuffle').setAttribute('aria-pressed',String(S.shuffle));
   const rp=$('#btnRepeat');rp.setAttribute('aria-pressed',String(S.repeat!=='off'));
   rp.setAttribute('aria-label','반복: '+({off:'끔',all:'전체',one:'한 곡'}[S.repeat]));
@@ -851,6 +858,11 @@ function addToPlaylist(pid,t){
   savePls();
   const p=S.pls.find(x=>x.id===pid);toast(`‘${p.name}’에 담았어요.`);
 }
+function toggleFav(t){
+  const on=isFav(t.id);
+  S.pls=S.pls.map(p=>p.id!==FAV_ID?p:{...p,tracks:on?p.tracks.filter(x=>x.id!==t.id):[...p.tracks,minTrack(t)]});
+  savePls();toast(on?'즐겨찾기에서 뺐어요.':'즐겨찾기에 담았어요.');
+}
 const plTracks=pid=>(S.pls.find(p=>p.id===pid)?.tracks||[]).map(reg);
 
 /* ---------- events ---------- */
@@ -875,6 +887,8 @@ document.addEventListener('click',e=>{
     }
     case 'more':S.openRow=S.openRow===id&&!S.addMode?null:id;S.addMode=false;render();break;
     case 'play-next':if(t)playNext(t);S.openRow=null;render();break;
+    case 'fav':if(t){toggleFav(t);render()}break;
+    case 'fav-now':if(cur()){toggleFav(cur());renderAll();render()}break;
     case 'add-pl':
       if(!S.pls.length){addToPlaylist(createPlaylist('').id,t);S.openRow=null}else S.addMode=true;
       render();break;
@@ -966,6 +980,7 @@ window.addEventListener('pagehide',()=>{wakeRelease()});
 
 /* ---------- boot ---------- */
 render();renderBike();
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
 </html>
