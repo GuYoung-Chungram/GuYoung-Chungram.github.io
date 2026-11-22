@@ -942,8 +942,12 @@ document.addEventListener('submit',e=>{
   }
 });
 document.addEventListener('change',e=>{
-  if(e.target.id==='ytKey'){S.cfg.ytKey=e.target.value.trim();saveCfg();toast('YouTube 키를 저장했어요.')}
-  else if(e.target.id==='gemKey'){S.cfg.gemKey=e.target.value.trim();saveCfg();toast('Gemini 키를 저장했어요.')}
+  const saved=(field,label)=>{
+    S.cfg[field]=e.target.value.trim();saveCfg();
+    toast(safeGet('cfg',{})[field]===S.cfg[field]?`${label} 키를 저장했어요.`:`${label} 키가 이 브라우저에 저장되지 않아요. 시크릿 모드이거나 저장이 막혀 있을 수 있어요.`);
+  };
+  if(e.target.id==='ytKey')saved('ytKey','YouTube');
+  else if(e.target.id==='gemKey')saved('gemKey','Gemini');
 });
 const seek=$('#seek');
 seek.addEventListener('input',()=>{S.seeking=true;seek.style.setProperty('--p',(seek.value/seek.max*100)+'%');$('#tCur').textContent=fmt(seek.value)});
@@ -980,6 +984,7 @@ window.addEventListener('pagehide',()=>{wakeRelease()});
 
 /* ---------- boot ---------- */
 render();renderBike();
+try{navigator.storage?.persist?.()?.catch(()=>{})}catch{}
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
