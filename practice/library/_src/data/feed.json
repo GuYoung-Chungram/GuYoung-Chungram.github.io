@@ -1,9 +1,74 @@
 {
   "meta": {
-    "lastRunAt": "2026-11-16T02:40:12.815Z",
+    "lastRunAt": "2026-11-23T03:39:38.608Z",
     "note": "매주 자동 수집 결과입니다. 직접 고치지 마세요(승격 표시 promoted만 예외)."
   },
   "items": [
+    {
+      "id": "f-a1457881b97e",
+      "sourceId": "mois",
+      "sourceType": "gov",
+      "issuer": "행정안전부",
+      "date": "2026-11-23",
+      "title": "공무원이 직접 만든 인공지능(AI) 도구 1,035개 몰렸다… 45대 1 뚫은 23팀 결선",
+      "url": "https://www.mois.go.kr/frt/bbs/type010/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000008&nttId=131137",
+      "summaryAi": "공무원이 직접 개발한 AI 도구 챌린지 결선이 개최되어 범정부 공동 활용을 추진한다.",
+      "stageGuess": [
+        1,
+        4
+      ],
+      "duplicateOf": "f-6589c92e940c",
+      "collectedAt": "2026-11-23T03:39:38.608Z",
+      "promoted": false
+    },
+    {
+      "id": "f-754fe4a55162",
+      "sourceId": "mois",
+      "sourceType": "gov",
+      "issuer": "행정안전부",
+      "date": "2026-11-18",
+      "title": "말이나 사진으로도 정책 제안 뚝딱 행안부, ‘모두의 광장’ 새롭게 연다",
+      "url": "https://www.mois.go.kr/frt/bbs/type010/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000008&nttId=131025",
+      "summaryAi": "행안부가 국민소통 플랫폼 '모두의 광장'을 개편하며 AI가 정책 제안서 작성과 관련 법령 안내를 지원한다.",
+      "stageGuess": [
+        1,
+        3,
+        4
+      ],
+      "collectedAt": "2026-11-23T03:39:38.608Z",
+      "promoted": false
+    },
+    {
+      "id": "f-6f18695fe931",
+      "sourceId": "mois",
+      "sourceType": "gov",
+      "issuer": "행정안전부",
+      "date": "2026-11-18",
+      "title": "수능시험일 위급재난문자가 발송됩니다.",
+      "url": "https://www.mois.go.kr/frt/bbs/type010/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000008&nttId=131042",
+      "summaryAi": "행안부가 수능시험 부정행위 예방 및 적발을 위해 AI를 활용한 위급재난문자를 발송한다.",
+      "stageGuess": [
+        1
+      ],
+      "collectedAt": "2026-11-23T03:39:38.608Z",
+      "promoted": false
+    },
+    {
+      "id": "f-1534d96640d9",
+      "sourceId": "msit",
+      "sourceType": "gov",
+      "issuer": "과학기술정보통신부",
+      "date": "2026-11-17",
+      "title": "과기정통부, 인공지능 시대 국가지식정보 활용 혁신 방안 논의",
+      "url": "https://www.msit.go.kr/bbs/view.do?sCode=user&bbsSeqNo=94&nttSeqNo=3187971",
+      "summaryAi": "과기정통부가 국가지식정보 활용 혁신 방안을 논의하며 AI 활용 기반 강화 등 정책과제를 모색한다.",
+      "stageGuess": [
+        1,
+        9
+      ],
+      "collectedAt": "2026-11-23T03:39:38.608Z",
+      "promoted": false
+    },
     {
       "id": "f-3b24019bae3b",
       "sourceId": "mckinsey-mail",
