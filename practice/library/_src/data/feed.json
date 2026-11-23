@@ -5,6 +5,71 @@
   },
   "items": [
     {
+      "id": "f-3b24019bae3b",
+      "sourceId": "mckinsey-mail",
+      "sourceType": "consulting",
+      "issuer": "McKinsey & Company",
+      "date": "2026-11-23",
+      "title": "From answers to actions: Governing the agentic AI shift",
+      "url": "https://www.mckinsey.com/featured-insights/themes/ai-agents-are-gaining-autonomy-is-governance-keeping-up",
+      "summaryAi": "AI 에이전트가 스스로 행동하는 만큼 결정권이 넘어가므로, 책임 소재와 안전장치·감독 체계를 먼저 정해야 한다고 짚습니다.",
+      "stageGuess": [
+        2,
+        9
+      ],
+      "collectedAt": "2026-11-23T02:29:58.000Z",
+      "promoted": false
+    },
+    {
+      "id": "f-0e39b9f32bbf",
+      "sourceId": "mckinsey-mail",
+      "sourceType": "consulting",
+      "issuer": "McKinsey & Company",
+      "date": "2026-11-18",
+      "title": "Reinventing business planning with agentic AI",
+      "url": "https://www.mckinsey.com/capabilities/quantumblack/our-insights/reinventing-business-planning-with-agentic-ai",
+      "summaryAi": "예측과 AI 에이전트를 결합해 계획 수립을 상시 의사결정 체계로 바꾸고, 예측을 실행으로 옮기는 수작업을 줄이는 방법을 다룹니다.",
+      "stageGuess": [
+        2,
+        4
+      ],
+      "collectedAt": "2026-11-23T02:29:58.000Z",
+      "promoted": false
+    },
+    {
+      "id": "f-15c7899d83f9",
+      "sourceId": "deloitte-kr-ai",
+      "sourceType": "consulting",
+      "issuer": "Deloitte Korea",
+      "date": "2026-11-10",
+      "title": "AI 바이브 코딩, 전사 업무와 시스템 혁신의 새로운 접근",
+      "url": "https://www.deloitte.com/kr/ko/issues/generative-ai/ai-vibe-coding-enterprise-system-innovation.html",
+      "summaryAi": "현업 담당자가 AI로 직접 시스템을 만드는 바이브 코딩 사례와 검증 원칙, 시범사업을 실제 운영으로 넘기는 기준을 소개합니다.",
+      "stageGuess": [
+        1,
+        4,
+        10
+      ],
+      "collectedAt": "2026-11-23T02:29:58.000Z",
+      "promoted": false
+    },
+    {
+      "id": "f-779706d87ec0",
+      "sourceId": "deloitte-kr-ai",
+      "sourceType": "consulting",
+      "issuer": "Deloitte Korea",
+      "date": "2026-10-16",
+      "title": "글로벌 방재·보험 산업 패러다임 전환",
+      "url": "https://www.deloitte.com/kr/ko/Industries/insurance/perspectives/prevention-first-risk-intelligence.html",
+      "summaryAi": "미국 FEMA 등 해외 방재기관 사례로 AI·데이터·디지털 트윈을 활용한 예측·예방형 재난 위험관리 방향을 살펴봅니다.",
+      "stageGuess": [
+        1,
+        10
+      ],
+      "collectedAt": "2026-11-23T02:29:58.000Z",
+      "promoted": false
+    },
+    {
       "id": "f-e430c6fca99b",
       "sourceId": "mois",
       "sourceType": "gov",
