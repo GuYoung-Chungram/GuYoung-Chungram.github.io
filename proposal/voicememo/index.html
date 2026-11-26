@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>음성메모</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root{--ink:#0b1b3f;--sub:#586789;--line:#dde5f4;--blue:#1652d8;--deep:#0d3796;--soft:#e6eeff;--warn:#7a4b00;--warnbg:#fff4d6;--memo-size:21px}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:"Pretendard",-apple-system,"Apple SD Gothic Neo",sans-serif;font-size:16px;line-height:1.6;color:var(--ink);background:#fff;word-break:keep-all;overflow-wrap:anywhere;padding-bottom:env(safe-area-inset-bottom)}
+::selection{background:var(--soft);color:var(--deep)}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+button,textarea{font:inherit;color:inherit}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+.wrap{max-width:640px;margin:0 auto;padding:0 18px}
+
+/* 상단 바 */
+.bar{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:60px}
+h1{margin:0;font-size:20px;font-weight:800;letter-spacing:-.03em}
+.size{display:flex;align-items:center;gap:4px}
+.size button{width:44px;height:44px;border:1px solid var(--line);border-radius:10px;background:#fff;font-weight:700;font-size:16px;transition:background .15s}
+.size button:hover:not(:disabled){background:var(--soft)}
+.size button:disabled{opacity:.35;cursor:default}
+.size .lab{min-width:58px;text-align:center;font-size:13px;font-weight:600;color:var(--sub);line-height:1.2}
+
+main{padding-top:18px;padding-bottom:40px}
+h2{margin:0 0 6px;font-size:19px;font-weight:800;letter-spacing:-.02em}
+.note{margin:8px 0 0;font-size:13px;color:var(--sub);line-height:1.5}
+
+/* 어조 줄 */
+.tone{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px;padding:12px 0 14px;border-bottom:1px solid var(--line)}
+.tone .t{min-width:0;flex:1 1 180px}
+.tone .t b{display:block;font-size:13px;color:var(--sub);font-weight:600}
+.tone .t span{display:block;font-size:15px;font-weight:600}
+.acts{display:flex;gap:8px}
+.chip{min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:22px;background:#fff;font-size:14px;font-weight:600}
+.chip[aria-pressed="true"]{background:var(--soft);border-color:var(--blue);color:var(--deep)}
+.chip:hover{background:var(--soft)}
+
+/* 정리 형태 */
+.seg{display:flex;margin:16px 0 14px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.seg button{flex:1;min-height:46px;border:0;background:#fff;font-weight:600;font-size:15px;border-left:1px solid var(--line)}
+.seg button:first-child{border-left:0}
+.seg button[aria-checked="true"]{background:var(--blue);color:#fff}
+
+/* 입력 */
+.lbl{display:block;margin:0 0 6px;font-size:14px;font-weight:700}
+textarea{display:block;width:100%;border:1.5px solid var(--line);border-radius:12px;padding:14px;background:#fff;resize:vertical;line-height:1.65}
+textarea:focus{border-color:var(--blue);outline:0;box-shadow:0 0 0 3px var(--soft)}
+#src{min-height:170px;font-size:var(--memo-size)}
+.row{display:flex;align-items:center;gap:10px;margin:10px 0 14px}
+.mic{display:inline-flex;align-items:center;gap:8px;min-height:50px;padding:0 20px;border:0;border-radius:26px;background:var(--soft);color:var(--deep);font-weight:700;font-size:16px}
+.mic svg{width:20px;height:20px;fill:currentColor}
+.mic[aria-pressed="true"]{background:var(--blue);color:#fff}
+.mic[aria-pressed="true"] svg{animation:pulse 1.2s ease-out infinite}
+@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
+.ghost{min-height:50px;padding:0 14px;border:0;background:none;color:var(--sub);font-weight:600;font-size:15px;text-decoration:underline;text-underline-offset:3px}
+.primary{display:block;width:100%;min-height:56px;border:0;border-radius:14px;background:var(--blue);color:#fff;font-weight:800;font-size:18px;letter-spacing:-.01em;transition:background .15s}
+.primary:hover:not(:disabled){background:var(--deep)}
+.primary:disabled{opacity:.55;cursor:default}
+.second{min-height:50px;padding:0 18px;border:1.5px solid var(--blue);border-radius:12px;background:#fff;color:var(--deep);font-weight:700;font-size:16px}
+.second:hover{background:var(--soft)}
+
+/* 결과 */
+#res{margin-top:28px;padding-top:22px;border-top:1px solid var(--line)}
+#out{min-height:140px;font-size:var(--memo-size);line-height:1.7;background:#fbfcff;border-color:var(--line)}
+.share{display:flex;gap:10px;margin:12px 0 0}
+.share .primary{flex:1.4;min-height:52px;font-size:17px}
+.share .second{flex:1}
+.fold{margin-top:14px}
+.fold button{min-height:44px;padding:0;border:0;background:none;color:var(--deep);font-weight:700;font-size:15px;text-decoration:underline;text-underline-offset:3px}
+#orig{margin:6px 0 0;padding:12px 14px;border-radius:10px;background:#f3f6fc;font-size:15px;color:var(--sub);white-space:pre-wrap;font-family:inherit}
+.sub{margin:20px 0 8px;font-size:14px;font-weight:700}
+.chg{display:flex;flex-direction:column;gap:6px}
+.chg div{padding:8px 12px;border-radius:10px;background:var(--soft);font-size:15px}
+.chg s{color:var(--sub)}
+.chg i{font-style:normal;font-weight:700;color:var(--deep)}
+.flg{display:flex;flex-direction:column;gap:6px}
+.flg div{padding:8px 12px;border-radius:10px;background:var(--warnbg);color:var(--warn);font-size:15px;font-weight:600}
+
+/* 어조 카드 만들기 */
+.back{min-height:44px;padding:0;border:0;background:none;color:var(--deep);font-weight:700;font-size:15px}
+.prog{display:flex;gap:6px;margin:12px 0 18px}
+.prog span{flex:1;height:6px;border-radius:3px;background:var(--line)}
+.prog span.on{background:var(--blue)}
+.scene{margin:0 0 14px;padding:16px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.scene h3{margin:0 0 4px;font-size:20px;font-weight:800;letter-spacing:-.02em}
+.scene p{margin:0;font-size:16px;color:var(--sub)}
+.scene p.say{margin-top:8px;color:var(--ink);font-weight:600}
+#tIn{min-height:130px;font-size:19px}
+.nav{display:flex;gap:10px;margin-top:6px}
+.nav .second{flex:1}
+.nav .primary{flex:2;min-height:50px;font-size:17px}
+dl.tc{margin:14px 0 0;display:grid;grid-template-columns:84px 1fr;gap:8px 12px;font-size:16px}
+dl.tc dt{color:var(--sub);font-weight:600}
+dl.tc dd{margin:0;font-weight:600}
+.big{margin:4px 0 0;font-size:22px;font-weight:800;letter-spacing:-.02em;line-height:1.35}
+.cmp{display:grid;gap:10px;margin-top:6px}
+.cmp div{padding:12px 14px;border-radius:10px;font-size:16px;white-space:pre-wrap}
+.cmp .b{background:#f3f6fc;color:var(--sub)}
+.cmp .a{background:var(--soft);color:var(--ink);font-weight:600}
+.cmp small{display:block;margin-bottom:2px;font-size:12px;font-weight:700;color:var(--sub)}
+
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translate(-50%,20px);max-width:calc(100% - 36px);padding:12px 18px;border-radius:12px;background:var(--ink);color:#fff;font-size:15px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:20}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.foot{margin-top:28px;padding-top:14px;border-top:1px solid var(--line);font-size:13px;color:var(--sub);line-height:1.6}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="bar"><div class="wrap">
+  <h1>음성메모</h1>
+  <div class="size" role="group" aria-label="글자 크기">
+    <button id="szDown" type="button" aria-label="글자 작게">A−</button>
+    <span class="lab" id="szLab" aria-live="polite">크게</span>
+    <button id="szUp" type="button" aria-label="글자 크게">A+</button>
+  </div>
+</div></header>
+
+<main class="wrap">
+  <!-- 메모 화면 -->
+  <section id="vMemo">
+    <div class="tone">
+      <div class="t"><b>어조 카드</b><span id="toneSum">아직 없음</span></div>
+      <div class="acts">
+        <button id="toneToggle" class="chip" type="button" aria-pressed="false" hidden>반영</button>
+        <button id="toneEdit" class="chip" type="button">만들기</button>
+      </div>
+    </div>
+
+    <div class="seg" id="seg" role="radiogroup" aria-label="정리 형태">
+      <button type="button" role="radio" data-f="memo" aria-checked="true">메모</button>
+      <button type="button" role="radio" data-f="list" aria-checked="false">목록</button>
+      <button type="button" role="radio" data-f="paragraph" aria-checked="false">문단</button>
+    </div>
+
+    <label class="lbl" for="src">말씀하신 내용</label>
+    <textarea id="src" placeholder="마이크 버튼을 누르고 말씀하세요. 키보드의 마이크로 말씀하셔도 됩니다."></textarea>
+    <div class="row">
+      <button id="micBtn" class="mic" type="button" aria-pressed="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15a3.5 3.5 0 0 0 3.5-3.5V6a3.5 3.5 0 1 0-7 0v5.5A3.5 3.5 0 0 0 12 15Zm6-3.5a1 1 0 1 0-2 0 4 4 0 0 1-8 0 1 1 0 1 0-2 0 6 6 0 0 0 5 5.92V20H9.5a1 1 0 1 0 0 2h5a1 1 0 1 0 0-2H13v-2.58A6 6 0 0 0 18 11.5Z"/></svg>
+        <span id="micTxt">말하기</span>
+      </button>
+      <button id="clearBtn" class="ghost" type="button">지우기</button>
+    </div>
+    <button id="goBtn" class="primary" type="button">정리하기</button>
+    <p class="note" id="mode"></p>
+
+    <section id="res" hidden>
+      <h2>정리된 메모</h2>
+      <label class="lbl" for="out" style="position:absolute;left:-9999px">정리된 메모 (수정 가능)</label>
+      <textarea id="out"></textarea>
+      <div class="share">
+        <button id="shareBtn" class="primary" type="button">공유하기</button>
+        <button id="copyBtn" class="second" type="button">복사</button>
+      </div>
+      <div class="fold">
+        <button id="origBtn" type="button" aria-expanded="false">원문 보기</button>
+        <pre id="orig" hidden></pre>
+      </div>
+      <div id="chgBox" hidden><p class="sub">자동으로 고친 부분</p><div class="chg" id="chg"></div></div>
+      <div id="flgBox" hidden><p class="sub">확인이 필요한 부분</p><div class="flg" id="flg"></div></div>
+    </section>
+  </section>
+
+  <!-- 어조 카드 만들기 -->
+  <section id="vTone" hidden>
+    <button class="back" id="tBack" type="button">← 메모로 돌아가기</button>
+    <div id="tStep">
+      <h2>어조 카드 만들기</h2>
+      <p class="note" style="margin-top:0">상황을 보고 한두 문장만 말씀해 주세요. 문장은 저장하지 않고, 말투 특성만 이 기기에 저장합니다.</p>
+      <div class="prog" id="prog" aria-hidden="true"></div>
+      <div class="scene">
+        <h3 id="tTitle"></h3>
+        <p id="tScene"></p>
+        <p class="say" id="tSay"></p>
+      </div>
+      <textarea id="tIn" aria-label="말씀하신 문장" placeholder="마이크 버튼을 누르고 말씀하세요."></textarea>
+      <div class="row">
+        <button id="tMic" class="mic" type="button" aria-pressed="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15a3.5 3.5 0 0 0 3.5-3.5V6a3.5 3.5 0 1 0-7 0v5.5A3.5 3.5 0 0 0 12 15Zm6-3.5a1 1 0 1 0-2 0 4 4 0 0 1-8 0 1 1 0 1 0-2 0 6 6 0 0 0 5 5.92V20H9.5a1 1 0 1 0 0 2h5a1 1 0 1 0 0-2H13v-2.58A6 6 0 0 0 18 11.5Z"/></svg>
+          <span id="tMicTxt">말하기</span>
+        </button>
+        <button id="tSkip" class="ghost" type="button">건너뛰기</button>
+      </div>
+      <div class="nav">
+        <button id="tPrev" class="second" type="button">이전</button>
+        <button id="tNext" class="primary" type="button">다음</button>
+      </div>
+      <p class="note" id="tMsg" role="status"></p>
+    </div>
+
+    <div id="tDone" hidden>
+      <h2>어조 카드</h2>
+      <p class="big" id="dSum"></p>
+      <dl class="tc" id="dList"></dl>
+      <p class="sub">같은 메모에 적용한 모습</p>
+      <div class="cmp">
+        <div class="b"><small>원문</small><span id="cB"></span></div>
+        <div class="a"><small>정리 결과</small><span id="cA"></span></div>
+      </div>
+      <p class="note" id="cNote"></p>
+      <div class="nav" style="margin-top:18px">
+        <button id="dRedo" class="second" type="button">다시 하기</button>
+        <button id="dSave" class="primary" type="button">이 어조로 저장</button>
+      </div>
+    </div>
+  </section>
+
+  <p class="foot">정리할 때 내용이 AI 서비스로 전송되며, 이 앱은 메모 내용을 저장하지 않습니다. 이 기기에는 글자 크기와 어조 카드(말투 특성)만 저장됩니다.</p>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* 앱스스크립트 웹앱 URL (Code.gs 배포 후 입력). 비워 두면 기본 정리만 동작한다. */
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbxvB2ran7cSzqqWo37xn-0m9ZBAsHSItmdFq0SbBNFouK9ID7W0XN20ssVX3F_p2sMvEw/exec';
+
+var SIZES = [18, 21, 25, 30];
+var SIZE_LABELS = ['보통', '크게', '아주 크게', '최대'];
+var CARDS = [
+  {t: '지역구 주민에게 인사', s: '지역 행사장에서 주민들께 첫 인사를 드립니다.', say: '인사말 한두 문장을 평소처럼 말씀해 보세요.'},
+  {t: '기자 질문에 한마디', s: '복도에서 기자가 "오늘 회의 소감이 어떠십니까?"라고 묻습니다.', say: '답변을 한두 문장으로 말씀해 보세요.'},
+  {t: '보좌진에게 지시', s: '내일 오전 회의 자료 준비를 보좌관에게 부탁합니다.', say: '지시하는 말을 한두 문장으로 해 보세요.'},
+  {t: '고마움 전하기', s: '야근하며 도와준 직원에게 고마움을 전합니다.', say: '감사 인사를 한두 문장으로 말씀해 보세요.'}
+];
+var SAMPLE = '음 어제 지역구 간담회 갔는데 어 주민분들이 주차장 문제 얘기를 많이 하셨고 그 주차장 주차장 문제는 다음 주 화요일 아니 수요일에 구청이랑 협의하기로 했습니다';
+
+var vm = {size: 1, format: 'memo', toneOn: true, tone: null, card: 0, answers: [], pending: null, busy: false};
+
+function $(id) { return document.getElementById(id); }
+function store(k, v) {
+  try {
+    if (v === undefined) { var x = localStorage.getItem(k); return x === null ? null : x; }
+    if (v === null) { localStorage.removeItem(k); } else { localStorage.setItem(k, v); }
+  } catch (e) { return null; }
+  return null;
+}
+function toast(msg) {
+  var t = $('toast'); t.textContent = msg; t.classList.add('on');
+  clearTimeout(toast._h); toast._h = setTimeout(function () { t.classList.remove('on'); }, 2600);
+}
+
+/* ---------- 글자 크기 ---------- */
+function applySize() {
+  document.documentElement.style.setProperty('--memo-size', SIZES[vm.size] + 'px');
+  $('szLab').textContent = SIZE_LABELS[vm.size];
+  $('szDown').disabled = vm.size === 0;
+  $('szUp').disabled = vm.size === SIZES.length - 1;
+  store('vm_size', String(vm.size));
+  fitOut();
+}
+function fitOut() {
+  var o = $('out');
+  if (o.hidden || !$('res') || $('res').hidden) { return; }
+  o.style.height = 'auto'; o.style.height = Math.max(140, o.scrollHeight + 4) + 'px';
+}
+
+/* ---------- 어조 카드 표시 ---------- */
+function renderTone() {
+  var has = !!vm.tone;
+  $('toneSum').textContent = has ? vm.tone.summary : '아직 없음';
+  $('toneEdit').textContent = has ? '바꾸기' : '만들기';
+  var tg = $('toneToggle');
+  tg.hidden = !has;
+  tg.setAttribute('aria-pressed', String(vm.toneOn));
+  tg.textContent = vm.toneOn ? '반영 켜짐' : '반영 꺼짐';
+}
+
+/* ---------- 음성 입력 ---------- */
+var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+var micState = {rec: null, btn: null};
+function stopMic() {
+  if (micState.rec) { try { micState.rec.stop(); } catch (e) {} }
+}
+function setMicUi(btn, on) {
+  btn.setAttribute('aria-pressed', String(on));
+  btn.querySelector('span').textContent = on ? '듣는 중 · 누르면 멈춤' : '말하기';
+}
+function bindMic(btn, area) {
+  if (!SR) {
+    btn.hidden = true;
+    return;
+  }
+  btn.addEventListener('click', function () {
+    if (micState.rec && micState.btn === btn) { stopMic(); return; }
+    stopMic();
+    var rec = new SR();
+    rec.lang = 'ko-KR'; rec.continuous = true; rec.interimResults = true;
+    var base = area.value ? area.value.replace(/\s*$/, '') + ' ' : '';
+    rec.onresult = function (ev) {
+      var fin = '', tmp = '';
+      for (var i = 0; i < ev.results.length; i++) {
+        if (ev.results[i].isFinal) { fin += ev.results[i][0].transcript; } else { tmp += ev.results[i][0].transcript; }
+      }
+      area.value = base + fin + tmp;
+    };
+    rec.onerror = function (ev) {
+      if (ev.error === 'not-allowed') { toast('마이크 사용을 허용해 주세요. 또는 키보드의 마이크를 쓰세요.'); }
+    };
+    rec.onend = function () { setMicUi(btn, false); micState.rec = null; micState.btn = null; };
+    try { rec.start(); micState.rec = rec; micState.btn = btn; setMicUi(btn, true); }
+    catch (e) { toast('마이크를 시작하지 못했습니다. 키보드의 마이크를 써 주세요.'); }
+  });
+}
+
+/* ---------- 서버/기본 정리 ---------- */
+function callApi(payload) {
+  if (!GAS_URL) { return Promise.reject(new Error('offline')); }
+  var ctl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+  var timer = setTimeout(function () { if (ctl) { ctl.abort(); } }, 30000);
+  return fetch(GAS_URL, {
+    method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'},
+    body: JSON.stringify(payload), signal: ctl ? ctl.signal : undefined
+  }).then(function (r) { return r.json(); }).then(function (j) {
+    clearTimeout(timer);
+    if (j.error) { throw new Error(j.error); }
+    return j;
+  }, function (e) { clearTimeout(timer); throw e; });
+}
+
+var FILLER = /(^|\s)(음+|어+|으음|에+|아+|저기|저어|뭐랄까|뭐냐|있잖아요|있잖아)(?=\s|[,.…]|$)/g;
+var WEEK = /^(월|화|수|목|금|토|일)요일$/;
+var NUMUNIT = /^\d+(시|분|명|원|건|개|월|일|%|퍼센트|억|만원|조)?$/;
+function localClean(text, format) {
+  var changes = [], t = ' ' + text.replace(/\s+/g, ' ').trim() + ' ';
+  t = t.replace(FILLER, '$1').replace(/\s+/g, ' ');
+  /* 같은 단어 반복 */
+  t = t.replace(/(\S{2,})(\s+\1)+(?=\s|$)/g, '$1');
+  /* 정정: "화요일 아니 수요일", "3시 아니고 4시" 처럼 같은 종류의 말만 */
+  t = t.replace(/(\S+)\s+(?:아니고|아니 그게 아니라|아니)\s+(\S+)/g, function (m, a, b) {
+    var ak = a.replace(/(에|은|는|이|가|을|를)$/, ''), bk = b.replace(/(에|은|는|이|가|을|를|로)$/, '');
+    if ((WEEK.test(ak) && WEEK.test(bk)) || (NUMUNIT.test(ak) && NUMUNIT.test(bk))) {
+      changes.push({from: ak, to: bk});
+      return b;
+    }
+    return m;
+  });
+  t = t.replace(/\s+/g, ' ').trim();
+  var lines = t.replace(/((?:니다|세요|어요|아요|해요|예요|에요|네요|죠|까요|겠다|했다|이다)[.!?]?)\s+/g, '$1\n').split('\n');
+  var clean = [];
+  for (var i = 0; i < lines.length; i++) {
+    var s = lines[i].trim(); if (!s) { continue; }
+    if (!/[.!?]$/.test(s)) { s += '.'; }
+    clean.push(s);
+  }
+  var out;
+  if (format === 'list') { out = clean.map(function (s) { return '- ' + s; }).join('\n'); }
+  else if (format === 'paragraph') { out = clean.join(' '); }
+  else { out = clean.join('\n'); }
+  var flags = [];
+  if (/\d|월요일|화요일|수요일|목요일|금요일|토요일|일요일/.test(out)) { flags.push('숫자·날짜는 말씀하신 그대로입니다. 한 번 더 확인해 주세요.'); }
+  return {text: out, changes: changes, flags: flags, local: true};
+}
+
+function localTone(list) {
+  var all = list.join(' ');
+  var hp = (all.match(/(습니다|입니다|합니다|십시오)/g) || []).length;
+  var yo = (all.match(/(해요|예요|에요|어요|아요|죠|네요|지요)/g) || []).length;
+  var da = (all.match(/(했다|이다|한다|된다|이야|했어)/g) || []).length;
+  var endings, label;
+  if (hp >= yo && hp >= da && hp > 0) { endings = ['~습니다']; label = '정중한 ~습니다체'; }
+  else if (yo >= da && yo > 0) { endings = ['~해요']; label = '부드러운 ~해요체'; }
+  else { endings = ['~다']; label = '간결한 평서체'; }
+  var avg = all.length / Math.max(1, list.length);
+  var len = avg < 35 ? '짧고 간결' : (avg < 80 ? '보통' : '길고 상세');
+  var rules = ['종결은 ' + endings[0] + ' 로 쓴다.', '문장 길이는 "' + len + '" 수준으로 맞춘다.', '내용은 바꾸지 않는다.'];
+  return {summary: label + ' · ' + len, endings: endings, length: len, address: '', habitual: [], avoid: [], rules: rules, local: true};
+}
+
+/* ---------- 정리 실행 ---------- */
+function setBusy(on, btn, idle) {
+  vm.busy = on; btn.disabled = on; btn.textContent = on ? '정리하는 중…' : idle;
+}
+function runClean() {
+  var text = $('src').value.trim();
+  if (!text) { toast('먼저 말씀하신 내용을 입력해 주세요.'); $('src').focus(); return; }
+  stopMic();
+  setBusy(true, $('goBtn'), '정리하기');
+  var payload = {mode: 'clean', text: text, format: vm.format, tone: (vm.toneOn && vm.tone) ? stripTone(vm.tone) : null};
+  callApi(payload).then(function (r) {
+    showResult(r, text, false);
+  }, function (e) {
+    var r = localClean(text, vm.format);
+    showResult(r, text, true, e && e.message !== 'offline');
+  }).then(function () { setBusy(false, $('goBtn'), '정리하기'); });
+}
+function stripTone(t) { return {summary: t.summary, endings: t.endings, length: t.length, address: t.address, habitual: t.habitual, avoid: t.avoid, rules: t.rules}; }
+
+function showResult(r, original, local, failed) {
+  $('res').hidden = false;
+  $('out').hidden = false;
+  $('out').value = r.text;
+  $('orig').textContent = original;
+  $('orig').hidden = true; $('origBtn').setAttribute('aria-expanded', 'false'); $('origBtn').textContent = '원문 보기';
+  var chg = $('chg'); chg.textContent = '';
+  (r.changes || []).forEach(function (c) {
+    var d = document.createElement('div');
+    var s = document.createElement('s'); s.textContent = c.from;
+    var a = document.createTextNode(' → ');
+    var i = document.createElement('i'); i.textContent = c.to;
+    d.appendChild(s); d.appendChild(a); d.appendChild(i); chg.appendChild(d);
+  });
+  $('chgBox').hidden = !(r.changes && r.changes.length);
+  var flg = $('flg'); flg.textContent = '';
+  (r.flags || []).forEach(function (f) { var d = document.createElement('div'); d.textContent = f; flg.appendChild(d); });
+  $('flgBox').hidden = !(r.flags && r.flags.length);
+  var note = '';
+  if (local) { note = failed ? 'AI 연결이 되지 않아 기본 정리로 처리했습니다. 어조는 반영되지 않았습니다.' : '기본 정리 상태입니다(AI 미연결). 어조는 반영되지 않습니다.'; }
+  $('mode').textContent = note;
+  fitOut();
+  $('res').scrollIntoView({behavior: window.matchMedia('(prefers-reduced-motion:reduce)').matches ? 'auto' : 'smooth', block: 'start'});
+}
+
+/* ---------- 공유·복사 ---------- */
+function copyText(text) {
+  if (navigator.clipboard && window.isSecureContext) { return navigator.clipboard.writeText(text); }
+  return new Promise(function (ok, no) {
+    var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy') ? ok() : no(); } catch (e) { no(e); }
+    document.body.removeChild(ta);
+  });
+}
+function doShare() {
+  var text = $('out').value.trim();
+  if (!text) { return; }
+  if (navigator.share) {
+    navigator.share({title: '음성메모', text: text}).catch(function (e) {
+      if (e && e.name === 'AbortError') { return; }
+      copyText(text).then(function () { toast('복사했습니다. 카카오톡·문자에 붙여넣어 주세요.'); }, function () { toast('공유하지 못했습니다.'); });
+    });
+  } else {
+    copyText(text).then(function () { toast('복사했습니다. 카카오톡·문자에 붙여넣어 주세요.'); }, function () { toast('복사하지 못했습니다. 글을 길게 눌러 복사해 주세요.'); });
+  }
+}
+function doCopy() {
+  var text = $('out').value.trim();
+  if (!text) { return; }
+  copyText(text).then(function () { toast('복사했습니다.'); }, function () { toast('복사하지 못했습니다. 글을 길게 눌러 복사해 주세요.'); });
+}
+
+/* ---------- 어조 카드 만들기 ---------- */
+function openTone() {
+  stopMic();
+  vm.card = 0; vm.answers = ['', '', '', ''];
+  $('vMemo').hidden = true; $('vTone').hidden = false;
+  $('tStep').hidden = false; $('tDone').hidden = true;
+  renderCard(); window.scrollTo(0, 0);
+}
+function closeTone() { stopMic(); $('vTone').hidden = true; $('vMemo').hidden = false; window.scrollTo(0, 0); }
+function renderCard() {
+  var c = CARDS[vm.card];
+  $('tTitle').textContent = c.t; $('tScene').textContent = c.s; $('tSay').textContent = c.say;
+  $('tIn').value = vm.answers[vm.card] || '';
+  var p = $('prog'); p.textContent = '';
+  for (var i = 0; i < CARDS.length; i++) { var s = document.createElement('span'); if (i <= vm.card) { s.className = 'on'; } p.appendChild(s); }
+  $('tPrev').disabled = vm.card === 0;
+  $('tNext').textContent = vm.card === CARDS.length - 1 ? '어조 카드 만들기' : '다음';
+  $('tMsg').textContent = (vm.card + 1) + ' / ' + CARDS.length + '장';
+}
+function saveCardAnswer() { vm.answers[vm.card] = $('tIn').value.trim(); }
+function nextCard() {
+  stopMic(); saveCardAnswer();
+  if (vm.card < CARDS.length - 1) { vm.card++; renderCard(); return; }
+  buildTone();
+}
+function buildTone() {
+  var items = [];
+  for (var i = 0; i < CARDS.length; i++) { if (vm.answers[i]) { items.push({situation: CARDS[i].t, sentence: vm.answers[i]}); } }
+  if (items.length < 2) { $('tMsg').textContent = '최소 2장은 말씀해 주세요. (현재 ' + items.length + '장)'; return; }
+  var btn = $('tNext'); setBusy(true, btn, '어조 카드 만들기');
+  btn.textContent = '만드는 중…';
+  callApi({mode: 'tone', items: items}).then(function (r) { return r; }, function () {
+    return localTone(items.map(function (x) { return x.sentence; }));
+  }).then(function (tone) {
+    vm.pending = tone;
+    showToneResult(tone);
+  }).then(function () { setBusy(false, btn, '어조 카드 만들기'); btn.textContent = '어조 카드 만들기'; });
+}
+function showToneResult(tone) {
+  $('tStep').hidden = true; $('tDone').hidden = false;
+  $('dSum').textContent = tone.summary;
+  var dl = $('dList'); dl.textContent = '';
+  function row(k, v) {
+    if (!v || (Array.isArray(v) && !v.length)) { return; }
+    var dt = document.createElement('dt'); dt.textContent = k;
+    var dd = document.createElement('dd'); dd.textContent = Array.isArray(v) ? v.join(' · ') : v;
+    dl.appendChild(dt); dl.appendChild(dd);
+  }
+  row('종결', tone.endings); row('문장', tone.length); row('호칭', tone.address); row('말버릇', tone.habitual); row('지시', tone.rules);
+  $('cB').textContent = SAMPLE; $('cA').textContent = '적용 중…'; $('cNote').textContent = '';
+  callApi({mode: 'clean', text: SAMPLE, format: 'memo', tone: stripTone(tone)}).then(function (r) {
+    $('cA').textContent = r.text;
+  }, function () {
+    $('cA').textContent = localClean(SAMPLE, 'memo').text;
+    $('cNote').textContent = 'AI 미연결 상태라 미리보기에는 어조가 반영되지 않습니다. 연결 후 정리할 때 반영됩니다.';
+  });
+  window.scrollTo(0, 0);
+}
+function saveTone() {
+  vm.tone = vm.pending; vm.toneOn = true;
+  store('vm_tone', JSON.stringify(vm.tone)); store('vm_tone_on', '1');
+  renderTone(); closeTone(); toast('어조 카드를 저장했습니다.');
+}
+
+/* ---------- 시작 ---------- */
+function setFormat(f) {
+  vm.format = f; store('vm_format', f);
+  var bs = $('seg').querySelectorAll('button');
+  for (var i = 0; i < bs.length; i++) { bs[i].setAttribute('aria-checked', String(bs[i].getAttribute('data-f') === f)); }
+}
+(function init() {
+  var sz = parseInt(store('vm_size'), 10); if (sz >= 0 && sz < SIZES.length) { vm.size = sz; }
+  var f = store('vm_format'); if (f === 'list' || f === 'paragraph' || f === 'memo') { vm.format = f; }
+  try { var t = store('vm_tone'); if (t) { vm.tone = JSON.parse(t); } } catch (e) { vm.tone = null; }
+  vm.toneOn = store('vm_tone_on') !== '0';
+  applySize(); setFormat(vm.format); renderTone();
+  $('szDown').addEventListener('click', function () { if (vm.size > 0) { vm.size--; applySize(); } });
+  $('szUp').addEventListener('click', function () { if (vm.size < SIZES.length - 1) { vm.size++; applySize(); } });
+  $('seg').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) { setFormat(b.getAttribute('data-f')); } });
+  $('toneToggle').addEventListener('click', function () { vm.toneOn = !vm.toneOn; store('vm_tone_on', vm.toneOn ? '1' : '0'); renderTone(); });
+  $('toneEdit').addEventListener('click', openTone);
+  $('clearBtn').addEventListener('click', function () { stopMic(); $('src').value = ''; $('res').hidden = true; $('mode').textContent = ''; $('src').focus(); });
+  $('goBtn').addEventListener('click', runClean);
+  $('shareBtn').addEventListener('click', doShare);
+  $('copyBtn').addEventListener('click', doCopy);
+  $('out').addEventListener('input', fitOut);
+  $('origBtn').addEventListener('click', function () {
+    var show = $('orig').hidden; $('orig').hidden = !show;
+    this.setAttribute('aria-expanded', String(show)); this.textContent = show ? '원문 닫기' : '원문 보기';
+  });
+  bindMic($('micBtn'), $('src')); bindMic($('tMic'), $('tIn'));
+  $('tBack').addEventListener('click', closeTone);
+  $('tPrev').addEventListener('click', function () { stopMic(); saveCardAnswer(); if (vm.card > 0) { vm.card--; renderCard(); } });
+  $('tNext').addEventListener('click', nextCard);
+  $('tSkip').addEventListener('click', function () { stopMic(); $('tIn').value = ''; saveCardAnswer(); nextCard(); });
+  $('dRedo').addEventListener('click', openTone);
+  $('dSave').addEventListener('click', saveTone);
+  if (!GAS_URL) { $('mode').textContent = '기본 정리 상태입니다(AI 미연결). 군말·반복·말 정정만 정리됩니다.'; }
+  if (!SR) { $('src').placeholder = '키보드의 마이크 버튼을 눌러 말씀하세요.'; $('tIn').placeholder = '키보드의 마이크 버튼을 눌러 말씀하세요.'; }
+})();
+</script>
+</body>
+</html>
