@@ -56,6 +56,8 @@ h2 svg{color:var(--goldink)}
 .rlabel{margin:20px 0 0;font-size:17px;font-weight:700;letter-spacing:-.01em;text-align:center}
 .rtime{margin:2px 0 0;min-height:21px;font-size:14px;color:var(--sub);font-variant-numeric:tabular-nums}
 .rec.na .rbtn{opacity:.4;cursor:default}
+.rnote{margin:12px 0 0;max-width:420px;font-size:12.5px;line-height:1.5;color:var(--sub);text-align:center}
+.rec.mini .rnote{display:none}
 
 /* 어조 줄 */
 .tone{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 12px;margin-top:16px;padding:12px 14px;background:var(--paper);border:1px solid var(--line);border-radius:14px}
@@ -181,6 +183,8 @@ dl.tc dd{margin:0;font-weight:600}
       </button>
       <p class="rlabel" id="recLabel" role="status" aria-live="polite">눌러서 녹음 시작</p>
       <p class="rtime" id="recTime"></p>
+      <button id="retryBtn" class="ghost" type="button" hidden>전송이 안 된 구간 다시 보내기</button>
+      <p class="rnote">긴 회의는 화면을 켜 두고 충전하며 녹음하세요. 길이 제한 없이 구간마다 나누어 받아씁니다.</p>
     </div>
 
     <div class="tone">
@@ -245,6 +249,7 @@ dl.tc dd{margin:0;font-weight:600}
         </button>
         <p class="rlabel" id="tRecLabel" role="status" aria-live="polite">눌러서 녹음 시작</p>
         <p class="rtime" id="tRecTime"></p>
+        <button id="tRetryBtn" class="ghost" type="button" hidden>전송이 안 된 구간 다시 보내기</button>
       </div>
       <textarea id="tIn" aria-label="말씀하신 문장" placeholder="받아쓴 문장이 여기에 나타납니다."></textarea>
       <div class="row">
@@ -284,7 +289,7 @@ var GAS_URL = 'https://script.google.com/macros/s/AKfycbxvB2ran7cSzqqWo37xn-0m9Z
 
 var SIZES = [18, 21, 25, 30];
 var SIZE_LABELS = ['보통', '크게', '아주 크게', '최대'];
-var MAX_SEC = 240;
+var SEG_SEC = 180;
 var MIN_SEC = 1.2;
 var IDLE_TXT = '눌러서 녹음 시작';
 var CARDS = [
@@ -351,9 +356,12 @@ function callApi(payload, ms) {
   }, function (e) { clearTimeout(timer); throw e; });
 }
 
-/* ---------- 녹음 → 서버 받아쓰기 (gpt-4o-transcribe 또는 whisper-large-v3-turbo) ---------- */
+/* ---------- 녹음 → 서버 받아쓰기 (gpt-4o-transcribe 또는 whisper-large-v3-turbo) ----------
+   길이 제한이 없다. 녹음을 SEG_SEC 초 구간으로 나누어 구간마다 바로 보내 받아쓰고 메모리에서 비운다.
+   화면 꺼짐 방지, 배터리 안내, 전송 실패 구간 보관(기기 메모리에 맞춘 한도)으로 폰 상태에 맞춘다. */
 var SLOTS = {};
-var rec = {mr: null, slot: null, chunks: [], stream: null, t0: 0, timer: 0, raf: 0, ctx: null, cancel: false};
+var rec = {active: false, slot: null, stream: null, mr: null, segTimer: 0, tick: 0, raf: 0, ctx: null, gen: 0,
+           t0: 0, segs: 0, done: 0, inflight: 0, queue: Promise.resolve(), wake: null, finishing: false};
 
 function pickMime() {
   var c = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg;codecs=opus'];
@@ -372,46 +380,180 @@ function recUi(slot, state, msg, time) {
   slot.time.textContent = time || '';
 }
 function fmtTime(sec) {
-  var m = Math.floor(sec / 60), s = Math.floor(sec % 60);
-  return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+  var h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = Math.floor(sec % 60);
+  return (h > 0 ? h + ':' : '') + (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
 }
-function recActive() { return !!rec.mr; }
+function recActive() { return rec.active; }
 function recBusy() {
   var k;
   for (k in SLOTS) { if (SLOTS[k].btn.getAttribute('data-state') === 'busy') { return true; } }
   return false;
 }
+function failLimitBytes() { return (navigator.deviceMemory || 2) * 32 * 1024 * 1024; }
+function failBytes(slot) { var n = 0, i; for (i = 0; i < slot.failed.length; i++) { n += slot.failed[i].size; } return n; }
+function showRetry(slot) {
+  slot.retry.hidden = !slot.failed.length;
+  slot.retry.textContent = '전송이 안 된 ' + slot.failed.length + '구간 다시 보내기';
+}
+
 function toggleRec(slot) {
   if (slot.btn.getAttribute('data-state') === 'busy') { return; }
-  if (rec.mr && rec.slot === slot) { stopRec(false); return; }
-  if (rec.mr) { return; }
+  if (rec.active && rec.slot === slot) { stopRec(false); return; }
+  if (rec.active) { return; }
   beginRec(slot);
 }
 function beginRec(slot) {
   if (!recSupported()) { toast('이 기기에서는 녹음을 쓸 수 없습니다. 키보드의 마이크로 말씀해 주세요.'); return; }
   navigator.mediaDevices.getUserMedia({audio: {echoCancellation: true, noiseSuppression: true, autoGainControl: true}}).then(function (stream) {
-    var mime = pickMime(), opts = {audioBitsPerSecond: 32000}, mr;
-    if (mime) { opts.mimeType = mime; }
-    try { mr = new MediaRecorder(stream, opts); }
+    rec.gen++; rec.stream = stream; rec.slot = slot; rec.t0 = Date.now(); rec.segs = 0; rec.done = 0; rec.finishing = false; rec.active = true;
+    try { startSegment(); }
     catch (e) {
-      try { mr = new MediaRecorder(stream); }
-      catch (e2) { stream.getTracks().forEach(function (t) { t.stop(); }); toast('녹음을 시작하지 못했습니다. 키보드의 마이크를 써 주세요.'); return; }
+      rec.active = false; stream.getTracks().forEach(function (t) { t.stop(); });
+      toast('녹음을 시작하지 못했습니다. 키보드의 마이크를 써 주세요.'); return;
     }
-    rec.mr = mr; rec.slot = slot; rec.chunks = []; rec.stream = stream; rec.t0 = Date.now(); rec.cancel = false;
-    mr.ondataavailable = function (ev) { if (ev.data && ev.data.size) { rec.chunks.push(ev.data); } };
-    mr.onstop = finishRec;
-    mr.start(1000);
     recUi(slot, 'rec', '녹음 중 · 누르면 마칩니다', '00:00');
-    rec.timer = setInterval(function () {
-      var sec = (Date.now() - rec.t0) / 1000;
-      slot.time.textContent = fmtTime(sec) + ' / ' + fmtTime(MAX_SEC);
-      if (sec >= MAX_SEC) { toast('최대 ' + (MAX_SEC / 60) + '분까지 녹음됩니다. 여기까지 받아씁니다.'); stopRec(false); }
-    }, 250);
+    rec.tick = setInterval(recTick, 500);
+    stream.getTracks().forEach(function (t) {
+      t.onended = function () { if (rec.active) { toast('녹음이 끊겼습니다(전화·다른 앱 등). 여기까지 받아씁니다.'); stopRec(false); } };
+    });
     startMeter(stream, slot);
+    keepAwake(true);
+    try {
+      if (navigator.getBattery) { navigator.getBattery().then(function (b) { if (!b.charging && b.level < 0.15) { toast('배터리가 15% 미만입니다. 긴 녹음은 충전하면서 하세요.'); } }); }
+    } catch (e) {}
   }, function () {
     toast('마이크 사용을 허용해 주세요. 주소창 옆 설정에서 마이크를 허용하면 됩니다.');
   });
 }
+function recTick() {
+  if (!rec.active) { return; }
+  var sec = (Date.now() - rec.t0) / 1000, extra = '';
+  if (rec.done) { extra = ' · ' + rec.done + '구간 받아쓰기 완료'; }
+  rec.slot.time.textContent = fmtTime(sec) + extra;
+}
+function newRecorder() {
+  var mime = pickMime(), opts = {audioBitsPerSecond: 32000}, mr;
+  if (mime) { opts.mimeType = mime; }
+  try { mr = new MediaRecorder(rec.stream, opts); }
+  catch (e) { mr = new MediaRecorder(rec.stream); }
+  return mr;
+}
+function startSegment() {
+  var mr = newRecorder(), chunks = [], t = Date.now(), gen = rec.gen;
+  mr.ondataavailable = function (ev) { if (ev.data && ev.data.size) { chunks.push(ev.data); } };
+  mr.onstop = function () { onSegmentStop(mr, chunks, (Date.now() - t) / 1000, gen); };
+  mr.start(1000);
+  rec.mr = mr;
+  clearTimeout(rec.segTimer);
+  rec.segTimer = setTimeout(rotateSegment, SEG_SEC * 1000);
+}
+function rotateSegment() {
+  if (!rec.active) { return; }
+  var old = rec.mr;
+  try { startSegment(); } catch (e) { stopRec(false); return; }
+  try { old.stop(); } catch (e2) {}
+}
+function stopRec(cancel) {
+  if (!rec.active) { return; }
+  var slot = rec.slot;
+  rec.active = false; rec.finishing = true;
+  clearTimeout(rec.segTimer); clearInterval(rec.tick); cancelAnimationFrame(rec.raf);
+  try { if (rec.ctx) { rec.ctx.close(); } } catch (e) {}
+  rec.ctx = null;
+  slot.btn.style.setProperty('--lv', '1');
+  keepAwake(false);
+  if (cancel) { rec.gen++; recUi(slot, 'idle', IDLE_TXT, ''); }
+  else { recUi(slot, 'busy', '받아쓰는 중…', ''); }
+  try { if (rec.mr && rec.mr.state !== 'inactive') { rec.mr.stop(); } else { onSegmentStop(rec.mr, [], 0, rec.gen); } } catch (e2) { onSegmentStop(rec.mr, [], 0, rec.gen); }
+}
+function releaseStream() {
+  if (rec.stream) { rec.stream.getTracks().forEach(function (t) { t.stop(); }); }
+  rec.stream = null;
+}
+function onSegmentStop(mr, chunks, dur, gen) {
+  var last = rec.finishing && mr === rec.mr;
+  if (last) { releaseStream(); }
+  if (gen !== rec.gen) { return; }
+  var slot = rec.slot;
+  if (dur >= MIN_SEC && chunks.length) {
+    var type = (mr && mr.mimeType) || (chunks[0] && chunks[0].type) || 'audio/webm';
+    rec.segs++;
+    enqueueSeg(slot, new Blob(chunks, {type: type}), gen);
+  } else if (last && rec.segs === 0) {
+    recUi(slot, 'idle', IDLE_TXT, ''); toast('녹음이 너무 짧습니다. 다시 말씀해 주세요.'); return;
+  }
+  if (last) { afterSeg(slot, gen); }
+}
+function enqueueSeg(slot, blob, gen) {
+  rec.inflight++;
+  rec.queue = rec.queue.then(function () {
+    if (gen !== rec.gen) { return; }
+    return sendSeg(slot, blob, gen);
+  }).then(function () {}, function () {}).then(function () { rec.inflight--; afterSeg(slot, gen); });
+}
+function sendOnce(blob) {
+  return toB64(blob).then(function (b64) { return callApi({mode: 'transcribe', audio: b64, mime: blob.type}, 90000); });
+}
+function sendSeg(slot, blob, gen) {
+  function attempt(n) {
+    return sendOnce(blob).then(null, function (e) {
+      if (n >= 2 || gen !== rec.gen) { throw e; }
+      return new Promise(function (ok) { setTimeout(ok, n === 0 ? 2000 : 6000); }).then(function () { return attempt(n + 1); });
+    });
+  }
+  return attempt(0).then(function (r) {
+    if (gen !== rec.gen) { return; }
+    var t = String(r.text || '').trim();
+    rec.done++;
+    if (t) { appendText(slot, t); }
+  }, function () {
+    if (gen !== rec.gen) { return; }
+    slot.failed.push(blob); showRetry(slot);
+    toast('일부 구간이 전송되지 않았습니다. 연결을 확인하고 "다시 보내기"를 눌러 주세요.');
+    if (rec.active && failBytes(slot) > failLimitBytes()) { toast('전송이 계속 실패해 녹음을 멈춥니다. 연결을 확인해 주세요.'); stopRec(false); }
+  });
+}
+function appendText(slot, t) {
+  var cur = slot.area.value.replace(/\s*$/, '');
+  slot.area.value = cur ? cur + ' ' + t : t;
+  slot.area.dispatchEvent(new Event('input'));
+  slot.area.scrollTop = slot.area.scrollHeight;
+}
+function afterSeg(slot, gen) {
+  if (gen !== rec.gen || rec.active) { return; }
+  if (rec.inflight > 0) { recUi(slot, 'busy', '받아쓰는 중… (남은 구간 ' + rec.inflight + ')', ''); return; }
+  recUi(slot, 'idle', IDLE_TXT, '');
+  if (rec.segs > 0 && rec.done === 0 && !slot.failed.length) { toast('알아듣지 못했습니다. 다시 말씀해 주세요.'); }
+}
+function retryFailed(slot) {
+  var list = slot.failed.slice(); slot.failed = []; showRetry(slot);
+  if (!list.length) { return; }
+  var gen = rec.gen;
+  recUi(slot, 'busy', '다시 보내는 중…', '');
+  var chain = Promise.resolve();
+  list.forEach(function (blob) {
+    chain = chain.then(function () {
+      return sendOnce(blob).then(function (r) {
+        var t = String(r.text || '').trim(); if (t) { appendText(slot, t); }
+      }, function () { slot.failed.push(blob); });
+    });
+  });
+  chain.then(function () {
+    showRetry(slot); recUi(slot, 'idle', IDLE_TXT, '');
+    toast(slot.failed.length ? '아직 ' + slot.failed.length + '구간을 보내지 못했습니다.' : '모두 받아썼습니다. 이어지는 순서는 끝에 붙습니다.');
+  });
+}
+function keepAwake(on) {
+  try {
+    if (!on) { if (rec.wake) { rec.wake.release(); rec.wake = null; } return; }
+    if (navigator.wakeLock && navigator.wakeLock.request) {
+      navigator.wakeLock.request('screen').then(function (l) { rec.wake = l; }, function () {});
+    }
+  } catch (e) {}
+}
+document.addEventListener('visibilitychange', function () {
+  if (document.visibilityState === 'visible' && rec.active) { keepAwake(true); }
+});
 function startMeter(stream, slot) {
   try {
     var AC = window.AudioContext || window.webkitAudioContext;
@@ -429,11 +571,6 @@ function startMeter(stream, slot) {
     })();
   } catch (e) { /* 수준 표시는 없어도 녹음은 된다 */ }
 }
-function stopRec(cancel) {
-  if (!rec.mr) { return; }
-  rec.cancel = !!cancel;
-  if (rec.mr.state !== 'inactive') { try { rec.mr.stop(); } catch (e) { finishRec(); } }
-}
 function toB64(blob) {
   return new Promise(function (ok, no) {
     var fr = new FileReader();
@@ -442,35 +579,13 @@ function toB64(blob) {
     fr.readAsDataURL(blob);
   });
 }
-function finishRec() {
-  var slot = rec.slot, dur = (Date.now() - rec.t0) / 1000, chunks = rec.chunks, cancel = rec.cancel;
-  var type = (rec.mr && rec.mr.mimeType) || (chunks[0] && chunks[0].type) || 'audio/webm';
-  clearInterval(rec.timer); cancelAnimationFrame(rec.raf);
-  if (rec.stream) { rec.stream.getTracks().forEach(function (t) { t.stop(); }); }
-  try { if (rec.ctx) { rec.ctx.close(); } } catch (e) {}
-  slot.btn.style.setProperty('--lv', '1');
-  rec.mr = null; rec.stream = null; rec.ctx = null; rec.chunks = [];
-  if (cancel) { recUi(slot, 'idle', IDLE_TXT, ''); return; }
-  if (dur < MIN_SEC || !chunks.length) { recUi(slot, 'idle', IDLE_TXT, ''); toast('녹음이 너무 짧습니다. 다시 말씀해 주세요.'); return; }
-  var blob = new Blob(chunks, {type: type});
-  recUi(slot, 'busy', '받아쓰는 중…', '');
-  toB64(blob).then(function (b64) {
-    return callApi({mode: 'transcribe', audio: b64, mime: blob.type}, 90000);
-  }).then(function (r) {
-    var t = String(r.text || '').trim();
-    if (!t) { toast('알아듣지 못했습니다. 다시 말씀해 주세요.'); return; }
-    var cur = slot.area.value.replace(/\s*$/, '');
-    slot.area.value = cur ? cur + ' ' + t : t;
-    slot.area.dispatchEvent(new Event('input'));
-  }, function () {
-    toast('받아쓰기에 실패했습니다. 다시 녹음하거나 키보드의 마이크를 써 주세요.');
-  }).then(function () { recUi(slot, 'idle', IDLE_TXT, ''); });
-}
 function setupRec() {
-  SLOTS.main = {btn: $('micBtn'), area: $('src'), label: $('recLabel'), time: $('recTime')};
-  SLOTS.tone = {btn: $('tMic'), area: $('tIn'), label: $('tRecLabel'), time: $('tRecTime')};
+  SLOTS.main = {btn: $('micBtn'), area: $('src'), label: $('recLabel'), time: $('recTime'), retry: $('retryBtn'), failed: []};
+  SLOTS.tone = {btn: $('tMic'), area: $('tIn'), label: $('tRecLabel'), time: $('tRecTime'), retry: $('tRetryBtn'), failed: []};
   SLOTS.main.btn.addEventListener('click', function () { toggleRec(SLOTS.main); });
   SLOTS.tone.btn.addEventListener('click', function () { toggleRec(SLOTS.tone); });
+  SLOTS.main.retry.addEventListener('click', function () { retryFailed(SLOTS.main); });
+  SLOTS.tone.retry.addEventListener('click', function () { retryFailed(SLOTS.tone); });
   if (!recSupported()) {
     $('recCard').classList.add('na'); $('tRecCard').classList.add('na');
     var why = !GAS_URL ? '서버 연결 전이라 녹음을 쓸 수 없습니다. 아래에 직접 입력하거나 키보드의 마이크를 쓰세요.' : '이 기기에서는 녹음을 쓸 수 없습니다. 키보드의 마이크로 말씀해 주세요.';
@@ -685,7 +800,7 @@ function setFormat(f) {
   $('seg').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) { setFormat(b.getAttribute('data-f')); } });
   $('toneToggle').addEventListener('click', function () { vm.toneOn = !vm.toneOn; store('vm_tone_on', vm.toneOn ? '1' : '0'); renderTone(); });
   $('toneEdit').addEventListener('click', openTone);
-  $('clearBtn').addEventListener('click', function () { stopRec(true); $('src').value = ''; $('res').hidden = true; $('mode').textContent = ''; $('src').focus(); });
+  $('clearBtn').addEventListener('click', function () { stopRec(true); SLOTS.main.failed = []; showRetry(SLOTS.main); $('src').value = ''; $('res').hidden = true; $('mode').textContent = ''; $('src').focus(); });
   $('goBtn').addEventListener('click', runClean);
   $('shareBtn').addEventListener('click', doShare);
   $('copyBtn').addEventListener('click', doCopy);
