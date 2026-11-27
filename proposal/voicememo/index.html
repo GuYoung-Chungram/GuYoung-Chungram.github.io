@@ -4,118 +4,165 @@
 <meta charset="utf-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#0f1d3a">
 <title>음성메모</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
-:root{--ink:#0b1b3f;--sub:#586789;--line:#dde5f4;--blue:#1652d8;--deep:#0d3796;--soft:#e6eeff;--warn:#7a4b00;--warnbg:#fff4d6;--memo-size:21px}
+:root{--navy:#0f1d3a;--navy2:#1b2f5a;--gold:#b08d3e;--goldink:#7a5c18;--ivory:#f6f3ea;--paper:#fffdf9;--ink:#141c2e;--sub:#5a6376;--line:#e2dccb;--soft:#efe8d6;--rec:#b3261e;--warn:#7a4b00;--warnbg:#fbf0d3;--memo-size:21px;--lv:1}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;font-family:"Pretendard",-apple-system,"Apple SD Gothic Neo",sans-serif;font-size:16px;line-height:1.6;color:var(--ink);background:#fff;word-break:keep-all;overflow-wrap:anywhere;padding-bottom:env(safe-area-inset-bottom)}
-::selection{background:var(--soft);color:var(--deep)}
-:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+body{margin:0;font-family:"Pretendard",-apple-system,"Apple SD Gothic Neo",sans-serif;font-size:16px;line-height:1.6;color:var(--ink);background:var(--ivory);word-break:keep-all;overflow-wrap:anywhere;padding-bottom:env(safe-area-inset-bottom)}
+::selection{background:var(--soft);color:var(--navy)}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 button,textarea{font:inherit;color:inherit}
 button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 [hidden]{display:none!important}
+svg.i{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
 .wrap{max-width:640px;margin:0 auto;padding:0 18px}
 
 /* 상단 바 */
-.bar{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--line)}
-.bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:60px}
-h1{margin:0;font-size:20px;font-weight:800;letter-spacing:-.03em}
-.size{display:flex;align-items:center;gap:4px}
-.size button{width:44px;height:44px;border:1px solid var(--line);border-radius:10px;background:#fff;font-weight:700;font-size:16px;transition:background .15s}
-.size button:hover:not(:disabled){background:var(--soft)}
+.bar{position:sticky;top:0;z-index:5;background:var(--navy);color:#fff;border-bottom:1px solid var(--gold);padding-top:env(safe-area-inset-top)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:64px}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.emb{display:grid;place-items:center;width:38px;height:38px;border:1px solid var(--gold);border-radius:10px;color:#e3c987}
+.brand h1{margin:0;font-size:20px;font-weight:800;letter-spacing:-.03em;line-height:1.2}
+.brand p{margin:0;font-size:12.5px;color:#b9c3da;line-height:1.3}
+.size{display:flex;align-items:center;gap:2px}
+.size button{width:44px;height:44px;border:1px solid rgba(255,255,255,.28);border-radius:10px;background:transparent;color:#fff;font-weight:700;font-size:15px;transition:background .15s}
+.size button:hover:not(:disabled){background:rgba(255,255,255,.12)}
 .size button:disabled{opacity:.35;cursor:default}
-.size .lab{min-width:58px;text-align:center;font-size:13px;font-weight:600;color:var(--sub);line-height:1.2}
+.size .lab{min-width:56px;text-align:center;font-size:12.5px;font-weight:600;color:#cdd5e6;line-height:1.2}
 
-main{padding-top:18px;padding-bottom:40px}
-h2{margin:0 0 6px;font-size:19px;font-weight:800;letter-spacing:-.02em}
-.note{margin:8px 0 0;font-size:13px;color:var(--sub);line-height:1.5}
+main{padding-top:20px;padding-bottom:40px}
+h2{margin:0 0 6px;font-size:19px;font-weight:800;letter-spacing:-.02em;display:flex;align-items:center;gap:8px}
+h2 svg{color:var(--goldink)}
+.note{margin:8px 0 0;font-size:13.5px;color:var(--sub);line-height:1.55}
+
+/* 녹음 */
+.rec{display:flex;flex-direction:column;align-items:center;padding:26px 18px 20px;background:var(--paper);border:1px solid var(--line);border-radius:20px;box-shadow:0 14px 30px -20px rgba(15,29,58,.4)}
+.rbtn{position:relative;width:92px;height:92px;border:0;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;box-shadow:0 0 0 5px var(--paper),0 0 0 7px var(--gold),0 14px 24px -12px rgba(15,29,58,.7);transition:background .2s}
+.rbtn::before{content:"";position:absolute;inset:-16px;border-radius:50%;border:2px solid rgba(179,38,30,.4);opacity:0;transform:scale(var(--lv));transition:transform .09s linear,opacity .2s;pointer-events:none}
+.rbtn svg.i{width:38px;height:38px;stroke-width:1.6}
+.rbtn .i-stop,.rbtn .i-spin{display:none}
+.rbtn[data-state="rec"]{background:var(--rec)}
+.rbtn[data-state="rec"]::before{opacity:1}
+.rbtn[data-state="rec"] .i-mic,.rbtn[data-state="busy"] .i-mic{display:none}
+.rbtn[data-state="rec"] .i-stop{display:block}
+.rbtn[data-state="busy"]{background:var(--navy2);cursor:default}
+.rbtn[data-state="busy"] .i-spin{display:block;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.rbtn.sm{width:72px;height:72px}
+.rbtn.sm svg.i{width:30px;height:30px}
+.rlabel{margin:20px 0 0;font-size:17px;font-weight:700;letter-spacing:-.01em;text-align:center}
+.rtime{margin:2px 0 0;min-height:21px;font-size:14px;color:var(--sub);font-variant-numeric:tabular-nums}
+.rec.na .rbtn{opacity:.4;cursor:default}
 
 /* 어조 줄 */
-.tone{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px;padding:12px 0 14px;border-bottom:1px solid var(--line)}
-.tone .t{min-width:0;flex:1 1 180px}
-.tone .t b{display:block;font-size:13px;color:var(--sub);font-weight:600}
-.tone .t span{display:block;font-size:15px;font-weight:600}
+.tone{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 12px;margin-top:16px;padding:12px 14px;background:var(--paper);border:1px solid var(--line);border-radius:14px}
+.tone .t{display:flex;align-items:center;gap:10px;min-width:0;flex:1 1 180px}
+.tone .t svg{color:var(--goldink)}
+.tone .t b{display:block;font-size:12.5px;color:var(--sub);font-weight:600;line-height:1.3}
+.tone .t span{display:block;font-size:15px;font-weight:600;line-height:1.35}
 .acts{display:flex;gap:8px}
-.chip{min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:22px;background:#fff;font-size:14px;font-weight:600}
-.chip[aria-pressed="true"]{background:var(--soft);border-color:var(--blue);color:var(--deep)}
-.chip:hover{background:var(--soft)}
+.chip{min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:22px;background:var(--paper);font-size:14px;font-weight:600}
+.chip[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
+.chip:hover:not([aria-pressed="true"]){background:var(--soft)}
 
 /* 정리 형태 */
-.seg{display:flex;margin:16px 0 14px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
-.seg button{flex:1;min-height:46px;border:0;background:#fff;font-weight:600;font-size:15px;border-left:1px solid var(--line)}
+.seg{display:flex;margin:18px 0 16px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--paper)}
+.seg button{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;min-height:48px;border:0;border-left:1px solid var(--line);background:transparent;font-weight:600;font-size:15px}
 .seg button:first-child{border-left:0}
-.seg button[aria-checked="true"]{background:var(--blue);color:#fff}
+.seg button:hover:not([aria-checked="true"]){background:var(--soft)}
+.seg button[aria-checked="true"]{background:var(--navy);color:#fff}
 
 /* 입력 */
 .lbl{display:block;margin:0 0 6px;font-size:14px;font-weight:700}
-textarea{display:block;width:100%;border:1.5px solid var(--line);border-radius:12px;padding:14px;background:#fff;resize:vertical;line-height:1.65}
-textarea:focus{border-color:var(--blue);outline:0;box-shadow:0 0 0 3px var(--soft)}
+.lblrow{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0 0 6px}
+.lblrow .lbl{margin:0}
+.lblrow small{font-size:12.5px;color:var(--sub)}
+textarea{display:block;width:100%;border:1px solid var(--line);border-radius:14px;padding:14px 16px;background:var(--paper);resize:vertical;line-height:1.7}
+textarea:focus{border-color:var(--navy);outline:0;box-shadow:0 0 0 3px rgba(176,141,62,.28)}
 #src{min-height:170px;font-size:var(--memo-size)}
-.row{display:flex;align-items:center;gap:10px;margin:10px 0 14px}
-.mic{display:inline-flex;align-items:center;gap:8px;min-height:50px;padding:0 20px;border:0;border-radius:26px;background:var(--soft);color:var(--deep);font-weight:700;font-size:16px}
-.mic svg{width:20px;height:20px;fill:currentColor}
-.mic[aria-pressed="true"]{background:var(--blue);color:#fff}
-.mic[aria-pressed="true"] svg{animation:pulse 1.2s ease-out infinite}
-@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
-.ghost{min-height:50px;padding:0 14px;border:0;background:none;color:var(--sub);font-weight:600;font-size:15px;text-decoration:underline;text-underline-offset:3px}
-.primary{display:block;width:100%;min-height:56px;border:0;border-radius:14px;background:var(--blue);color:#fff;font-weight:800;font-size:18px;letter-spacing:-.01em;transition:background .15s}
-.primary:hover:not(:disabled){background:var(--deep)}
+.row{display:flex;align-items:center;gap:6px;margin:6px 0 16px}
+.ghost{display:inline-flex;align-items:center;gap:6px;min-height:46px;padding:0 10px;border:0;background:none;color:var(--sub);font-weight:600;font-size:14.5px}
+.ghost:hover{color:var(--ink)}
+.primary{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:56px;border:0;border-radius:14px;background:var(--navy);color:#fff;font-weight:800;font-size:18px;letter-spacing:-.01em;transition:background .15s}
+.primary:hover:not(:disabled){background:var(--navy2)}
 .primary:disabled{opacity:.55;cursor:default}
-.second{min-height:50px;padding:0 18px;border:1.5px solid var(--blue);border-radius:12px;background:#fff;color:var(--deep);font-weight:700;font-size:16px}
-.second:hover{background:var(--soft)}
+.second{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:50px;padding:0 18px;border:1px solid var(--navy);border-radius:12px;background:var(--paper);color:var(--navy);font-weight:700;font-size:16px}
+.second:hover:not(:disabled){background:var(--soft)}
+.second:disabled{opacity:.4;cursor:default}
 
 /* 결과 */
-#res{margin-top:28px;padding-top:22px;border-top:1px solid var(--line)}
-#out{min-height:140px;font-size:var(--memo-size);line-height:1.7;background:#fbfcff;border-color:var(--line)}
+#res{margin-top:28px;padding:20px 18px 18px;background:var(--paper);border:1px solid var(--line);border-radius:20px;box-shadow:0 14px 30px -22px rgba(15,29,58,.4)}
+#out{min-height:140px;font-size:var(--memo-size);line-height:1.75;background:#fff}
 .share{display:flex;gap:10px;margin:12px 0 0}
-.share .primary{flex:1.4;min-height:52px;font-size:17px}
+.share .primary{flex:1.5;min-height:52px;font-size:17px}
 .share .second{flex:1}
 .fold{margin-top:14px}
-.fold button{min-height:44px;padding:0;border:0;background:none;color:var(--deep);font-weight:700;font-size:15px;text-decoration:underline;text-underline-offset:3px}
-#orig{margin:6px 0 0;padding:12px 14px;border-radius:10px;background:#f3f6fc;font-size:15px;color:var(--sub);white-space:pre-wrap;font-family:inherit}
+.fold button{min-height:44px;padding:0;border:0;background:none;color:var(--goldink);font-weight:700;font-size:15px;text-decoration:underline;text-underline-offset:3px}
+#orig{margin:6px 0 0;padding:12px 14px;border-radius:12px;background:var(--ivory);font-size:15px;color:var(--sub);white-space:pre-wrap;font-family:inherit}
 .sub{margin:20px 0 8px;font-size:14px;font-weight:700}
-.chg{display:flex;flex-direction:column;gap:6px}
+.chg,.flg{display:flex;flex-direction:column;gap:6px}
 .chg div{padding:8px 12px;border-radius:10px;background:var(--soft);font-size:15px}
 .chg s{color:var(--sub)}
-.chg i{font-style:normal;font-weight:700;color:var(--deep)}
-.flg{display:flex;flex-direction:column;gap:6px}
+.chg i{font-style:normal;font-weight:700;color:var(--navy)}
 .flg div{padding:8px 12px;border-radius:10px;background:var(--warnbg);color:var(--warn);font-size:15px;font-weight:600}
 
 /* 어조 카드 만들기 */
-.back{min-height:44px;padding:0;border:0;background:none;color:var(--deep);font-weight:700;font-size:15px}
+.back{display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:0;border:0;background:none;color:var(--navy);font-weight:700;font-size:15px}
 .prog{display:flex;gap:6px;margin:12px 0 18px}
-.prog span{flex:1;height:6px;border-radius:3px;background:var(--line)}
-.prog span.on{background:var(--blue)}
-.scene{margin:0 0 14px;padding:16px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.prog span{flex:1;height:5px;border-radius:3px;background:var(--line)}
+.prog span.on{background:var(--gold)}
+.scene{margin:0 0 16px;padding:16px 18px;background:var(--paper);border:1px solid var(--line);border-radius:16px}
 .scene h3{margin:0 0 4px;font-size:20px;font-weight:800;letter-spacing:-.02em}
 .scene p{margin:0;font-size:16px;color:var(--sub)}
 .scene p.say{margin-top:8px;color:var(--ink);font-weight:600}
-#tIn{min-height:130px;font-size:19px}
-.nav{display:flex;gap:10px;margin-top:6px}
+.rec.mini{padding:18px 14px 14px;margin:0 0 14px}
+#tIn{min-height:120px;font-size:19px}
+.nav{display:flex;gap:10px;margin-top:8px}
 .nav .second{flex:1}
-.nav .primary{flex:2;min-height:50px;font-size:17px}
+.nav .primary{flex:2;min-height:52px;font-size:17px}
 dl.tc{margin:14px 0 0;display:grid;grid-template-columns:84px 1fr;gap:8px 12px;font-size:16px}
 dl.tc dt{color:var(--sub);font-weight:600}
 dl.tc dd{margin:0;font-weight:600}
 .big{margin:4px 0 0;font-size:22px;font-weight:800;letter-spacing:-.02em;line-height:1.35}
 .cmp{display:grid;gap:10px;margin-top:6px}
-.cmp div{padding:12px 14px;border-radius:10px;font-size:16px;white-space:pre-wrap}
-.cmp .b{background:#f3f6fc;color:var(--sub)}
-.cmp .a{background:var(--soft);color:var(--ink);font-weight:600}
+.cmp div{padding:12px 14px;border-radius:12px;font-size:16px;white-space:pre-wrap}
+.cmp .b{background:var(--soft);color:var(--sub)}
+.cmp .a{background:var(--paper);border:1px solid var(--line);color:var(--ink);font-weight:600}
 .cmp small{display:block;margin-bottom:2px;font-size:12px;font-weight:700;color:var(--sub)}
 
-.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translate(-50%,20px);max-width:calc(100% - 36px);padding:12px 18px;border-radius:12px;background:var(--ink);color:#fff;font-size:15px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:20}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translate(-50%,20px);max-width:calc(100% - 36px);padding:12px 18px;border-radius:12px;background:var(--navy);color:#fff;font-size:15px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:20}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 .foot{margin-top:28px;padding-top:14px;border-top:1px solid var(--line);font-size:13px;color:var(--sub);line-height:1.6}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (max-width:360px){.brand p{display:none}.size .lab{min-width:48px}}
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ic-mic" viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Z"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></symbol>
+    <symbol id="ic-stop" viewBox="0 0 24 24"><rect x="6.5" y="6.5" width="11" height="11" rx="2.2"/></symbol>
+    <symbol id="ic-spin" viewBox="0 0 24 24"><path d="M12 4a8 8 0 1 0 8 8" /></symbol>
+    <symbol id="ic-note" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="16" rx="2.2"/><path d="M9 9h6M9 13h6M9 17h3"/></symbol>
+    <symbol id="ic-list" viewBox="0 0 24 24"><path d="M10 7h9M10 12h9M10 17h9M5.5 7h.01M5.5 12h.01M5.5 17h.01"/></symbol>
+    <symbol id="ic-para" viewBox="0 0 24 24"><path d="M14 5v14M18 5v14M14 5H9.5a3.5 3.5 0 0 0 0 7H14"/></symbol>
+    <symbol id="ic-wave" viewBox="0 0 24 24"><path d="M4 12h.01M8 8.5v7M12 5v14M16 8.5v7M20 12h.01"/></symbol>
+    <symbol id="ic-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2.2"/><path d="M5 15V6.5A2.5 2.5 0 0 1 7.5 4H16"/></symbol>
+    <symbol id="ic-share" viewBox="0 0 24 24"><path d="M12 15V4M8 8l4-4 4 4M5 13v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></symbol>
+    <symbol id="ic-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+    <symbol id="ic-erase" viewBox="0 0 24 24"><path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12"/></symbol>
+    <symbol id="ic-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+  </defs>
+</svg>
+
 <header class="bar"><div class="wrap">
-  <h1>음성메모</h1>
+  <div class="brand">
+    <span class="emb" aria-hidden="true"><svg class="i"><use href="#ic-mic"/></svg></span>
+    <div><h1>음성메모</h1><p>말씀하시면 글이 됩니다</p></div>
+  </div>
   <div class="size" role="group" aria-label="글자 크기">
     <button id="szDown" type="button" aria-label="글자 작게">A−</button>
     <span class="lab" id="szLab" aria-live="polite">크게</span>
@@ -126,8 +173,21 @@ dl.tc dd{margin:0;font-weight:600}
 <main class="wrap">
   <!-- 메모 화면 -->
   <section id="vMemo">
+    <div class="rec" id="recCard">
+      <button id="micBtn" class="rbtn" type="button" data-state="idle" aria-pressed="false" aria-label="녹음 시작">
+        <svg class="i i-mic"><use href="#ic-mic"/></svg>
+        <svg class="i i-stop"><use href="#ic-stop"/></svg>
+        <svg class="i i-spin"><use href="#ic-spin"/></svg>
+      </button>
+      <p class="rlabel" id="recLabel" role="status" aria-live="polite">눌러서 녹음 시작</p>
+      <p class="rtime" id="recTime"></p>
+    </div>
+
     <div class="tone">
-      <div class="t"><b>어조 카드</b><span id="toneSum">아직 없음</span></div>
+      <div class="t">
+        <svg class="i"><use href="#ic-wave"/></svg>
+        <div><b>어조 카드</b><span id="toneSum">아직 없음</span></div>
+      </div>
       <div class="acts">
         <button id="toneToggle" class="chip" type="button" aria-pressed="false" hidden>반영</button>
         <button id="toneEdit" class="chip" type="button">만들기</button>
@@ -135,30 +195,26 @@ dl.tc dd{margin:0;font-weight:600}
     </div>
 
     <div class="seg" id="seg" role="radiogroup" aria-label="정리 형태">
-      <button type="button" role="radio" data-f="memo" aria-checked="true">메모</button>
-      <button type="button" role="radio" data-f="list" aria-checked="false">목록</button>
-      <button type="button" role="radio" data-f="paragraph" aria-checked="false">문단</button>
+      <button type="button" role="radio" data-f="memo" aria-checked="true"><svg class="i"><use href="#ic-note"/></svg>메모</button>
+      <button type="button" role="radio" data-f="list" aria-checked="false"><svg class="i"><use href="#ic-list"/></svg>목록</button>
+      <button type="button" role="radio" data-f="paragraph" aria-checked="false"><svg class="i"><use href="#ic-para"/></svg>문단</button>
     </div>
 
-    <label class="lbl" for="src">말씀하신 내용</label>
-    <textarea id="src" placeholder="마이크 버튼을 누르고 말씀하세요. 키보드의 마이크로 말씀하셔도 됩니다."></textarea>
+    <div class="lblrow"><label class="lbl" for="src">받아쓴 내용</label><small>직접 고치거나 입력해도 됩니다</small></div>
+    <textarea id="src" placeholder="위의 마이크 버튼을 누르고 말씀하세요."></textarea>
     <div class="row">
-      <button id="micBtn" class="mic" type="button" aria-pressed="false">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15a3.5 3.5 0 0 0 3.5-3.5V6a3.5 3.5 0 1 0-7 0v5.5A3.5 3.5 0 0 0 12 15Zm6-3.5a1 1 0 1 0-2 0 4 4 0 0 1-8 0 1 1 0 1 0-2 0 6 6 0 0 0 5 5.92V20H9.5a1 1 0 1 0 0 2h5a1 1 0 1 0 0-2H13v-2.58A6 6 0 0 0 18 11.5Z"/></svg>
-        <span id="micTxt">말하기</span>
-      </button>
-      <button id="clearBtn" class="ghost" type="button">지우기</button>
+      <button id="clearBtn" class="ghost" type="button"><svg class="i"><use href="#ic-erase"/></svg>지우기</button>
     </div>
     <button id="goBtn" class="primary" type="button">정리하기</button>
     <p class="note" id="mode"></p>
 
     <section id="res" hidden>
-      <h2>정리된 메모</h2>
+      <h2><svg class="i"><use href="#ic-check"/></svg>정리된 메모</h2>
       <label class="lbl" for="out" style="position:absolute;left:-9999px">정리된 메모 (수정 가능)</label>
       <textarea id="out"></textarea>
       <div class="share">
-        <button id="shareBtn" class="primary" type="button">공유하기</button>
-        <button id="copyBtn" class="second" type="button">복사</button>
+        <button id="shareBtn" class="primary" type="button"><svg class="i"><use href="#ic-share"/></svg>공유하기</button>
+        <button id="copyBtn" class="second" type="button"><svg class="i"><use href="#ic-copy"/></svg>복사</button>
       </div>
       <div class="fold">
         <button id="origBtn" type="button" aria-expanded="false">원문 보기</button>
@@ -171,22 +227,27 @@ dl.tc dd{margin:0;font-weight:600}
 
   <!-- 어조 카드 만들기 -->
   <section id="vTone" hidden>
-    <button class="back" id="tBack" type="button">← 메모로 돌아가기</button>
+    <button class="back" id="tBack" type="button"><svg class="i"><use href="#ic-back"/></svg>메모로 돌아가기</button>
     <div id="tStep">
       <h2>어조 카드 만들기</h2>
-      <p class="note" style="margin-top:0">상황을 보고 한두 문장만 말씀해 주세요. 문장은 저장하지 않고, 말투 특성만 이 기기에 저장합니다.</p>
+      <p class="note" style="margin-top:0">상황을 보고 한두 문장만 말씀해 주세요. 음성과 문장은 저장하지 않고, 말투 특성만 이 기기에 저장합니다.</p>
       <div class="prog" id="prog" aria-hidden="true"></div>
       <div class="scene">
         <h3 id="tTitle"></h3>
         <p id="tScene"></p>
         <p class="say" id="tSay"></p>
       </div>
-      <textarea id="tIn" aria-label="말씀하신 문장" placeholder="마이크 버튼을 누르고 말씀하세요."></textarea>
-      <div class="row">
-        <button id="tMic" class="mic" type="button" aria-pressed="false">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15a3.5 3.5 0 0 0 3.5-3.5V6a3.5 3.5 0 1 0-7 0v5.5A3.5 3.5 0 0 0 12 15Zm6-3.5a1 1 0 1 0-2 0 4 4 0 0 1-8 0 1 1 0 1 0-2 0 6 6 0 0 0 5 5.92V20H9.5a1 1 0 1 0 0 2h5a1 1 0 1 0 0-2H13v-2.58A6 6 0 0 0 18 11.5Z"/></svg>
-          <span id="tMicTxt">말하기</span>
+      <div class="rec mini" id="tRecCard">
+        <button id="tMic" class="rbtn sm" type="button" data-state="idle" aria-pressed="false" aria-label="녹음 시작">
+          <svg class="i i-mic"><use href="#ic-mic"/></svg>
+          <svg class="i i-stop"><use href="#ic-stop"/></svg>
+          <svg class="i i-spin"><use href="#ic-spin"/></svg>
         </button>
+        <p class="rlabel" id="tRecLabel" role="status" aria-live="polite">눌러서 녹음 시작</p>
+        <p class="rtime" id="tRecTime"></p>
+      </div>
+      <textarea id="tIn" aria-label="말씀하신 문장" placeholder="받아쓴 문장이 여기에 나타납니다."></textarea>
+      <div class="row">
         <button id="tSkip" class="ghost" type="button">건너뛰기</button>
       </div>
       <div class="nav">
@@ -213,16 +274,19 @@ dl.tc dd{margin:0;font-weight:600}
     </div>
   </section>
 
-  <p class="foot">정리할 때 내용이 AI 서비스로 전송되며, 이 앱은 메모 내용을 저장하지 않습니다. 이 기기에는 글자 크기와 어조 카드(말투 특성)만 저장됩니다.</p>
+  <p class="foot">녹음은 받아쓰기를 위해, 내용은 정리를 위해 AI 서비스로 전송됩니다. 이 앱은 음성과 메모 내용을 저장하지 않습니다. 이 기기에는 글자 크기와 어조 카드(말투 특성)만 저장됩니다.</p>
 </main>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
-/* 앱스스크립트 웹앱 URL (Code.gs 배포 후 입력). 비워 두면 기본 정리만 동작한다. */
+/* 앱스스크립트 웹앱 URL (Code.gs 배포 후 입력). 비워 두면 녹음 받아쓰기와 AI 정리가 동작하지 않는다. */
 var GAS_URL = 'https://script.google.com/macros/s/AKfycbxvB2ran7cSzqqWo37xn-0m9ZBAsHSItmdFq0SbBNFouK9ID7W0XN20ssVX3F_p2sMvEw/exec';
 
 var SIZES = [18, 21, 25, 30];
 var SIZE_LABELS = ['보통', '크게', '아주 크게', '최대'];
+var MAX_SEC = 240;
+var MIN_SEC = 1.2;
+var IDLE_TXT = '눌러서 녹음 시작';
 var CARDS = [
   {t: '지역구 주민에게 인사', s: '지역 행사장에서 주민들께 첫 인사를 드립니다.', say: '인사말 한두 문장을 평소처럼 말씀해 보세요.'},
   {t: '기자 질문에 한마디', s: '복도에서 기자가 "오늘 회의 소감이 어떠십니까?"라고 묻습니다.', say: '답변을 한두 문장으로 말씀해 보세요.'},
@@ -243,7 +307,7 @@ function store(k, v) {
 }
 function toast(msg) {
   var t = $('toast'); t.textContent = msg; t.classList.add('on');
-  clearTimeout(toast._h); toast._h = setTimeout(function () { t.classList.remove('on'); }, 2600);
+  clearTimeout(toast._h); toast._h = setTimeout(function () { t.classList.remove('on'); }, 3200);
 }
 
 /* ---------- 글자 크기 ---------- */
@@ -272,48 +336,11 @@ function renderTone() {
   tg.textContent = vm.toneOn ? '반영 켜짐' : '반영 꺼짐';
 }
 
-/* ---------- 음성 입력 ---------- */
-var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-var micState = {rec: null, btn: null};
-function stopMic() {
-  if (micState.rec) { try { micState.rec.stop(); } catch (e) {} }
-}
-function setMicUi(btn, on) {
-  btn.setAttribute('aria-pressed', String(on));
-  btn.querySelector('span').textContent = on ? '듣는 중 · 누르면 멈춤' : '말하기';
-}
-function bindMic(btn, area) {
-  if (!SR) {
-    btn.hidden = true;
-    return;
-  }
-  btn.addEventListener('click', function () {
-    if (micState.rec && micState.btn === btn) { stopMic(); return; }
-    stopMic();
-    var rec = new SR();
-    rec.lang = 'ko-KR'; rec.continuous = true; rec.interimResults = true;
-    var base = area.value ? area.value.replace(/\s*$/, '') + ' ' : '';
-    rec.onresult = function (ev) {
-      var fin = '', tmp = '';
-      for (var i = 0; i < ev.results.length; i++) {
-        if (ev.results[i].isFinal) { fin += ev.results[i][0].transcript; } else { tmp += ev.results[i][0].transcript; }
-      }
-      area.value = base + fin + tmp;
-    };
-    rec.onerror = function (ev) {
-      if (ev.error === 'not-allowed') { toast('마이크 사용을 허용해 주세요. 또는 키보드의 마이크를 쓰세요.'); }
-    };
-    rec.onend = function () { setMicUi(btn, false); micState.rec = null; micState.btn = null; };
-    try { rec.start(); micState.rec = rec; micState.btn = btn; setMicUi(btn, true); }
-    catch (e) { toast('마이크를 시작하지 못했습니다. 키보드의 마이크를 써 주세요.'); }
-  });
-}
-
-/* ---------- 서버/기본 정리 ---------- */
-function callApi(payload) {
+/* ---------- 서버 호출 ---------- */
+function callApi(payload, ms) {
   if (!GAS_URL) { return Promise.reject(new Error('offline')); }
   var ctl = typeof AbortController !== 'undefined' ? new AbortController() : null;
-  var timer = setTimeout(function () { if (ctl) { ctl.abort(); } }, 30000);
+  var timer = setTimeout(function () { if (ctl) { ctl.abort(); } }, ms || 30000);
   return fetch(GAS_URL, {
     method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'},
     body: JSON.stringify(payload), signal: ctl ? ctl.signal : undefined
@@ -324,6 +351,135 @@ function callApi(payload) {
   }, function (e) { clearTimeout(timer); throw e; });
 }
 
+/* ---------- 녹음 → 서버 받아쓰기 (gpt-4o-transcribe 또는 whisper-large-v3-turbo) ---------- */
+var SLOTS = {};
+var rec = {mr: null, slot: null, chunks: [], stream: null, t0: 0, timer: 0, raf: 0, ctx: null, cancel: false};
+
+function pickMime() {
+  var c = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg;codecs=opus'];
+  if (!window.MediaRecorder || !MediaRecorder.isTypeSupported) { return ''; }
+  for (var i = 0; i < c.length; i++) { if (MediaRecorder.isTypeSupported(c[i])) { return c[i]; } }
+  return '';
+}
+function recSupported() {
+  return !!(GAS_URL && navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder);
+}
+function recUi(slot, state, msg, time) {
+  slot.btn.setAttribute('data-state', state);
+  slot.btn.setAttribute('aria-pressed', String(state === 'rec'));
+  slot.btn.setAttribute('aria-label', state === 'rec' ? '녹음 마치기' : (state === 'busy' ? '받아쓰는 중' : '녹음 시작'));
+  slot.label.textContent = msg;
+  slot.time.textContent = time || '';
+}
+function fmtTime(sec) {
+  var m = Math.floor(sec / 60), s = Math.floor(sec % 60);
+  return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+}
+function recActive() { return !!rec.mr; }
+function recBusy() {
+  var k;
+  for (k in SLOTS) { if (SLOTS[k].btn.getAttribute('data-state') === 'busy') { return true; } }
+  return false;
+}
+function toggleRec(slot) {
+  if (slot.btn.getAttribute('data-state') === 'busy') { return; }
+  if (rec.mr && rec.slot === slot) { stopRec(false); return; }
+  if (rec.mr) { return; }
+  beginRec(slot);
+}
+function beginRec(slot) {
+  if (!recSupported()) { toast('이 기기에서는 녹음을 쓸 수 없습니다. 키보드의 마이크로 말씀해 주세요.'); return; }
+  navigator.mediaDevices.getUserMedia({audio: {echoCancellation: true, noiseSuppression: true, autoGainControl: true}}).then(function (stream) {
+    var mime = pickMime(), opts = {audioBitsPerSecond: 32000}, mr;
+    if (mime) { opts.mimeType = mime; }
+    try { mr = new MediaRecorder(stream, opts); }
+    catch (e) {
+      try { mr = new MediaRecorder(stream); }
+      catch (e2) { stream.getTracks().forEach(function (t) { t.stop(); }); toast('녹음을 시작하지 못했습니다. 키보드의 마이크를 써 주세요.'); return; }
+    }
+    rec.mr = mr; rec.slot = slot; rec.chunks = []; rec.stream = stream; rec.t0 = Date.now(); rec.cancel = false;
+    mr.ondataavailable = function (ev) { if (ev.data && ev.data.size) { rec.chunks.push(ev.data); } };
+    mr.onstop = finishRec;
+    mr.start(1000);
+    recUi(slot, 'rec', '녹음 중 · 누르면 마칩니다', '00:00');
+    rec.timer = setInterval(function () {
+      var sec = (Date.now() - rec.t0) / 1000;
+      slot.time.textContent = fmtTime(sec) + ' / ' + fmtTime(MAX_SEC);
+      if (sec >= MAX_SEC) { toast('최대 ' + (MAX_SEC / 60) + '분까지 녹음됩니다. 여기까지 받아씁니다.'); stopRec(false); }
+    }, 250);
+    startMeter(stream, slot);
+  }, function () {
+    toast('마이크 사용을 허용해 주세요. 주소창 옆 설정에서 마이크를 허용하면 됩니다.');
+  });
+}
+function startMeter(stream, slot) {
+  try {
+    var AC = window.AudioContext || window.webkitAudioContext;
+    rec.ctx = new AC();
+    var src = rec.ctx.createMediaStreamSource(stream), an = rec.ctx.createAnalyser();
+    an.fftSize = 512; src.connect(an);
+    var buf = new Uint8Array(an.fftSize);
+    (function loop() {
+      an.getByteTimeDomainData(buf);
+      var s = 0, i, v;
+      for (i = 0; i < buf.length; i++) { v = (buf[i] - 128) / 128; s += v * v; }
+      var lv = Math.min(1, Math.sqrt(s / buf.length) * 4);
+      slot.btn.style.setProperty('--lv', String(1 + lv * 0.3));
+      rec.raf = requestAnimationFrame(loop);
+    })();
+  } catch (e) { /* 수준 표시는 없어도 녹음은 된다 */ }
+}
+function stopRec(cancel) {
+  if (!rec.mr) { return; }
+  rec.cancel = !!cancel;
+  if (rec.mr.state !== 'inactive') { try { rec.mr.stop(); } catch (e) { finishRec(); } }
+}
+function toB64(blob) {
+  return new Promise(function (ok, no) {
+    var fr = new FileReader();
+    fr.onload = function () { var s = String(fr.result || ''); ok(s.substring(s.indexOf(',') + 1)); };
+    fr.onerror = function () { no(new Error('read')); };
+    fr.readAsDataURL(blob);
+  });
+}
+function finishRec() {
+  var slot = rec.slot, dur = (Date.now() - rec.t0) / 1000, chunks = rec.chunks, cancel = rec.cancel;
+  var type = (rec.mr && rec.mr.mimeType) || (chunks[0] && chunks[0].type) || 'audio/webm';
+  clearInterval(rec.timer); cancelAnimationFrame(rec.raf);
+  if (rec.stream) { rec.stream.getTracks().forEach(function (t) { t.stop(); }); }
+  try { if (rec.ctx) { rec.ctx.close(); } } catch (e) {}
+  slot.btn.style.setProperty('--lv', '1');
+  rec.mr = null; rec.stream = null; rec.ctx = null; rec.chunks = [];
+  if (cancel) { recUi(slot, 'idle', IDLE_TXT, ''); return; }
+  if (dur < MIN_SEC || !chunks.length) { recUi(slot, 'idle', IDLE_TXT, ''); toast('녹음이 너무 짧습니다. 다시 말씀해 주세요.'); return; }
+  var blob = new Blob(chunks, {type: type});
+  recUi(slot, 'busy', '받아쓰는 중…', '');
+  toB64(blob).then(function (b64) {
+    return callApi({mode: 'transcribe', audio: b64, mime: blob.type}, 90000);
+  }).then(function (r) {
+    var t = String(r.text || '').trim();
+    if (!t) { toast('알아듣지 못했습니다. 다시 말씀해 주세요.'); return; }
+    var cur = slot.area.value.replace(/\s*$/, '');
+    slot.area.value = cur ? cur + ' ' + t : t;
+    slot.area.dispatchEvent(new Event('input'));
+  }, function () {
+    toast('받아쓰기에 실패했습니다. 다시 녹음하거나 키보드의 마이크를 써 주세요.');
+  }).then(function () { recUi(slot, 'idle', IDLE_TXT, ''); });
+}
+function setupRec() {
+  SLOTS.main = {btn: $('micBtn'), area: $('src'), label: $('recLabel'), time: $('recTime')};
+  SLOTS.tone = {btn: $('tMic'), area: $('tIn'), label: $('tRecLabel'), time: $('tRecTime')};
+  SLOTS.main.btn.addEventListener('click', function () { toggleRec(SLOTS.main); });
+  SLOTS.tone.btn.addEventListener('click', function () { toggleRec(SLOTS.tone); });
+  if (!recSupported()) {
+    $('recCard').classList.add('na'); $('tRecCard').classList.add('na');
+    var why = !GAS_URL ? '서버 연결 전이라 녹음을 쓸 수 없습니다. 아래에 직접 입력하거나 키보드의 마이크를 쓰세요.' : '이 기기에서는 녹음을 쓸 수 없습니다. 키보드의 마이크로 말씀해 주세요.';
+    SLOTS.main.label.textContent = why; SLOTS.tone.label.textContent = why;
+    $('src').placeholder = '키보드의 마이크 버튼을 눌러 말씀하세요.'; $('tIn').placeholder = '키보드의 마이크 버튼을 눌러 말씀하세요.';
+  }
+}
+
+/* ---------- 서버/기본 정리 ---------- */
 var FILLER = /(^|\s)(음+|어+|으음|에+|아+|저기|저어|뭐랄까|뭐냐|있잖아요|있잖아)(?=\s|[,.…]|$)/g;
 var WEEK = /^(월|화|수|목|금|토|일)요일$/;
 var NUMUNIT = /^\d+(시|분|명|원|건|개|월|일|%|퍼센트|억|만원|조)?$/;
@@ -378,9 +534,10 @@ function setBusy(on, btn, idle) {
   vm.busy = on; btn.disabled = on; btn.textContent = on ? '정리하는 중…' : idle;
 }
 function runClean() {
+  if (recActive()) { toast('녹음을 먼저 마쳐 주세요.'); return; }
+  if (recBusy()) { toast('받아쓰는 중입니다. 잠시만 기다려 주세요.'); return; }
   var text = $('src').value.trim();
   if (!text) { toast('먼저 말씀하신 내용을 입력해 주세요.'); $('src').focus(); return; }
-  stopMic();
   setBusy(true, $('goBtn'), '정리하기');
   var payload = {mode: 'clean', text: text, format: vm.format, tone: (vm.toneOn && vm.tone) ? stripTone(vm.tone) : null};
   callApi(payload).then(function (r) {
@@ -447,13 +604,13 @@ function doCopy() {
 
 /* ---------- 어조 카드 만들기 ---------- */
 function openTone() {
-  stopMic();
+  stopRec(true);
   vm.card = 0; vm.answers = ['', '', '', ''];
   $('vMemo').hidden = true; $('vTone').hidden = false;
   $('tStep').hidden = false; $('tDone').hidden = true;
   renderCard(); window.scrollTo(0, 0);
 }
-function closeTone() { stopMic(); $('vTone').hidden = true; $('vMemo').hidden = false; window.scrollTo(0, 0); }
+function closeTone() { stopRec(true); $('vTone').hidden = true; $('vMemo').hidden = false; window.scrollTo(0, 0); }
 function renderCard() {
   var c = CARDS[vm.card];
   $('tTitle').textContent = c.t; $('tScene').textContent = c.s; $('tSay').textContent = c.say;
@@ -466,7 +623,9 @@ function renderCard() {
 }
 function saveCardAnswer() { vm.answers[vm.card] = $('tIn').value.trim(); }
 function nextCard() {
-  stopMic(); saveCardAnswer();
+  if (recActive()) { toast('녹음을 먼저 마쳐 주세요.'); return; }
+  if (recBusy()) { toast('받아쓰는 중입니다. 잠시만 기다려 주세요.'); return; }
+  saveCardAnswer();
   if (vm.card < CARDS.length - 1) { vm.card++; renderCard(); return; }
   buildTone();
 }
@@ -526,7 +685,7 @@ function setFormat(f) {
   $('seg').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) { setFormat(b.getAttribute('data-f')); } });
   $('toneToggle').addEventListener('click', function () { vm.toneOn = !vm.toneOn; store('vm_tone_on', vm.toneOn ? '1' : '0'); renderTone(); });
   $('toneEdit').addEventListener('click', openTone);
-  $('clearBtn').addEventListener('click', function () { stopMic(); $('src').value = ''; $('res').hidden = true; $('mode').textContent = ''; $('src').focus(); });
+  $('clearBtn').addEventListener('click', function () { stopRec(true); $('src').value = ''; $('res').hidden = true; $('mode').textContent = ''; $('src').focus(); });
   $('goBtn').addEventListener('click', runClean);
   $('shareBtn').addEventListener('click', doShare);
   $('copyBtn').addEventListener('click', doCopy);
@@ -535,15 +694,14 @@ function setFormat(f) {
     var show = $('orig').hidden; $('orig').hidden = !show;
     this.setAttribute('aria-expanded', String(show)); this.textContent = show ? '원문 닫기' : '원문 보기';
   });
-  bindMic($('micBtn'), $('src')); bindMic($('tMic'), $('tIn'));
+  setupRec();
   $('tBack').addEventListener('click', closeTone);
-  $('tPrev').addEventListener('click', function () { stopMic(); saveCardAnswer(); if (vm.card > 0) { vm.card--; renderCard(); } });
+  $('tPrev').addEventListener('click', function () { if (recActive() || recBusy()) { toast('녹음을 먼저 마쳐 주세요.'); return; } saveCardAnswer(); if (vm.card > 0) { vm.card--; renderCard(); } });
   $('tNext').addEventListener('click', nextCard);
-  $('tSkip').addEventListener('click', function () { stopMic(); $('tIn').value = ''; saveCardAnswer(); nextCard(); });
+  $('tSkip').addEventListener('click', function () { if (recActive() || recBusy()) { toast('녹음을 먼저 마쳐 주세요.'); return; } $('tIn').value = ''; saveCardAnswer(); nextCard(); });
   $('dRedo').addEventListener('click', openTone);
   $('dSave').addEventListener('click', saveTone);
   if (!GAS_URL) { $('mode').textContent = '기본 정리 상태입니다(AI 미연결). 군말·반복·말 정정만 정리됩니다.'; }
-  if (!SR) { $('src').placeholder = '키보드의 마이크 버튼을 눌러 말씀하세요.'; $('tIn').placeholder = '키보드의 마이크 버튼을 눌러 말씀하세요.'; }
 })();
 </script>
 </body>
