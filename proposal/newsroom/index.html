@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>의정 뉴스룸</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0a1f47">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="의정 뉴스룸">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+  html, body { margin: 0; height: 100%; background: #0a1f47; }
+  iframe { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; background: #f5f3ed; }
+  #load { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; background: #0a1f47; color: #fff;
+          font-family: -apple-system, "Apple SD Gothic Neo", "Pretendard", sans-serif; transition: opacity .3s; }
+  #load img { width: 88px; height: 88px; border-radius: 20px; }
+  #load b { font-size: 1.35rem; letter-spacing: -.02em; }
+  #load a { color: #d8b66a; font-size: 1rem; padding: 12px 18px; border: 1px solid #d8b66a; border-radius: 10px; text-decoration: none; }
+  #load.done { opacity: 0; pointer-events: none; }
+</style>
+</head>
+<body>
+<div id="load"><img src="icon-192.png" alt=""><b>의정 뉴스룸</b><span id="msg">불러오는 중…</span><a id="open" href="#" target="_blank" rel="noopener" hidden>새 창에서 열기</a></div>
+<iframe id="app" title="의정 뉴스룸" allow="clipboard-write"></iframe>
+<script>
+/* 뉴스 수집기 Apps Script 웹앱 주소(/exec 로 끝나는 것)를 아래에 넣으세요 */
+var GAS_URL = "https://script.google.com/macros/s/AKfycbwKnzldFqnmS0LKWQ9gZVcYLr18qFQ1pANMEBKaaBQLAUQV3towmsVyZKLTmjOBlms_dg/exec";
+var f = document.getElementById("app"), load = document.getElementById("load"), open = document.getElementById("open");
+if (!GAS_URL) { document.getElementById("msg").textContent = "웹앱 주소가 아직 설정되지 않았습니다."; }
+else {
+  open.href = GAS_URL; f.src = GAS_URL;
+  f.addEventListener("load", function () { load.className = "done"; });
+  setTimeout(function () { if (load.className !== "done") { document.getElementById("msg").textContent = "시간이 걸리고 있습니다."; open.hidden = false; } }, 8000);
+}
+</script>
+</body>
+</html>
