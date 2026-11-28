@@ -59,6 +59,28 @@ h2 svg{color:var(--goldink)}
 .rnote{margin:12px 0 0;max-width:420px;font-size:12.5px;line-height:1.5;color:var(--sub);text-align:center}
 .rec.mini .rnote{display:none}
 
+
+/* 하루 음성 잔량 뱃지 */
+.rec{position:relative}
+.usage{position:absolute;top:10px;right:10px;width:40px;height:40px;border:1px solid var(--line);border-radius:50%;background:var(--paper);color:var(--navy);display:grid;place-items:center}
+.usage:hover{background:var(--soft)}
+.usage .hg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.usage .hg .sand{fill:currentColor;stroke:none;opacity:.8}
+.usage::after{content:"";position:absolute;top:3px;right:3px;width:9px;height:9px;border-radius:50%;background:var(--gold);border:2px solid var(--paper)}
+.usage[data-s="low"]{color:var(--warn)}
+.usage[data-s="low"]::after{background:#c98a00}
+.usage[data-s="crit"]{color:var(--rec)}
+.usage[data-s="crit"]::after{background:var(--rec)}
+.upop{position:absolute;z-index:6;top:56px;right:10px;width:min(300px,calc(100% - 20px));padding:14px 16px 12px;background:var(--paper);border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 34px -18px rgba(15,29,58,.55)}
+.upop .uh{margin:0;font-size:13px;color:var(--sub);font-weight:600}
+.upop .up{margin:0;font-size:30px;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1.2}
+.upop .ubar{height:8px;margin:8px 0 10px;border-radius:4px;background:var(--soft);overflow:hidden}
+.upop .ubar i{display:block;height:100%;width:0;background:var(--navy);border-radius:4px;transition:width .3s}
+.upop[data-s="low"] .ubar i{background:#c98a00}
+.upop[data-s="crit"] .ubar i{background:var(--rec)}
+.upop .ud{margin:0;font-size:14px;color:var(--ink);font-variant-numeric:tabular-nums}
+.upop .un{margin:8px 0 0;font-size:11.5px;line-height:1.5;color:var(--sub)}
+
 /* 어조 줄 */
 .tone{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 12px;margin-top:16px;padding:12px 14px;background:var(--paper);border:1px solid var(--line);border-radius:14px}
 .tone .t{display:flex;align-items:center;gap:10px;min-width:0;flex:1 1 180px}
@@ -176,6 +198,24 @@ dl.tc dd{margin:0;font-weight:600}
   <!-- 메모 화면 -->
   <section id="vMemo">
     <div class="rec" id="recCard">
+      <button id="usageBtn" class="usage" type="button" hidden aria-expanded="false" aria-controls="usagePop" aria-label="오늘 남은 음성 시간 보기">
+        <svg class="hg" viewBox="0 0 24 24" aria-hidden="true">
+          <defs>
+            <clipPath id="hgTop"><rect id="hgTopRect" x="0" y="3.8" width="24" height="7.6"/></clipPath>
+            <clipPath id="hgBot"><rect id="hgBotRect" x="0" y="20.2" width="24" height="0"/></clipPath>
+          </defs>
+          <path class="sand" clip-path="url(#hgTop)" d="M8.6 3.8h6.8L12 11.4Z"/>
+          <path class="sand" clip-path="url(#hgBot)" d="M12 12.6l3.4 7.6H8.6Z"/>
+          <path d="M7 3h10M7 21h10M8 3v3.4L12 12l-4 5.6V21M16 3v3.4L12 12l4 5.6V21"/>
+        </svg>
+      </button>
+      <div class="upop" id="usagePop" role="dialog" aria-label="오늘 남은 음성 시간" hidden>
+        <p class="uh">오늘 남은 음성 시간</p>
+        <p class="up" id="upPct">–</p>
+        <div class="ubar" aria-hidden="true"><i id="upBar"></i></div>
+        <p class="ud" id="upDet"></p>
+        <p class="un" id="upNote"></p>
+      </div>
       <button id="micBtn" class="rbtn" type="button" data-state="idle" aria-pressed="false" aria-label="녹음 시작">
         <svg class="i i-mic"><use href="#ic-mic"/></svg>
         <svg class="i i-stop"><use href="#ic-stop"/></svg>
@@ -478,7 +518,8 @@ function onSegmentStop(mr, chunks, dur, gen) {
   if (dur >= MIN_SEC && chunks.length) {
     var type = (mr && mr.mimeType) || (chunks[0] && chunks[0].type) || 'audio/webm';
     rec.segs++;
-    enqueueSeg(slot, new Blob(chunks, {type: type}), gen);
+    var seg = new Blob(chunks, {type: type}); seg._secs = dur;
+    enqueueSeg(slot, seg, gen);
   } else if (last && rec.segs === 0) {
     recUi(slot, 'idle', IDLE_TXT, ''); toast('녹음이 너무 짧습니다. 다시 말씀해 주세요.'); return;
   }
@@ -492,7 +533,7 @@ function enqueueSeg(slot, blob, gen) {
   }).then(function () {}, function () {}).then(function () { rec.inflight--; afterSeg(slot, gen); });
 }
 function sendOnce(blob) {
-  return toB64(blob).then(function (b64) { return callApi({mode: 'transcribe', audio: b64, mime: blob.type}, 90000); });
+  return toB64(blob).then(function (b64) { return callApi({mode: 'transcribe', audio: b64, mime: blob.type, secs: Math.round(blob._secs || 0)}, 90000); });
 }
 function sendSeg(slot, blob, gen) {
   function attempt(n) {
@@ -503,6 +544,7 @@ function sendSeg(slot, blob, gen) {
   }
   return attempt(0).then(function (r) {
     if (gen !== rec.gen) { return; }
+    if (r.usage) { renderUsage(r.usage); }
     var t = String(r.text || '').trim();
     rec.done++;
     if (t) { appendText(slot, t); }
@@ -534,6 +576,7 @@ function retryFailed(slot) {
   list.forEach(function (blob) {
     chain = chain.then(function () {
       return sendOnce(blob).then(function (r) {
+        if (r.usage) { renderUsage(r.usage); }
         var t = String(r.text || '').trim(); if (t) { appendText(slot, t); }
       }, function () { slot.failed.push(blob); });
     });
@@ -592,6 +635,48 @@ function setupRec() {
     SLOTS.main.label.textContent = why; SLOTS.tone.label.textContent = why;
     $('src').placeholder = '키보드의 마이크 버튼을 눌러 말씀하세요.'; $('tIn').placeholder = '키보드의 마이크 버튼을 눌러 말씀하세요.';
   }
+}
+
+
+/* ---------- 하루 음성 잔량 뱃지 ---------- */
+var usageEls = null;
+function fmtDur(sec) {
+  var h = Math.floor(sec / 3600), m = Math.round((sec % 3600) / 60);
+  if (m === 60) { h++; m = 0; }
+  if (h > 0) { return h + '시간' + (m ? ' ' + m + '분' : ''); }
+  return m + '분';
+}
+function renderUsage(u) {
+  var b = $('usageBtn');
+  if (!u || u.provider !== 'groq' || !u.limitSec) { b.hidden = true; $('usagePop').hidden = true; return; }
+  var pct = Math.max(0, Math.min(100, u.remainPct)), st = pct >= 30 ? 'ok' : (pct >= 10 ? 'low' : 'crit');
+  var f = pct / 100, used = 1 - f;
+  $('hgTopRect').setAttribute('y', String(11.4 - f * 7.6)); $('hgTopRect').setAttribute('height', String(f * 7.6));
+  $('hgBotRect').setAttribute('y', String(20.2 - used * 7.6)); $('hgBotRect').setAttribute('height', String(used * 7.6));
+  b.hidden = false; b.setAttribute('data-s', st); $('usagePop').setAttribute('data-s', st);
+  b.setAttribute('aria-label', '오늘 남은 음성 시간 ' + pct + '퍼센트');
+  $('upPct').textContent = pct + '%';
+  $('upBar').style.width = pct + '%';
+  $('upDet').textContent = '오늘 약 ' + fmtDur(u.usedSec) + ' 사용 · 하루 ' + fmtDur(u.limitSec) + ' 중';
+  var hr = u.resetHour, ap = hr < 12 ? '오전 ' : '오후 ', h12 = hr % 12 === 0 ? 12 : hr % 12;
+  $('upNote').textContent = '매일 ' + ap + h12 + '시(한국시간)에 초기화됩니다(추정). 이 앱으로 보낸 녹음 길이만 센 값입니다.';
+}
+function refreshUsage() {
+  if (!GAS_URL) { return; }
+  callApi({mode: 'usage'}, 15000).then(function (r) { renderUsage(r.usage); }, function () {});
+}
+function setupUsage() {
+  var b = $('usageBtn'), pop = $('usagePop');
+  function close() { pop.hidden = true; b.setAttribute('aria-expanded', 'false'); }
+  b.addEventListener('click', function (e) {
+    e.stopPropagation();
+    var open = pop.hidden; pop.hidden = !open; b.setAttribute('aria-expanded', String(open));
+    if (open) { refreshUsage(); }
+  });
+  pop.addEventListener('click', function (e) { e.stopPropagation(); });
+  document.addEventListener('click', close);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { close(); } });
+  refreshUsage();
 }
 
 /* ---------- 서버/기본 정리 ---------- */
@@ -809,7 +894,7 @@ function setFormat(f) {
     var show = $('orig').hidden; $('orig').hidden = !show;
     this.setAttribute('aria-expanded', String(show)); this.textContent = show ? '원문 닫기' : '원문 보기';
   });
-  setupRec();
+  setupRec(); setupUsage();
   $('tBack').addEventListener('click', closeTone);
   $('tPrev').addEventListener('click', function () { if (recActive() || recBusy()) { toast('녹음을 먼저 마쳐 주세요.'); return; } saveCardAnswer(); if (vm.card > 0) { vm.card--; renderCard(); } });
   $('tNext').addEventListener('click', nextCard);
