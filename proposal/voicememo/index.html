@@ -56,7 +56,7 @@ h2 svg{color:var(--goldink)}
 .rlabel{margin:20px 0 0;font-size:17px;font-weight:700;letter-spacing:-.01em;text-align:center}
 .rtime{margin:2px 0 0;min-height:21px;font-size:14px;color:var(--sub);font-variant-numeric:tabular-nums}
 .rec.na .rbtn{opacity:.4;cursor:default}
-.rnote{margin:12px 0 0;max-width:420px;font-size:12.5px;line-height:1.5;color:var(--sub);text-align:center}
+.rnote{margin:12px 0 0;max-width:420px;word-break:keep-all;font-size:12.5px;line-height:1.5;color:var(--sub);text-align:center}
 .rec.mini .rnote{display:none}
 
 
@@ -224,7 +224,7 @@ dl.tc dd{margin:0;font-weight:600}
       <p class="rlabel" id="recLabel" role="status" aria-live="polite">눌러서 녹음 시작</p>
       <p class="rtime" id="recTime"></p>
       <button id="retryBtn" class="ghost" type="button" hidden>전송이 안 된 구간 다시 보내기</button>
-      <p class="rnote">긴 회의는 화면을 켜 두고 충전하며 녹음하세요. 길이 제한 없이 구간마다 나누어 받아씁니다.</p>
+      <p class="rnote">긴 회의는 화면을 켜 두고 충전하며 녹음하세요.<br>길이 제한 없이 구간마다 나누어 받아씁니다.</p>
     </div>
 
     <div class="tone">
