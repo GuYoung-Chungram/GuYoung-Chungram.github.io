@@ -98,7 +98,7 @@ h2 svg{color:var(--goldink)}
 .chip:hover:not([aria-pressed="true"]){background:var(--soft)}
 
 /* 정리 형태 */
-.seg{display:flex;margin:18px 0 16px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--paper)}
+.seg{display:flex;margin:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--paper)}
 .seg button{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;min-height:48px;border:0;border-left:1px solid var(--line);background:transparent;font-weight:600;font-size:15px}
 .seg button:first-child{border-left:0}
 .seg button:hover:not([aria-checked="true"]){background:var(--soft)}
@@ -108,6 +108,7 @@ h2 svg{color:var(--goldink)}
 .lbl{display:block;margin:0 0 6px;font-size:14px;font-weight:700}
 .lblrow{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0 0 6px}
 .lblrow .lbl{margin:0}
+.fhint{margin:8px 2px 16px;font-size:13px;color:var(--sub);min-height:1.5em}
 .lblrow small{font-size:12.5px;color:var(--sub)}
 textarea{display:block;width:100%;border:1px solid var(--line);border-radius:14px;padding:14px 16px;background:var(--paper);resize:vertical;line-height:1.7}
 textarea:focus{border-color:var(--navy);outline:0;box-shadow:0 0 0 3px rgba(176,141,62,.28)}
@@ -243,11 +244,13 @@ dl.tc dd{margin:0;font-weight:600}
       </div>
     </div>
 
-    <div class="seg" id="seg" role="radiogroup" aria-label="정리 형태">
-      <button type="button" role="radio" data-f="memo" aria-checked="true"><svg class="i"><use href="#ic-note"/></svg>메모</button>
-      <button type="button" role="radio" data-f="list" aria-checked="false"><svg class="i"><use href="#ic-list"/></svg>목록</button>
-      <button type="button" role="radio" data-f="paragraph" aria-checked="false"><svg class="i"><use href="#ic-para"/></svg>문단</button>
+    <div class="lblrow" style="margin-top:18px"><span class="lbl" id="fmtLbl">어떻게 정리할까요?</span></div>
+    <div class="seg" id="seg" role="radiogroup" aria-labelledby="fmtLbl">
+      <button type="button" role="radio" data-f="memo" aria-checked="true"><svg class="i"><use href="#ic-note"/></svg>한 줄씩</button>
+      <button type="button" role="radio" data-f="list" aria-checked="false"><svg class="i"><use href="#ic-list"/></svg>항목별</button>
+      <button type="button" role="radio" data-f="paragraph" aria-checked="false"><svg class="i"><use href="#ic-para"/></svg>이어서</button>
     </div>
+    <p class="fhint" id="fmtHint" aria-live="polite"></p>
 
     <div class="lblrow"><label class="lbl" for="src">받아쓴 내용</label><small>직접 고치거나 입력해도 됩니다</small></div>
     <textarea id="src" placeholder="위의 마이크 버튼을 누르고 말씀하세요."></textarea>
@@ -874,10 +877,16 @@ function saveTone() {
 }
 
 /* ---------- 시작 ---------- */
+var FMT_HINT = {
+  memo: '문장마다 줄을 바꿔 적습니다. 일반 메모에 알맞습니다.',
+  list: '할 일·일정·지시를 항목으로 나눠 적습니다.',
+  paragraph: '문장을 이어 한 편의 글로 적습니다. 보고문·발언 초안에 알맞습니다.'
+};
 function setFormat(f) {
   vm.format = f; store('vm_format', f);
   var bs = $('seg').querySelectorAll('button');
   for (var i = 0; i < bs.length; i++) { bs[i].setAttribute('aria-checked', String(bs[i].getAttribute('data-f') === f)); }
+  $('fmtHint').textContent = FMT_HINT[f] || '';
 }
 (function init() {
   var sz = parseInt(store('vm_size'), 10); if (sz >= 0 && sz < SIZES.length) { vm.size = sz; }
